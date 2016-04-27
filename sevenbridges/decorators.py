@@ -68,7 +68,7 @@ def check_for_error(func):
             raise e
         except requests.RequestException as e:
             raise SbgError(message=str(e))
-        except json.JSONDecodeError as e:
+        except ValueError as e:
             raise SbgError(message=str(e))
 
     return wrapper
