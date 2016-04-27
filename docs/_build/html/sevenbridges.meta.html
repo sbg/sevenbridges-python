@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sevenbridges.meta package &mdash; sevenbridges-python 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="sevenbridges-python 0.1.0 documentation" href="index.html"/>
+        <link rel="up" title="sevenbridges package" href="sevenbridges.html"/>
+        <link rel="next" title="sevenbridges.models package" href="sevenbridges.models.html"/>
+        <link rel="prev" title="sevenbridges.http package" href="sevenbridges.http.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sevenbridges-python
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#get-the-code">Get the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="sevenbridges.html">sevenbridges package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sevenbridges.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.http.html">sevenbridges.http package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">sevenbridges.meta package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.meta.collection">sevenbridges.meta.collection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.meta.data">sevenbridges.meta.data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.meta.fields">sevenbridges.meta.fields module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.meta.resource">sevenbridges.meta.resource module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.meta.transformer">sevenbridges.meta.transformer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.meta">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.models.html">sevenbridges.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.transfer.html">sevenbridges.transfer package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.api">sevenbridges.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.config">sevenbridges.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.decorators">sevenbridges.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.errors">sevenbridges.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">sevenbridges-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="sevenbridges.html">sevenbridges package</a> &raquo;</li>
+      
+    <li>sevenbridges.meta package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sevenbridges-meta-package">
+<h1>sevenbridges.meta package<a class="headerlink" href="#sevenbridges-meta-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-sevenbridges.meta.collection">
+<span id="sevenbridges-meta-collection-module"></span><h2>sevenbridges.meta.collection module<a class="headerlink" href="#module-sevenbridges.meta.collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sevenbridges.meta.collection.Collection">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.collection.</code><code class="descname">Collection</code><span class="sig-paren">(</span><em>resource</em>, <em>href</em>, <em>total</em>, <em>items</em>, <em>links</em>, <em>api</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/collection.html#Collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.collection.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">list</span></code></p>
+<p>Wrapper for SevenBridges pageable resources.
+Among the actual collection items it contains information regarding
+the total number of entries available in on the server and resource href.</p>
+<dl class="method">
+<dt id="sevenbridges.meta.collection.Collection.all">
+<code class="descname">all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/collection.html#Collection.all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.collection.Collection.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches all available items.
+:return: Collection object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.meta.collection.Collection.next_page">
+<code class="descname">next_page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/collection.html#Collection.next_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.collection.Collection.next_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches next result set.
+:return: Collection object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.meta.collection.Collection.previous_page">
+<code class="descname">previous_page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/collection.html#Collection.previous_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.collection.Collection.previous_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches previous result set.
+:return: Collection object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.meta.collection.Collection.resource">
+<code class="descname">resource</code><em class="property"> = None</em><a class="headerlink" href="#sevenbridges.meta.collection.Collection.resource" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.meta.collection.Collection.total">
+<code class="descname">total</code><a class="headerlink" href="#sevenbridges.meta.collection.Collection.total" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.meta.data">
+<span id="sevenbridges-meta-data-module"></span><h2>sevenbridges.meta.data module<a class="headerlink" href="#module-sevenbridges.meta.data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sevenbridges.meta.data.DataContainer">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.data.</code><code class="descname">DataContainer</code><span class="sig-paren">(</span><em>urls</em>, <em>api</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/data.html#DataContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.data.DataContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Utility for fetching data from the API server using,
+resource identifier or href.</p>
+<dl class="method">
+<dt id="sevenbridges.meta.data.DataContainer.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/data.html#DataContainer.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.data.DataContainer.fetch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.meta.fields">
+<span id="sevenbridges-meta-fields-module"></span><h2>sevenbridges.meta.fields module<a class="headerlink" href="#module-sevenbridges.meta.fields" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sevenbridges.meta.fields.BasicListField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">BasicListField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=False</em>, <em>max_length=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#BasicListField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.BasicListField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.BasicListField.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#BasicListField.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.BasicListField.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.BooleanField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">BooleanField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#BooleanField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.BooleanField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.BooleanField.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#BooleanField.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.BooleanField.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.CompoundField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">CompoundField</code><span class="sig-paren">(</span><em>cls</em>, <em>name=None</em>, <em>read_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#CompoundField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.CompoundField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.CompoundListField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">CompoundListField</code><span class="sig-paren">(</span><em>cls</em>, <em>name=None</em>, <em>read_only=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#CompoundListField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.CompoundListField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.DateTimeField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">DateTimeField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#DateTimeField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.DateTimeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.DictField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">DictField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#DictField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.DictField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a>, <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.Field">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=True</em>, <em>validator=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#Field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.Field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.Field.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#Field.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.Field.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.FloatField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">FloatField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#FloatField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.FloatField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.FloatField.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#FloatField.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.FloatField.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.HrefField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">HrefField</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#HrefField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.HrefField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.IntegerField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">IntegerField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#IntegerField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.IntegerField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.IntegerField.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#IntegerField.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.IntegerField.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.ObjectIdField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">ObjectIdField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#ObjectIdField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.ObjectIdField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.StringField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">StringField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=False</em>, <em>max_length=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#StringField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.StringField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.StringField.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#StringField.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.StringField.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.fields.UuidField">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.fields.</code><code class="descname">UuidField</code><span class="sig-paren">(</span><em>name=None</em>, <em>read_only=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#UuidField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.UuidField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sevenbridges.meta.fields.Field" title="sevenbridges.meta.fields.Field"><code class="xref py py-class docutils literal"><span class="pre">sevenbridges.meta.fields.Field</span></code></a></p>
+<dl class="method">
+<dt id="sevenbridges.meta.fields.UuidField.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/fields.html#UuidField.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.fields.UuidField.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.meta.resource">
+<span id="sevenbridges-meta-resource-module"></span><h2>sevenbridges.meta.resource module<a class="headerlink" href="#module-sevenbridges.meta.resource" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.meta.resource.Resource">
+<code class="descclassname">sevenbridges.meta.resource.</code><code class="descname">Resource</code><a class="reference internal" href="_modules/sevenbridges/meta/resource.html#Resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.resource.Resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resource is base class for all resources, hiding implementation details
+of magic of injecting instance of API and common operations (like generic
+query).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.meta.resource.ResourceMeta">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.resource.</code><code class="descname">ResourceMeta</code><a class="reference internal" href="_modules/sevenbridges/meta/resource.html#ResourceMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.resource.ResourceMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">type</span></code></p>
+<p>Metaclass for all resources, knows how to inject instance of API from
+class that contains classes with this meta. Class that contains this class
+has to have &#8216;api&#8217; property which will be injected into class level
+API property of Resource class.</p>
+<p>Creates constructors for all resources and manages instantiation of
+resource fields.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.meta.transformer">
+<span id="sevenbridges-meta-transformer-module"></span><h2>sevenbridges.meta.transformer module<a class="headerlink" href="#module-sevenbridges.meta.transformer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sevenbridges.meta.transformer.Transform">
+<em class="property">class </em><code class="descclassname">sevenbridges.meta.transformer.</code><code class="descname">Transform</code><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="staticmethod">
+<dt id="sevenbridges.meta.transformer.Transform.to_app">
+<em class="property">static </em><code class="descname">to_app</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform.to_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform.to_app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="sevenbridges.meta.transformer.Transform.to_billing_group">
+<em class="property">static </em><code class="descname">to_billing_group</code><span class="sig-paren">(</span><em>billing_group</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform.to_billing_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform.to_billing_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="sevenbridges.meta.transformer.Transform.to_file">
+<em class="property">static </em><code class="descname">to_file</code><span class="sig-paren">(</span><em>file_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform.to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform.to_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="sevenbridges.meta.transformer.Transform.to_project">
+<em class="property">static </em><code class="descname">to_project</code><span class="sig-paren">(</span><em>project</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform.to_project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform.to_project" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="sevenbridges.meta.transformer.Transform.to_task">
+<em class="property">static </em><code class="descname">to_task</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform.to_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform.to_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="sevenbridges.meta.transformer.Transform.to_user">
+<em class="property">static </em><code class="descname">to_user</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/meta/transformer.html#Transform.to_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.meta.transformer.Transform.to_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.meta">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sevenbridges.meta" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sevenbridges.models.html" class="btn btn-neutral float-right" title="sevenbridges.models package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sevenbridges.http.html" class="btn btn-neutral" title="sevenbridges.http package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Seven Bridges Genomics Inc..
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

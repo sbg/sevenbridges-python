@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sevenbridges.http.client &mdash; sevenbridges-python 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="sevenbridges-python 0.1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sevenbridges-python
+          
+
+          
+            
+            <img src="../../../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#get-the-code">Get the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sevenbridges.html">sevenbridges package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">sevenbridges-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>sevenbridges.http.client</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sevenbridges.http.client</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.adapters</span> <span class="kn">import</span> <span class="n">HTTPAdapter</span>
+<span class="kn">from</span> <span class="nn">requests.packages.urllib3.util</span> <span class="kn">import</span> <span class="n">Retry</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.errors</span> <span class="kn">import</span> <span class="n">SbgError</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.decorators</span> <span class="kn">import</span> <span class="n">check_for_error</span>
+<span class="kn">import</span> <span class="nn">sevenbridges</span>
+
+<span class="n">client_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">sevenbridges</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+    <span class="s1">&#39;os&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
+    <span class="s1">&#39;requests&#39;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="HttpClient"><a class="viewcode-back" href="../../../sevenbridges.http.html#sevenbridges.http.client.HttpClient">[docs]</a><span class="k">class</span> <span class="nc">HttpClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of all low-level API stuff, creating and sending requests,</span>
+<span class="sd">    returning raw responses, authorization, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">oauth_token</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">retry</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">api_url</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">auth_token</span>
+            <span class="n">oauth_token</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">oauth_token</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SbgError</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Url is missing!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">HTTPAdapter</span><span class="p">(</span>
+            <span class="n">max_retries</span><span class="o">=</span><span class="n">Retry</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">retry</span><span class="p">,</span> <span class="n">status_forcelist</span><span class="o">=</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">503</span><span class="p">])</span>
+        <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remaining</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_id</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span>
+                <span class="s1">&#39;sevenbridges-python/{version} ({os}, Python/{python}; &#39;</span>
+                <span class="s1">&#39;requests/{requests})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">client_info</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span> <span class="o">=</span> <span class="n">oauth_token</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-SBG-Auth-Token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oauth_token</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SbgError</span><span class="p">(</span>
+                <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Required authorization model not selected!. Please &#39;</span>
+                        <span class="s1">&#39;provide at least one token value.&#39;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remaining</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">reset_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_id</span>
+
+    <span class="nd">@check_for_error</span>
+    <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">append_base</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">append_base</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span> <span class="n">url</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">headers</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SbgError</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Api instance must be authenticated.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                <span class="n">verb</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                <span class="n">verb</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span>
+            <span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;X-RateLimit-Limit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remaining</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;X-RateLimit-Remaining&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remaining</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;X-RateLimit-Reset&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_id</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;X-Request-Id&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+<div class="viewcode-block" id="HttpClient.get"><a class="viewcode-back" href="../../../sevenbridges.http.html#sevenbridges.http.client.HttpClient.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">append_base</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">stream</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">append_base</span><span class="o">=</span><span class="n">append_base</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="HttpClient.post"><a class="viewcode-back" href="../../../sevenbridges.http.html#sevenbridges.http.client.HttpClient.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+             <span class="n">append_base</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">append_base</span><span class="o">=</span><span class="n">append_base</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HttpClient.put"><a class="viewcode-back" href="../../../sevenbridges.http.html#sevenbridges.http.client.HttpClient.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">append_base</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">append_base</span><span class="o">=</span><span class="n">append_base</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HttpClient.patch"><a class="viewcode-back" href="../../../sevenbridges.http.html#sevenbridges.http.client.HttpClient.patch">[docs]</a>    <span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+              <span class="n">append_base</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;PATCH&#39;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">append_base</span><span class="o">=</span><span class="n">append_base</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HttpClient.delete"><a class="viewcode-back" href="../../../sevenbridges.http.html#sevenbridges.http.client.HttpClient.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">append_base</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                             <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">append_base</span><span class="o">=</span><span class="n">append_base</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;API(</span><span class="si">%s</span><span class="s1">) - &quot;</span><span class="si">%s</span><span class="s1">&quot;&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="n">__str__</span> <span class="o">=</span> <span class="n">__repr__</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Seven Bridges Genomics Inc..
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

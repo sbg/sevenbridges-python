@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sevenbridges.models.compound package &mdash; sevenbridges-python 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="sevenbridges-python 0.1.0 documentation" href="index.html"/>
+        <link rel="up" title="sevenbridges.models package" href="sevenbridges.models.html"/>
+        <link rel="next" title="sevenbridges.transfer package" href="sevenbridges.transfer.html"/>
+        <link rel="prev" title="sevenbridges.models package" href="sevenbridges.models.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sevenbridges-python
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#get-the-code">Get the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="sevenbridges.html">sevenbridges package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sevenbridges.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.http.html">sevenbridges.http package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.meta.html">sevenbridges.meta package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="sevenbridges.models.html">sevenbridges.models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="sevenbridges.models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.app">sevenbridges.models.app module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.billing_breakdown">sevenbridges.models.billing_breakdown module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.billing_group">sevenbridges.models.billing_group module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.endpoints">sevenbridges.models.endpoints module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.execution_details">sevenbridges.models.execution_details module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.file">sevenbridges.models.file module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.invoice">sevenbridges.models.invoice module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.link">sevenbridges.models.link module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.member">sevenbridges.models.member module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.project">sevenbridges.models.project module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.task">sevenbridges.models.task module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models.user">sevenbridges.models.user module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sevenbridges.models.html#module-sevenbridges.models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.transfer.html">sevenbridges.transfer package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.api">sevenbridges.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.config">sevenbridges.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.decorators">sevenbridges.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.errors">sevenbridges.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">sevenbridges-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="sevenbridges.html">sevenbridges package</a> &raquo;</li>
+      
+          <li><a href="sevenbridges.models.html">sevenbridges.models package</a> &raquo;</li>
+      
+    <li>sevenbridges.models.compound package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sevenbridges-models-compound-package">
+<h1>sevenbridges.models.compound package<a class="headerlink" href="#sevenbridges-models-compound-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-sevenbridges.models.compound.batch_by">
+<span id="sevenbridges-models-compound-batch-by-module"></span><h2>sevenbridges.models.compound.batch_by module<a class="headerlink" href="#module-sevenbridges.models.compound.batch_by" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.batch_by.BatchBy">
+<code class="descclassname">sevenbridges.models.compound.batch_by.</code><code class="descname">BatchBy</code><a class="reference internal" href="_modules/sevenbridges/models/compound/batch_by.html#BatchBy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.batch_by.BatchBy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Batch by tells the API what is the criteria
+for batching. It can be either item or criteria.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.batch_group">
+<span id="sevenbridges-models-compound-batch-group-module"></span><h2>sevenbridges.models.compound.batch_group module<a class="headerlink" href="#module-sevenbridges.models.compound.batch_group" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.batch_group.BatchGroup">
+<code class="descclassname">sevenbridges.models.compound.batch_group.</code><code class="descname">BatchGroup</code><a class="reference internal" href="_modules/sevenbridges/models/compound/batch_group.html#BatchGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.batch_group.BatchGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Batch group for a batch task.
+Represents the group that is assigned to the child task
+from the batching criteria that was used when the task was started.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.download_info">
+<span id="sevenbridges-models-compound-download-info-module"></span><h2>sevenbridges.models.compound.download_info module<a class="headerlink" href="#module-sevenbridges.models.compound.download_info" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.download_info.DownloadInfo">
+<code class="descclassname">sevenbridges.models.compound.download_info.</code><code class="descname">DownloadInfo</code><a class="reference internal" href="_modules/sevenbridges/models/compound/download_info.html#DownloadInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.download_info.DownloadInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download info resource contains download url for the file.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.execution_status">
+<span id="sevenbridges-models-compound-execution-status-module"></span><h2>sevenbridges.models.compound.execution_status module<a class="headerlink" href="#module-sevenbridges.models.compound.execution_status" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.execution_status.ExecutionStatus">
+<code class="descclassname">sevenbridges.models.compound.execution_status.</code><code class="descname">ExecutionStatus</code><a class="reference internal" href="_modules/sevenbridges/models/compound/execution_status.html#ExecutionStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.execution_status.ExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task execution status resource.
+Contains information about the number of completed task steps,
+total number of task steps and current execution message. In case
+of a batch task it also contains the number of queued, running, completed,
+failed and aborted tasks.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.file_origin">
+<span id="sevenbridges-models-compound-file-origin-module"></span><h2>sevenbridges.models.compound.file_origin module<a class="headerlink" href="#module-sevenbridges.models.compound.file_origin" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.file_origin.FileOrigin">
+<code class="descclassname">sevenbridges.models.compound.file_origin.</code><code class="descname">FileOrigin</code><a class="reference internal" href="_modules/sevenbridges/models/compound/file_origin.html#FileOrigin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.file_origin.FileOrigin" title="Permalink to this definition">¶</a></dt>
+<dd><p>File origin resource contains information about origin of a file.
+Among others it contains information about the task if the file
+was produced during executions of a analysis.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.input">
+<span id="sevenbridges-models-compound-input-module"></span><h2>sevenbridges.models.compound.input module<a class="headerlink" href="#module-sevenbridges.models.compound.input" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.input.Input">
+<code class="descclassname">sevenbridges.models.compound.input.</code><code class="descname">Input</code><a class="reference internal" href="_modules/sevenbridges/models/compound/input.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.input.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task input wrapper.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.invoice_period">
+<span id="sevenbridges-models-compound-invoice-period-module"></span><h2>sevenbridges.models.compound.invoice_period module<a class="headerlink" href="#module-sevenbridges.models.compound.invoice_period" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.invoice_period.InvoicePeriod">
+<code class="descclassname">sevenbridges.models.compound.invoice_period.</code><code class="descname">InvoicePeriod</code><a class="reference internal" href="_modules/sevenbridges/models/compound/invoice_period.html#InvoicePeriod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.invoice_period.InvoicePeriod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoice period resource contains datetime information about the invoice.
+It has from and to fields which represent the interval period for this
+invoice.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.job">
+<span id="sevenbridges-models-compound-job-module"></span><h2>sevenbridges.models.compound.job module<a class="headerlink" href="#module-sevenbridges.models.compound.job" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.job.Job">
+<code class="descclassname">sevenbridges.models.compound.job.</code><code class="descname">Job</code><a class="reference internal" href="_modules/sevenbridges/models/compound/job.html#Job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Job resource contains information for a single executed node
+in the analysis.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.job_instance">
+<span id="sevenbridges-models-compound-job-instance-module"></span><h2>sevenbridges.models.compound.job_instance module<a class="headerlink" href="#module-sevenbridges.models.compound.job_instance" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.job_instance.Instance">
+<code class="descclassname">sevenbridges.models.compound.job_instance.</code><code class="descname">Instance</code><a class="reference internal" href="_modules/sevenbridges/models/compound/job_instance.html#Instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.job_instance.Instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance resource contains information regarding the instance
+on which the job was executed.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.job_log">
+<span id="sevenbridges-models-compound-job-log-module"></span><h2>sevenbridges.models.compound.job_log module<a class="headerlink" href="#module-sevenbridges.models.compound.job_log" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.job_log.Log">
+<code class="descclassname">sevenbridges.models.compound.job_log.</code><code class="descname">Log</code><a class="reference internal" href="_modules/sevenbridges/models/compound/job_log.html#Log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.job_log.Log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs resource contains a url towards a file that contains
+execution logs for the job that executed.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.metadata">
+<span id="sevenbridges-models-compound-metadata-module"></span><h2>sevenbridges.models.compound.metadata module<a class="headerlink" href="#module-sevenbridges.models.compound.metadata" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.metadata.Metadata">
+<code class="descclassname">sevenbridges.models.compound.metadata.</code><code class="descname">Metadata</code><a class="reference internal" href="_modules/sevenbridges/models/compound/metadata.html#Metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.metadata.Metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>File metadata resource.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.output">
+<span id="sevenbridges-models-compound-output-module"></span><h2>sevenbridges.models.compound.output module<a class="headerlink" href="#module-sevenbridges.models.compound.output" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.output.Output">
+<code class="descclassname">sevenbridges.models.compound.output.</code><code class="descname">Output</code><a class="reference internal" href="_modules/sevenbridges/models/compound/output.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.output.Output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task Output</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.permissions">
+<span id="sevenbridges-models-compound-permissions-module"></span><h2>sevenbridges.models.compound.permissions module<a class="headerlink" href="#module-sevenbridges.models.compound.permissions" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.permissions.Permissions">
+<code class="descclassname">sevenbridges.models.compound.permissions.</code><code class="descname">Permissions</code><a class="reference internal" href="_modules/sevenbridges/models/compound/permissions.html#Permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.permissions.Permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permissions resource contains member permissions in regards to the project.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.price">
+<span id="sevenbridges-models-compound-price-module"></span><h2>sevenbridges.models.compound.price module<a class="headerlink" href="#module-sevenbridges.models.compound.price" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.price.Price">
+<code class="descclassname">sevenbridges.models.compound.price.</code><code class="descname">Price</code><a class="reference internal" href="_modules/sevenbridges/models/compound/price.html#Price"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.price.Price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Price resource contains an information regarding the currency and the
+monet value of a certain resource.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.project_breakdown">
+<span id="sevenbridges-models-compound-project-breakdown-module"></span><h2>sevenbridges.models.compound.project_breakdown module<a class="headerlink" href="#module-sevenbridges.models.compound.project_breakdown" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.project_breakdown.ProjectBreakdown">
+<code class="descclassname">sevenbridges.models.compound.project_breakdown.</code><code class="descname">ProjectBreakdown</code><a class="reference internal" href="_modules/sevenbridges/models/compound/project_breakdown.html#ProjectBreakdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.project_breakdown.ProjectBreakdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project breakdown resource contains information regarding
+billing group project breakdown costs.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound.task_breakdown">
+<span id="sevenbridges-models-compound-task-breakdown-module"></span><h2>sevenbridges.models.compound.task_breakdown module<a class="headerlink" href="#module-sevenbridges.models.compound.task_breakdown" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="sevenbridges.models.compound.task_breakdown.TaskBreakdown">
+<code class="descclassname">sevenbridges.models.compound.task_breakdown.</code><code class="descname">TaskBreakdown</code><a class="reference internal" href="_modules/sevenbridges/models/compound/task_breakdown.html#TaskBreakdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.models.compound.task_breakdown.TaskBreakdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task breakdown resource contains information regarding
+billing group analysis breakdown costs.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.models.compound">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sevenbridges.models.compound" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sevenbridges.transfer.html" class="btn btn-neutral float-right" title="sevenbridges.transfer package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sevenbridges.models.html" class="btn btn-neutral" title="sevenbridges.models package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Seven Bridges Genomics Inc..
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

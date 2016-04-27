@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sevenbridges.transfer package &mdash; sevenbridges-python 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="sevenbridges-python 0.1.0 documentation" href="index.html"/>
+        <link rel="up" title="sevenbridges package" href="sevenbridges.html"/>
+        <link rel="prev" title="sevenbridges.models.compound package" href="sevenbridges.models.compound.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sevenbridges-python
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#get-the-code">Get the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="sevenbridges.html">sevenbridges package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sevenbridges.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.http.html">sevenbridges.http package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.meta.html">sevenbridges.meta package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sevenbridges.models.html">sevenbridges.models package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">sevenbridges.transfer package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.transfer.download">sevenbridges.transfer.download module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.transfer.utils">sevenbridges.transfer.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-sevenbridges.transfer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.api">sevenbridges.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.config">sevenbridges.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.decorators">sevenbridges.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges.errors">sevenbridges.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sevenbridges.html#module-sevenbridges">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">sevenbridges-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="sevenbridges.html">sevenbridges package</a> &raquo;</li>
+      
+    <li>sevenbridges.transfer package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sevenbridges-transfer-package">
+<h1>sevenbridges.transfer package<a class="headerlink" href="#sevenbridges-transfer-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-sevenbridges.transfer.download">
+<span id="sevenbridges-transfer-download-module"></span><h2>sevenbridges.transfer.download module<a class="headerlink" href="#module-sevenbridges.transfer.download" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sevenbridges.transfer.download.ChunkedFile">
+<em class="property">class </em><code class="descclassname">sevenbridges.transfer.download.</code><code class="descname">ChunkedFile</code><span class="sig-paren">(</span><em>file_path</em>, <em>session</em>, <em>url</em>, <em>file_size</em>, <em>chunk_size</em>, <em>retry</em>, <em>timeout</em>, <em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#ChunkedFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.ChunkedFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="sevenbridges.transfer.download.ChunkedFile.chunk">
+<code class="descname">chunk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#ChunkedFile.chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.ChunkedFile.chunk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.ChunkedFile.done">
+<code class="descname">done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#ChunkedFile.done"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.ChunkedFile.done" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.ChunkedFile.submit">
+<code class="descname">submit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#ChunkedFile.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.ChunkedFile.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.ChunkedFile.total_chunks">
+<code class="descname">total_chunks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#ChunkedFile.total_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.ChunkedFile.total_chunks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.transfer.download.Download">
+<em class="property">class </em><code class="descclassname">sevenbridges.transfer.download.</code><code class="descname">Download</code><span class="sig-paren">(</span><em>url=None</em>, <em>file_path=None</em>, <em>retry=5</em>, <em>timeout=10</em>, <em>chunk_size=None</em>, <em>api=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.add_callback">
+<code class="descname">add_callback</code><span class="sig-paren">(</span><em>callback=None</em>, <em>errorback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.add_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.add_callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.add_progress_callback">
+<code class="descname">add_progress_callback</code><span class="sig-paren">(</span><em>callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.add_progress_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.add_progress_callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.download.Download.duration">
+<code class="descname">duration</code><a class="headerlink" href="#sevenbridges.transfer.download.Download.duration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.download.Download.path">
+<code class="descname">path</code><a class="headerlink" href="#sevenbridges.transfer.download.Download.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.pause">
+<code class="descname">pause</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.pause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.pause" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.download.Download.progress">
+<code class="descname">progress</code><a class="headerlink" href="#sevenbridges.transfer.download.Download.progress" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.resume">
+<code class="descname">resume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.resume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.download.Download.start_time">
+<code class="descname">start_time</code><a class="headerlink" href="#sevenbridges.transfer.download.Download.start_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.download.Download.status">
+<code class="descname">status</code><a class="headerlink" href="#sevenbridges.transfer.download.Download.status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sevenbridges.transfer.download.Download.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/download.html#Download.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.download.Download.wait" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.transfer.utils">
+<span id="sevenbridges-transfer-utils-module"></span><h2>sevenbridges.transfer.utils module<a class="headerlink" href="#module-sevenbridges.transfer.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sevenbridges.transfer.utils.Chunk">
+<em class="property">class </em><code class="descclassname">sevenbridges.transfer.utils.</code><code class="descname">Chunk</code><span class="sig-paren">(</span><em>start=None</em>, <em>size=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/utils.html#Chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.utils.Chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Chunk.size">
+<code class="descname">size</code><a class="headerlink" href="#sevenbridges.transfer.utils.Chunk.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Chunk.start">
+<code class="descname">start</code><a class="headerlink" href="#sevenbridges.transfer.utils.Chunk.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.transfer.utils.PartSize">
+<em class="property">class </em><code class="descclassname">sevenbridges.transfer.utils.</code><code class="descname">PartSize</code><a class="reference internal" href="_modules/sevenbridges/transfer/utils.html#PartSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.DOWNLOAD_MINIMUM_PART_SIZE">
+<code class="descname">DOWNLOAD_MINIMUM_PART_SIZE</code><em class="property"> = 67108864</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.DOWNLOAD_MINIMUM_PART_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.GB">
+<code class="descname">GB</code><em class="property"> = 1073741824</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.GB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.KB">
+<code class="descname">KB</code><em class="property"> = 1024</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.KB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.MAXIMUM_OBJECT_SIZE">
+<code class="descname">MAXIMUM_OBJECT_SIZE</code><em class="property"> = 5497558138880</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.MAXIMUM_OBJECT_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.MAXIMUM_TOTAL_PARTS">
+<code class="descname">MAXIMUM_TOTAL_PARTS</code><em class="property"> = 10000</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.MAXIMUM_TOTAL_PARTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.MAXIMUM_UPLOAD_SIZE">
+<code class="descname">MAXIMUM_UPLOAD_SIZE</code><em class="property"> = 5368709120</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.MAXIMUM_UPLOAD_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.MB">
+<code class="descname">MB</code><em class="property"> = 1048576</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.MB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.MINIMUM_PART_SIZE">
+<code class="descname">MINIMUM_PART_SIZE</code><em class="property"> = 5242880</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.MINIMUM_PART_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.PartSize.TB">
+<code class="descname">TB</code><em class="property"> = 1099511627776</em><a class="headerlink" href="#sevenbridges.transfer.utils.PartSize.TB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.transfer.utils.Progress">
+<em class="property">class </em><code class="descclassname">sevenbridges.transfer.utils.</code><code class="descname">Progress</code><span class="sig-paren">(</span><em>num_of_chunks</em>, <em>chunks_done</em>, <em>bytes_done</em>, <em>file_size</em>, <em>duration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/utils.html#Progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.utils.Progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.bandwidth">
+<code class="descname">bandwidth</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.bandwidth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.bytes_done">
+<code class="descname">bytes_done</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.bytes_done" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.chunks_done">
+<code class="descname">chunks_done</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.chunks_done" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.duration">
+<code class="descname">duration</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.duration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.file_size">
+<code class="descname">file_size</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.file_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.num_of_chunks">
+<code class="descname">num_of_chunks</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.num_of_chunks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.Progress.progress">
+<code class="descname">progress</code><a class="headerlink" href="#sevenbridges.transfer.utils.Progress.progress" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sevenbridges.transfer.utils.TransferState">
+<em class="property">class </em><code class="descclassname">sevenbridges.transfer.utils.</code><code class="descname">TransferState</code><a class="reference internal" href="_modules/sevenbridges/transfer/utils.html#TransferState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.utils.TransferState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.TransferState.COMPLETED">
+<code class="descname">COMPLETED</code><em class="property"> = 'COMPLETED'</em><a class="headerlink" href="#sevenbridges.transfer.utils.TransferState.COMPLETED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.TransferState.NOT_INITIALIZED">
+<code class="descname">NOT_INITIALIZED</code><em class="property"> = 'NOT INITIALIZED'</em><a class="headerlink" href="#sevenbridges.transfer.utils.TransferState.NOT_INITIALIZED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.TransferState.PAUSED">
+<code class="descname">PAUSED</code><em class="property"> = 'PAUSED'</em><a class="headerlink" href="#sevenbridges.transfer.utils.TransferState.PAUSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.TransferState.RUNNING">
+<code class="descname">RUNNING</code><em class="property"> = 'RUNNING'</em><a class="headerlink" href="#sevenbridges.transfer.utils.TransferState.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sevenbridges.transfer.utils.TransferState.STOPPED">
+<code class="descname">STOPPED</code><em class="property"> = 'STOPPED'</em><a class="headerlink" href="#sevenbridges.transfer.utils.TransferState.STOPPED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sevenbridges.transfer.utils.simple_progress_bar">
+<code class="descclassname">sevenbridges.transfer.utils.</code><code class="descname">simple_progress_bar</code><span class="sig-paren">(</span><em>progress</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sevenbridges/transfer/utils.html#simple_progress_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sevenbridges.transfer.utils.simple_progress_bar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-sevenbridges.transfer">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sevenbridges.transfer" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="sevenbridges.models.compound.html" class="btn btn-neutral" title="sevenbridges.models.compound package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Seven Bridges Genomics Inc..
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

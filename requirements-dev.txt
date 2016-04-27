@@ -1,0 +1,8 @@
+pep8
+ipython==3.2.1
+sphinx==1.4.1
+pytest==2.9.1
+pytest-cov==2.2.1
+requests_mock==0.7.0
+sphinx_rtd_theme==0.1.9
+fake-factory==0.5.7

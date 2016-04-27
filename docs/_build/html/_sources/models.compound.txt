@@ -1,0 +1,142 @@
+models.compound package
+=======================
+
+Submodules
+----------
+
+models.compound.batch_by module
+-------------------------------
+
+.. automodule:: models.compound.batch_by
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.batch_group module
+----------------------------------
+
+.. automodule:: models.compound.batch_group
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.download_info module
+------------------------------------
+
+.. automodule:: models.compound.download_info
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.execution_status module
+---------------------------------------
+
+.. automodule:: models.compound.execution_status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.file_origin module
+----------------------------------
+
+.. automodule:: models.compound.file_origin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.input module
+----------------------------
+
+.. automodule:: models.compound.input
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.invoice_period module
+-------------------------------------
+
+.. automodule:: models.compound.invoice_period
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.job module
+--------------------------
+
+.. automodule:: models.compound.job
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.job_instance module
+-----------------------------------
+
+.. automodule:: models.compound.job_instance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.job_log module
+------------------------------
+
+.. automodule:: models.compound.job_log
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.metadata module
+-------------------------------
+
+.. automodule:: models.compound.metadata
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.output module
+-----------------------------
+
+.. automodule:: models.compound.output
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.permissions module
+----------------------------------
+
+.. automodule:: models.compound.permissions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.price module
+----------------------------
+
+.. automodule:: models.compound.price
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.project_breakdown module
+----------------------------------------
+
+.. automodule:: models.compound.project_breakdown
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+models.compound.task_breakdown module
+-------------------------------------
+
+.. automodule:: models.compound.task_breakdown
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: models.compound
+    :members:
+    :undoc-members:
+    :show-inheritance:

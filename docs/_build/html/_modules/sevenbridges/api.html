@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sevenbridges.api &mdash; sevenbridges-python 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="sevenbridges-python 0.1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sevenbridges-python
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html#get-the-code">Get the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sevenbridges.html">sevenbridges package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">sevenbridges-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>sevenbridges.api</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sevenbridges.api</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.http.client</span> <span class="kn">import</span> <span class="n">HttpClient</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.app</span> <span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.invoice</span> <span class="kn">import</span> <span class="n">Invoice</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.task</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.user</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.project</span> <span class="kn">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.endpoints</span> <span class="kn">import</span> <span class="n">Endpoints</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.file</span> <span class="kn">import</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">sevenbridges.models.billing_group</span> <span class="kn">import</span> <span class="n">BillingGroup</span>
+
+
+<div class="viewcode-block" id="Api"><a class="viewcode-back" href="../../sevenbridges.html#sevenbridges.api.Api">[docs]</a><span class="k">class</span> <span class="nc">Api</span><span class="p">(</span><span class="n">HttpClient</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Api aggregates all resource classes into single place&quot;&quot;&quot;</span>
+
+    <span class="n">users</span> <span class="o">=</span> <span class="n">User</span>
+    <span class="n">endpoints</span> <span class="o">=</span> <span class="n">Endpoints</span>
+    <span class="n">projects</span> <span class="o">=</span> <span class="n">Project</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">File</span>
+    <span class="n">apps</span> <span class="o">=</span> <span class="n">App</span>
+    <span class="n">billing_groups</span> <span class="o">=</span> <span class="n">BillingGroup</span>
+    <span class="n">invoices</span> <span class="o">=</span> <span class="n">Invoice</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="n">Task</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">oauth_token</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">retry</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">download_max_workers</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                 <span class="n">upload_max_workers</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes api object. If url and token are not supplied,</span>
+<span class="sd">        the check for the .sbgrc configuration file will occur, checking if the</span>
+<span class="sd">        section with the profile name is present in the .ini like configuration</span>
+<span class="sd">        file. If profile is missing os.environ will be checked for auth-token</span>
+<span class="sd">        and api-url variables.</span>
+
+<span class="sd">        :param url: Api url.</span>
+<span class="sd">        :param token: Secure token.</span>
+<span class="sd">        :param oauth_token: Oauth token.</span>
+<span class="sd">        :param config: Configuration profile.</span>
+<span class="sd">        :param timeout: Client timeout.</span>
+<span class="sd">        :param retry: Number of retries.</span>
+<span class="sd">        :param download_max_workers: Max number of threads for download.</span>
+<span class="sd">        :param upload_max_workers: Max number of threads for upload.</span>
+<span class="sd">        :return: Api object instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Api</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+                                  <span class="n">oauth_token</span><span class="o">=</span><span class="n">oauth_token</span><span class="p">,</span>
+                                  <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">retry</span><span class="o">=</span><span class="n">retry</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_pool</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span>
+            <span class="n">max_workers</span><span class="o">=</span><span class="n">download_max_workers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upload_pool</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">upload_max_workers</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Seven Bridges Genomics Inc..
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
