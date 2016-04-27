@@ -1,6 +1,9 @@
 sevenbridges-python
 ===================
 
+[![PyPI version](https://badge.fury.io/py/sevenbridges-python.svg)](https://pypi.python.org/pypi/sevenbridges-python)
+[![Documentation](https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest)](http://sevenbridges-python.readthedocs.org/en/latest/)
+
 sevenbridges-python is a [Python](http://www.python.org/) library that
 provides an interface for [the Seven Bridges
 Platform](https://www.sbgenomics.com/) and [Cancer Genomics
