@@ -11,7 +11,6 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-import subprocess
 import sys
 import os
 import shlex
@@ -22,6 +21,8 @@ import shlex
 extra_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ['SPHINX_DOC'] = 'True'
 sys.path.append(extra_path)
+
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -358,17 +359,3 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 # epub_use_index = True
-
-
-def run_apidoc(_):
-    from sphinx.apidoc import main
-    module_name = 'sevenbridges'
-    modules = ['../{module}'.format(module=module_name)]
-    for module in modules:
-        cur_dir = os.path.abspath(os.path.dirname(__file__))
-        output_path = os.path.join(cur_dir, module_name, 'doc')
-        main(['-e', '-o', output_path, module, '--force'])
-
-
-def setup(app):
-    app.connect('builder-inited', run_apidoc)
