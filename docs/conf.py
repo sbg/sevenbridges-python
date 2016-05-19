@@ -11,11 +11,10 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-
+import subprocess
 import sys
 import os
 import shlex
-
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -338,6 +337,7 @@ epub_copyright = copyright
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
+
 # The depth of the table of contents in toc.ncx.
 # epub_tocdepth = 3
 
@@ -358,3 +358,17 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 # epub_use_index = True
+
+
+def run_apidoc(_):
+    from sphinx.apidoc import main
+    module_name = 'sevenbridges'
+    modules = ['../{module}'.format(module=module_name)]
+    for module in modules:
+        cur_dir = os.path.abspath(os.path.dirname(__file__))
+        output_path = os.path.join(cur_dir, module_name, 'doc')
+        main(['-e', '-o', output_path, module, '--force'])
+
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
