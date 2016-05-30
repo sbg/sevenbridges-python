@@ -2,7 +2,7 @@ import io
 import sys
 from setuptools import setup, find_packages
 
-version = "0.1.1"
+version = "0.2.0"
 
 install_requires = []
 

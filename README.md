@@ -3,6 +3,10 @@ sevenbridges-python
 
 [![PyPI version](https://badge.fury.io/py/sevenbridges-python.svg)](https://pypi.python.org/pypi/sevenbridges-python)
 [![Documentation](https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest)](http://sevenbridges-python.readthedocs.org/en/latest/)
+[![Licence](https://img.shields.io/badge/licence-Apache-orange.svg)](https://github.com/sbg/sevenbridges-python/blob/master/LICENCE)
+
+[CHANGESETS](https://github.com/sbg/sevenbridges-python/blob/master/CHANGES.md)
+
 
 sevenbridges-python is a [Python](http://www.python.org/) library that
 provides an interface for [the Seven Bridges
@@ -28,6 +32,7 @@ and scalable computational resources to analyze them. The CGC makes more
 than a petabyte of multi-dimensional data available immediately to
 authorized researchers. You can add your own data to analyze alongside
 TCGA using predefined analytical workflows or your own tools.
+
 
 Installation
 ------------

@@ -11,6 +11,7 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+
 import sys
 import os
 import shlex
@@ -21,7 +22,6 @@ import shlex
 extra_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ['SPHINX_DOC'] = 'True'
 sys.path.append(extra_path)
-
 
 # -- General configuration ------------------------------------------------
 
@@ -301,7 +301,8 @@ epub_copyright = copyright
 # The basename for the epub file. It defaults to the project name.
 # epub_basename = project
 
-# The HTML theme for the epub output. Since the default themes are not optimized
+# The HTML theme for the epub output.
+# Since the default themes are not optimized
 # for small screen space, using the same theme for HTML and epub output is
 # usually not wise. This defaults to 'epub', a theme designed to save visual
 # space.
@@ -337,7 +338,6 @@ epub_copyright = copyright
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
-
 
 # The depth of the table of contents in toc.ncx.
 # epub_tocdepth = 3

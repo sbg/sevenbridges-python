@@ -139,8 +139,7 @@ class File(Resource):
             if 'metadata' in modified_data:
                 self._api.patch(url=self._URL['metadata'].format(id=self.id),
                                 data=modified_data['metadata'])
-                self.metadata.dirty = {}
-                return self.get(id=self.id)
+                return self.get(id=self.id, api=self._api)
 
             else:
                 data = self._api.patch(url=self._URL['get'].format(id=self.id),

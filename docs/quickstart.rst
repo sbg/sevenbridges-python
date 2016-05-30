@@ -5,138 +5,141 @@ Quickstart
 Authentication and Configuration
 --------------------------------
 
---------------
+In order to authenticate with the API, you should pass the following items to sevenbridges-python:
 
-In order to authenticate to the API, sevenbridges-python library
-requires that you pass in your authentication token and URL endpoint,
-acquired from the Seven Bridges Platform or Seven Bridges related
-products like Cancer Genomics Cloud.
+(a) Your authentication token;
+(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or for the Seven Bridges Cancer Genomics Cloud (CGC).
 
-You can find your authentication token on the respective platform pages:
+You can find your authentication token on the respective pages:
 
--  https://igor.sbgenomics.com/developers
--  https://cgc.sbgenomics.com/developers
+-  https://igor.sbgenomics.com/developers for the Seven Bridges Platform
+-  https://cgc.sbgenomics.com/developers for the CGC
 
-Apart from this, you need to define the API endpoint, which is:
+The API endpoints for each environment are:
 
--  https://api.sbgenomics.com/v2 for Seven Bridges Platform
+-  https://api.sbgenomics.com/v2 for the Seven Bridges Platform
 -  https://cgc-api.sbgenomics.com/v2 for the CGC.
 
-The api documentation is available:
 
--  http://docs.sevenbridges.com/docs/the-api for Seven Bridges Platform.
+.. note:: We will see below how to supply information about your auth token and endpoint to the library.
+
+
+For more information about the API, including details of the available parameters for each API call, you should check the API documentation before using this library:
+
+-  http://docs.sevenbridges.com/docs/the-api for the Seven Bridges Platform.
 -  http://docs.cancergenomicscloud.org/docs/the-cgc-api for the CGC.
 
+
+How to use the Quickstart
+-------------------------
+
+We recommend that you pay particular attention to the section 'Managing Projects' of this Quickstart, since it contains general information on working with any kind of Platform or CGC resource (projects, files, tasks, etc) via the Python methods available in this library. 
+
+
 Initializing the library
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
-Once you obtain your authentication token you can pass it to the Config
-object. You can instantiate your Api object by passing the appropriate
-configuration. There are three ways you can configure the library:
+Once you have obtained your authentication token from one of the URLs listed above, you can initialize the :code:`Api` object defined by this library by passing in your authentication token and endpiont. There are three methods to do this. Details of each method are given below:
 
-1. Pass parameters ``url`` and ``token`` explicitly when initializing
-   api object.
-2. Put API endpoint and token in the environment variables ``API_URL``
+1. Pass the parameters ``url`` and ``token`` explicitly when initializing the
+   API object.
+2. Set the API endpoint and token to the environment variables ``API_URL``
    and ``AUTH_TOKEN`` respectively.
-3. Use configuration file ``$HOME/.sbgrc`` with defined parameters.
+3. Use a configuration file ``$HOME/.sbgrc`` with the defined parameters.
 
-*Note on authentication information*:
+.. note:: Keep your authentication token safe! It encodes all your credentials on the Platform or CGC. Generally, we recommend storing the token in a configuration file, which will then be stored in your home folder rather than in the code itself. This prevents the authentication token from being committed to source code repositories.
 
-Keep your authentication token safe, as you would keep any other secret
-information. Generally, we recommend using configuration file, as the
-authentication token is then stored on user's home folder and no strewn
-about in code and committed to source code repositories.
+
 
 Import the library
 ~~~~~~~~~~~~~~~~~~
+You should begin by importing the API library sevenbridges-python to your python script that will interact with the API:
 
 .. code:: python
 
     import sevenbridges as sbg
 
-Initialize the library using configuration file
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Then, use one of the following three methods to initialize the library:
 
-Api object represents the central resource for querying, saving and
-performing all sort of actions on your resources. Once you have
-instantiated configuration class, pass it to the API class constructor.
+1. Initialize the library explicitly
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The library can be also instatiated explicity by passing the URL and authentication token
+as key-value arguments into the :code:`Api` object.
+
+.. code:: python
+
+    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='27d598b71beb4660952739ed5f94ebda')
+
+*Note* - you can initialize several API clients with
+different credentials or environments.
+
+2. Initialize the library using environment variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    import os
+    
+    # Usually these variables would be set in the shell beforehand
+    os.environ['API_URL'] = '<https://api.sbgenomics.com/v2 or https://cgc-api.sbgenomics.com/v2>'
+    os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
+    
+    c = sbg.Config()
+    api = sbg.Api(config=c)
+
+3. Initialize the library using a configuration file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The configuration file, ``.sbgrc``, has a simple ``.ini`` file format, with
+the environment (the Seven Bridges Platform, or the CGC) indicated in square brackets, as shown:
+
+::
+
+    [sbpla]
+    api-url = https://api.sbgenomics.com/v2
+    auth-token = 700992f7b24a470bb0b028fe813b8100
+
+    [cgc]
+    api-url = https://api.sbgenomics.com/v2
+    auth-token = 910975f5b24a470bb0b028fe813b8100
+
+
+The :code:`Api` object is the central resource for querying, saving and
+performing other actions on your resources on the Seven Bridges Platform or CGC. Once you have
+instantiated the configuration class, pass it to the API class constructor.
 
 .. code:: python
 
     c = sbg.Config(profile='sbpla')
     api = sbg.Api(config=c)
 
-Initialize the library using environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code:: python
-
-    import os
-    
-    # Usually these would be set in the shell beforehand
-    os.environ['API_URL'] = 'https://api.sbgenomics.com/v2'
-    os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
-    
-    c = sbg.Config()
-    api = sbg.Api(config=c)
-
-Initialize library explicitly
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Library can be also instatiated explicity by passing the url and token
-as key value arguments.
-
-.. code:: python
-
-    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='27d598b71beb4660952739ed5f94ebda')
-
-*Note* - you can always initialize several API clients with possibly
-different credentials or talking to a different environment
-
-Notes on config file format
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Format of the ``.sbgrc`` file is as a simple .ini file format, with
-profile shown in brackets.
-
-::
-
-    [sbpla]
-    api-url = 'https://api.sbgenomics.com/v2'
-    auth-token = 700992f7b24a470bb0b028fe813b8100
-
-    [cgc]
-    api-url = 'https://api.sbgenomics.com/v2'
-    auth-token = 910975f5b24a470bb0b028fe813b8100
-
+   
 Rate limit
 ----------
 
---------------
-
-For requests using authentication, you can issue a maximum of 1000
+For API requests that require authentication (i.e. all requests, except the call to list possible API paths), you can issue a maximum of 1000
 requests per 300 seconds. Note that this limit is generally subject to
 change, depending on API usage and technical limits. Your current rate
-limit, the number of remaining request, or the rate reset time can be
-obtained using your Api object.
+limit, the number of remaining requests available within the limit, and the time until your limit is reset can be
+obtained using your :code:`Api` object, as follows.
 
 .. code:: python
 
-    api.limit, api.remaining, api.reset_time
+    api.limit, 
+    api.remaining, 
+    api.reset_time
 
 Managing users
 --------------
 
---------------
-
-Currently authenticated user can always access his/her's information by
-invoking the following method.
+Currently any authenticated user can access his or her information by
+invoking the following method:
 
 .. code:: python
 
     me = api.users.me()
 
-**me** object now contains user information including:
+Once you have initialized the library by authenticating yourself, the object :code:`me` will contain your user information. This includes:
 
 ::
 
@@ -153,7 +156,7 @@ invoking the following method.
     me.zip_code
     me.country
 
-For example to obtain your email invoke:
+For example, to obtain your email address invoke:
 
 .. code:: python
 
@@ -162,53 +165,57 @@ For example to obtain your email invoke:
 Managing projects
 -----------------
 
---------------
-
-There are several methods on the Api object which can help you manage
+There are several methods on the :code:`Api` object that can help you manage
 your projects.
 
-In order to list or query projects invoke a query method. Query method
-follows server pagination and therefore initial pagination parameters
-can be passed to the query method. **offset** parameter controls the
-start of the pagination while the **limit** parameter controls the
-number of items you want to be retrieved.
+.. note::  If you are not familiar with the project structure of the Seven Bridges Platform and CGC, take a look at their respective documentation: `projects on the CGC <http://docs.cancergenomicscloud.org/docs/projects-on-the-cgc>`_ and `projects on the Seven Bridges Platform <http://docs.sevenbridges.com/docs/projects-on-the-platform>`_.
+
+List Projects - introduction to pagination and iteration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In order to list your projects, invoke the :code:`api.projects.query` method. This method
+follows server pagination and therefore allows pagination parameters
+to be passed to it. Passing a pagination parameter controls which resources you are shown. The :code:`offset` parameter controls the
+start of the pagination while the :code:`limit` parameter controls the
+number of items to be retrieved.
+
+
+.. note:: See the `Seven Bridges API overview <http://docs.sevenbridges.com/docs/the-api>`_ or the `CGC API overview <http://docs.sevenbridges.com/docs/the-api>`_ for details of how to refer to a project, and for examples of the pagination parameters.
+
+Below is an example of how to get all your projects, using the :code:`query` method and the pagination parameters :code:`offset` of 0 and :code:`limit` of 10.
 
 .. code:: python
 
     project_list = api.projects.query(offset=0, limit=10)
 
-**project\_list** is now an object of the type **Collection** which acts
-just like a regular python list. What that means is that is supports
+:code:`project_list` has now been defined to be an object of the type **collection** which acts
+just like a regular python list, and so supports
 indexing, slicing, iterating and other list functions. All collections
-in the python-sbg library have two methods **next\_page** and
-**previous\_page** which allow you to load next pagination page or
-previous pagination page.
+in the sevenbridges-python library have two methods: :code:`next_page` and
+:code:`previous_page` which allow you to load the next or previous pagination pages.
 
-List Projects - introduction to paging and iteration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+There are several things you can do with a **collection** of any kind of
+object:
 
-There are several things you can do with a collection of any kind of
-objects:
-
-1. The generic query, like ``api.projects.query()`` accepts offset and
-   limit parameters.
-2. If you wish to iterate on complete collection use ``all()`` method,
+1. The generic query, e.g. ``api.projects.query()``, accepts the pagination parameters :code:`offset` and
+   :code:`limit` as introduced above.
+2. If you wish to iterate on a complete **collection** use the ``all()`` method,
    which returns an iterator
-3. If you have a need to manually iterate on the collection (page per
+3. If you want to manually iterate on the **collection** (page by
    page), use ``next_page()`` and ``previous_page()`` methods on the
    collection.
-4. You can easily cast the collection to the list, so you can re-use it
-   later by issuing Python standard
+4. You can easily cast the **collection** to the list, so you can re-use it
+   later by issuing the standard Python
    ``project_list = list(api.projects.query().all())``.
 
 .. code:: python
 
-    # Query first 10 projects.
+    # Get details of my first 10 projects.
     project_list = api.projects.query(limit=10)
 
 .. code:: python
 
-    # Iterate on all projects and print out name and id
+    # Iterate through all my projects and print their name and id
     for project in api.projects.query().all():
         print (project.id,project.name)
 
@@ -217,13 +224,17 @@ objects:
     # Get all my current projects and store them in a list
     my_projects = list(api.projects.query().all())
 
-Get single project
-~~~~~~~~~~~~~~~~~~
+Get details of a single project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can get a single project by issuing ``api.projects.get()`` method
-with a parameter ``id``, signifying the id of a project. Note that this
-call, as well as other calls to the API server will raise an Exception
+You can get details of a single project by issuing the ``api.projects.get()`` method
+with the parameter ``id`` set to the id of the project in question. Note that this
+call, as well as other calls to the API server may raise an exception
 which you can catch and process if required.
+
+
+*Note* - To process errors from the library,
+import :code:`SbgError` from ``sevenbridges.errors``, as shown below.
 
 .. code:: python
 
@@ -234,13 +245,10 @@ which you can catch and process if required.
     except SbgError as e:
         print (e.message)
 
-*Note* - when you wish to process errors from the library, you need to
-import errors from ``sevenbridges.errors``.
+Errors in ``SbgError`` have the properties
+``code`` and ``message`` which refer to the number and text of 4-digit API status codes that are specific to the Seven Bridges Platform and API. To see all the available codes, see the documentation:
 
-Most often you will use ``SbgError``, as this error has properties
-``code`` and ``message`` which relate to API status codes:
-
--  http://docs.sevenbridges.com/docs/api-status-codes for Seven Bridges
+-  http://docs.sevenbridges.com/docs/api-status-codes for the Seven Bridges
    Platform
 
 -  http://docs.cancergenomicscloud.org/docs/api-status-codes for the
@@ -249,71 +257,72 @@ Most often you will use ``SbgError``, as this error has properties
 Project properties
 ~~~~~~~~~~~~~~~~~~
 
-Once you have your Project instance it has the following properties
-attached:
+Once you have obtained the :code:`id` of a Project instance, you can see its properties. All projects have the following properties:
 
-::
 
-    project.href - project href on the API 
-    project.id - id of the project
-    project.name - name of the project
-    project.description - description of the project
-    project.billing_group - billing group attached to the project
-    project.type - type of the project (v1 or v2)
-    project.tags - list of project tags
+``href`` - Project href on the API 
 
-**href** property is a url on the server that uniquely identifies the
-resource. All resources will have this property attached. Project also
-has its name, identifier, description its type and tags and also a
+``id`` - Id of the project
+
+``name`` - name of the project
+
+``description`` - description of the project
+
+``billing_group`` - billing group attached to the project
+
+``type`` - type of the project (v1 or v2)
+
+``tags`` - list of project tags
+
+The property href :code:`href` is a URL on the server that uniquely identifies the
+resource in question. All resources have this attribute. Each project also
+has a name, identifier, description indicating its use, a type, some tags and also a
 billing\_group identifier representing the billing group that is
 attached to the project.
 
-About methods
-~~~~~~~~~~~~~
 
-There are two types of methods in sevenbridges-python library, static
-and dynamic. Static methods are invoked on the API object instance and
-dynamic from the instance of the object representing the resource.
 
-Static methods are:
+Project methods -- an introduction to methods in the sevenbridges-python library
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. Create a new resource -
+There are two types of methods in the sevenbridges-python library: static
+and dynamic. Static methods are invoked on the :code:`Api` object instance. Dynamic methods are invoked from the instance of the object representing the resource (e.g. the project).
+
+Static methods include:
+
+1. Create a new resource: for example,
    ``api.projects.create(name="My new project", billing_group='296a98a9-424c-43f3-aec5-306e0e41c799')``
-   - creates a new resource. The parameters depend on the resource in
-   question
-2. Get resource - ``api.projects.get(id='user/project')`` - returns a
-   specific resource, denoted by the id
-3. Query resources - ``api.projects.query()`` method returns a pageable
-   list of type ``Collection``. The same goes for other resources, so
-   ``api.tasks.query(status='COMPLETED')`` returns a Collection of
-   completed tasks with applied default paging.
+   creates a new resource. The parameters used will depend on the resource in
+   question.
+2. Get a resource: the method ``api.projects.get(id='user/project')`` returns details of a
+   specific resource, denoted by its id.
+3. Query resources - the method ``api.projects.query()`` method returns a pageable
+   list of type ``collection`` of projects. The same goes for other resources, so
+   ``api.tasks.query(status='COMPLETED')`` returns a **collection** of
+   completed tasks with default paging.
 
-Dynamic methods can be generic (for all resources) and specific. They
-are called on the concrete object, like a ``Project`` object.
+Dynamic methods can be generic (for all resources) or specific to a single resource. They
+are called on a concrete object, such as a ``Project`` object.
 
-So if we have ``project`` variable as a ``Project`` object:
+So, suppose that ``project`` is an instance of ``Project`` object. Then, we can:
 
-1. Delete resource - ``project.delete()`` - deletes object (if supported
+1. Delete the resource: ``project.delete()``  deletes the object (if deletion of this resource is supported
    on the API).
-2. Reload resource from server - ``project.reload()`` - reloads state of
+2. Reload the resource from server: ``project.reload()`` reloads the state of
    the object from the server.
-3. Save changes to server - ``project.save()`` - saves all properties
-   modified on the library
+3. Save changes to the server: ``project.save()`` saves all properties
 
-Project methods
-~~~~~~~~~~~~~~~
-
-The following example shows some manipulation of projects.
+The following example shows some of the methods used to manipulatate projects.
 
 .. code:: python
 
     # Get a collection of projects
     projects = api.projects.query()
     
-    # Grab first billing group 
+    # Grab the first billing group 
     bg = api.billing_groups.query(limit=1)[0]
     
-    # Create a project using the billing group 
+    # Create a project using the billing group grabbed above
     new_project = api.projects.create(name="My new project", billing_group=bg.id)
     
     # Add a new member to the project
@@ -324,8 +333,8 @@ Other project methods include:
 1. Get members of the project and their permissions -
    ``project.get_members()`` - returns a ``Collection`` of members and
    their permissions
-2. Add member to the project - ``project.add_member()``
-3. Remove member from the project - ``project.remove_member()``
+2. Add a member to the project - ``project.add_member()``
+3. Remove a member from the project - ``project.remove_member()``
 4. List files from the project - ``project.get_files()``
 5. Add files to the project - ``project.add_files`` - you can add a
    single ``File`` or a ``Collection`` of files
@@ -335,16 +344,14 @@ Other project methods include:
 Manage billing
 --------------
 
---------------
-
-There are several methods on the Api object which can help you manage
-your billing information. The billing interface is separated to managing
+There are several methods on the :code:`Api` object to can help you manage
+your billing information. The billing resources that you can interact with are
 *billing groups* and *invoices*.
 
 Manage billing groups
 ~~~~~~~~~~~~~~~~~~~~~
 
-Querying billing groups will return a standard collection object.
+Querying billing groups will return a standard **collection** object.
 
 .. code:: python
 
@@ -353,16 +360,17 @@ Querying billing groups will return a standard collection object.
 
 .. code:: python
 
-    # Fetching billing group information
+    # Fetch a billing group's information
     bg = api.billing_groups.get(id='f1969c90-da54-4118-8e96-c3f0b49a163d')
 
 Billing group properties
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following are properties that are attached to each billing group.
+The following properties are attached to each billing group:
+
 
 ``href`` - Billing group href on the API server.
-
+        
 ``id`` - Billing group identifier.
 
 ``owner`` - Username of the user that owns the billing group.
@@ -371,29 +379,30 @@ The following are properties that are attached to each billing group.
 
 ``type`` - Billing group type (free or regular)
 
-``pending`` - True if billing group is not yet approved, False if
-opposite is true.
+``pending`` - True if billing group is not yet approved, False if the billing group has been approved.
 
-``diabled`` - True if billing group is disabled, False if its enabled.
+``disabled`` - True if billing group is disabled, False if its enabled.
 
 ``balance`` - Billing group balance.
 
+
 Billing group methods
 ~~~~~~~~~~~~~~~~~~~~~
+There is one billing group method:
 
-``breakdown()`` - Fetches billing group breakdwon for this billing
-groups that contains costs breakdown by projects and analysis.
+``breakdown()`` fetches a cost breakdown by project and analysis for the selected billing
+group.
 
 Manage invoices
 ~~~~~~~~~~~~~~~
 
-Querying invoices will return a Invoices collection object.
+Querying invoices will return an Invoices **collection** object.
 
 .. code:: python
 
     invoices = api.invoices.query()
 
-Once you have obtain the invoice identifier you can also fetch specific
+Once you have obtained the invoice identifier you can also fetch specific
 invoice information.
 
 .. code:: python
@@ -403,14 +412,13 @@ invoice information.
 Invoice properties
 ~~~~~~~~~~~~~~~~~~
 
-The following are properties that are attached to each billing group.
+The following properties are attached to each invoice.
 
 ``href`` - Invoice href on the API server.
 
 ``id`` - Invoice identifier.
 
-``pending`` - ``True`` if invoice is not yet approved, ``False`` if
-invoice is approved.
+``pending`` - Set to ``True`` if invoice has not yet been approved by Seven Bridges, ``False`` otherwise.
 
 ``analysis_costs`` - Costs of your analysis.
 
@@ -423,29 +431,26 @@ invoice is approved.
 Managing files
 --------------
 
---------------
+Files are an integral part of each analysis. As for as all other resources, the
+sevenbridges-python library enables you to efectively query files, in order to retreive each file's details and metadata. The request to get a file's information can be made in the
+same manner as for projects and billing, presented above. 
 
-Files are integral part of each analysis. And as all other resources
-with sevenbridges-python library user is able to efectivly query files,
-get the specific file information and metadata. It can be achived in the
-same manner as it was presented in projects and billing. Available
-methods for fetching specific files is either ``query`` or a ``get``
-method.
+The available methods for fetching specific files are ``query`` and ``get``:
 
 .. code:: python
 
-    # Querying files
+    # Query all files in a project
     file_list = api.files.query(project='user/my-project')
 
 .. code:: python
 
-    # Getting single file information
+    # Get a single file's information
     file = api.files.get(id='5710141760b2b14e3cc146af')
 
 File properties
 ~~~~~~~~~~~~~~~
 
-Each of the files has the following properties attached:
+Each file has the following properties:
 
 ``href`` - File href on the API server.
 
@@ -461,72 +466,74 @@ Each of the files has the following properties attached:
 
 ``modified_on`` - Last modification of the file.
 
-``origin`` - File origin information.
+``origin`` - File origin information, indicating the task that created the file.
 
 ``metadata`` - File metadata
 
 File methods
 ~~~~~~~~~~~~
+Files have the following methods:
 
--  Refresh file with data from the server. ``reload()``
--  Copy file from one to another project. ``copy()``
--  Download file. ``download()``
--  Save modifications to the server ``save()``
+-  Refresh the file with data from the server: ``reload()``
+-  Copy the file from one project to another: ``copy()``
+-  Download the file: ``download()``
+-  Save modifications to the file to the server ``save()``
+
+See the examples below for information on the arguments these methods take:
 
 Examples
 ~~~~~~~~
 
 .. code:: python
 
-    # Filter files per name containing certain string
+    # Filter files by name to find only file names containing the specified string:
     files = api.files.query(project='user/my-project')
     my_file = [file for file in files if 'fasta' in file.name]
     
-    # Or simply query files by name if you know the exact name
-    files = api.files.query(project='user/myproject', name='SRR062634.filt.fastq.gz')
+    # Or simply query files by name if you know their exact file name(s)
+    files = api.files.query(project='user/myproject', names=['SRR062634.filt.fastq.gz','SRR062635.filt.fastq.gz'])
     my_files = api.files.query(project='user/myproject', metadata = {'sample_id': 'SRR062634'} )
     
     
-    # Edit metadata
+    # Edit a file's metadata
     my_file = my_files[0]
-    my_file['sample_id'] = 'my-sample'
-    my_file['library'] = 'my-library'
+    my_file.metadata['sample_id'] = 'my-sample'
+    my_file.metadata['library'] = 'my-library'
     
-    # Save modifications
+    # Save modifications to a file
     my_file.save()
     
-    # Copy file
+    # Copy a file between projects
     new_file = my_file.copy(project='user/my-other-project', name='my-new-file')
     
-    # Download file - by default it downloads the file with the same name to the current working directory
+    # Download a file to the current working directory
     new_file.download(wait=True)
 
 Managing apps
 -------------
 
---------------
-
-Managing apps with sevenbridges-python library is simple. Apps on Seven
-Bridges Platform and CGC are implemented using Common Workflow Language
+Managing apps (tools and workfows) with the sevenbridges-python library is simple. Apps on the Seven
+Bridges Platform and CGC are implemented using the Common Workflow Language (CWL)
 specification
 https://github.com/common-workflow-language/common-workflow-language.
 The sevenbridges-python currenty supports only Draft 2 format of the
 CWL.
+Each app has a CWL description, expressed in JSON.
 
-Querying apps or getting a single app resource is available in the same
-way as on other resources, using ``query()`` and ``get`` methods. You
-can also invoke the following class methods:
+Querying all apps or getting the details of a single app can be done in the same
+way as for other resources, using the ``query()`` and ``get`` methods. You
+can also invoke the following class-specific methods:
 
--  'get\_revision()' - Returns specific app revision.
--  'install\_app()' - Installs you CWL app on the server.
--  'create\_revision()' - Creates a new revision from the specific app.
+-  ``get_revision()`` - Returns a specific app revision.
+-  ``install_app()`` - Installs your app on the server, using its CWL desription.
+-  ``create_revision()`` - Creates a new revision of the specified app.
 
 App properties
 ~~~~~~~~~~~~~~
 
-The following is the list of available app properties.
+Each app has the following available properties:
 
-``href`` - App href on the API server.
+``href`` - The URL of the app on the API server.
 
 ``id`` - App identifier.
 
@@ -536,28 +543,26 @@ The following is the list of available app properties.
 
 ``revision`` - App revision.
 
-``raw`` - raw CWL format of the app.
+``raw`` - Raw CWL description of the app.
 
 App methods
 ~~~~~~~~~~~
 
-Currently there is only one instance method and that is ``save()`` which
-saves the app changes on the server.
+Currently there is only one instance method for apps: ``save()`` which
+saves changes to the app on the server.
 
 Managing tasks
 --------------
 
---------------
-
-Tasks are easy to handle using sevenbridges-python library. As with all
-resources you can ``query()`` your tasks, ``get()`` a single task
-instance, but also do much more. We will outline task properties and
-methods and show in the examples how easy is to run your first analysis.
+Tasks (pipeline executions) are easy to handle using the sevenbridges-python library. As with all
+resources you can ``query()`` your tasks, and ``get()`` a single task
+instance. You can also do much more. We will outline task properties and
+methods and show in the examples how easy is to run your first analysis using Python.
 
 Task properties
 ~~~~~~~~~~~~~~~
 
-``href`` - Task href on the API server.
+``href`` - Task URL on the API server.
 
 ``id`` - Task identifier.
 
@@ -565,17 +570,17 @@ Task properties
 
 ``status`` - Task status.
 
-``project`` - Identifier of the project that task is located in.
+``project`` - Identifier of the project that the task is located in.
 
-``app`` - The app identifier that was used for this analysis.
+``app`` - The identifier of the app that was used for the task.
 
 ``type`` - Task type.
 
-``created_by`` - Username of task creator.
+``created_by`` - Username of the task creator.
 
 ``executed_by``- Username of the task executor.
 
-``batch`` - Boolean flag. True for batch tasks, False for regular &
+``batch`` - Boolean flag: ``True`` for batch tasks, ``False`` for regular &
 child tasks.
 
 ``batch_by`` - Batching criteria.
@@ -583,7 +588,7 @@ child tasks.
 ``batch_group`` - Batch group assigned to the child task calculated from
 the ``batch_by`` criteria.
 
-``batch_input`` - Input identifier on to wich to apply batching.
+``batch_input`` - Input identifier on to which to apply batching.
 
 ``parent`` - Parent task for a batch child.
 
@@ -591,30 +596,35 @@ the ``batch_by`` criteria.
 
 ``execution_status`` - Task execution status.
 
-``price`` - Analysis cost.
+``price`` - Task cost.
 
 ``inputs`` - Inputs that were subbmited to the task.
 
-``outputs`` - Generated outputs from the analysis.
+``outputs`` - Generated outputs from the task.
+
+
+
+.. note:: Check the documentation on the `Seven Bridges API <http://docs.sevenbridges.com/docs/create-a-new-task>`_ and the `CGC API <http://docs.cancergenomicscloud.org/docs/create-a-new-task>`_ for more details on batching criteria. 
+
+
 
 Task methods
 ~~~~~~~~~~~~
+The following class and instance methods are available for tasks:
 
-The following represents the list of available class and instance
-methods.
-
--  Create a task on the server and run it optionaly - ``create()``.
--  Query tasks - ``query()``.
--  Get single task information - ``get()``.
--  Abort a running task - ``abort()``.
--  Run a draft task. - ``run()``
--  Delete a draft task from the server. - ``delete()``.
--  Refresh the task object information with the date from the server. -
+-  Create a task on the server and, optionally, run it: ``create()``.
+-  Query tasks: ``query()``.
+-  Get single task's information: ``get()``.
+-  Abort a running task: ``abort()``.
+-  Run a draft task: ``run()``
+-  Delete a draft task from the server: ``delete()``.
+-  Refresh the task object information with the date from the server:
    ``refresh()``.
--  Save task modifications to the sever. - ``save()``.
--  Get task exection datails. - ``get_execution_details()``.
--  Get batch children if task is a batch task. -
+-  Save task modifications to the sever: ``save()``.
+-  Get task exection datails: ``get_execution_details()``.
+-  Get batch children if the task is a batch task:
    ``get_batch_children()``.
+
 
 Task Examples
 ~~~~~~~~~~~~~
@@ -635,7 +645,7 @@ Single task
     
     # Inputs
     inputs = {}
-    inputs = {'FastQC-Reads'} = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
+    inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
     
     try:
         task = api.tasks.create(name=name, project=project, app=app, inputs=inputs, run=True)
@@ -653,21 +663,21 @@ Batch task
     # Task name
     task_name = 'my-first-task'
     
-    # Project in which I want to run a task.
+    # Project in which to run the task.
     project_id = 'my-username/my-project'
     
-    # App I want to use to run a task
+    # App to use to run the task
     app = 'my-username/my-project/my-app'
     
     # Inputs
     inputs = {}
-    inputs = {'FastQC-Reads'} = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
+    inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
     
-    # Specifying that task should be created on per file basis.
+    # Specify that one task should be created per file (i.e. batch tasks by file).
     bach_by = {'type': 'item'}
     
     
-    # Batch input is going to be FastQC-Reads
+    # Specify that the batch input is FastQC-Reads
     batch_input = 'FastQC-Reads'
     
     try:

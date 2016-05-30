@@ -1,24 +1,19 @@
-import six
-
+from sevenbridges.meta.comp_mutable_dict import CompoundMutableDict
 from sevenbridges.meta.resource import Resource
-from sevenbridges.meta.fields import BooleanField
 
 
-class Permissions(Resource):
+# noinspection PyProtectedMember
+class Permissions(CompoundMutableDict, Resource):
     """
-    Permissions resource contains member permissions in regards to the project.
+    Members permissions resource.
     """
-    write = BooleanField()
-    read = BooleanField()
-    copy = BooleanField()
-    execute = BooleanField()
-    admin = BooleanField()
+    _name = 'permissions'
 
-    def __str__(self):
-        return six.text_type(
-            '<Permissions: write={write}, read={read}, copy={copy},'
-            ' execute={execute}, admin={admin}>'.format(
-                write=self.write, read=self.read, copy=self.copy,
-                execute=self.execute, admin=self.admin
-            )
-        )
+    def __init__(self, **kwargs):
+        super(Permissions, self).__init__(**kwargs)
+
+    def __getitem__(self, item):
+        try:
+            return self._parent._data[self._name][item]
+        except KeyError:
+            return None

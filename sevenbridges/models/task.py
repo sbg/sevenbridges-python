@@ -14,8 +14,8 @@ from sevenbridges.models.execution_details import ExecutionDetails
 from sevenbridges.models.file import File
 from sevenbridges.meta.fields import (
     HrefField, UuidField, StringField, CompoundField, DateTimeField,
-    BooleanField
-)
+    BooleanField,
+    DictField)
 
 
 class Task(Resource):
@@ -49,6 +49,7 @@ class Task(Resource):
     parent = StringField(read_only=True)
     end_time = DateTimeField(read_only=True)
     execution_status = CompoundField(ExecutionStatus, read_only=True)
+    errors = DictField(read_only=True)
     price = CompoundField(Price, read_only=True)
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
@@ -184,7 +185,7 @@ class Task(Resource):
         modified_data = self._modified_data()
         if bool(modified_data):
             task_request_data = {}
-            inputs = modified_data.pop('inputs')
+            inputs = modified_data.pop('inputs', None)
             task_request_data.update(modified_data)
             if inputs:
                 task_request_data['inputs'] = {}

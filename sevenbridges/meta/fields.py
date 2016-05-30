@@ -19,7 +19,7 @@ class Field(object):
             raise ReadOnlyPropertyError(
                 'Property {} is marked as read only!'.format(self.name)
             )
-        self.validate(value)
+        value = self.validate(value)
         try:
             current_value = instance._data[self.name]
             if current_value == value:
@@ -32,16 +32,7 @@ class Field(object):
     def __get__(self, instance, cls):
         try:
             data = instance._data[self.name]
-            if data and (isinstance(self, CompoundField) or isinstance(
-                    self, CompoundListField)):
-                if self.name not in instance._compound_cache:
-                    instance._compound_cache[self.name] = self.cls(**data)
-                    return instance._compound_cache[self.name]
-                else:
-                    return instance._compound_cache[self.name]
-
-            # This should be in DateTimeField
-            elif data and isinstance(self, DateTimeField):
+            if data and isinstance(self, DateTimeField):
                 return datetime.strptime(data, '%Y-%m-%dT%H:%M:%SZ')
             else:
                 return data
@@ -50,13 +41,33 @@ class Field(object):
 
     def validate(self, value):
         if self.validator is not None:
-            self.validator(value)
+            return self.validator(value)
+        return value
 
 
+# noinspection PyProtectedMember
 class CompoundField(Field):
     def __init__(self, cls, name=None, read_only=False):
         super(CompoundField, self).__init__(name=name, read_only=read_only)
         self.cls = cls
+
+    def __get__(self, instance, owner):
+        if instance._data[self.name]:
+            return self.cls(api=instance._api, parent=instance,
+                            **(instance._data[self.name]))
+        else:
+            return None
+
+
+# noinspection PyProtectedMember
+class CompoundListField(Field):
+    def __init__(self, cls, name=None, read_only=True):
+        super(CompoundListField, self).__init__(name=name, read_only=read_only)
+        self.cls = cls
+
+    def __get__(self, instance, owner):
+        return [self.cls(api=instance._api, **item) for item in
+                instance._data[self.name]]
 
 
 class DictField(Field, dict):
@@ -85,6 +96,7 @@ class IntegerField(Field):
                     value, self.__class__.__name__
                 )
             )
+        return value
 
 
 class FloatField(Field):
@@ -93,7 +105,7 @@ class FloatField(Field):
 
     def validate(self, value):
         try:
-            float(value)
+            return float(value)
         except ValueError:
             raise ValidationError(
                 '{} is not a valid value for {}'.format(
@@ -108,14 +120,16 @@ class StringField(Field):
         self.max_length = max_length
 
     def validate(self, value):
-        super(StringField, self).validate(value)
+        value = super(StringField, self).validate(value)
         if value and not isinstance(value, six.string_types):
             raise ValidationError(
                 '{} is not a valid value for {}'.format(
                     value, self.__class__.__name__)
             )
         if self.max_length is not None and len(value) > self.max_length:
-            raise ValidationError('{}: max length exceeded.'.format(self.name))
+            raise ValidationError(
+                '{}: max length exceeded.'.format(self.name))
+        return value
 
 
 class DateTimeField(Field):
@@ -134,6 +148,7 @@ class BooleanField(Field):
                     value, self.__class__.__name__
                 )
             )
+        return value
 
 
 class UuidField(Field):
@@ -141,9 +156,10 @@ class UuidField(Field):
         super(UuidField, self).__init__(name=name, read_only=read_only)
 
     def validate(self, value):
-        super(UuidField, self).validate(value)
+        value = super(UuidField, self).validate(value)
         try:
             UUID(value, version=4)
+            return value
         except ValueError:
             raise ValidationError(
                 '{} is not a valid value for {}'.format(
@@ -153,20 +169,16 @@ class UuidField(Field):
 
 class BasicListField(Field):
     def __init__(self, name=None, read_only=False, max_length=None):
-        super(BasicListField, self).__init__(name=name, read_only=read_only)
+        super(BasicListField, self).__init__(name=name,
+                                             read_only=read_only)
         self.max_length = max_length
 
     def validate(self, value):
-        super(BasicListField, self).validate(value)
+        value = super(BasicListField, self).validate(value)
         if value and not isinstance(value, list):
             raise ValidationError('Validation failed, not a list.')
         if self.max_length is not None and len(value) > self.max_length:
             raise ValidationError(
                 'Exceeded {} allowed elements.'.format(self.max_length)
             )
-
-
-class CompoundListField(Field):
-    def __init__(self, cls, name=None, read_only=True):
-        super(CompoundListField, self).__init__(name=name, read_only=read_only)
-        self.cls = cls
+        return value

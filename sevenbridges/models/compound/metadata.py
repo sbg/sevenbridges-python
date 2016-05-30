@@ -1,18 +1,19 @@
+from sevenbridges.meta.comp_mutable_dict import CompoundMutableDict
 from sevenbridges.meta.resource import Resource
 
 
-class Metadata(Resource, dict):
+# noinspection PyProtectedMember
+class Metadata(CompoundMutableDict, Resource):
     """
     File metadata resource.
     """
-    def __init__(self, **kwargs):
-        self._dirty = {}
-        self._compound_cache = {}
-        for k, v in kwargs.items():
-            self[k] = v
-        self._dirty = {}
-        self._compound_cache['metadata'] = self
+    _name = 'metadata'
 
-    def __setitem__(self, key, value):
-        self._dirty[key] = value
-        super(Metadata, self).__setitem__(key, value)
+    def __init__(self, **kwargs):
+        super(Metadata, self).__init__(**kwargs)
+
+    def __getitem__(self, item):
+        try:
+            return self._parent._data[self._name][item]
+        except KeyError:
+            return None

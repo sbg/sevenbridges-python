@@ -48,5 +48,6 @@ class User(Resource):
 
     @classmethod
     def get(cls, user, api=None):
+        api = api if api else cls._API
         user = Transform.to_user(user)
-        return super(User, cls).get(id=user)
+        return super(User, cls).get(id=user, api=api)

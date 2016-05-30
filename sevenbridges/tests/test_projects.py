@@ -101,12 +101,12 @@ def test_project_add_member(api, given, verifier):
     member = project.add_member(mocked_member['username'],
                                 mocked_member['permissions'])
     assert member.username == mocked_member['username']
-    assert member.permissions.write == mocked_member['permissions']['write']
-    assert member.permissions.read == mocked_member['permissions']['read']
-    assert member.permissions.copy == mocked_member['permissions']['copy']
-    assert member.permissions.execute == mocked_member['permissions'][
+    assert member.permissions['write'] == mocked_member['permissions']['write']
+    assert member.permissions['read'] == mocked_member['permissions']['read']
+    assert member.permissions['copy'] == mocked_member['permissions']['copy']
+    assert member.permissions['execute'] == mocked_member['permissions'][
         'execute']
-    assert member.permissions.admin == mocked_member['permissions']['admin']
+    assert member.permissions['admin'] == mocked_member['permissions']['admin']
 
     # verifier
     verifier.member.member_added(project=id)
@@ -188,7 +188,7 @@ def test_member_permissions_save(api, given, verifier):
     project = api.projects.get(id)
     member = project.add_member(mocked_member['username'],
                                 mocked_member['permissions'])
-    member.permissions.admin = True
+    member.permissions['admin'] = True
     member.save()
 
     assert username in repr(member)
@@ -212,6 +212,6 @@ def test_member_permissions_save_no_changes(api, given, verifier):
     member = project.add_member(mocked_member['username'],
                                 mocked_member['permissions'])
 
-    member.permissions.read = True
+    member.permissions['read'] = True
     with pytest.raises(ResourceNotModified):
         member.save()

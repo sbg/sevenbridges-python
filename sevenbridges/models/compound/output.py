@@ -1,39 +1,35 @@
-import six
-
+from sevenbridges.errors import ReadOnlyPropertyError
+from sevenbridges.meta.comp_mutable_dict import CompoundMutableDict
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.file import File
 
 
-class Output(Resource, dict):
+# noinspection PyProtectedMember
+class Output(CompoundMutableDict, Resource):
     """
-    Task Output
+    Task output resource.
     """
+    _name = 'outputs'
 
     def __init__(self, **kwargs):
-        self._dirty = {}
-        self._compound_cache = {}
-        for k, v in kwargs.items():
-            if isinstance(v, dict) and 'class' in v and v['class'].lower() \
-                    == 'file':
-                _file = File(id=v['path'], api=self._API)
-                self[k] = _file
-            elif isinstance(v, list):
-                self[k] = [item for item in v if
-                           not isinstance(item, dict)]
-                self[k].extend(
-                    [File(id=item['path'], api=self._API) for item
-                     in v if
-                     isinstance(item, dict)])
-            else:
-                self[k] = v
-        self._dirty = {}
-        self._compound_cache['outputs'] = self
+        super(Output, self).__init__(**kwargs)
 
-    def __str__(self):
-        values = {}
-        for k, v in self.items():
-            values[k] = v
-        return six.text_type(
-            '<Outputs> {}'.format(six.text_type(values)
-                                  )
-        )
+    def __getitem__(self, item):
+        try:
+            inputs = self._parent._data[self._name][item]
+            if isinstance(inputs, dict) and 'class' in inputs:
+                if inputs['class'].lower() == 'file':
+                    return File(id=inputs['path'], api=self._api)
+            elif isinstance(inputs, list):
+                items = [File(id=item['path'], api=self._api)
+                         if isinstance(item, dict) else item
+                         for item in inputs
+                         ]
+                return items
+            else:
+                return inputs
+        except:
+            return None
+
+    def __setitem__(self, key, value):
+        raise ReadOnlyPropertyError('Can not modify read only properties.')

@@ -1,11 +1,9 @@
 import functools
-import json
 import requests
 
 from sevenbridges.errors import (
     BadRequest, Unauthorized, Forbidden, NotFound, MethodNotAllowed,
-    RequestTimeout, Conflict, TooManyRequests, SbgError
-)
+    RequestTimeout, Conflict, TooManyRequests, SbgError)
 
 
 def inplace_reload(method):
@@ -20,7 +18,6 @@ def inplace_reload(method):
         api_object = method(obj, *args, **kwargs)
         if in_place and api_object:
             obj._data = api_object._data
-            obj._compound_cache = api_object._compound_cache
             obj._dirty = api_object._dirty
             return obj
         elif api_object:

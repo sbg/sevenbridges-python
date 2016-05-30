@@ -8,6 +8,7 @@ from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.fields import Field, CompoundField, CompoundListField
 
 
+# noinspection PyProtectedMember
 class ResourceMeta(type):
     """
     Metaclass for all resources, knows how to inject instance of API from
@@ -41,42 +42,17 @@ class ResourceMeta(type):
                     urls = None
                 self._data = DataContainer(urls=urls, api=self._api)
                 self._dirty = {}
-                self._compound_cache = {}
                 for k, v in kwargs.items():
                     if k in fields:
-                        # handle compound fields
-                        if isinstance(fields[k], CompoundField):
-                            fields[k].validate(v)
-                            self._data[k] = v
-                            kwargs = dict(**v)
-                            kwargs.update({'api': self._api})
-                            self._compound_cache[k] = fields[k].cls(**kwargs)
-                        # handle compound list fields
-                        elif isinstance(fields[k], CompoundListField):
-                            fields[k].validate(v)
-                            self._data[k] = [item for item in v]
-                            self._compound_cache[k] = []
-                            for item in v:
-                                kwargs = dict(**item)
-                                kwargs.update({'api': self._api})
-                                self._compound_cache[k].append(
-                                    fields[k].cls(**kwargs)
-                                )
-                        else:
-                            fields[k].validate(v)
-                            self._data[k] = v
+                        value = fields[k].validate(v)
+                        self._data[k] = value
 
             # get modified data from the instance
             def modified_data(self):
-                dirty = {}
-                for k, v in fields.items():
-                    if isinstance(v, CompoundField):
-                        value = getattr(self, k)
-                        if value and bool(value._dirty):
-                            dirty[k] = value._dirty
-                    elif bool(self._dirty):
-                        dirty.update(self._dirty)
-                return dirty
+                return self._dirty
+
+            def equals(self, other):
+                return type(self) == type(other) and self._data == other._data
 
             if '__str__' not in dct:
                 dct['__str__'] = lambda self: self.__class__.__name__
@@ -87,6 +63,7 @@ class ResourceMeta(type):
                     dct['__repr__'] = lambda self: str(self)
 
             dct['__init__'] = init
+            dct['equals'] = equals
             dct['_modified_data'] = modified_data
 
         return type.__new__(cls, name, bases, dct)
@@ -99,6 +76,9 @@ class ResourceMeta(type):
             return cls
         cls._API = obj
         return cls
+
+    def eq(self, other):
+        return self._data.data == other._data.data
 
 
 # noinspection PyProtectedMember,PyAttributeOutsideInit
@@ -128,7 +108,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         response = api.get(url=url, params=kwargs)
         data = response.json()
         total = response.headers['x-total-matching-query']
-        projects = [cls(api=api, **project) for project in data['items']]
+        projects = [cls(api=api, **item) for item in data['items']]
         links = [Link(**link) for link in data['links']]
         href = data['href']
         return Collection(
