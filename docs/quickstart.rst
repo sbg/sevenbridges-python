@@ -97,11 +97,11 @@ the environment (the Seven Bridges Platform, or the CGC) indicated in square bra
 
     [sbpla]
     api-url = https://api.sbgenomics.com/v2
-    auth-token = 700992f7b24a470bb0b028fe813b8100
+    auth-token = <TOKEN_HERE>
 
     [cgc]
-    api-url = https://api.sbgenomics.com/v2
-    auth-token = 910975f5b24a470bb0b028fe813b8100
+    api-url = https://cgc-api.sbgenomics.com/v2
+    auth-token = <TOKEN_HERE>
 
 
 The :code:`Api` object is the central resource for querying, saving and

@@ -136,12 +136,12 @@ config_config_file = sbg.Config(profile='my-profile')
 The `.sbgrc` file has a simple .ini file format, for example:
 
     [my-profile]
-    api-url = 'https://api.sbgenomics.com/v2'
-    auth-token = '<TOKEN_HERE>'
+    api-url = https://api.sbgenomics.com/v2
+    auth-token = <TOKEN_HERE>
 
     [py-profile-cgc]
-    api-url = 'https://api.sbgenomics.com/v2'
-    auth-token = '<TOKEN_HERE>'
+    api-url = https://api.sbgenomics.com/v2
+    auth-token = <TOKEN_HERE>
 
 #### Initializing the sevenbridges-python library
 
