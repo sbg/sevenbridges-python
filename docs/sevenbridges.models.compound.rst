@@ -1,6 +1,11 @@
 sevenbridges.models.compound package
 ====================================
 
+.. automodule:: sevenbridges.models.compound
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -133,10 +138,3 @@ sevenbridges.models.compound.task_breakdown module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: sevenbridges.models.compound
-    :members:
-    :undoc-members:
-    :show-inheritance:

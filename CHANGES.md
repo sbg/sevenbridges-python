@@ -1,3 +1,9 @@
+0.3.0
+==================
+
+- Introducing file upload
+- Fixing bug related to object reload.
+
 0.2.0 (2016-05-30)
 ==================
 

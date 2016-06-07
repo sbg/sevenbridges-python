@@ -1,6 +1,11 @@
 sevenbridges.http package
 =========================
 
+.. automodule:: sevenbridges.http
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ sevenbridges.http.client module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: sevenbridges.http
-    :members:
-    :undoc-members:
-    :show-inheritance:

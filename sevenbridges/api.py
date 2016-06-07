@@ -1,13 +1,14 @@
 from concurrent.futures import ThreadPoolExecutor
+
 from sevenbridges.http.client import HttpClient
 from sevenbridges.models.app import App
-from sevenbridges.models.invoice import Invoice
-from sevenbridges.models.task import Task
-from sevenbridges.models.user import User
-from sevenbridges.models.project import Project
+from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.file import File
-from sevenbridges.models.billing_group import BillingGroup
+from sevenbridges.models.invoice import Invoice
+from sevenbridges.models.project import Project
+from sevenbridges.models.task import Task
+from sevenbridges.models.user import User
 
 
 class Api(HttpClient):
@@ -23,7 +24,7 @@ class Api(HttpClient):
     tasks = Task
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
-                 timeout=None, retry=5, download_max_workers=32,
+                 timeout=None, retry=5, download_max_workers=16,
                  upload_max_workers=16):
         """
         Initializes api object. If url and token are not supplied,
@@ -47,5 +48,6 @@ class Api(HttpClient):
                                   config=config, retry=retry, timeout=timeout)
 
         self.download_pool = ThreadPoolExecutor(
-            max_workers=download_max_workers)
+            max_workers=download_max_workers
+        )
         self.upload_pool = ThreadPoolExecutor(max_workers=upload_max_workers)

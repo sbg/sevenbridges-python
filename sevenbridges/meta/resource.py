@@ -156,6 +156,5 @@ class Resource(six.with_metaclass(ResourceMeta)):
                 raise SbgError('Resource can not be refreshed!')
 
         self._data = resource._data
-        self._compound_cache = resource._compound_cache
         self._dirty = resource._dirty
         return self

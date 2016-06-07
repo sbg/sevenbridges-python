@@ -1,6 +1,11 @@
 sevenbridges.meta package
 =========================
 
+.. automodule:: sevenbridges.meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -8,6 +13,14 @@ sevenbridges.meta.collection module
 -----------------------------------
 
 .. automodule:: sevenbridges.meta.collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges.meta.comp_mutable_dict module
+------------------------------------------
+
+.. automodule:: sevenbridges.meta.comp_mutable_dict
     :members:
     :undoc-members:
     :show-inheritance:
@@ -45,10 +58,3 @@ sevenbridges.meta.transformer module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: sevenbridges.meta
-    :members:
-    :undoc-members:
-    :show-inheritance:

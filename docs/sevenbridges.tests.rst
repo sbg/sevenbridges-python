@@ -1,6 +1,11 @@
 sevenbridges.tests package
 ==========================
 
+.. automodule:: sevenbridges.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -85,10 +90,3 @@ sevenbridges.tests.verifiers module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: sevenbridges.tests
-    :members:
-    :undoc-members:
-    :show-inheritance:

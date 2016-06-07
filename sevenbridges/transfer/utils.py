@@ -1,28 +1,32 @@
 import sys
 
+import math
+
 
 class PartSize(object):
     KB = 1024
     MB = 1024 * KB
     GB = 1024 * MB
     TB = 1024 * GB
-    MINIMUM_PART_SIZE = 5 * MB
     MAXIMUM_UPLOAD_SIZE = 5 * GB
     MAXIMUM_OBJECT_SIZE = 5 * TB
     MAXIMUM_TOTAL_PARTS = 10000
 
-    DOWNLOAD_MINIMUM_PART_SIZE = 64 * MB
+    DOWNLOAD_MINIMUM_PART_SIZE = 5 * MB
+    UPLOAD_MINIMUM_PART_SIZE = 5 * MB
 
 
 class TransferState(object):
+    ABORTED = 'ABORTED'
     RUNNING = 'RUNNING'
     PAUSED = 'PAUSED'
     COMPLETED = 'COMPLETED'
-    NOT_INITIALIZED = 'NOT INITIALIZED'
+    PREPARING = 'PREPARING'
     STOPPED = 'STOPPED'
+    FAILED = 'FAILED'
 
 
-class Chunk(object):
+class Part(object):
     def __init__(self, start=None, size=None):
         self._start = start
         self._size = size
@@ -37,21 +41,21 @@ class Chunk(object):
 
 
 class Progress(object):
-    def __init__(self, num_of_chunks, chunks_done, bytes_done,
+    def __init__(self, num_of_parts, parts_done, bytes_done,
                  file_size, duration):
-        self._num_of_chunks = num_of_chunks
-        self._chunks_done = chunks_done
+        self._num_of_parts = num_of_parts
+        self._parts_done = parts_done
         self._bytes_done = bytes_done
         self._file_size = file_size
         self._duration = duration
 
     @property
-    def num_of_chunks(self):
-        return self._num_of_chunks
+    def num_of_parts(self):
+        return self._num_of_parts
 
     @property
-    def chunks_done(self):
-        return self._chunks_done
+    def parts_done(self):
+        return self._parts_done
 
     @property
     def bytes_done(self):
@@ -67,9 +71,8 @@ class Progress(object):
 
     @property
     def progress(self):
-        progress = (self._bytes_done / self._file_size) * 100
-        if progress > 100:
-            progress = 100.0
+        progress = (self._bytes_done / float(self._file_size)) * 100
+        progress = progress if progress <= 100 else 100
         return progress
 
     @property
@@ -77,10 +80,16 @@ class Progress(object):
         return (self._bytes_done / 1000000) / self.duration
 
 
+def total_parts(file_size, part_size):
+    return int(math.ceil(file_size / float(part_size)))
+
+
 def simple_progress_bar(progress):
     sys.stdout.write(
-        '\rTransfer: Progress[%.2f%%], Bandwidth[%.2fMB/s], Chunks[total=%s, '
+        '\rTransfer: Progress[%.2f%%], Bandwidth[%.2fMB/s], Parts[total=%s, '
         'Done=%s],  Duration[%.2fs]\b' % (
-            progress.progress, progress.bandwidth, progress.num_of_chunks,
-            progress.chunks_done, progress.duration))
+            progress.progress, progress.bandwidth, progress.num_of_parts,
+            progress.parts_done, progress.duration
+        )
+    )
     sys.stdout.flush()

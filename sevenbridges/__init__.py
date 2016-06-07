@@ -19,3 +19,4 @@ from sevenbridges.models.task import Task
 from sevenbridges.models.app import App
 from sevenbridges.models.invoice import Invoice
 from sevenbridges.models.member import Member, Permissions
+from sevenbridges.models.file import File

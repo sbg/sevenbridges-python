@@ -1,4 +1,7 @@
 import functools
+import threading
+import time
+
 import requests
 
 from sevenbridges.errors import (
@@ -26,6 +29,29 @@ def inplace_reload(method):
             return obj
 
     return wrapped
+
+
+def retry(retry_count):
+    """
+    Retry decorator used during file upload and download.
+    """
+
+    def func(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            for backoff in range(retry_count):
+                try:
+                    return f(*args, **kwargs)
+                except Exception as e:
+                    time.sleep(2 ** backoff)
+            else:
+                raise SbgError('{}: failed to complete: {}'.format(
+                    threading.current_thread().getName(), f.__name__)
+                )
+
+        return wrapper
+
+    return func
 
 
 def check_for_error(func):

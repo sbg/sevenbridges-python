@@ -1,6 +1,11 @@
 sevenbridges package
 ====================
 
+.. automodule:: sevenbridges
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -48,10 +53,3 @@ sevenbridges.errors module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: sevenbridges
-    :members:
-    :undoc-members:
-    :show-inheritance:

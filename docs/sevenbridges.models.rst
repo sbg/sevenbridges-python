@@ -1,6 +1,11 @@
 sevenbridges.models package
 ===========================
 
+.. automodule:: sevenbridges.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -108,10 +113,3 @@ sevenbridges.models.user module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: sevenbridges.models
-    :members:
-    :undoc-members:
-    :show-inheritance:

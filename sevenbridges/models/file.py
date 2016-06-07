@@ -1,15 +1,16 @@
 import six
 
-from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
+from sevenbridges.meta.fields import (
+    HrefField, StringField, IntegerField, CompoundField, DateTimeField
+)
+from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.download_info import DownloadInfo
 from sevenbridges.models.compound.file_origin import FileOrigin
 from sevenbridges.models.compound.metadata import Metadata
 from sevenbridges.transfer.download import Download
-from sevenbridges.meta.fields import (
-    HrefField, StringField, IntegerField, CompoundField, DateTimeField
-)
+from sevenbridges.transfer.upload import Upload
 from sevenbridges.transfer.utils import PartSize
 
 
@@ -79,6 +80,39 @@ class File(Resource):
                                        project=project, offset=offset,
                                        limit=limit, **query_params)
 
+    @classmethod
+    def upload(cls, path, project, file_name=None, overwrite=False, retry=5,
+               timeout=10, part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE,
+               wait=True, api=None):
+
+        """
+        Uploads a file using multipart upload and returns an upload handle
+        if the wait parameter is set to False. If wait is set to True it
+        will block until the upload is completed.
+
+        :param path: File path on local disc.
+        :param project: Project identifier
+        :param file_name: Optional file name.
+        :param overwrite: If true will overwrite the file on the server.
+        :param retry:  Number of retries if error occurs during upload.
+        :param timeout:  Timeout for http requests.
+        :param part_size:  Part size in bytes.
+        :param wait:  If true will wait for upload to complete.
+        :param api: Api instance.
+        """
+
+        api = api or cls._API
+        project = Transform.to_project(project)
+        upload = Upload(
+            path, project, file_name=file_name, overwrite=overwrite,
+            retry_count=retry, timeout=timeout, part_size=part_size, api=api
+        )
+        if wait:
+            upload.start()
+            upload.wait()
+        else:
+            return upload
+
     def copy(self, project, name=None):
         """
         Copies the current file.
@@ -105,12 +139,12 @@ class File(Resource):
         info = self._api.get(url=self._URL['download_info'].format(id=self.id))
         return DownloadInfo(api=self._api, **info.json())
 
-    def download(self, path, retry=5, timeout=10, chunk_size=67108864,
-                 wait=True):
+    def download(self, path, retry=5, timeout=10,
+                 chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True):
         """
         Downloads the file and returns a download handle.
         Download will not start until .start() method is invoked.
-        :param path: Full path to the new file/
+        :param path: Full path to the new file.
         :param retry:  Number of retries if error occurs during download.
         :param timeout:  Timeout for http requests.
         :param chunk_size:  Chunk size in bytes.
@@ -118,9 +152,10 @@ class File(Resource):
         :return: Download handle.
         """
         info = self.download_info()
-        download = Download(url=info.url, file_path=path, retry=retry,
-                            timeout=timeout,
-                            chunk_size=chunk_size, api=self._api)
+        download = Download(
+            url=info.url, file_path=path, retry=retry, timeout=timeout,
+            part_size=chunk_size, api=self._api
+        )
         if wait:
             download.start()
             download.wait()

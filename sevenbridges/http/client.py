@@ -1,11 +1,13 @@
 import json
 import platform
+
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util import Retry
-from sevenbridges.errors import SbgError
-from sevenbridges.decorators import check_for_error
+
 import sevenbridges
+from sevenbridges.decorators import check_for_error
+from sevenbridges.errors import SbgError
 
 client_info = {
     'version': sevenbridges.__version__,
@@ -16,6 +18,7 @@ client_info = {
 }
 
 
+# noinspection PyTypeChecker
 class HttpClient(object):
     """
     Implementation of all low-level API stuff, creating and sending requests,
@@ -36,7 +39,9 @@ class HttpClient(object):
         self.url = url.rstrip('/')
         self._session = requests.Session()
         self._session.mount(self.url, HTTPAdapter(
-            max_retries=Retry(total=retry, status_forcelist=[500, 503])
+            max_retries=Retry(
+                total=retry, status_forcelist=[500, 503], backoff_factor=0.1
+            )
         ))
         self.timeout = timeout
         self._limit = None
