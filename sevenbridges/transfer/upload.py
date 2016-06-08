@@ -310,7 +310,8 @@ class Upload(threading.Thread):
         """
         if self._file_size > PartSize.MAXIMUM_OBJECT_SIZE:
             raise SbgError('File size = {}b. Maximum file size is {}b'.format(
-                self._file_size, PartSize.MAXIMUM_OBJECT_SIZE))
+                self._file_size, PartSize.MAXIMUM_OBJECT_SIZE)
+            )
 
     def _initialize_upload(self):
 
