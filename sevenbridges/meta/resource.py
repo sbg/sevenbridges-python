@@ -77,9 +77,6 @@ class ResourceMeta(type):
         cls._API = obj
         return cls
 
-    def eq(self, other):
-        return self._data.data == other._data.data
-
 
 # noinspection PyProtectedMember,PyAttributeOutsideInit
 class Resource(six.with_metaclass(ResourceMeta)):
