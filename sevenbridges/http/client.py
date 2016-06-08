@@ -1,5 +1,6 @@
 import json
 import platform
+from datetime import datetime as dt
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -73,15 +74,17 @@ class HttpClient(object):
 
     @property
     def limit(self):
-        return self._limit
+        return int(self._limit) if self._limit else self._limit
 
     @property
     def remaining(self):
-        return self._remaining
+        return int(self._remaining) if self._remaining else self._remaining
 
     @property
     def reset_time(self):
-        return self._reset
+        return dt.fromtimestamp(
+            float(self._reset)
+        ) if self._reset else self._reset
 
     @property
     def request_id(self):
@@ -111,6 +114,7 @@ class HttpClient(object):
         self._limit = headers.get('X-RateLimit-Limit', self._limit)
         self._remaining = headers.get('X-RateLimit-Remaining', self._remaining)
         self._reset = headers.get('X-RateLimit-Reset', self._reset)
+
         self._request_id = headers.get('X-Request-Id', self._request_id)
         return response
 
