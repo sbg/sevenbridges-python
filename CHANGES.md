@@ -1,4 +1,4 @@
-0.4.0 (2016-07-15)
+0.4.0 (2016-07-18)
 ==================
 - Introducing support for Volumes API
 - Downloader refactor.
