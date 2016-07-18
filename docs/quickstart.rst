@@ -500,7 +500,14 @@ Examples
     my_file.metadata['sample_id'] = 'my-sample'
     my_file.metadata['library'] = 'my-library'
     
-    # Save modifications to a file
+
+    # Add metadata (if you are starting with a file without metadata)
+    my_file = my_files[0]
+    my_file.metadata = {'sample_id' : 'my-sample',
+                        'library' : 'my-library'
+                      }
+
+    # Save modifications
     my_file.save()
     
     # Copy a file between projects

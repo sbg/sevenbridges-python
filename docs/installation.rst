@@ -10,7 +10,7 @@ The easiest way to install sevenbridges-python is using pip.
 Get the Code
 ============
 
-sevenbridges-python is actively developed on `GitHub <https://github.com/sbg/sevenbridges-python>`_.
+sevenbridges-python is actively developed on GitHub, where the `code <https://github.com/sbg/sevenbridges-python>`_ is always available.
 
 The easiest way to obtain the source is to clone the public repository:
 ::
