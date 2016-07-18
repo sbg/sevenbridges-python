@@ -2,10 +2,9 @@ import six
 
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
-from sevenbridges.meta.fields import HrefField, StringField, CompoundField, \
-    DictField
+from sevenbridges.meta.fields import HrefField, StringField, CompoundField
 from sevenbridges.meta.resource import Resource
-from sevenbridges.models.compound.permissions import Permissions
+from sevenbridges.models.compound.projects.permissions import Permissions
 
 
 class Member(Resource):

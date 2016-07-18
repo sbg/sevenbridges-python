@@ -6,6 +6,7 @@ class CompoundMutableDict(dict):
     """
     Resource used for mutable compound dictionaries.
     """
+
     def __init__(self, **kwargs):
         self._parent = kwargs.pop('parent')
         self._api = kwargs.pop('api')

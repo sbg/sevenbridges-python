@@ -108,7 +108,7 @@ class HttpClient(object):
             )
         else:
             response = self._session.request(
-                verb, url, params=params, stream=stream
+                verb, url, params=params, stream=stream, allow_redirects=True,
             )
         headers = response.headers
         self._limit = headers.get('X-RateLimit-Limit', self._limit)

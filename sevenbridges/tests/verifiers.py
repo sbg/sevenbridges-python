@@ -1,7 +1,7 @@
-# noinspection PyProtectedMember
 from six.moves import urllib
 
 
+# noinspection PyProtectedMember
 class Assert(object):
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
@@ -178,3 +178,18 @@ class TaskVerifier(object):
 
     def execution_details_fetched(self, id):
         self.checker.check_url('/tasks/{id}/execution_details'.format(id=id))
+
+
+class VolumeVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def queried(self):
+        self.checker.check_url('/storage/volumes')
+
+    def created(self):
+        self.checker.check_url('/storage/volumes')
+
+    def modified(self, _id):
+        self.checker.check_url('/storage/volumes/{}'.format(_id))

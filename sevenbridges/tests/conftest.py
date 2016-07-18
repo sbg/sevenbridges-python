@@ -5,12 +5,12 @@ import requests_mock
 from sevenbridges import Api
 from sevenbridges.tests.providers import (
     ProjectProvider, EndpointProvider, UserProvider, MemberProvider,
-    FileProvider, AppProvider, TaskProvider
-)
+    FileProvider, AppProvider, TaskProvider,
+    VolumeProvider)
 from sevenbridges.tests.verifiers import (
     EndpointVerifier, ProjectVerifier, UserVerifier, MemberVerifier,
-    FileVerifier, AppVerifier, TaskVerifier
-)
+    FileVerifier, AppVerifier, TaskVerifier,
+    VolumeVerifier)
 
 generator = faker.Factory.create()
 
@@ -40,6 +40,7 @@ class Precondition(object):
         self.file = FileProvider(request_mocker, base_url)
         self.app = AppProvider(request_mocker, base_url)
         self.task = TaskProvider(request_mocker, base_url)
+        self.volume = VolumeProvider(request_mocker, base_url)
 
 
 class Verifier(object):
@@ -55,6 +56,7 @@ class Verifier(object):
         self.file = FileVerifier(request_mocker)
         self.app = AppVerifier(request_mocker)
         self.task = TaskVerifier(request_mocker)
+        self.volume = VolumeVerifier(request_mocker)
 
 
 @pytest.fixture

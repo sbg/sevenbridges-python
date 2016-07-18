@@ -1,8 +1,10 @@
 import six
+
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.price import Price
-from sevenbridges.models.compound.project_breakdown import ProjectBreakdown
-
+from sevenbridges.models.compound.billing.project_breakdown import (
+    ProjectBreakdown
+)
 from sevenbridges.meta.fields import (
     HrefField, CompoundListField, CompoundField
 )

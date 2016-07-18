@@ -81,6 +81,14 @@ sevenbridges.tests.test_tasks module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.tests.test_transformer module
+------------------------------------------
+
+.. automodule:: sevenbridges.tests.test_transformer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.tests.verifiers module
 -----------------------------------
 

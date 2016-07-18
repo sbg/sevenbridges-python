@@ -11,9 +11,8 @@ from requests.packages.urllib3 import Retry
 
 from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
-from sevenbridges.transfer.utils import (
-    PartSize, Progress, TransferState, total_parts
-)
+from sevenbridges.transfer.utils import Progress, total_parts
+from sevenbridges.models.enums import PartSize, TransferState
 
 
 def _get_part_url(api, url, upload, part):

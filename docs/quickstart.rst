@@ -509,6 +509,207 @@ Examples
     # Download a file to the current working directory
     new_file.download(wait=True)
 
+Managing volumes, exports and imports
+-------------------------------------
+
+Volumes authorize the Platform to access and query objects on a specified cloud storage (Amazon Web Services or Google Cloud Storage) on your behalf. As for as all other resources, the sevenbridges-python library enables you to effectively query volumes, import files from a volume to a project or export files from a project to the volume. 
+
+The available methods for listing volumes, imports and exports are ``query`` and ``get``, as for other objects:
+
+.. code:: python
+
+    # Query all volumes 
+    volume_list = api.volumes.query()
+    # Query all imports
+    all_imports = api.imports.query()
+    # Query failed exports
+    failed_exports = api.exports.query(state='FAILED')
+
+.. code:: python
+
+    # Get a single volume's information
+    volume = api.volumes.get(id='user/volume')
+    # Get a single import's information
+    i = api.imports.get(id='08M4ywDZkQuJOb3L5M8mMSvzoeGezTdh')
+    # Get a single export's information
+    e = api.exports.get(id='0C7T8sBDP6aiNbwvXv12QZFPW55wJ3GJ')
+
+
+Volume properties
+~~~~~~~~~~~~~~~~~
+
+Each volume has the following properties:
+
+``href`` - Volume href on the API server.
+
+``id`` - Volume identifier in format owner/name.
+
+``name`` - Volume name.
+
+``access_mode`` - Whether the volume is created as read-only (RO) or read-write (RW).
+
+``active`` - Whether the volume is active or not.
+
+``created_on`` - Time when the volume was created on.
+
+``modified_on`` - Time when the volume was last modified.
+
+``description`` - Volume description
+
+``service`` - Information about the underlying storage service
+
+Volume methods
+~~~~~~~~~~~~~~
+
+Volumes have the following methods:
+
+-  Refresh the volume with data from the server: ``reload()``
+-  Get imports for a particular volume ``get_imports()``
+-  Get exports for a particular volume ``get_exports()``
+-  Create new volume based on AWS S3 provider ``create_s3_volume()``
+-  Create new volume based on Google Cloud Storage provider - ``create_google_volume()``
+-  Save modifications to the volume to the server ``save()``
+-  Delete the volume ``delete()``
+
+See the examples below for information on the arguments these methods take:
+
+Examples
+~~~~~~~~
+
+.. code:: python
+
+    # Create a new volume based on AWS S3 for importing files
+    volume_import = api.volumes.create_s3_volume(name='my_input_volume', bucket='my_bucket',access_key_id='AKIAIOSFODNN7EXAMPLE',secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',access_mode='RO')
+
+    # Create a new volume based on AWS S3 for exporting files
+    volume_export = api.volumes.create_s3_volume(name='my_output_volume', bucket='my_bucket', access_key_id='AKIAIOSFODNN7EXAMPLE',secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',access_mode='RW')
+    # List all volumes available 
+    volumes = api.volumes.query()
+     
+
+Import properties
+~~~~~~~~~~~~~~~~~
+
+Each import has the following properties:
+
+``href`` - Import href on the API server.
+
+``id`` - Import identifier.
+
+``source`` - Source of the import, object of type ``VolumeFile``, contains info on volume and file location on the volume
+
+``destination`` - Destination of the import, object of type ``ImportDestination``, containing info on project where the file was imported to and name of the file in the project
+
+``state`` - State of the import. Can be *PENDING*, *RUNNING*, *COMPLETED* and *FAILED*.
+
+``result`` - If the import was completed, contains the result of the import - a ``File`` object.
+
+``error`` - Contains the ``Error`` object, in case the import failed.
+
+``overwrite`` - Whether the import was set to overwrite file at destination or not.
+
+``started_on`` - Contains the date and time when the import was started.
+
+``finished_on`` - Contains the date and time when the import was finished.
+
+Import methods
+~~~~~~~~~~~~~~
+
+Imports have the following methods:
+
+-  Refresh the import with data from the server: ``reload()``
+-  Submit import, by specifying source and destination of the import - ``submit_import()``
+-  Delete the import -  ``delete()``
+
+See the examples below for information on the arguments these methods take:
+
+Examples
+~~~~~~~~
+
+.. code:: python
+
+    # Import file to a project
+    my_project = api.projects.get(id='my_project')
+    bucket_location = 'fastq/my_file.fastq'
+    imp = api.imports.submit_import(volume=volume_import, project=my_project, location=bucket_location)
+    # Wait until import finishes
+    while True:
+          import_status = imp.reload().state
+          if import_status in (ImportExportState.COMPLETED, ImportExportState.FAILED):
+               break
+          time.sleep(10)
+    # Continue with the import
+    if imp.state == ImportExportState.COMPLETED:
+          imported_file = imp.result
+
+                        
+Export properties
+~~~~~~~~~~~~~~~~~
+
+Each export has the following properties:
+
+``href`` - Export href on the API server.
+
+``id`` - Export identifier.
+
+``source`` - Source of the export, object of type ``File``
+
+``destination`` - Destination of the export, object of type ``VolumeFile``, containing info on project where the file was imported to and name of the file in the project
+
+``state`` - State of the export. Can be *PENDING*, *RUNNING*, *COMPLETED* and *FAILED*.
+
+``result`` - If the export was completed, contains the result of the import - a ``File`` object.
+
+``error`` - Contains the ``Error`` object, in case the import failed.
+
+``overwrite`` - Whether the import was set to overwrite file at destination or not.
+
+``started_on`` - Contains the date and time when the import was started.
+
+``finished_on`` - Contains the date and time when the import was finished.
+
+
+Export methods
+~~~~~~~~~~~~~~
+
+Exports have the following methods:
+
+-  Refresh the export with data from the server: ``reload()``
+-  Submit export, by specifying source and destination of the import: ``submit_import()``
+-  Delete the import: ``delete()``
+
+See the examples below for information on the arguments these methods take:
+
+
+Examples
+~~~~~~~~
+
+.. code:: python
+
+    #
+    #   Export a set of files to a volume 
+    #      
+    # Get files from a project
+    files_to_export = api.files.query(project=my_project).all()
+    # And export all the files to the output bucket
+    exports = []
+    for f in files_to_export:
+          export = api.exports.submit_export(file=f, volume = volume_export, location=f.name)
+          exports.append(export)
+    # Wait for exports to finish:
+    num_exports = len(exports)
+    export_errors = []
+    done = False
+    
+    while !done:
+          done_len = 0 
+          for e in exports[]:
+                 if e.reload().state in (ImportExportState.COMPLETED, ImportExportState.FAILED):
+                        done_len += 1
+                 time.sleep(10)
+          if done_len == num_exports:
+                 done = True    
+    
 Managing apps
 -------------
 
@@ -682,6 +883,6 @@ Batch task
     
     try:
         task = api.tasks.create(name=name, project=project, app=app, 
-                                inputs=inputs, batch_input=batch_input, batch_by=batch_by run=True)
+                                inputs=inputs, batch_input=batch_input, batch_by=batch_by, run=True)
     except SbError:
         print('I was unable to run a batch task.')

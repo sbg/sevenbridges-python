@@ -1,5 +1,6 @@
 import faker
 import pytest
+from sevenbridges.errors import SbgError
 
 generator = faker.Factory.create()
 
@@ -66,6 +67,39 @@ def test_create_task(api, given, verifier, run):
     # verification
     assert repr(task)
     verifier.task.task_created()
+
+
+@pytest.mark.parametrize("run", [True, False])
+def test_create_task_with_errors(api, given, verifier, run):
+    # preconditions
+    owner = generator.user_name()
+    project_short_name = generator.slug()
+    project_id = '{}/{}'.format(owner, project_short_name)
+    given.project.exists(id=project_id)
+    given.file.files_exist_for_project(project_id, 10)
+    app_id = '{}/{}/{}'.format(owner, project_short_name, 'app-name')
+    batch_by = {'type': 'item'}
+
+    project = api.projects.get(id=project_id)
+    files = api.files.query(project=project)
+    inputs = {'FastQC': files, 'reads': False, 'some_file': files[0]}
+    given.task.created_with_errors(
+        batch_by=batch_by, batch_input='FastQC', app=app_id, project=project.id
+    )
+    # action
+    if run:
+        with pytest.raises(SbgError):
+            task = api.tasks.create(
+                generator.name(), project, app_id, batch_input='FastQC',
+                batch_by=batch_by, inputs=inputs, run=run
+            )
+    else:
+        task = api.tasks.create(
+            generator.name(), project, app_id, batch_input='FastQC',
+            batch_by=batch_by, inputs=inputs, run=run
+        )
+        assert repr(task)
+        verifier.task.task_created()
 
 
 def test_abort_task(api, given, verifier):

@@ -1,17 +1,19 @@
 import six
 
 from sevenbridges.decorators import inplace_reload
+from sevenbridges.errors import ResourceNotModified
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, CompoundField, DateTimeField
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
-from sevenbridges.models.compound.download_info import DownloadInfo
-from sevenbridges.models.compound.file_origin import FileOrigin
-from sevenbridges.models.compound.metadata import Metadata
+from sevenbridges.models.compound.files.download_info import DownloadInfo
+from sevenbridges.models.compound.files.file_origin import FileOrigin
+from sevenbridges.models.compound.files.file_storage import FileStorage
+from sevenbridges.models.compound.files.metadata import Metadata
 from sevenbridges.transfer.download import Download
 from sevenbridges.transfer.upload import Upload
-from sevenbridges.transfer.utils import PartSize
+from sevenbridges.models.enums import PartSize
 
 
 class File(Resource):
@@ -34,7 +36,8 @@ class File(Resource):
     project = StringField(read_only=True)
     created_on = DateTimeField(read_only=True)
     modified_on = DateTimeField(read_only=True)
-    origin = CompoundField(FileOrigin)
+    origin = CompoundField(FileOrigin, read_only=True)
+    storage = CompoundField(FileStorage, read_only=True)
     metadata = CompoundField(Metadata, read_only=False)
 
     def __str__(self):
@@ -153,7 +156,7 @@ class File(Resource):
         """
         info = self.download_info()
         download = Download(
-            url=info.url, file_path=path, retry=retry, timeout=timeout,
+            url=info.url, file_path=path, retry_count=retry, timeout=timeout,
             part_size=chunk_size, api=self._api
         )
         if wait:
@@ -181,6 +184,8 @@ class File(Resource):
                                        data=modified_data).json()
                 file = File(api=self._api, **data)
                 return file
+        else:
+            raise ResourceNotModified()
 
     def stream(self, part_size=32 * PartSize.KB):
         """

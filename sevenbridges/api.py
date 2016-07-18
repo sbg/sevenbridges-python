@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from sevenbridges.http.client import HttpClient
+from sevenbridges.models.storage_export import Export
+from sevenbridges.models.storage_import import Import
 from sevenbridges.models.app import App
 from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.endpoints import Endpoints
@@ -9,6 +11,7 @@ from sevenbridges.models.invoice import Invoice
 from sevenbridges.models.project import Project
 from sevenbridges.models.task import Task
 from sevenbridges.models.user import User
+from sevenbridges.models.volume import Volume
 
 
 class Api(HttpClient):
@@ -22,6 +25,9 @@ class Api(HttpClient):
     billing_groups = BillingGroup
     invoices = Invoice
     tasks = Task
+    volumes = Volume
+    imports = Import
+    exports = Export
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, retry=5, download_max_workers=16,

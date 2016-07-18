@@ -1,4 +1,15 @@
-0.3.0
+0.4.0 (2016-07-15)
+==================
+- Introducing support for Volumes API
+- Downloader refactor.
+- Task statistics now carries docker information.
+- Breaking compatibility on job.logs model because of newly added support for custom logs.
+  job.logs behaves as a dictionary.
+- Refactor .get query members to use resources and not construct the response on their own.
+- Useful enums available in models.enums.
+- Transformers now validate for Resource instances or strings. Everything else raises exception.
+
+0.3.0 (2016-06-20)
 ==================
 
 - Introducing file upload

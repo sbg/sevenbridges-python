@@ -3,7 +3,7 @@ import six
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import SbgError
+from sevenbridges.errors import SbgError, ResourceNotModified
 from sevenbridges.meta.collection import Collection
 from sevenbridges.models.app import App
 from sevenbridges.models.file import File
@@ -30,7 +30,7 @@ class Project(Resource):
         'tasks': '/tasks'
     }
     href = HrefField()
-    id = StringField(read_only=False)
+    id = StringField(read_only=True)
     name = StringField(read_only=False)
     billing_group = UuidField(read_only=False)
     description = StringField(read_only=False)
@@ -96,6 +96,8 @@ class Project(Resource):
                                    data=self._modified_data()).json()
             project = Project(api=self._api, **data)
             return project
+        else:
+            raise ResourceNotModified()
 
     def get_members(self, offset=None, limit=None):
         """
@@ -141,16 +143,8 @@ class Project(Resource):
         :param limit: Pagination limit.
         :return: Collection object.
         """
-        response = self._api.get(url=self._URL['files'],
-                                 params={'project': self.id, 'offset': offset,
-                                         'limit': limit})
-        data = response.json()
-        total = response.headers['x-total-matching-query']
-        files = [File(api=self._api, **file) for file in data['items']]
-        links = [Link(**link) for link in data['links']]
-        href = data['href']
-        return Collection(resource=File, href=href, total=total, items=files,
-                          links=links, api=self._api)
+        params = {'project': self.id, 'offset': offset, 'limit': limit}
+        return self._api.files.query(api=self._api, **params)
 
     def add_files(self, files):
         """
@@ -167,34 +161,46 @@ class Project(Resource):
         :param limit: Pagination limit.
         :return: Collection object.
         """
-        response = self._api.get(url=self._URL['apps'],
-                                 params={'project': self.id, 'offset': offset,
-                                         'limit': limit})
-        data = response.json()
-        total = response.headers['x-total-matching-query']
-        apps = [App(api=self._api, **app) for app in data['items']]
-        links = [Link(**link) for link in data['links']]
-        href = data['href']
-        return Collection(resource=App, href=href, total=total, items=apps,
-                          links=links, api=self._api)
+        params = {'project': self.id, 'offset': offset,
+                  'limit': limit}
+        return self._api.apps.query(api=self._api, **params)
 
-    def get_tasks(self, offset=None, limit=None):
+    def get_tasks(self, status=None, offset=None, limit=None):
         """
         Retrieves tasks in this project.
+        :param status: Optional task status.
         :param offset:  Pagination offset.
         :param limit: Pagination limit.
         :return: Collection object.
         """
-        response = self._api.get(url=self._URL['tasks'],
-                                 params={'project': self.id, 'offset': offset,
-                                         'limit': limit})
-        data = response.json()
-        total = response.headers['x-total-matching-query']
-        tasks = [Task(api=self._api, **task) for task in data['items']]
-        links = [Link(**link) for link in data['links']]
-        href = data['href']
-        return Collection(resource=Task, href=href, total=total, items=tasks,
-                          links=links, api=self._api)
+        params = {'project': self.id, 'offset': offset, 'limit': limit}
+        if status:
+            params['status'] = status
+        return self._api.tasks.query(api=self._api, **params)
+
+    def get_imports(self, volume=None, state=None, offset=None, limit=None):
+        """
+        Fetches imports for this project.
+        :param volume: Optional volume identifier.
+        :param state: Optional state.
+        :param offset: Pagination offset.
+        :param limit: Pagination limit.
+        :return: Collection object.
+        """
+        return self._api.imports.query(project=self.id, volume=volume,
+                                       state=state, offset=offset, limit=limit)
+
+    def get_exports(self, volume=None, state=None, offset=None, limit=None):
+        """
+        Fetches exports for this volume.
+        :param volume: Optional volume identifier.
+        :param state: Optional state.
+        :param offset: Pagination offset.
+        :param limit: Pagination limit.
+        :return: Collection object.
+        """
+        return self._api.exports.query(project=self.id, volume=volume,
+                                       state=state, offset=offset, limit=limit)
 
     def remove_member(self, user):
         """
@@ -202,6 +208,6 @@ class Project(Resource):
         :param user: User to be removed.
         """
         member = Transform.to_user(user)
-        self._api.delete(url=self._URL['members_get'].format(
-            id=self.id,
-            member=member))
+        self._api.delete(
+            url=self._URL['members_get'].format(id=self.id, member=member)
+        )

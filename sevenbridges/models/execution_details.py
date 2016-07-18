@@ -1,7 +1,7 @@
 import six
 
 from sevenbridges.meta.resource import Resource
-from sevenbridges.models.compound.job import Job
+from sevenbridges.models.compound.jobs.job import Job
 from sevenbridges.meta.fields import (
     HrefField, DateTimeField, StringField, CompoundListField
 )

@@ -496,6 +496,13 @@ class TaskProvider(object):
         href = '/tasks'
         self.request_mocker.request('POST', href, json=task)
 
+    def created_with_errors(self, **kwargs):
+        task = self.default_task()
+        task.update(kwargs)
+        task['errors'] = [{'error': 'some_error'}]
+        href = '/tasks'
+        self.request_mocker.request('POST', href, json=task)
+
     def task_exists(self, **kwargs):
         task = self.default_task()
         task.update(kwargs)
@@ -532,3 +539,58 @@ class TaskProvider(object):
             '/tasks/{id}/execution_details'.format(id=id),
             json=execution_details
         )
+
+
+class VolumeProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default_volume():
+        volume = {
+            "href": generator.url(),
+            "id": '{}/{}'.format('my', 'my-volume'),
+            "name": generator.name(),
+            "description": "Awesome!",
+            "access_mode": "RO",
+            "service": {
+                "type": "GCS",
+                "bucket": "test",
+                "prefix": "",
+                "root_url": "https://www.googleapis.com/",
+                "credentials": {
+                    "client_email": "test@test.com"
+                }
+            }
+        }
+        return volume
+
+    def can_be_queried(self, num):
+        items = [VolumeProvider.default_volume() for _ in range(num)]
+        href = self.base_url + '/storage/volumes'
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(num)})
+
+    def volume_created(self, name):
+        volume = VolumeProvider.default_volume()
+        volume['name'] = name
+        self.request_mocker.request('POST', '/storage/volumes', json=volume)
+
+    def exist(self, **kwargs):
+        volume = VolumeProvider.default_volume()
+        volume.update(kwargs)
+        url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
+        self.request_mocker.get(url, json=volume)
+
+    def can_be_modified(self, **kwargs):
+        volume = VolumeProvider.default_volume()
+        volume.update(kwargs)
+        url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
+        self.request_mocker.patch(url, json=volume)

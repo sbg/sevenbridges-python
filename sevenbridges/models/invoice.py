@@ -1,7 +1,7 @@
 import six
 
 from sevenbridges.meta.resource import Resource
-from sevenbridges.models.compound.invoice_period import InvoicePeriod
+from sevenbridges.models.compound.billing.invoice_period import InvoicePeriod
 from sevenbridges.models.compound.price import Price
 from sevenbridges.meta.fields import (
     HrefField, StringField, BooleanField, CompoundField

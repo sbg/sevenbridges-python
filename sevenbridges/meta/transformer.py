@@ -7,40 +7,81 @@ class Transform(object):
         from sevenbridges.models.project import Project
         if project is None:
             raise SbgError('Project is required!')
-        return project.id if isinstance(project, Project) else project
+        elif isinstance(project, Project):
+            return project.id
+        elif isinstance(project, str):
+            return project
+        else:
+            raise SbgError('Invalid project parameter!')
 
     @staticmethod
     def to_task(task):
         from sevenbridges.models.task import Task
         if task is None:
             raise SbgError('Task is required!')
-        return task.id if isinstance(task, Task) else task
+        elif isinstance(task, Task):
+            return task.id
+        elif isinstance(task, str):
+            return task
+        else:
+            raise SbgError('Invalid task parameter!')
 
     @staticmethod
     def to_app(app):
         from sevenbridges.models.app import App
         if app is None:
             raise SbgError('App is required!')
-        return app.id if isinstance(app, App) else app
+        elif isinstance(app, App):
+            return app.id
+        elif isinstance(app, str):
+            return app
+        else:
+            raise SbgError('Invalid app parameter!')
 
     @staticmethod
     def to_file(file_):
+        from sevenbridges.models.file import File
         if file_ is None:
             raise SbgError('File is required!')
-        from sevenbridges.models.file import File
-        return file_.id if isinstance(file_, File) else file_
+        elif isinstance(file_, File):
+            return file_.id
+        elif isinstance(file_, str):
+            return file_
+        else:
+            raise SbgError('Invalid file parameter!')
 
     @staticmethod
     def to_user(user):
+        from sevenbridges.models.user import User
         if user is None:
             raise SbgError('User is required!')
-        from sevenbridges.models.user import User
-        return user.username if isinstance(user, User) else user
+        elif isinstance(user, User):
+            return user.username
+        elif isinstance(user, str):
+            return user
+        else:
+            raise SbgError('Invalid user parameter!')
 
     @staticmethod
     def to_billing_group(billing_group):
+        from sevenbridges.models.billing_group import BillingGroup
         if billing_group is None:
             raise SbgError('Billing group is required!')
-        from sevenbridges.models.billing_group import BillingGroup
-        return billing_group.id if isinstance(
-            billing_group, BillingGroup) else billing_group
+        elif isinstance(billing_group, BillingGroup):
+            return billing_group.id
+        elif isinstance(billing_group, str):
+            return billing_group
+        else:
+            raise SbgError('Invalid billing group parameter!')
+
+    @staticmethod
+    def to_volume(volume):
+        from sevenbridges.models.volume import Volume
+        if volume is None:
+            raise SbgError('Volume is required!')
+        elif isinstance(volume, Volume):
+            return volume.id
+        elif isinstance(volume, str):
+            return volume
+        else:
+            raise SbgError('Invalid volume parameter!')

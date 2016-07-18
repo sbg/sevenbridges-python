@@ -2,7 +2,7 @@ import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.price import Price
-from sevenbridges.models.compound.task_breakdown import TaskBreakdown
+from sevenbridges.models.compound.billing.task_breakdown import TaskBreakdown
 from sevenbridges.meta.fields import (
     HrefField, CompoundField, CompoundListField
 )

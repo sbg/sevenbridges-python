@@ -8,9 +8,8 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3 import Retry
 
 from sevenbridges.errors import SbgError
-from sevenbridges.transfer.utils import (
-    Part, PartSize, Progress, TransferState, total_parts
-)
+from sevenbridges.transfer.utils import Part, Progress, total_parts
+from sevenbridges.models.enums import PartSize, TransferState
 
 
 def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
@@ -133,24 +132,20 @@ class DPartedFile(object):
 
 # noinspection PyCallingNonCallable,PyTypeChecker
 class Download(threading.Thread):
-    def __init__(self, url=None, file_path=None, retry=5, timeout=60,
-                 part_size=None, api=None):
+    def __init__(self, url, file_path,
+                 part_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, retry_count=5,
+                 timeout=60, api=None):
         """
         File multipart downloader.
         :param url: URL of the file.
         :param file_path: Local file path.
-        :param retry: Number of times to retry on error.
+        :param retry_count: Number of times to retry on error.
         :param timeout: Connection timeout in seconds.
         :param part_size: Size of the parts in bytes.
         :param api: Api instance.
         """
         threading.Thread.__init__(self)
         self.daemon = True
-
-        if not url:
-            raise SbgError('Url missing.')
-        if not file_path:
-            raise SbgError('File path missing.')
 
         if api is None:
             raise SbgError('Api instance missing.')
@@ -173,7 +168,7 @@ class Download(threading.Thread):
         # append unique suffix to the file
         self._temp_file = self._file_path + '.' + hashlib.sha1(
             self._file_path.encode('utf-8')).hexdigest()[:10]
-        self._retry = retry
+        self._retry = retry_count
         self._timeout = timeout
         if part_size:
             self._part_size = part_size

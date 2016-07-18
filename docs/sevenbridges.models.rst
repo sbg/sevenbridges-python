@@ -48,6 +48,14 @@ sevenbridges.models.endpoints module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.models.enums module
+--------------------------------
+
+.. automodule:: sevenbridges.models.enums
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.models.execution_details module
 --------------------------------------------
 
@@ -96,6 +104,22 @@ sevenbridges.models.project module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.models.storage_export module
+-----------------------------------------
+
+.. automodule:: sevenbridges.models.storage_export
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges.models.storage_import module
+-----------------------------------------
+
+.. automodule:: sevenbridges.models.storage_import
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.models.task module
 -------------------------------
 
@@ -108,6 +132,14 @@ sevenbridges.models.user module
 -------------------------------
 
 .. automodule:: sevenbridges.models.user
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges.models.volume module
+---------------------------------
+
+.. automodule:: sevenbridges.models.volume
     :members:
     :undoc-members:
     :show-inheritance:

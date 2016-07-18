@@ -4,18 +4,18 @@ from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.transformer import Transform
-from sevenbridges.models.compound.batch_by import BatchBy
-from sevenbridges.models.compound.batch_group import BatchGroup
-from sevenbridges.models.compound.execution_status import ExecutionStatus
-from sevenbridges.models.compound.input import Input
-from sevenbridges.models.compound.output import Output
+from sevenbridges.models.compound.tasks.batch_by import BatchBy
+from sevenbridges.models.compound.tasks.batch_group import BatchGroup
+from sevenbridges.models.compound.tasks.execution_status import ExecutionStatus
+from sevenbridges.models.compound.tasks.input import Input
+from sevenbridges.models.compound.tasks.output import Output
 from sevenbridges.models.compound.price import Price
 from sevenbridges.models.execution_details import ExecutionDetails
 from sevenbridges.models.file import File
 from sevenbridges.meta.fields import (
     HrefField, UuidField, StringField, CompoundField, DateTimeField,
-    BooleanField,
-    DictField)
+    BooleanField, DictField
+)
 
 
 class Task(Resource):
@@ -50,6 +50,7 @@ class Task(Resource):
     end_time = DateTimeField(read_only=True)
     execution_status = CompoundField(ExecutionStatus, read_only=True)
     errors = DictField(read_only=True)
+    warnings = DictField(read_only=True)
     price = CompoundField(Price, read_only=True)
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
@@ -74,6 +75,8 @@ class Task(Resource):
         api = api or cls._API
         if parent:
             parent = Transform.to_task(parent)
+        if project:
+            project = Transform.to_project(project)
         return super(Task, cls)._query(url=cls._URL['query'], project=project,
                                        status=status, batch=batch,
                                        parent=parent, offset=offset,
@@ -81,8 +84,7 @@ class Task(Resource):
 
     @classmethod
     def create(cls, name, project, app, batch_input=None, batch_by=None,
-               inputs=None,
-               description=None, run=False, api=None):
+               inputs=None, description=None, run=False, api=None):
 
         """
         Creates a task on server.
@@ -147,6 +149,10 @@ class Task(Resource):
         api = api if api else cls._API
         created_task = api.post(cls._URL['query'], data=task_data,
                                 params=params).json()
+        if run and 'errors' in created_task:
+            if bool(created_task['errors']):
+                raise SbgError('Unable to run task! Task contains errors.')
+
         return Task(api=api, **created_task)
 
     @inplace_reload

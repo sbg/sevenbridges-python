@@ -20,3 +20,8 @@ from sevenbridges.models.app import App
 from sevenbridges.models.invoice import Invoice
 from sevenbridges.models.member import Member, Permissions
 from sevenbridges.models.file import File
+from sevenbridges.models.invoice import Invoice
+from sevenbridges.models.storage_export import Export
+from sevenbridges.models.storage_import import Import
+from sevenbridges.models.volume import Volume
+from sevenbridges.models.enums import *
