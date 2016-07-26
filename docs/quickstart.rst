@@ -514,7 +514,8 @@ Examples
     new_file = my_file.copy(project='user/my-other-project', name='my-new-file')
     
     # Download a file to the current working directory
-    new_file.download(wait=True)
+    # Optionally, path can contain a full path on local filesystem
+    new_file.download(path='my_new_file_on_disk')
 
 Managing volumes, exports and imports
 -------------------------------------
