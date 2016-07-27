@@ -1,3 +1,8 @@
+0.4.2 (2016-07-27)
+==================
+- Bugfixes
+    - [Issue #12](https://github.com/sbg/sevenbridges-python/issues/12)
+
 0.4.1 (2016-07-27)
 ==================
 - Bugfixes
