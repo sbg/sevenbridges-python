@@ -1,3 +1,4 @@
+import six
 from sevenbridges.errors import SbgError
 
 
@@ -9,7 +10,7 @@ class Transform(object):
             raise SbgError('Project is required!')
         elif isinstance(project, Project):
             return project.id
-        elif isinstance(project, str):
+        elif isinstance(project, six.text_type):
             return project
         else:
             raise SbgError('Invalid project parameter!')
@@ -21,7 +22,7 @@ class Transform(object):
             raise SbgError('Task is required!')
         elif isinstance(task, Task):
             return task.id
-        elif isinstance(task, str):
+        elif isinstance(task, six.text_type):
             return task
         else:
             raise SbgError('Invalid task parameter!')
@@ -33,7 +34,7 @@ class Transform(object):
             raise SbgError('App is required!')
         elif isinstance(app, App):
             return app.id
-        elif isinstance(app, str):
+        elif isinstance(app, six.text_type):
             return app
         else:
             raise SbgError('Invalid app parameter!')
@@ -45,7 +46,7 @@ class Transform(object):
             raise SbgError('File is required!')
         elif isinstance(file_, File):
             return file_.id
-        elif isinstance(file_, str):
+        elif isinstance(file_, six.text_type):
             return file_
         else:
             raise SbgError('Invalid file parameter!')
@@ -57,7 +58,7 @@ class Transform(object):
             raise SbgError('User is required!')
         elif isinstance(user, User):
             return user.username
-        elif isinstance(user, str):
+        elif isinstance(user, six.text_type):
             return user
         else:
             raise SbgError('Invalid user parameter!')
@@ -69,7 +70,7 @@ class Transform(object):
             raise SbgError('Billing group is required!')
         elif isinstance(billing_group, BillingGroup):
             return billing_group.id
-        elif isinstance(billing_group, str):
+        elif isinstance(billing_group, six.text_type):
             return billing_group
         else:
             raise SbgError('Invalid billing group parameter!')
@@ -81,7 +82,7 @@ class Transform(object):
             raise SbgError('Volume is required!')
         elif isinstance(volume, Volume):
             return volume.id
-        elif isinstance(volume, str):
+        elif isinstance(volume, six.text_type):
             return volume
         else:
             raise SbgError('Invalid volume parameter!')

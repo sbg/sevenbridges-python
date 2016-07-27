@@ -1,3 +1,8 @@
+0.4.1 (2016-07-27)
+==================
+- Bugfixes
+    - [Issue #10](https://github.com/sbg/sevenbridges-python/issues/10)
+    - [Issue #11](https://github.com/sbg/sevenbridges-python/issues/11)
 0.4.0 (2016-07-18)
 ==================
 - Introducing support for Volumes API

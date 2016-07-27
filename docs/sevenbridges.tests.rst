@@ -89,6 +89,14 @@ sevenbridges.tests.test_transformer module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.tests.test_volumes module
+--------------------------------------
+
+.. automodule:: sevenbridges.tests.test_volumes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.tests.verifiers module
 -----------------------------------
 
