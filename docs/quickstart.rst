@@ -757,8 +757,7 @@ Each app has the following available properties:
 App methods
 ~~~~~~~~~~~
 
-Currently there is only one instance method for apps: ``save()`` which
-saves changes to the app on the server.
+Currently there are no specific app methods, apart from class methods mentioned above.
 
 Managing tasks
 --------------
