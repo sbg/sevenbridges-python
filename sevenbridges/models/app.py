@@ -1,4 +1,5 @@
 import six
+import re
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.errors import SbgError
@@ -59,6 +60,12 @@ class App(Resource):
         :return: App object.
         """
         api = api if api else cls._API
+
+        # Correct app ID iff last path parameter is all digits
+        [new_id, rev] = id.rsplit('/', 1)
+        if re.match('^\d*$', rev):
+            id = new_id
+
         app = api.get(url=cls._URL['get_revision'].format(
             id=id, revision=revision)).json()
         return App(api=api, **app)
