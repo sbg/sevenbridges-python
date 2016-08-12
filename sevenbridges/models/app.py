@@ -1,3 +1,4 @@
+import re
 import six
 
 from sevenbridges.meta.resource import Resource
@@ -21,11 +22,19 @@ class App(Resource):
         'raw': '/apps/{id}/raw'
     }
     href = HrefField()
-    id = StringField(read_only=True)
+    _id = StringField(read_only=True, name='id')
     project = StringField(read_only=True)
     name = StringField(read_only=True)
     revision = IntegerField(read_only=True)
     raw = DictField(read_only=False)
+
+    @property
+    def id(self):
+        _id, _rev = self._id.rsplit('/', 1)
+        if re.match('^\d*$', _rev):
+            return _id
+        else:
+            return self._id
 
     def __str__(self):
         return six.text_type('<App: id={id}>'.format(id=self.id))

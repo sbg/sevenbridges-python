@@ -83,7 +83,7 @@ class Task(Resource):
                                        limit=limit, api=api)
 
     @classmethod
-    def create(cls, name, project, app, batch_input=None, batch_by=None,
+    def create(cls, name, project, app, revision=None, batch_input=None, batch_by=None,
                inputs=None, description=None, run=False, api=None):
 
         """
@@ -91,6 +91,7 @@ class Task(Resource):
         :param name: Task name.
         :param project: Project identifier.
         :param app: CWL app identifier.
+        :param revision: CWL app revision.
         :param batch_input: Batch input.
         :param batch_by: Batch criteria.
         :param inputs: Input map.
@@ -103,6 +104,8 @@ class Task(Resource):
 
         project = Transform.to_project(project)
         app = Transform.to_app(app)
+        if revision:
+            app = app + "/" + six.text_type(revision)
 
         task_inputs = {'inputs': {}}
         for k, v in inputs.items():

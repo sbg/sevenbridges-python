@@ -363,6 +363,7 @@ class AppProvider(object):
         app = self.default_app()
         app['id'] = kwargs.pop('id')
         app['name'] = kwargs.pop('new_name')
+        print(app['id'])
         href = '/apps/{}/actions/copy'.format(app['id'])
         self.request_mocker.request('POST', url=href, json=app)
 

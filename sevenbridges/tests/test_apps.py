@@ -37,7 +37,7 @@ def test_apps_get_revision(api, given, verifier):
     verifier.app.app_fetched(app_id, app_revision)
 
 
-@pytest.mark.parametrize("app_id", ['me/my-project', "me/my-project/1"])
+@pytest.mark.parametrize("app_id", ["me/my-project/app"])
 def test_app_copy(api, given, verifier, app_id):
     # preconditions
     copied_name = 'new-app'

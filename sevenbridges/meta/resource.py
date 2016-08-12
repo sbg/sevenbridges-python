@@ -121,6 +121,8 @@ class Resource(six.with_metaclass(ResourceMeta)):
         :param api: sevenbridges Api instance.
         :return: Resource object.
         """
+        if not id:
+            raise SbgError('Invalid id value!')
         api = api if api else cls._API
         if 'get' in cls._URL:
             resource = api.get(url=cls._URL['get'].format(id=id)).json()
