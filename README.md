@@ -109,10 +109,16 @@ configuration. There are three ways you can pass configure the library:
     `API_URL` and `AUTH_TOKEN` respectively.
 3.  Use the configuration file `$HOME/.sbgrc` with defined parameters.
 
+
+### Explicit initialization
+
 ``` {.sourceCode .python}
 import sevenbridges as sbg
-config_config_file = sbg.Config(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
+api_config = sbg.Config(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
 ```
+
+
+### Initialization via environment variables
 
 ``` {.sourceCode .python}
 import sevenbridges as sbg
@@ -123,12 +129,15 @@ import os
 os.environ['API_URL'] = 'https://api.sbgenomics.com/v2'
 os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
 
-config_config_file = sbg.Config()
+api_config = sbg.Config()
 ```
+
+
+### Initialization via config file
 
 ``` {.sourceCode .python}
 import sevenbridges as sbg
-config_config_file = sbg.Config(profile='my-profile')
+api_config = sbg.Config(profile='my-profile')
 ```
 
 ### Notes on config file format
@@ -152,7 +161,8 @@ constructor.
 
 ``` {.sourceCode .python}
 import sevenbridges as sbg
-api = sbg.Api(config=config_environment)
+api_config = sbg.Config()  # Or any other choice of initialization method
+api = sbg.Api(config=api_config)
 ```
 
 Examples
@@ -164,7 +174,8 @@ more detailed examples consult the documentation, hosted on readthedocs.
 ``` {.sourceCode .python}
 import sevenbridges as sbg
 
-api = sbg.Api(config=config_environment)
+api_config = sbg.Config()  # Or any other choice of initialization method
+api = sbg.Api(config=api_config)
 
 # Get current user
 user = api.users.me()
