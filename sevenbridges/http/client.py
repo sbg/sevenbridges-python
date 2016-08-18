@@ -114,6 +114,7 @@ class HttpClient(object):
         self._limit = headers.get('X-RateLimit-Limit', self._limit)
         self._remaining = headers.get('X-RateLimit-Remaining', self._remaining)
         self._reset = headers.get('X-RateLimit-Reset', self._reset)
+        self._last_response_time = response.elapsed.total_seconds()
 
         self._request_id = headers.get('X-Request-Id', self._request_id)
         return response

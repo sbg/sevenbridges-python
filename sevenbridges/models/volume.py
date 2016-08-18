@@ -45,8 +45,10 @@ class Volume(Resource):
         :return: Collection object.
         """
         api = api or cls._API
-        return super(Volume, cls)._query(url=cls._URL['query'], offset=offset,
-                                         limit=limit, api=api)
+        return super(Volume, cls)._query(
+            url=cls._URL['query'], offset=offset, limit=limit, fields='_all',
+            api=api
+        )
 
     @classmethod
     def create_s3_volume(cls, name, bucket, access_key_id, secret_access_key,

@@ -100,7 +100,7 @@ class Import(Resource):
         if volume:
             volume = Transform.to_volume(volume)
 
-        return super(Import, cls)._query(url=cls._URL['query'],
-                                         project=project, volume=volume,
-                                         state=state, offset=offset,
-                                         limit=limit, api=api)
+        return super(Import, cls)._query(
+            url=cls._URL['query'], project=project, volume=volume, state=state,
+            fields='_all', offset=offset, limit=limit, api=api
+        )

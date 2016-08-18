@@ -77,13 +77,14 @@ class Task(Resource):
             parent = Transform.to_task(parent)
         if project:
             project = Transform.to_project(project)
-        return super(Task, cls)._query(url=cls._URL['query'], project=project,
-                                       status=status, batch=batch,
-                                       parent=parent, offset=offset,
-                                       limit=limit, api=api)
+        return super(Task, cls)._query(
+            url=cls._URL['query'], project=project, status=status, batch=batch,
+            parent=parent, offset=offset, limit=limit, fields='_all', api=api
+        )
 
     @classmethod
-    def create(cls, name, project, app, revision=None, batch_input=None, batch_by=None,
+    def create(cls, name, project, app, revision=None, batch_input=None,
+               batch_by=None,
                inputs=None, description=None, run=False, api=None):
 
         """

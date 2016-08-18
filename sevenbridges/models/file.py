@@ -79,9 +79,10 @@ class File(Resource):
 
         query_params.update(origin_params)
 
-        return super(File, cls)._query(api=api, url=cls._URL['query'],
-                                       project=project, offset=offset,
-                                       limit=limit, **query_params)
+        return super(File, cls)._query(
+            api=api, url=cls._URL['query'], project=project, offset=offset,
+            limit=limit, fields='_all', **query_params
+        )
 
     @classmethod
     def upload(cls, path, project, file_name=None, overwrite=False, retry=5,

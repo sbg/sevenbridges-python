@@ -107,7 +107,7 @@ class Export(Resource):
         if volume:
             volume = Transform.to_volume(volume)
 
-        return super(Export, cls)._query(url=cls._URL['query'],
-                                         project=project, volume=volume,
-                                         state=state, offset=offset,
-                                         limit=limit, api=api)
+        return super(Export, cls)._query(
+            url=cls._URL['query'], project=project, volume=volume, state=state,
+            offset=offset, limit=limit, fields='_all', api=api
+        )

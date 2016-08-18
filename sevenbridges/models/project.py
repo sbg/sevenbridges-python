@@ -50,8 +50,10 @@ class Project(Resource):
         :return: Collection object.
         """
         api = api if api else cls._API
-        return super(Project, cls)._query(url=cls._URL['query'], offset=offset,
-                                          limit=limit, api=api)
+        return super(Project, cls)._query(
+            url=cls._URL['query'], offset=offset, limit=limit, fields='_all',
+            api=api
+        )
 
     @classmethod
     def create(cls, name, billing_group, description=None, tags=None,

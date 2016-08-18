@@ -38,4 +38,6 @@ class Invoice(Resource):
         """
         api = api if api else cls._API
         return super(Invoice, cls)._query(
-            url=cls._URL['query'], offset=offset, limit=limit, api=api)
+            url=cls._URL['query'], offset=offset, limit=limit, fields='_all',
+            api=api
+        )
