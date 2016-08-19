@@ -24,7 +24,7 @@ class DataContainer(object):
         self.fetched = True
 
     def __getitem__(self, item):
-        if item not in self.data:
+        if item not in self.data and not self.fetched:
             self.fetch()
         try:
             return self.data[item]

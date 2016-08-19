@@ -114,6 +114,7 @@ class File(Resource):
         if wait:
             upload.start()
             upload.wait()
+            return upload
         else:
             return upload
 

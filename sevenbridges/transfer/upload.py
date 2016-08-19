@@ -279,6 +279,10 @@ class Upload(threading.Thread):
         self._errorback = None
         self._progress_callback = None
         self._stop_signal = False
+        self._result = None
+
+    def result(self):
+        return self._result
 
     def _verify_part_number(self):
         """
@@ -345,10 +349,13 @@ class Upload(threading.Thread):
         """
         Finalizes the upload on the API server.
         """
+        from sevenbridges.models.file import File
         try:
-            self._api.post(
+            response = self._api.post(
                 self._URL['upload_complete'].format(upload_id=self._upload_id)
-            )
+            ).json()
+            self._result = File(**response)
+
         except SbgError as e:
             raise SbgError(
                 'Failed to complete upload! Reason: {}'.format(e.message)

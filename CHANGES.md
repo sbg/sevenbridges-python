@@ -1,3 +1,15 @@
+0.4.4 (2016-08-19)
+==================
+- Upload changes
+  Upload sync/asyc returns the upload handle. The uploaded file 
+  is available by invoking .result() method.
+- Query optimizations
+  All queries except those on app resource are not optimized using
+  the _fields=_all query parameter.
+- Bugfixes
+    - [Issue #21](https://github.com/sbg/sevenbridges-python/issues/21)
+    - [Issue #22](https://github.com/sbg/sevenbridges-python/issues/22)
+
 0.4.3 (2016-08-12)
 ==================
 - Bugfixes
