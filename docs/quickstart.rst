@@ -92,13 +92,7 @@ different credentials or environments.
     os.environ['API_URL'] = '<https://api.sbgenomics.com/v2 or https://cgc-api.sbgenomics.com/v2>'
     os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
     
-    c = sbg.Config()On this page, you'll find a reference for the Seven Bridges API Python client.
-
-We encourage you to consult our other API resources:
-
-* The Seven Bridges Github repository, `okAPI <https://github.com/sbg/okAPI/tree/master/Recipes/SBPLAT>`_, which includes Python example scripts such as recipes (which allow you to perform specific tasks) and tutorials (which will walk you through entire analyses) via the API. These recipes and tutorials make use of the sevenbridges-python bindings below.
-* The Seven Bridges API documentation on our `Knowledge Center <http://docs.sevenbridges.com/docs/the-api>`_, which includes a reference collection of API requests to help you get started right away.
-
+    c = sbg.Config()
 
     api = sbg.Api(config=c)
 
