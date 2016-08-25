@@ -6,7 +6,9 @@ import requests
 
 from sevenbridges.errors import (
     BadRequest, Unauthorized, Forbidden, NotFound, MethodNotAllowed,
-    RequestTimeout, Conflict, TooManyRequests, SbgError)
+    RequestTimeout, Conflict, TooManyRequests, SbgError, ServerError,
+    ServiceUnavailable
+)
 
 
 def inplace_reload(method):
@@ -80,6 +82,8 @@ def check_for_error(func):
                 408: RequestTimeout,
                 409: Conflict,
                 429: TooManyRequests,
+                500: ServerError,
+                503: ServiceUnavailable,
             }.get(status_code, SbgError)()
             if 'message' in data:
                 e.message = data['message']

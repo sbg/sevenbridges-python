@@ -31,7 +31,7 @@ class Api(HttpClient):
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, retry=5, download_max_workers=16,
-                 upload_max_workers=16):
+                 upload_max_workers=16, proxies=None):
         """
         Initializes api object. If url and token are not supplied,
         the check for the .sbgrc configuration file will occur, checking if the
@@ -47,13 +47,22 @@ class Api(HttpClient):
         :param retry: Number of retries.
         :param download_max_workers: Max number of threads for download.
         :param upload_max_workers: Max number of threads for upload.
+        :param proxies: Proxy settings if any.
         :return: Api object instance.
         """
-        super(Api, self).__init__(url=url, token=token,
-                                  oauth_token=oauth_token,
-                                  config=config, retry=retry, timeout=timeout)
+        super(Api, self).__init__(
+            url=url, token=token, oauth_token=oauth_token, config=config,
+            retry=retry, timeout=timeout, proxies=proxies
+        )
 
         self.download_pool = ThreadPoolExecutor(
             max_workers=download_max_workers
         )
         self.upload_pool = ThreadPoolExecutor(max_workers=upload_max_workers)
+
+
+if __name__ == '__main__':
+    from sevenbridges import Config
+    api = Api(config=Config(profile='igor'))
+    api.projects.query()
+

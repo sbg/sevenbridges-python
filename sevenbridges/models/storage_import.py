@@ -2,7 +2,6 @@ import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.file import File
-
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.error import Error
 from sevenbridges.models.compound.volumes.volume_file import VolumeFile
@@ -48,7 +47,7 @@ class Import(Resource):
 
     @classmethod
     def submit_import(cls, volume, location, project, name=None,
-                      overwrite=False, api=None):
+                      overwrite=False, properties=None, api=None):
 
         """
         Submits new import job.
@@ -57,6 +56,7 @@ class Import(Resource):
         :param project: Project identifier.
         :param name: Optional file name.
         :param overwrite: If true it will overwrite file if exists.
+        :param properties: Properties dictionary.
         :param api: Api instance.
         :return: Import object.
         """
@@ -76,6 +76,9 @@ class Import(Resource):
         data['source'] = source
         data['destination'] = destination
         data['overwrite'] = overwrite
+
+        if properties:
+            data['properties'] = properties
 
         api = api if api else cls._API
         _import = api.post(cls._URL['query'], data=data).json()

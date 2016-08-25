@@ -4,11 +4,12 @@ import os
 import threading
 import time
 
-import requests
 import six
 from requests.adapters import HTTPAdapter
+
 from requests.packages.urllib3 import Retry
 
+from sevenbridges.http.client import generate_session
 from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
 from sevenbridges.transfer.utils import Progress, total_parts
@@ -133,7 +134,7 @@ class UPartedFile(object):
         self.upload_id = upload
         self.retry = retry_count
         self.timeout = timeout
-        self.s3_session = storage_session
+        self.session = storage_session
         self.api = api
         self.pool = api.upload_pool
         self.submitted = 0
@@ -160,7 +161,7 @@ class UPartedFile(object):
 
             futures.append(
                 self.pool.submit(
-                    _upload_part, self.api, self.s3_session,
+                    _upload_part, self.api, self.session,
                     self._URL['upload_part'], self.upload_id,
                     part_number, part_data, self.retry, self.timeout
                 )
@@ -203,7 +204,7 @@ class UPartedFile(object):
         return parts
 
 
-# noinspection PyCallingNonCallable,PyTypeChecker
+# noinspection PyCallingNonCallable,PyTypeChecker,PyProtectedMember
 class Upload(threading.Thread):
     _URL = {
         'upload_init': '/upload/multipart',
@@ -266,11 +267,6 @@ class Upload(threading.Thread):
         self._retry = retry_count
         self._timeout = timeout
         self._api = api
-        self._s3_session = requests.Session()
-        self._s3_session.mount('https://', HTTPAdapter(
-            max_retries=Retry(
-                total=5, status_forcelist=[500, 503], backoff_factor=0.1)
-        ))
         self._bytes_done = 0
         self._time_started = 0
         self._running = threading.Event()
@@ -280,6 +276,13 @@ class Upload(threading.Thread):
         self._progress_callback = None
         self._stop_signal = False
         self._result = None
+
+        adapter = HTTPAdapter(max_retries=Retry(
+            total=self._retry, status_forcelist=[500, 503], backoff_factor=0.1)
+        )
+        self.session = generate_session(
+            'https://', adapter, self._api._session.proxies
+        )
 
     def result(self):
         return self._result
@@ -354,7 +357,7 @@ class Upload(threading.Thread):
             response = self._api.post(
                 self._URL['upload_complete'].format(upload_id=self._upload_id)
             ).json()
-            self._result = File(**response)
+            self._result = File(api=self._api, **response)
 
         except SbgError as e:
             raise SbgError(
@@ -513,7 +516,7 @@ class Upload(threading.Thread):
         # Creates a partitioned file
         parted_file = UPartedFile(
             fp, self._file_size, self._part_size, self._upload_id,
-            self._retry, self._timeout, self._s3_session, self._api
+            self._retry, self._timeout, self.session, self._api
         )
 
         # Iterates over parts and submits them for upload.

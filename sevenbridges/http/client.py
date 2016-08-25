@@ -19,6 +19,21 @@ client_info = {
 }
 
 
+def generate_session(url, adapter, proxies=None):
+    """
+    Helper method to generate request sessions.
+    :param url: The url pattern to apply adapter on.
+    :param adapter: HttpAdapter
+    :param proxies: Proxies dictionary.
+    :return: requests.Session object.
+    """
+    session = requests.Session()
+    if proxies:
+        session.proxies = dict(proxies)
+        session.mount(url, adapter)
+    return session
+
+
 # noinspection PyTypeChecker
 class HttpClient(object):
     """
@@ -27,23 +42,23 @@ class HttpClient(object):
     """
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
-                 timeout=None, retry=5):
+                 timeout=None, retry=5, proxies=None):
 
         if config is not None:
             url = config.api_url
             token = config.auth_token
             oauth_token = config.oauth_token
+            proxies = config.proxies
 
         if not url:
             raise SbgError(message="Url is missing!")
 
         self.url = url.rstrip('/')
-        self._session = requests.Session()
-        self._session.mount(self.url, HTTPAdapter(
-            max_retries=Retry(
-                total=retry, status_forcelist=[500, 503], backoff_factor=0.1
-            )
-        ))
+        adapter = HTTPAdapter(max_retries=Retry(
+            total=retry, status_forcelist=[500, 503], backoff_factor=0.1
+        )
+        )
+        self._session = generate_session(self.url, adapter, proxies)
         self.timeout = timeout
         self._limit = None
         self._remaining = None
