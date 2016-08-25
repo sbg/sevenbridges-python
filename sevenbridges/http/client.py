@@ -76,17 +76,17 @@ class HttpClient(object):
 
     @property
     def limit(self):
-        self._rate_limit(self)
+        self._rate_limit()
         return int(self._limit) if self._limit else self._limit
 
     @property
     def remaining(self):
-        self._rate_limit(self)
+        self._rate_limit()
         return int(self._remaining) if self._remaining else self._remaining
 
     @property
     def reset_time(self):
-        self._rate_limit(self)
+        self._rate_limit()
         return dt.fromtimestamp(
             float(self._reset)
         ) if self._reset else self._reset
