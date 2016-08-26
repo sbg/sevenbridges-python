@@ -1,6 +1,7 @@
 import json
 import platform
 from datetime import datetime as dt
+from time import sleep
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -27,7 +28,7 @@ class HttpClient(object):
     """
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
-                 timeout=None, retry=5):
+                 timeout=None, retry=5, autowait = False):
 
         if config is not None:
             url = config.api_url
@@ -49,6 +50,7 @@ class HttpClient(object):
         self._remaining = None
         self._reset = None
         self._request_id = None
+        self._autowait = autowait
         self.headers = {
             'Content-Type': 'application/json',
             'User-Agent':
@@ -74,14 +76,17 @@ class HttpClient(object):
 
     @property
     def limit(self):
+        self._rate_limit()
         return int(self._limit) if self._limit else self._limit
 
     @property
     def remaining(self):
+        self._rate_limit()
         return int(self._remaining) if self._remaining else self._remaining
 
     @property
     def reset_time(self):
+        self._rate_limit()
         return dt.fromtimestamp(
             float(self._reset)
         ) if self._reset else self._reset
@@ -89,6 +94,9 @@ class HttpClient(object):
     @property
     def request_id(self):
         return self._request_id
+
+    def _rate_limit(self):
+        self._request('GET', url='rate_limit', append_base=True)
 
     @check_for_error
     def _request(self, verb, url, headers=None, params=None, data=None,
@@ -113,6 +121,12 @@ class HttpClient(object):
         headers = response.headers
         self._limit = headers.get('X-RateLimit-Limit', self._limit)
         self._remaining = headers.get('X-RateLimit-Remaining', self._remaining)
+
+        if self._autowait and self._remaining < 1:
+            sleep = int(self._remaining) - int(time.time())
+            if sleep > 0:
+                time.sleep(sleep + 5)
+
         self._reset = headers.get('X-RateLimit-Reset', self._reset)
         self._last_response_time = response.elapsed.total_seconds()
 
