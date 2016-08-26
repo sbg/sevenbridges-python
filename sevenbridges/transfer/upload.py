@@ -281,7 +281,7 @@ class Upload(threading.Thread):
             total=self._retry, status_forcelist=[500, 503], backoff_factor=0.1)
         )
         self.session = generate_session(
-            'https://', adapter, self._api._session.proxies
+            'https://', adapter, self._api.session.proxies
         )
 
     def result(self):

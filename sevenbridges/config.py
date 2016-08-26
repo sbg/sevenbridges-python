@@ -2,29 +2,7 @@ import os
 
 from sevenbridges.errors import SbgError
 from six.moves import configparser as cp
-
-
-# noinspection PyBroadException
-class ConfigUtils(object):
-    """
-        Utility class for parsing configuration files.
-    """
-
-    def __init__(self, parser):
-
-        self.parser = parser
-
-    def get_key(self, profile, key):
-        try:
-            return self.parser.get(profile, key)
-        except:
-            return None
-
-    def get_items(self, key):
-        try:
-            return self.parser.items(key)
-        except:
-            return None
+from sevenbridges.http.client import format_proxies
 
 
 class Config(object):
@@ -48,13 +26,13 @@ class Config(object):
             self.auth_token = token
             self.api_url = url
             self.oauth_token = oauth_token
-            self.proxies = proxies
+            self.proxies = format_proxies(proxies)
 
         elif oauth_token and url:
             self.oauth_token = oauth_token
             self.api_url = url
             self.auth_token = token
-            self.proxies = proxies
+            self.proxies = format_proxies(proxies)
 
         elif profile is None:
             # If there is no profile check environmental variables.
@@ -69,27 +47,28 @@ class Config(object):
                 raise SbgError('api-url variable environment missing.')
 
         else:
-            config_parser = cp.ConfigParser()
+            parser = cp.ConfigParser({
+                'oauth-token': None,
+                'auth-token': None,
+                'api-url': None,
+                'http-proxy': None,
+                'https-proxy': None,
+            })
             user_config_path = os.path.join(os.path.expanduser('~'), '.sbgrc')
-            config_parser.read(user_config_path)
+            parser.read(user_config_path)
 
-            utils = ConfigUtils(parser=config_parser)
-
-            self.auth_token = utils.get_key(profile, 'auth-token')
-            self.oauth_token = utils.get_key(profile, 'oauth-token')
-            proxy_values = utils.get_items('proxies')
-            if proxy_values:
-                self.proxies = {}
-                for protocol, uri in proxy_values:
-                    self.proxies[protocol] = uri
-            else:
-                self.proxies = None
-
+            parser.read(user_config_path)
+            self.auth_token = parser.get(profile, 'auth-token')
+            self.oauth_token = parser.get(profile, 'oauth-token')
+            self.proxies = {
+                'http-proxy': parser.get(profile, 'http-proxy'),
+                'https-proxy': parser.get(profile, 'https-proxy')
+            }
             if not self.auth_token and not self.oauth_token:
                 raise SbgError(
                     'auth-token or oauth-token variable missing in the '
                     'configuration file.'
                 )
-            self.api_url = utils.get_key(profile, 'api-url')
+            self.api_url = parser.get(profile, 'api-url')
             if not self.api_url:
                 raise SbgError('api-url missing in the configuration file.')

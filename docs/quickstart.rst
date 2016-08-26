@@ -1,4 +1,3 @@
-
 Quickstart
 ==========
 
@@ -76,7 +75,7 @@ as key-value arguments into the :code:`Api` object.
 
 .. code:: python
 
-    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='27d598b71beb4660952739ed5f94ebda')
+    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
 
 *Note* - you can initialize several API clients with
 different credentials or environments.
@@ -121,7 +120,39 @@ instantiated the configuration class, pass it to the API class constructor.
     c = sbg.Config(profile='sbpla')
     api = sbg.Api(config=c)
 
-   
+
+Proxy configuration
+--------------------------------
+
+Proxy configuration can be supplied in three different ways.
+
+    - explicit initialization
+
+    .. code:: python
+
+     api = sb.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>',
+            proxies={'https-proxy':'host:port', 'http-proxy': 'host:port'})
+
+    - environment variables
+
+    .. code:: python
+
+        os.environ['HTTP_PROXY'] = 'host:port'
+        os.environ['HTTPS_PROXY'] = 'host:port'
+
+    - .sbgrc configuration file
+
+    .. code::
+
+        [sbpla]
+        api-url = https://api.sbgenomics.com/v2
+        auth-token = <TOKEN_HERE>
+        https-proxy=host:port
+        http-proxy=host:port
+
+.. note:: Once you set the proxy, all calls including upload and download will use the proxy settings.
+
+
 Rate limit
 ----------
 
@@ -136,6 +167,7 @@ obtained using your :code:`Api` object, as follows.
     api.limit, 
     api.remaining, 
     api.reset_time
+
 
 Managing users
 --------------
@@ -476,7 +508,9 @@ Each file has the following properties:
 
 ``origin`` - File origin information, indicating the task that created the file.
 
-``metadata`` - File metadata
+``tags`` - File tags.
+
+``metadata`` - File metadata.
 
 File methods
 ~~~~~~~~~~~~
@@ -524,6 +558,70 @@ Examples
     # Download a file to the current working directory
     # Optionally, path can contain a full path on local filesystem
     new_file.download(path='my_new_file_on_disk')
+
+Managing file upload and download
+-------------------------------------
+
+``sevenbridges-python`` library provides both synchronous and asynchronous
+way of uploading or downloading files.
+
+File Download
+~~~~~~~~
+
+Synchronous file download:
+
+.. code:: python
+
+    file = api.files.get('file-identifier')
+    file.download('/home/bar/foo/file.bam')
+
+Asynchronous file download:
+
+.. code:: python
+
+    file = api.files.get('file-identifier')
+    download = file.download('/home/bar/foo.bam', wait=False)
+    download.status() # Gets the status of the download.
+    download.start() # Starts the download.
+    download.pause() # Pauses the download.
+    download.resume() # Resumes the download.
+    download.stop() # Stops the download.
+    download.wait() # Block the main loop until download completes.
+
+You can register the callback or error callback function to the
+download handle: ``download.add_callback(callback=my_callback, errorback=my_error_back)``
+
+Registered callback method will be invoked on completion of the download. The errorback
+method will be invoked if error happens during download.
+
+File Upload
+~~~~~~~~
+
+Synchronous file upload:
+
+.. code:: python
+
+    # Get the project where we want to upload files.
+    project = api.projects.get('project-identifier')
+    api.files.upload('/home/bar/foo/file.fastq', project)
+    # Optionally we can set file name of the uploaded file.
+    api.files.upload('/home/bar/foo/file.fastq', project, file_name='new.fastq')
+
+Asynchronous file upload:
+
+.. code:: python
+
+    upload = api.files.upload('/home/bar/foo/file.fastq', 'project-identifier', wait=False)
+    upload.status() # Gets the status of the upload.
+    upload.start() # Starts the upload.
+    upload.pause() # Pauses the upload.
+    upload.resume() # Resumes the upload.
+    upload.stop() # Stops the upload.
+    upload.wait() # Block the main loop until upload completes.
+
+You can register the callback or error callback in the same manner as it
+was described for asynchronous file download.
+
 
 Managing volumes: connecting cloud storage to the Platform
 -------------------------------------
@@ -733,7 +831,7 @@ Examples
                         done_len += 1
                  time.sleep(10)
           if done_len == num_exports:
-                 done = True    
+                 done = True
     
 Managing apps
 -------------

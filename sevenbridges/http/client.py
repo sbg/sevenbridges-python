@@ -19,6 +19,20 @@ client_info = {
 }
 
 
+def format_proxies(proxies):
+    """
+    Helper method for request proxy key compatibility.
+    :param proxies: Proxies dictionary
+    :return: Dict compatible with request proxy format.
+    """
+    if proxies:
+        return {
+            'http': proxies.get('http-proxy', None),
+            'https': proxies.get('https-proxy', None)
+        }
+    return {}
+
+
 def generate_session(url, adapter, proxies=None):
     """
     Helper method to generate request sessions.
@@ -28,9 +42,8 @@ def generate_session(url, adapter, proxies=None):
     :return: requests.Session object.
     """
     session = requests.Session()
-    if proxies:
-        session.proxies = dict(proxies)
-        session.mount(url, adapter)
+    session.proxies = format_proxies(proxies)
+    session.mount(url, adapter)
     return session
 
 

@@ -59,10 +59,3 @@ class Api(HttpClient):
             max_workers=download_max_workers
         )
         self.upload_pool = ThreadPoolExecutor(max_workers=upload_max_workers)
-
-
-if __name__ == '__main__':
-    from sevenbridges import Config
-    api = Api(config=Config(profile='igor'))
-    api.projects.query()
-

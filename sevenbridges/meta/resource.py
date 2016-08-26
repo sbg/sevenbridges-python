@@ -5,7 +5,7 @@ import six
 from sevenbridges.errors import SbgError
 from sevenbridges.http.client import HttpClient
 from sevenbridges.meta.data import DataContainer
-from sevenbridges.meta.fields import Field, CompoundField, CompoundListField
+from sevenbridges.meta.fields import Field
 
 
 # noinspection PyProtectedMember
@@ -156,4 +156,3 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         self._data = resource._data
         self._dirty = resource._dirty
-        return self

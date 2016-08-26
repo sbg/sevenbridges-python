@@ -1,10 +1,10 @@
 import six
 
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import ResourceNotModified
+from sevenbridges.errors import ResourceNotModified, SbgError
 from sevenbridges.meta.fields import (
-    HrefField, StringField, IntegerField, CompoundField, DateTimeField
-)
+    HrefField, StringField, IntegerField, CompoundField, DateTimeField,
+    BasicListField)
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.files.download_info import DownloadInfo
@@ -26,7 +26,8 @@ class File(Resource):
         'delete': '/files/{id}',
         'copy': '/files/{id}/actions/copy',
         'download_info': '/files/{id}/download_info',
-        'metadata': '/files/{id}/metadata'
+        'metadata': '/files/{id}/metadata',
+        'tags': '/files/{id}/tags'
     }
 
     href = HrefField()
@@ -39,6 +40,7 @@ class File(Resource):
     origin = CompoundField(FileOrigin, read_only=True)
     storage = CompoundField(FileStorage, read_only=True)
     metadata = CompoundField(Metadata, read_only=False)
+    tags = BasicListField(read_only=False)
 
     def __str__(self):
         return six.text_type('<File: id={id}>'.format(id=self.id))
@@ -176,18 +178,33 @@ class File(Resource):
         """
         modified_data = self._modified_data()
         if bool(modified_data):
+            # If metadata is to be set
             if 'metadata' in modified_data:
-                self._api.patch(url=self._URL['metadata'].format(id=self.id),
-                                data=modified_data['metadata'])
-                return self.get(id=self.id, api=self._api)
-
-            else:
-                data = self._api.patch(url=self._URL['get'].format(id=self.id),
-                                       data=modified_data).json()
-                file = File(api=self._api, **data)
-                return file
+                try:
+                    _ = self._method
+                    self._api.put(
+                        url=self._URL['metadata'].format(id=self.id),
+                        data=modified_data['metadata'])
+                except AttributeError:
+                    self._api.patch(
+                        url=self._URL['metadata'].format(id=self.id),
+                        data=modified_data['metadata'])
+                modified_data.pop('metadata')
+            if 'tags' in modified_data:
+                self._api.put(
+                    url=self._URL['tags'].format(id=self.id),
+                    data=modified_data['tags']
+                )
+                modified_data.pop('tags')
+            # Change everything else
+            if bool(modified_data):
+                self._api.patch(
+                    url=self._URL['get'].format(id=self.id),
+                    data=modified_data)
         else:
             raise ResourceNotModified()
+
+        return self.reload()
 
     def stream(self, part_size=32 * PartSize.KB):
         """
@@ -201,3 +218,31 @@ class File(Resource):
         )
         for part in response.iter_content(part_size):
             yield part
+
+    def reload(self):
+        """
+        Refreshes the file with the data from the server.
+        """
+        try:
+            data = self._api.get(self.href, append_base=False).json()
+            resource = File(api=self._api, **data)
+        except Exception:
+            try:
+                data = self._api.get(
+                    self._URL['get'].format(id=self.id)).json()
+                resource = File(api=self._api, **data)
+            except Exception:
+                raise SbgError('Resource can not be refreshed!')
+
+        self._data = resource._data
+        self._dirty = resource._dirty
+
+        # Handle file specifics. If file.metadata = value was executed
+        # file object will have attribute _method='PUT', which tells us
+        # to force overwrite of metadata on the server. This is metadata
+        # specific. Once we reload the resource we delete the attribute
+        # _method from the instance.
+        try:
+            delattr(self, '_method')
+        except AttributeError:
+            pass
