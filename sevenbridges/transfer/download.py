@@ -7,6 +7,7 @@ import requests
 from requests.adapters import HTTPAdapter
 
 from requests.packages.urllib3 import Retry
+import six
 
 from sevenbridges.errors import SbgError
 from sevenbridges.http.client import generate_session
@@ -153,6 +154,7 @@ class Download(threading.Thread):
             raise SbgError('Api instance missing.')
 
         if part_size and part_size < PartSize.DOWNLOAD_MINIMUM_PART_SIZE:
+            self._status = TransferState.FAILED
             raise SbgError(
                 'Part size is too small! Minimum get_parts size is {}'.format(
                     PartSize.DOWNLOAD_MINIMUM_PART_SIZE)
@@ -196,6 +198,11 @@ class Download(threading.Thread):
                 raise error
         self._status = TransferState.PREPARING
         self._stop_signal = False
+
+    def __repr__(self):
+        return six.text_type(
+            '<Download: status={status}>'.format(status=self.status)
+        )
 
     @property
     def progress(self):
@@ -278,13 +285,7 @@ class Download(threading.Thread):
         """
         Blocks until download is completed.
         """
-        if self._status == TransferState.RUNNING:
-            self.join()
-            self._status = TransferState.COMPLETED
-        else:
-            raise SbgError(
-                'Unable to wait. Download not in RUNNING state.'
-            )
+        self.join()
 
     def start(self):
         """

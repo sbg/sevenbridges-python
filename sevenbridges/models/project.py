@@ -56,14 +56,14 @@ class Project(Resource):
 
     @classmethod
     def create(cls, name, billing_group, description=None, tags=None,
-               locked=False, api=None):
+               settings=None, api=None):
         """
         Create a project.
         :param name:  Project name.
         :param billing_group: Project billing group.
         :param description:  Project description.
         :param tags: Project tags.
-        :param locked: If true project will be locked.
+        :param settings: Project settings.
         :param api: Api instance.
         :return:
         """
@@ -82,9 +82,8 @@ class Project(Resource):
         if tags:
             data['tags'] = tags
 
-        data['settings'] = {
-            'locked': locked
-        }
+        if settings:
+            data['settings'] = settings
 
         project_data = api.post(url=cls._URL['query'],
                                 data=data).json()

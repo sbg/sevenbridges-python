@@ -284,6 +284,11 @@ class Upload(threading.Thread):
             'https://', adapter, self._api.session.proxies
         )
 
+    def __repr__(self):
+        return six.text_type(
+            '<Upload: status={status}>'.format(status=self.status)
+        )
+
     def result(self):
         return self._result
 
@@ -294,6 +299,7 @@ class Upload(threading.Thread):
         """
         total = int(math.ceil(self._file_size / self._part_size))
         if total > PartSize.MAXIMUM_TOTAL_PARTS:
+            self._status = TransferState.FAILED
             raise SbgError(
                 'Total parts = {}. Maximum number of parts is {}'.format(
                     total, PartSize.MAXIMUM_TOTAL_PARTS)
@@ -305,6 +311,7 @@ class Upload(threading.Thread):
         which is 5GB.
         """
         if self._part_size > PartSize.MAXIMUM_UPLOAD_SIZE:
+            self._status = TransferState.FAILED
             raise SbgError('Part size = {}b. Maximum part size is {}b'.format(
                 self._part_size, PartSize.MAXIMUM_UPLOAD_SIZE)
             )
@@ -315,6 +322,7 @@ class Upload(threading.Thread):
         that is allowed for upload.
         """
         if self._file_size > PartSize.MAXIMUM_OBJECT_SIZE:
+            self._status = TransferState.FAILED
             raise SbgError('File size = {}b. Maximum file size is {}b'.format(
                 self._file_size, PartSize.MAXIMUM_OBJECT_SIZE)
             )
@@ -343,6 +351,7 @@ class Upload(threading.Thread):
             )
             self._upload_id = response.json()['upload_id']
         except SbgError as e:
+            self._status = TransferState.FAILED
             raise SbgError(
                 'Unable to initialize upload! Failed to get upload id! '
                 'Reason: {}'.format(e.message)
@@ -360,6 +369,7 @@ class Upload(threading.Thread):
             self._result = File(api=self._api, **response)
 
         except SbgError as e:
+            self._status = TransferState.FAILED
             raise SbgError(
                 'Failed to complete upload! Reason: {}'.format(e.message)
             )
@@ -373,6 +383,7 @@ class Upload(threading.Thread):
                 self._URL['upload_info'].format(upload_id=self._upload_id)
             )
         except SbgError as e:
+            self._status = TransferState.FAILED
             raise SbgError(
                 'Failed to abort upload! Reason: {}'.format(e.message)
             )
@@ -472,13 +483,7 @@ class Upload(threading.Thread):
         """
         Blocks until upload is completed.
         """
-        if self._status == TransferState.RUNNING:
-            self.join()
-            self._status = TransferState.COMPLETED
-        else:
-            raise SbgError(
-                'Unable to wait. Upload not in RUNNING state.'
-            )
+        self.join()
 
     def start(self):
         """
