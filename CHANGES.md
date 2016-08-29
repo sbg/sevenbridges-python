@@ -1,4 +1,4 @@
-0.5.0 (2016-28-29)
+0.5.0 (2016-08-29)
 ==================
 
 - Project settings available on project resource. These settings

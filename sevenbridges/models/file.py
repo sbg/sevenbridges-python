@@ -184,11 +184,13 @@ class File(Resource):
                     _ = self._method
                     self._api.put(
                         url=self._URL['metadata'].format(id=self.id),
-                        data=modified_data['metadata'])
+                        data=modified_data['metadata']
+                    )
                 except AttributeError:
                     self._api.patch(
                         url=self._URL['metadata'].format(id=self.id),
-                        data=modified_data['metadata'])
+                        data=modified_data['metadata']
+                    )
                 modified_data.pop('metadata')
             if 'tags' in modified_data:
                 self._api.put(
@@ -199,8 +201,8 @@ class File(Resource):
             # Change everything else
             if bool(modified_data):
                 self._api.patch(
-                    url=self._URL['get'].format(id=self.id),
-                    data=modified_data)
+                    url=self._URL['get'].format(id=self.id), data=modified_data
+                )
         else:
             raise ResourceNotModified()
 
@@ -219,6 +221,7 @@ class File(Resource):
         for part in response.iter_content(part_size):
             yield part
 
+    # noinspection PyAttributeOutsideInit
     def reload(self):
         """
         Refreshes the file with the data from the server.
@@ -237,7 +240,7 @@ class File(Resource):
         self._data = resource._data
         self._dirty = resource._dirty
 
-        # Handle file specifics. If file.metadata = value was executed
+        # If file.metadata = value was executed
         # file object will have attribute _method='PUT', which tells us
         # to force overwrite of metadata on the server. This is metadata
         # specific. Once we reload the resource we delete the attribute
