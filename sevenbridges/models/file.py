@@ -1,7 +1,8 @@
 import six
+import os
 
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import ResourceNotModified
+from sevenbridges.errors import ResourceNotModified, LocalFileAlreadyExists
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, CompoundField, DateTimeField
 )
@@ -145,7 +146,8 @@ class File(Resource):
         return DownloadInfo(api=self._api, **info.json())
 
     def download(self, path, retry=5, timeout=10,
-                 chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True):
+                 chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True,
+                 overwrite=False):
         """
         Downloads the file and returns a download handle.
         Download will not start until .start() method is invoked.
@@ -154,8 +156,13 @@ class File(Resource):
         :param timeout:  Timeout for http requests.
         :param chunk_size:  Chunk size in bytes.
         :param wait: If true will wait for download to complete.
+        :param over_write: If True will silently overwrite existing file, otherwise OSError is raised
         :return: Download handle.
         """
+
+        if not overwrite and os.path.exists(path):
+            raise LocalFileAlreadyExists(message=path)
+
         info = self.download_info()
         download = Download(
             url=info.url, file_path=path, retry_count=retry, timeout=timeout,
