@@ -1,4 +1,5 @@
 import six
+import os
 
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
@@ -145,7 +146,8 @@ class File(Resource):
         return DownloadInfo(api=self._api, **info.json())
 
     def download(self, path, retry=5, timeout=10,
-                 chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True):
+                 chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True,
+                 over_write=False):
         """
         Downloads the file and returns a download handle.
         Download will not start until .start() method is invoked.
@@ -154,8 +156,13 @@ class File(Resource):
         :param timeout:  Timeout for http requests.
         :param chunk_size:  Chunk size in bytes.
         :param wait: If true will wait for download to complete.
+        :param over_write: If True will silently overwrite existing file, otherwise OSError is raised
         :return: Download handle.
         """
+
+        if not over_write and os.path.exists(path):
+            raise OSError(17, 'File exists')
+
         info = self.download_info()
         download = Download(
             url=info.url, file_path=path, retry_count=retry, timeout=timeout,
