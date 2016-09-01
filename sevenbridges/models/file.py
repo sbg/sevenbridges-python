@@ -2,7 +2,7 @@ import six
 import os
 
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import ResourceNotModified
+from sevenbridges.errors import ResourceNotModified, LocalFileAlreadyExists
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, CompoundField, DateTimeField
 )
@@ -147,7 +147,7 @@ class File(Resource):
 
     def download(self, path, retry=5, timeout=10,
                  chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True,
-                 over_write=False):
+                 overwrite=False):
         """
         Downloads the file and returns a download handle.
         Download will not start until .start() method is invoked.
@@ -160,8 +160,8 @@ class File(Resource):
         :return: Download handle.
         """
 
-        if not over_write and os.path.exists(path):
-            raise OSError(17, 'File exists')
+        if not overwrite and os.path.exists(path):
+            raise LocalFileAlreadyExists(message=path)
 
         info = self.download_info()
         download = Download(
