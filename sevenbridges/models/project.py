@@ -5,14 +5,12 @@ from sevenbridges.meta.transformer import Transform
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import SbgError, ResourceNotModified
 from sevenbridges.meta.collection import Collection
-from sevenbridges.models.app import App
-from sevenbridges.models.file import File
+from sevenbridges.models.compound.projects.settings import Settings
 from sevenbridges.models.link import Link
 from sevenbridges.models.member import Member
-from sevenbridges.models.task import Task
 from sevenbridges.meta.fields import (
-    HrefField, StringField, UuidField, BasicListField
-)
+    HrefField, StringField, UuidField, BasicListField,
+    CompoundField)
 
 
 class Project(Resource):
@@ -36,6 +34,7 @@ class Project(Resource):
     description = StringField(read_only=False)
     type = StringField(read_only=False, max_length=2)
     tags = BasicListField(read_only=False)
+    settings = CompoundField(Settings, read_only=False)
 
     def __str__(self):
         return six.text_type('<Project: id={id}>'.format(id=self.id))
@@ -57,13 +56,14 @@ class Project(Resource):
 
     @classmethod
     def create(cls, name, billing_group, description=None, tags=None,
-               api=None):
+               settings=None, api=None):
         """
         Create a project.
         :param name:  Project name.
         :param billing_group: Project billing group.
         :param description:  Project description.
         :param tags: Project tags.
+        :param settings: Project settings.
         :param api: Api instance.
         :return:
         """
@@ -81,6 +81,9 @@ class Project(Resource):
             data['description'] = description
         if tags:
             data['tags'] = tags
+
+        if settings:
+            data['settings'] = settings
 
         project_data = api.post(url=cls._URL['query'],
                                 data=data).json()
