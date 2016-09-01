@@ -103,3 +103,10 @@ class RequestTimeout(SbgError):
         super(RequestTimeout, self).__init__(
             code=code, status=408, message=message, more_info=more_info
         )
+
+
+class LocalFileAlreadyExists(SbgError):
+    def __init__(self, code=None, message=None, more_info=None):
+        super(LocalFileAlreadyExists, self).__init__(
+            code=code, status=-1, message=message, more_info=more_info
+        )
