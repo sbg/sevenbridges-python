@@ -81,8 +81,8 @@ def test_create_app_revision(api, given, verifier):
     raw = {'sbg:id': app_id, 'revision': revision}
 
     # action
-    app_id_revision = '{}/{}'.format(app_id, str(revision))
-    app = api.apps.create_revision(app_id_revision, revision, raw)
+    app_id = '{}'.format(app_id)
+    app = api.apps.create_revision(app_id, revision, raw)
 
     # verification
     assert app.id == app_id
