@@ -2,7 +2,9 @@ import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import SbgError, TaskValidationError
+from sevenbridges.errors import (
+    SbgError, TaskValidationError
+)
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.tasks.batch_by import BatchBy
 from sevenbridges.models.compound.tasks.batch_group import BatchGroup

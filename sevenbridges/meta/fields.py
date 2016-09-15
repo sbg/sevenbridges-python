@@ -78,8 +78,11 @@ class CompoundListField(Field):
         self.cls = cls
 
     def __get__(self, instance, owner):
-        return [self.cls(api=instance._api, **item) for item in
-                instance._data[self.name]]
+        if instance._data[self.name]:
+            return [self.cls(api=instance._api, **item) for item in
+                    instance._data[self.name]]
+        else:
+            return []
 
 
 class DictField(Field, dict):

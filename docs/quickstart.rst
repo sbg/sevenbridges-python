@@ -520,6 +520,8 @@ Files have the following methods:
 -  Copy the file from one project to another: ``copy()``
 -  Download the file: ``download()``
 -  Save modifications to the file to the server ``save()``
+-  Delete the resource: ``delete()``
+
 
 See the examples below for information on the arguments these methods take:
 
@@ -683,7 +685,7 @@ Volumes have the following methods:
 -  Create a new volume based on the AWS S3 service -  ``create_s3_volume()``
 -  Create a new volume based on Google Cloud Storage service  - ``create_google_volume()``
 -  Save modifications to the volume to the server ``save()``
--  Delete the volume ``delete()``
+-  Unlink the volume ``delete()``
 
 See the examples below for information on the arguments these methods take:
 
@@ -799,7 +801,7 @@ Exports have the following methods:
 
 -  Refresh the export with data from the server: ``reload()``
 -  Submit export, by specifying source and destination of the import: ``submit_import()``
--  Delete the import: ``delete()``
+-  Delete the export: ``delete()``
 
 See the examples below for information on the arguments these methods take:
 
@@ -872,7 +874,7 @@ Each app has the following available properties:
 App methods
 ~~~~~~~~~~~
 
-Currently there are no specific app methods, apart from class methods mentioned above.
+- ``delete()`` - Deletes the app from the project.
 
 Managing tasks
 --------------
