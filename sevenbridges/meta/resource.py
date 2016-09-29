@@ -156,3 +156,4 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         self._data = resource._data
         self._dirty = resource._dirty
+        return self

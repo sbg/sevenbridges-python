@@ -874,7 +874,7 @@ Each app has the following available properties:
 App methods
 ~~~~~~~~~~~
 
-- ``delete()`` - Deletes the app from the project.
+- App only has class methods that were mentioned above.
 
 Managing tasks
 --------------
