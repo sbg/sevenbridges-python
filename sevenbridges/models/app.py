@@ -37,7 +37,9 @@ class App(Resource):
             return self._id
 
     def __str__(self):
-        return six.text_type('<App: id={id}>'.format(id=self.id))
+        return six.text_type('<App: id={id} rev={rev}>'.format(
+            id=self.id, rev=self.revision)
+        )
 
     @classmethod
     def query(cls, project=None, visibility=None, offset=None, limit=None,

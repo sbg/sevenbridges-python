@@ -2,7 +2,7 @@ import io
 import sys
 from setuptools import setup, find_packages
 
-version = "0.5.3"
+version = "0.5.4"
 
 install_requires = []
 
@@ -20,7 +20,7 @@ setup(
     version=version,
     description='SBG API python client bindings',
     install_requires=install_requires,
-    long_description=io.open('README.md', 'r').read(),
+    long_description=io.open('README.rst', 'r').read(),
     platforms=['Windows', 'POSIX', 'MacOS'],
     maintainer='Seven Bridges Genomics Inc.',
     maintainer_email='developer@sbgenomics.com',

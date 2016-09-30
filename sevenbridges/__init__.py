@@ -5,7 +5,7 @@ sevenbridges-python
 :license: Apache 2.0
 """
 
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config

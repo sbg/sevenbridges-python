@@ -14,6 +14,8 @@ from sevenbridges.models.compound.tasks.output import Output
 from sevenbridges.models.compound.price import Price
 from sevenbridges.models.execution_details import ExecutionDetails
 from sevenbridges.models.file import File
+from sevenbridges.models.app import App
+
 from sevenbridges.meta.fields import (
     HrefField, UuidField, StringField, CompoundField, DateTimeField,
     BooleanField, DictField
@@ -108,9 +110,15 @@ class Task(Resource):
         task_data = {}
 
         project = Transform.to_project(project)
+
+        temp = app
         app = Transform.to_app(app)
+
         if revision:
             app = app + "/" + six.text_type(revision)
+        else:
+            if isinstance(temp, App):
+                app = app + "/" + six.text_type(temp.revision)
 
         task_inputs = {'inputs': {}}
         for k, v in inputs.items():
