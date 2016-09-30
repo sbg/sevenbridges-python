@@ -111,14 +111,13 @@ class Task(Resource):
 
         project = Transform.to_project(project)
 
-        temp = app
-        app = Transform.to_app(app)
+        app_id = Transform.to_app(app)
 
         if revision:
-            app = app + "/" + six.text_type(revision)
+            app_id = app_id + "/" + six.text_type(revision)
         else:
-            if isinstance(temp, App):
-                app = app + "/" + six.text_type(temp.revision)
+            if isinstance(app, App):
+                app_id = app_id + "/" + six.text_type(app.revision)
 
         task_inputs = {'inputs': {}}
         for k, v in inputs.items():
@@ -155,7 +154,7 @@ class Task(Resource):
         task_meta = {
             'name': name,
             'project': project,
-            'app': app,
+            'app': app_id,
             'description': description
         }
         task_data.update(task_meta)
