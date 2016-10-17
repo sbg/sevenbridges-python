@@ -4,9 +4,6 @@ import threading
 import time
 
 import requests
-from requests.adapters import HTTPAdapter
-
-from requests.packages.urllib3 import Retry
 import six
 
 from sevenbridges.errors import SbgError
@@ -182,12 +179,7 @@ class Download(threading.Thread):
         self._progress_callback = None
         self._time_started = 0
 
-        adapter = HTTPAdapter(max_retries=Retry(
-            total=self._retry, status_forcelist=[500, 503], backoff_factor=0.1)
-        )
-        self._session = generate_session(
-            'https://', adapter, self._api.session.proxies
-        )
+        self._session = generate_session(self._api.session.proxies)
 
         try:
             self._file_size = self._get_file_size()

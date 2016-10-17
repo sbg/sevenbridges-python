@@ -129,7 +129,7 @@ html_theme = 'sphinx_rtd_theme'
 # html_title = None
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = 'python-sbg docs'
+html_short_title = 'sevenbridges-python docs'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.

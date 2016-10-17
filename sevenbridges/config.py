@@ -39,6 +39,10 @@ class Config(object):
             self.auth_token = os.environ.get('AUTH_TOKEN')
             self.oauth_token = os.environ.get('OAUTH_TOKEN')
             self.api_url = os.environ.get('API_URL')
+            self.proxies = {
+                'http-proxy': os.environ.get('HTTP_PROXY'),
+                'https-proxy': os.environ.get('HTTPS_PROXY')
+            }
             if not self.auth_token and not self.oauth_token:
                 raise SbgError(
                     'auth-token or oauth-token environment variable missing.'

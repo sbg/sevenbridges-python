@@ -122,7 +122,7 @@ instantiated the configuration class, pass it to the API class constructor.
 
 
 Proxy configuration
---------------------------------
+-------------------
 
 Proxy configuration can be supplied in three different ways.
 
@@ -151,7 +151,6 @@ Proxy configuration can be supplied in three different ways.
         http-proxy=host:port
 
 .. note:: Once you set the proxy, all calls including upload and download will use the proxy settings.
-
 
 Rate limit
 ----------
@@ -562,13 +561,13 @@ Examples
     new_file.download(path='my_new_file_on_disk')
 
 Managing file upload and download
--------------------------------------
+---------------------------------
 
 ``sevenbridges-python`` library provides both synchronous and asynchronous
 way of uploading or downloading files.
 
 File Download
-~~~~~~~~
+~~~~~~~~~~~~~
 
 Synchronous file download:
 
@@ -597,7 +596,7 @@ Registered callback method will be invoked on completion of the download. The er
 method will be invoked if error happens during download.
 
 File Upload
-~~~~~~~~
+~~~~~~~~~~~
 
 Synchronous file upload:
 
@@ -626,7 +625,7 @@ was described for asynchronous file download.
 
 
 Managing volumes: connecting cloud storage to the Platform
--------------------------------------
+----------------------------------------------------------
 
 Volumes authorize the Platform to access and query objects on a specified cloud storage (Amazon Web Services or Google Cloud Storage) on your behalf. As for as all other resources, the sevenbridges-python library enables you to effectively query volumes, import files from a volume to a project or export files from a project to the volume. 
 

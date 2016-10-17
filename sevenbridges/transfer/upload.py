@@ -1,14 +1,11 @@
 import io
-import math
 import os
 import threading
 import time
 
 import six
-from requests.adapters import HTTPAdapter
 
-from requests.packages.urllib3 import Retry
-
+import math
 from sevenbridges.http.client import generate_session
 from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
@@ -277,12 +274,7 @@ class Upload(threading.Thread):
         self._stop_signal = False
         self._result = None
 
-        adapter = HTTPAdapter(max_retries=Retry(
-            total=self._retry, status_forcelist=[500, 503], backoff_factor=0.1)
-        )
-        self.session = generate_session(
-            'https://', adapter, self._api.session.proxies
-        )
+        self.session = generate_session(self._api.session.proxies)
 
     def __repr__(self):
         return six.text_type(
@@ -444,9 +436,10 @@ class Upload(threading.Thread):
         :raises SbgError: If upload is not in PAUSED or RUNNING state.
         """
         if self.status in (TransferState.PAUSED, TransferState.RUNNING):
-            self._running.set()
+            self._running.clear()
             self._stop_signal = True
             self.join()
+            self._abort_upload()
             self._status = TransferState.STOPPED
             if self._callback:
                 return self._callback(self._status)
@@ -465,19 +458,6 @@ class Upload(threading.Thread):
             self._status = TransferState.RUNNING
         else:
             raise SbgError('Can not resume. Upload not in PAUSED state.')
-
-    def abort(self):
-        """
-        Aborts the upload.
-        :raises SbgError: If upload is not in RUNNING state.
-        """
-        if self._status == TransferState.RUNNING:
-            self._stop_signal = True
-            self.join()
-            self._abort_upload()
-            self._status = TransferState.ABORTED
-        else:
-            raise SbgError('Nothing to abort. Upload not in RUNNING state.')
 
     def wait(self):
         """

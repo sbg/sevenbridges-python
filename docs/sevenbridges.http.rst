@@ -17,4 +17,12 @@ sevenbridges.http.client module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.http.middlewares module
+------------------------------------
+
+.. automodule:: sevenbridges.http.middlewares
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 

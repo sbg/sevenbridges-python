@@ -1,3 +1,14 @@
+0.6.0 (2016-10-17)
+
+Added support for error_handlers. Users can now register error_handlers
+that will be executed upon each request. 
+
+- Bugfixes
+  - [Issue #45](https://github.com/sbg/sevenbridges-python/issues/45)
+  - [Issue #46](https://github.com/sbg/sevenbridges-python/issues/46)
+
+
+
 0.5.4 (2016-09-30)
 ==================
 - Bugfixes
