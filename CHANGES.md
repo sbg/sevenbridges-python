@@ -1,4 +1,5 @@
 0.6.0 (2016-10-17)
+==================
 
 Added support for error_handlers. Users can now register error_handlers
 that will be executed upon each request. 
