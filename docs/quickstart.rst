@@ -549,7 +549,10 @@ Examples
     my_file.metadata = {'sample_id' : 'my-sample',
                         'library' : 'my-library'
                       }
-
+                      
+    # Also set a tag on that file
+    my_file.tags = ['example']
+   
     # Save modifications
     my_file.save()
     
