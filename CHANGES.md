@@ -1,3 +1,8 @@
+0.6.1 (2016-10-19)
+==================
+Removing duplicated error handlers that occur during api object
+instantiation.
+
 0.6.0 (2016-10-17)
 ==================
 

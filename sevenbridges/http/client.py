@@ -89,7 +89,9 @@ class HttpClient(object):
 
         self.error_handlers = [maintenance_sleeper]
         if error_handlers and isinstance(error_handlers, list):
-            self.error_handlers.extend(error_handlers)
+            for handler in error_handlers:
+                if handler not in self.error_handlers:
+                    self.error_handlers.append(handler)
 
     @property
     def session(self):
@@ -116,13 +118,13 @@ class HttpClient(object):
     def request_id(self):
         return self._request_id
 
-    def add_error_handler(self, error_handler):
-        if callable(error_handler):
-            self.error_handlers.append(error_handler)
+    def add_error_handler(self, handler):
+        if callable(handler) and handler not in self.error_handlers:
+            self.error_handlers.append(handler)
 
-    def remove_error_handler(self, error_handler):
-        if callable(error_handler):
-            self.error_handlers.remove(error_handler)
+    def remove_error_handler(self, handler):
+        if callable(handler) and handler in self.error_handlers:
+            self.error_handlers.remove(handler)
 
     def _rate_limit(self):
         self._request('GET', url='/rate_limit', append_base=True)
