@@ -159,6 +159,45 @@ class Task(Resource):
 
         return Task(api=api, **created_task)
 
+    @classmethod
+    def smart_create(cls, name, project, app, revision=None, batch_input=None,
+                     batch_by=None,
+                     file_inputs=None, app_settings=None, description=None, run=False, api=None):
+        """
+        Creates a task on server. Takes file names for file_input values and smartly retrieves
+        the file objects from the project. Calls 'create' internally
+        :param name: Task name.
+        :param project: Project identifier.
+        :param app: CWL app identifier.
+        :param revision: CWL app revision.
+        :param batch_input: Batch input.
+        :param batch_by: Batch criteria.
+        :param file_inputs: Input map with file names.
+        :param app_settings: Input map with app settings (not file objects)
+        :param description: Task description.
+        :param run: True if you want to run a task upon creation.
+        :param api: Api instance.
+        :return: Task object.
+        """
+        inputs = app_settings or {}
+        inputs.update(**cls.fileify(api if api else cls._API, project, file_inputs))
+        cls.create(name, project, app, revision=revision, batch_input=batch_input, batch_by=batch_by,
+                   inputs=inputs, description=description, run=run, api=api)
+
+    @staticmethod
+    def fileify(api, project, file_inputs):
+        """Given a dictionary representing file inputs retrieve the file objects for all of them"""
+
+        # Get a dict mapping file name -> file object(s) from the project
+        fl = {f.name: f for f in api.files.query(
+            project=project,
+            names=[v for f in file_inputs.values() for v in (lambda x: x if isinstance(x, list) else [x])(f)])}
+
+        # Replace the file_inputs dictionary string values with file objects
+        return {
+            k: [fl[ff] for ff in v] if isinstance(v, list) else fl[v] for k, v in file_inputs.items()
+        }
+
     @inplace_reload
     def abort(self, inplace=True):
         """
