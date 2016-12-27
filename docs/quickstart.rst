@@ -952,6 +952,12 @@ The following class and instance methods are available for tasks:
 -  Get batch children if the task is a batch task:
    ``get_batch_children()``.
 
+Task creation hints
+~~~~~~~~~~
+
+- Both input files and parameters are passed the same way together in a single dictionary to ``inputs``.
+- ``api.files.query`` always return an array of files. For single file inputs, use ``api.files.query(project='my-project', names=["one_file.fa"])[0]``.
+
 
 Task Examples
 ~~~~~~~~~~~~~
@@ -1001,7 +1007,7 @@ Batch task
     inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
     
     # Specify that one task should be created per file (i.e. batch tasks by file).
-    bach_by = {'type': 'item'}
+    batch_by = {'type': 'item'}
     
     
     # Specify that the batch input is FastQC-Reads
