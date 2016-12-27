@@ -1001,7 +1001,7 @@ Batch task
     inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
     
     # Specify that one task should be created per file (i.e. batch tasks by file).
-    bach_by = {'type': 'item'}
+    batch_by = {'type': 'item'}
     
     
     # Specify that the batch input is FastQC-Reads
