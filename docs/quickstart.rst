@@ -952,6 +952,12 @@ The following class and instance methods are available for tasks:
 -  Get batch children if the task is a batch task:
    ``get_batch_children()``.
 
+Task creation hints
+~~~~~~~~~~
+
+- Both input files and parameters are passed the same way together in a single dictionary to ``inputs``.
+- ``api.files.query`` always return an array of files. For single file inputs, use ``api.files.query(project='my-project', names=["one_file.fa"])[0]``.
+
 
 Task Examples
 ~~~~~~~~~~~~~
