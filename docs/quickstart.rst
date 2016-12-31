@@ -585,7 +585,7 @@ Asynchronous file download:
 
     file = api.files.get('file-identifier')
     download = file.download('/home/bar/foo.bam', wait=False)
-    download.status() # Gets the status of the download.
+    download.status # Gets the status of the download.
     download.start() # Starts the download.
     download.pause() # Pauses the download.
     download.resume() # Resumes the download.
@@ -616,7 +616,7 @@ Asynchronous file upload:
 .. code:: python
 
     upload = api.files.upload('/home/bar/foo/file.fastq', 'project-identifier', wait=False)
-    upload.status() # Gets the status of the upload.
+    upload.status # Gets the status of the upload.
     upload.start() # Starts the upload.
     upload.pause() # Pauses the upload.
     upload.resume() # Resumes the upload.
@@ -828,9 +828,9 @@ Examples
     export_errors = []
     done = False
     
-    while !done:
+    while not done:
           done_len = 0 
-          for e in exports[]:
+          for e in exports:
                  if e.reload().state in (ImportExportState.COMPLETED, ImportExportState.FAILED):
                         done_len += 1
                  time.sleep(10)
