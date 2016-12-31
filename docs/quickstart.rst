@@ -163,8 +163,8 @@ obtained using your :code:`Api` object, as follows.
 
 .. code:: python
 
-    api.limit, 
-    api.remaining, 
+    api.limit
+    api.remaining
     api.reset_time
 
 
@@ -375,10 +375,10 @@ Other project methods include:
 2. Add a member to the project - ``project.add_member()``
 3. Remove a member from the project - ``project.remove_member()``
 4. List files from the project - ``project.get_files()``
-5. Add files to the project - ``project.add_files`` - you can add a
+5. Add files to the project - ``project.add_files()`` - you can add a
    single ``File`` or a ``Collection`` of files
 6. List apps from the project - ``project.get_apps()``
-7. List tasks from the project - ``project.get_tasks``
+7. List tasks from the project - ``project.get_tasks()``
 
 Manage billing
 --------------
@@ -825,9 +825,7 @@ Examples
 
 .. code:: python
 
-    #
-    #   Export a set of files to a volume
-    #
+    # Export a set of files to a volume
     # Get files from a project
     files_to_export = api.files.query(project=my_project).all()
     # And export all the files to the output bucket
@@ -837,7 +835,6 @@ Examples
           exports.append(export)
     # Wait for exports to finish:
     num_exports = len(exports)
-    export_errors = []
     done = False
     
     while not done:
@@ -965,7 +962,7 @@ The following class and instance methods are available for tasks:
    ``get_batch_children()``.
 
 Task creation hints
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 - Both input files and parameters are passed the same way together in a single dictionary to ``inputs``.
 - ``api.files.query`` always return an array of files. For single file inputs, use ``api.files.query(project='my-project', names=["one_file.fa"])[0]``.
