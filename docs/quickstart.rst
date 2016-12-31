@@ -585,7 +585,13 @@ Asynchronous file download:
 
     file = api.files.get('file-identifier')
     download = file.download('/home/bar/foo.bam', wait=False)
+
+    download.path # Gets the target file path of the download.
     download.status # Gets the status of the download.
+    download.progress # Gets the progress of the download as percentage.
+    download.start_time # Gets the start time of the download.
+    download.duration # Gets the download elapsed time.
+
     download.start() # Starts the download.
     download.pause() # Pauses the download.
     download.resume() # Resumes the download.
@@ -616,7 +622,13 @@ Asynchronous file upload:
 .. code:: python
 
     upload = api.files.upload('/home/bar/foo/file.fastq', 'project-identifier', wait=False)
+
+    upload.file_name # Gets the file name of the upload.
     upload.status # Gets the status of the upload.
+    upload.progress # Gets the progress of the upload as percentage.
+    upload.start_time # Gets the start time of the upload.
+    upload.duration # Gets the upload elapsed time.
+
     upload.start() # Starts the upload.
     upload.pause() # Pauses the upload.
     upload.resume() # Resumes the upload.
