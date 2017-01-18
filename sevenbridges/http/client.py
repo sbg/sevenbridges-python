@@ -140,6 +140,14 @@ class HttpClient(object):
             headers = headers.update(self.headers)
         if not self.token or self.oauth_token:
             raise SbgError(message="Api instance must be authenticated.")
+
+        if hasattr(self, '_session_id'):
+            if 'X-SBG-Auth-Token' in self.headers:
+                del self.headers['X-SBG-Auth-Token']
+            elif 'Authorization' in self.headers:
+                del self.headers['Authorization']
+            self.headers['X-SBG-Session-Id'] = getattr(self, '_session_id')
+
         if not stream:
             response = self._session.request(
                 verb, url, params=params, data=json.dumps(data),

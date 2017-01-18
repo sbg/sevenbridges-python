@@ -1,8 +1,9 @@
 import io
 import sys
+
 from setuptools import setup, find_packages
 
-version = "0.6.1"
+version = "0.6.2"
 
 install_requires = []
 
