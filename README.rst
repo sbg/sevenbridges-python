@@ -159,7 +159,7 @@ The ``$HOME/.sevenbridges/credentials`` file has a simple .ini file format, for 
     auth_token = <TOKEN_HERE>
 
     [my-profile-cgc]
-    api_endpoint = https://api.sbgenomics.com/v2
+    api_endpoint = https://cgc-api.sbgenomics.com/v2
     auth_token = <TOKEN_HERE>
 
 Initializing the sevenbridges-python library
