@@ -1,14 +1,14 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from sevenbridges.http.client import HttpClient
-from sevenbridges.models.storage_export import Export
-from sevenbridges.models.storage_import import Import
 from sevenbridges.models.app import App
 from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.file import File
 from sevenbridges.models.invoice import Invoice
 from sevenbridges.models.project import Project
+from sevenbridges.models.storage_export import Export
+from sevenbridges.models.storage_import import Import
 from sevenbridges.models.task import Task
 from sevenbridges.models.user import User
 from sevenbridges.models.volume import Volume
@@ -33,11 +33,7 @@ class Api(HttpClient):
                  timeout=None, download_max_workers=16, upload_max_workers=16,
                  proxies=None, error_handlers=None):
         """
-        Initializes api object. If url and token are not supplied,
-        the check for the .sbgrc configuration file will occur, checking if the
-        section with the profile name is present in the .ini like configuration
-        file. If profile is missing os.environ will be checked for auth-token
-        and api-url variables.
+        Initializes api object.
 
         :param url: Api url.
         :param token: Secure token.

@@ -134,10 +134,10 @@ Initialization via environment variables
     import os
 
     # Usually these would be set in the shell beforehand
-    os.environ['API_URL'] = 'https://api.sbgenomics.com/v2'
-    os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
+    os.environ['SB_API_ENDPOINT'] = 'https://api.sbgenomics.com/v2'
+    os.environ['SB_AUTH_TOKEN'] = '<TOKEN_HERE>'
 
-    api_config = sbg.Config()
+    api = sbg.Api()
 
 Initialization via config file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,22 +145,22 @@ Initialization via config file
 .. code:: python
 
     import sevenbridges as sbg
-    api_config = sbg.Config(profile='my-profile')
+    config = sbg.Config(profile='my-profile-cgc')
 
 Notes on config file format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``.sbgrc`` file has a simple .ini file format, for example:
+The ``$HOME/.sevenbridges/credentials`` file has a simple .ini file format, for example:
 
 ::
 
-    [my-profile]
-    api-url = https://api.sbgenomics.com/v2
-    auth-token = <TOKEN_HERE>
+    [default]
+    api_endpoint = https://api.sbgenomics.com/v2
+    auth_token = <TOKEN_HERE>
 
-    [py-profile-cgc]
-    api-url = https://api.sbgenomics.com/v2
-    auth-token = <TOKEN_HERE>
+    [my-profile-cgc]
+    api_endpoint = https://api.sbgenomics.com/v2
+    auth_token = <TOKEN_HERE>
 
 Initializing the sevenbridges-python library
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

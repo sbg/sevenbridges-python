@@ -47,11 +47,12 @@ Initializing the library
 
 Once you have obtained your authentication token from one of the URLs listed above, you can initialize the :code:`Api` object defined by this library by passing in your authentication token and endpiont. There are three methods to do this. Details of each method are given below:
 
-1. Pass the parameters ``url`` and ``token`` explicitly when initializing the
+1. Pass the parameters ``url`` and ``token`` and optional ``proxies`` explicitly when initializing the
    API object.
-2. Set the API endpoint and token to the environment variables ``API_URL``
-   and ``AUTH_TOKEN`` respectively.
-3. Use a configuration file ``$HOME/.sbgrc`` with the defined parameters.
+2. Set the API endpoint and token to the environment variables ``SB_API_ENDPOINT``
+   and ``SB_AUTH_TOKEN`` respectively.
+3. Use a configuration file ``$HOME/.sevenbridges/credentials`` with the defined credentials parameters. If config is used proxy settings will be read from
+   ``$HOME/.sevenbridges/sevenbridges-python/config`` .ini like file for section ``[proxies]``
 
 .. note:: Keep your authentication token safe! It encodes all your credentials on the Platform or CGC. Generally, we recommend storing the token in a configuration file, which will then be stored in your home folder rather than in the code itself. This prevents the authentication token from being committed to source code repositories.
 
@@ -70,7 +71,7 @@ Then, use one of the following three methods to initialize the library:
 1. Initialize the library explicitly
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The library can be also instatiated explicity by passing the URL and authentication token
+The library can be also instantiated explicitly by passing the URL and authentication token
 as key-value arguments into the :code:`Api` object.
 
 .. code:: python
@@ -88,27 +89,25 @@ different credentials or environments.
     import os
     
     # Usually these variables would be set in the shell beforehand
-    os.environ['API_URL'] = '<https://api.sbgenomics.com/v2 or https://cgc-api.sbgenomics.com/v2>'
-    os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
-    
-    c = sbg.Config()
+    os.environ['SB_API_ENDPOINT'] = '<https://api.sbgenomics.com/v2 or https://cgc-api.sbgenomics.com/v2>'
+    os.environ['SB_AUTH_TOKEN'] = '<TOKEN_HERE>'
 
-    api = sbg.Api(config=c)
+    api = sbg.Api()
 
 3. Initialize the library using a configuration file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The configuration file, ``.sbgrc``, has a simple ``.ini`` file format, with
+The configuration file, ``$HOME/.sevenbridges/credentials``, has a simple ``.ini`` file format, with
 the environment (the Seven Bridges Platform, or the CGC) indicated in square brackets, as shown:
 
 ::
 
-    [sbpla]
-    api-url = https://api.sbgenomics.com/v2
-    auth-token = <TOKEN_HERE>
+    [default]
+    api_endpoint = https://api.sbgenomics.com/v2
+    auth_token = <TOKEN_HERE>
 
     [cgc]
-    api-url = https://cgc-api.sbgenomics.com/v2
-    auth-token = <TOKEN_HERE>
+    api_endpoint = https://cgc-api.sbgenomics.com/v2
+    auth_token = <TOKEN_HERE>
 
 
 The :code:`Api` object is the central resource for querying, saving and
@@ -117,9 +116,15 @@ instantiated the configuration class, pass it to the API class constructor.
 
 .. code:: python
 
-    c = sbg.Config(profile='sbpla')
+    c = sbg.Config(profile='cgc')
     api = sbg.Api(config=c)
 
+If not profile is set it will use the default profile.
+
+.. note:: if user creates the api object ``api=sbg.Api()`` and does not pass any information the
+          library will first search whether the environment variables are set. If not it will check
+          if the configuration file is present and read the ``[default]`` profile. If that also fails
+          it will raise an exception
 
 Proxy configuration
 -------------------
@@ -131,7 +136,7 @@ Proxy configuration can be supplied in three different ways.
     .. code:: python
 
      api = sb.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>',
-            proxies={'https-proxy':'host:port', 'http-proxy': 'host:port'})
+            proxies={'https_proxy':'host:port', 'http_proxy': 'host:port'})
 
     - environment variables
 
@@ -140,15 +145,22 @@ Proxy configuration can be supplied in three different ways.
         os.environ['HTTP_PROXY'] = 'host:port'
         os.environ['HTTPS_PROXY'] = 'host:port'
 
-    - .sbgrc configuration file
+    - `$HOME/.sevenbridges/sevenbridges-python/config` configuration file
 
     .. code::
 
-        [sbpla]
-        api-url = https://api.sbgenomics.com/v2
-        auth-token = <TOKEN_HERE>
-        https-proxy=host:port
-        http-proxy=host:port
+        [proxies]
+        https_proxy=host:port
+        http_proxy=host:port
+
+    - Explicit with config
+
+    .. code::
+
+        config = sb.Config(profile='my-profile',
+                           proxies={'https_proxy':'host:port', 'http_proxy': 'host:port'})
+        api = sb.Api(config=config)
+
 
 .. note:: Once you set the proxy, all calls including upload and download will use the proxy settings.
 

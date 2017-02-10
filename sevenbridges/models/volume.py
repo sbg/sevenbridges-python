@@ -1,3 +1,4 @@
+import logging
 import six
 
 from sevenbridges.errors import ResourceNotModified
@@ -8,6 +9,8 @@ from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField
 )
 from sevenbridges.models.enums import VolumeType
+
+log = logging.getLogger(__name__)
 
 
 # noinspection PyProtectedMember
@@ -86,6 +89,11 @@ class Volume(Resource):
         if description:
             data['description'] = description
         api = api or cls._API
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        log.info('create s3 volume', extra=extra)
         response = api.post(url=cls._URL['query'], data=data).json()
         return Volume(api=api, **response)
 
@@ -125,6 +133,12 @@ class Volume(Resource):
         if description:
             data['description'] = description
         api = api or cls._API
+
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        log.info('create google volume', extra=extra)
         response = api.post(url=cls._URL['query'], data=data).json()
         return Volume(api=api, **response)
 
@@ -135,6 +149,14 @@ class Volume(Resource):
         """
         modified_data = self._modified_data()
         if bool(modified_data):
+            extra = {
+                'resource': self.__class__.__name__,
+                'query': {
+                    'id': self.id,
+                    'modified_data': modified_data
+                }
+            }
+            log.info('save volume', extra=extra)
             data = self._api.patch(url=self._URL['get'].format(id=self.id),
                                    data=modified_data).json()
             volume = Volume(api=self._api, **data)

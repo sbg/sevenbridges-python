@@ -1,5 +1,6 @@
 import re
 
+import logging
 import six
 
 from sevenbridges.meta.resource import Resource
@@ -7,6 +8,8 @@ from sevenbridges.meta.transformer import Transform
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, DictField
 )
+
+log = logging.getLogger(__name__)
 
 
 class App(Resource):
@@ -70,6 +73,11 @@ class App(Resource):
         :return: App object.
         """
         api = api if api else cls._API
+        extra = {'resource': cls.__name__, 'query': {
+            'id': id,
+            'revision': revision
+        }}
+        log.info('get revision', extra=extra)
         app = api.get(url=cls._URL['get_revision'].format(
             id=id, revision=revision)).json()
         return App(api=api, **app)
@@ -84,6 +92,11 @@ class App(Resource):
         :return: App object.
         """
         api = api if api else cls._API
+        extra = {'resource': cls.__name__, 'query': {
+            'id': id,
+            'data': raw
+        }}
+        log.info('install app', extra=extra)
         app = api.post(url=cls._URL['raw'].format(id=id), data=raw).json()
         app_wrapper = api.get(url=cls._URL['get'].format(
             id=app['sbg:id'])).json()
@@ -101,6 +114,11 @@ class App(Resource):
         """
 
         api = api if api else cls._API
+        extra = {'resource': cls.__name__, 'query': {
+            'id': id,
+            'data': raw
+        }}
+        log.info('create revision', extra=extra)
         app = api.post(url=cls._URL['create_revision'].format(
             id=id, revision=revision), data=raw).json()
         app_wrapper = api.get(
@@ -121,7 +139,11 @@ class App(Resource):
         }
         if name:
             data['name'] = name
-
+        extra = {'resource': self.__class__.__name__, 'query': {
+            'id': self.id,
+            'data': data
+        }}
+        log.info('copying app', extra=extra)
         app = self._api.post(url=self._URL['copy'].format(id=self.id),
                              data=data).json()
         return App(api=self._api, **app)

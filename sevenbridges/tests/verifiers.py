@@ -1,4 +1,3 @@
-from six.moves import urllib
 
 
 # noinspection PyProtectedMember
@@ -9,14 +8,16 @@ class Assert(object):
     def check_url(self, url):
         for hist in self.request_mocker._adapter.request_history:
             if hist.path == url:
-                return
-        assert False, 'Path not matched!.'
+                return True
+        assert False, 'Path not matched {} != \n{}'.format(url, hist.path)
 
-    def check_query(self, query):
+    def check_query(self, qs):
         for hist in self.request_mocker._adapter.request_history:
-            if urllib.parse.urlencode(query) in hist.query:
-                return
-        assert False, 'Query string not matched!'
+            if qs == hist.qs:
+                return True
+        assert False, 'Query string not matched \n{} != \n{}'.format(
+            qs, hist.qs
+        )
 
 
 class ProjectVerifier(object):
@@ -28,8 +29,9 @@ class ProjectVerifier(object):
         self.checker.check_url('/projects/{}'.format(id))
 
     def queried(self, offset, limit):
-        qs = {'offset': offset, 'limit': limit}
-        self.checker.check_url('/projects') and self.checker.check_query(qs)
+        qs = {'offset': ['{}'.format(offset)], 'limit': ['{}'.format(limit)],
+              'fields': ['_all']}
+        self.checker.check_url('/projects/') and self.checker.check_query(qs)
 
     def created(self):
         self.checker.check_url('/projects')
@@ -86,23 +88,31 @@ class FileVerifier(object):
         self.checker = Assert(self.request_mocker)
 
     def files_for_project_fetched(self, project):
-        qs = {'project': project}
+        qs = {'project': [project], 'fields': ['_all']}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def queried(self, project):
-        qs = {'project': project}
+        qs = {'project': [project], 'fields': ['_all'], 'limit': ['10']}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def queried_with_file_name(self, project, name):
-        qs = {'project': project, 'name': name}
+        qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
+              'name': [name]}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def queried_with_file_metadata(self, project, key, value):
-        qs = {'project': project, 'metadata.{}'.format(key): value}
+        qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
+              'metadata.{}'.format(key): [value]}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def queried_with_file_origin(self, project, key, value):
-        qs = {'project': project, 'origin.{}'.format(key): value}
+        qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
+              'origin.{}'.format(key): [value]}
+        self.checker.check_url('/files') and self.checker.check_query(qs)
+
+    def queried_with_file_tags(self, project, tags):
+        qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
+              'tag': tags}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def file_copied(self, id):
@@ -112,6 +122,12 @@ class FileVerifier(object):
         self.checker.check_url(
             '/files/{}'.format(id)) and self.checker.check_url(
             '/files/{}/metadata'.format(id)
+        )
+
+    def file_saved_tags(self, id):
+        self.checker.check_url(
+            '/files/{}'.format(id)) and self.checker.check_url(
+            '/files/{}/tags'.format(id)
         )
 
     def download_info_fetched(self, id):
@@ -124,12 +140,12 @@ class AppVerifier(object):
         self.checker = Assert(self.request_mocker)
 
     def apps_for_project_fetched(self, project):
-        qs = {'project': project}
+        qs = {'project': [project]}
         self.checker.check_url('/apps') and self.checker.check_query(qs)
 
     def apps_fetched(self, visibility):
         if visibility:
-            qs = {'visibility': visibility}
+            qs = {'visibility': [visibility]}
             self.checker.check_query(qs)
         self.checker.check_url('/apps')
 
@@ -156,14 +172,27 @@ class TaskVerifier(object):
         self.checker = Assert(self.request_mocker)
 
     def tasks_for_project_fetched(self, project):
-        qs = {'project': project}
+        qs = {'project': [project], 'fields': ['_all']}
+        self.checker.check_url('/tasks') and self.checker.check_query(qs)
+
+    def tasks_with_dates_fetched(self, project, testdate):
+        qs = {
+            'project': [project],
+            'created_from': [testdate],
+            'created_to': [testdate],
+            'started_from': [testdate],
+            'started_to': [testdate],
+            'ended_from': [testdate],
+            'ended_to': [testdate],
+            'fields': ['_all']
+        }
         self.checker.check_url('/tasks') and self.checker.check_query(qs)
 
     def task_fetched(self, id):
         self.checker.check_url('/tasks/{}'.format(id))
 
     def task_children_fetched(self, id):
-        qs = {'parent': id}
+        qs = {'parent': [id], 'fields': ['_all']}
         self.checker.check_url(
             '/tasks/{}'.format(id)) and self.checker.check_query(qs)
 

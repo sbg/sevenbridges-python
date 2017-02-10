@@ -1,3 +1,4 @@
+import logging
 import six
 
 from sevenbridges.decorators import inplace_reload
@@ -5,6 +6,8 @@ from sevenbridges.errors import ResourceNotModified
 from sevenbridges.meta.fields import HrefField, StringField, CompoundField
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.projects.permissions import Permissions
+
+log = logging.getLogger(__name__)
 
 
 class Member(Resource):
@@ -32,6 +35,8 @@ class Member(Resource):
         data = data['permissions']
         if bool(data):
             url = six.text_type(self.href) + self._URL['permissions']
+            extra = {'resource': self.__class__.__name__, 'query': data}
+            log.info('upload file', extra=extra)
             self._api.patch(url=url, data=data, append_base=False)
         else:
             raise ResourceNotModified()

@@ -1,5 +1,7 @@
-import six
+import logging
 import os
+
+import six
 
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
@@ -14,9 +16,11 @@ from sevenbridges.models.compound.files.download_info import DownloadInfo
 from sevenbridges.models.compound.files.file_origin import FileOrigin
 from sevenbridges.models.compound.files.file_storage import FileStorage
 from sevenbridges.models.compound.files.metadata import Metadata
+from sevenbridges.models.enums import PartSize
 from sevenbridges.transfer.download import Download
 from sevenbridges.transfer.upload import Upload
-from sevenbridges.models.enums import PartSize
+
+log = logging.getLogger(__name__)
 
 
 class File(Resource):
@@ -49,7 +53,7 @@ class File(Resource):
         return six.text_type('<File: id={id}>'.format(id=self.id))
 
     @classmethod
-    def query(cls, project, names=None, metadata=None, origin=None,
+    def query(cls, project, names=None, metadata=None, origin=None, tags=None,
               offset=None, limit=None, api=None):
         """
         Query ( List ) projects
@@ -57,6 +61,7 @@ class File(Resource):
         :param names: Name list
         :param metadata: Metadata query dict
         :param origin: Origin query dict
+        :param tags: List of tags to filter on
         :param offset: Pagination offset
         :param limit: Pagination limit
         :param api: Api instance.
@@ -74,6 +79,9 @@ class File(Resource):
         if metadata and isinstance(metadata, dict):
             for k, v in metadata.items():
                 metadata_params['metadata.' + k] = metadata[k]
+
+        if tags:
+            query_params['tag'] = tags
 
         query_params.update(metadata_params)
 
@@ -111,6 +119,17 @@ class File(Resource):
         """
 
         api = api or cls._API
+        extra = {'resource': cls.__name__, 'query': {
+            'path': path,
+            'project': project,
+            'file_name': file_name,
+            'overwrite': overwrite,
+            'retry': retry,
+            'timeout': timeout,
+            'part_size': part_size,
+            'wait': wait,
+        }}
+        log.info('upload file', extra=extra)
         project = Transform.to_project(project)
         upload = Upload(
             path, project, file_name=file_name, overwrite=overwrite,
@@ -136,6 +155,11 @@ class File(Resource):
         }
         if name:
             data['name'] = name
+        extra = {'resource': self.__class__.__name__, 'query': {
+            'id': self.id,
+            'data': data
+        }}
+        log.info('copying file', extra=extra)
         new_file = self._api.post(url=self._URL['copy'].format(id=self.id),
                                   data=data).json()
         return File(api=self._api, **new_file)
@@ -160,13 +184,23 @@ class File(Resource):
         :param timeout:  Timeout for http requests.
         :param chunk_size:  Chunk size in bytes.
         :param wait: If true will wait for download to complete.
-        :param over_write: If True will silently overwrite existing file, otherwise OSError is raised
+        :param overwrite: If True will silently overwrite existing file.
         :return: Download handle.
         """
 
         if not overwrite and os.path.exists(path):
             raise LocalFileAlreadyExists(message=path)
 
+        extra = {'resource': self.__class__.__name__, 'query': {
+            'id': self.id,
+            'path': path,
+            'overwrite': overwrite,
+            'retry': retry,
+            'timeout': timeout,
+            'chunk_size': chunk_size,
+            'wait': wait,
+        }}
+        log.info('download file', extra=extra)
         info = self.download_info()
         download = Download(
             url=info.url, file_path=path, retry_count=retry, timeout=timeout,
@@ -179,14 +213,19 @@ class File(Resource):
             return download
 
     @inplace_reload
-    def save(self, inplace=True):
+    def save(self, inplace=True, silent=False):
         """
-        Saves all modification to the file on the server.
-        :param inplace Apply edits to the current instance or get a new one.
+        Saves all modification to the file on the server. By default this
+        method raises an error if you are trying to save an instance that was
+        not changed. Set check_if_modified param to False to disable
+        this behaviour.
+        :param inplace: Apply edits to the current instance or get a new one.
+        :param silent: If Raises exception if file wasn't modified.
+        :raise ResourceNotModified
         :return: File instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if silent or bool(modified_data):
             # If metadata is to be set
             if 'metadata' in modified_data:
                 try:

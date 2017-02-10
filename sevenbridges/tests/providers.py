@@ -8,7 +8,7 @@ class EndpointProvider(object):
         self.request_mocker = request_mocker
         self.base_url = base_url
 
-    def enpoints(self):
+    def endpoints(self):
         return {
             'rate_limit_url': self.base_url + 'v2/rate_limit',
             'user_url': self.base_url + 'v2/user',
@@ -23,7 +23,7 @@ class EndpointProvider(object):
         }
 
     def defined(self):
-        self.request_mocker.get('/'.format(id), json=self.enpoints())
+        self.request_mocker.get('/'.format(id), json=self.endpoints())
 
 
 class UserProvider(object):
@@ -95,13 +95,14 @@ class ProjectProvider(object):
         items = [ProjectProvider.default_project() for _ in
                  range(num_of_projects)]
         for i in range(0, num_of_projects, limit):
-            href = self.base_url + '/projects?offset={}&limit={}'.format(
+            href = self.base_url + '/projects/?offset={}&limit={}'.format(
                 str(i), str(limit)
             )
             sub_items = items[i:i + limit]
             links = []
             if i + limit < num_of_projects:
-                next_url = '/projects?offset={offset}&limit={limit}'.format(
+                url = '/projects/?offset={offset}&limit={limit}&fields=_all'
+                next_url = url.format(
                     offset=str(i + limit), limit=str(limit)
                 )
                 next = {
@@ -112,7 +113,8 @@ class ProjectProvider(object):
                 links.append(next)
 
             if i > limit:
-                prev_url = '/projects?offset={offset}&limit={limit}'.format(
+                url = '/projects/?offset={offset}&limit={limit}&fields=_all'
+                prev_url = url.format(
                     offset=str(i - limit), limit=str(limit)
                 )
                 prev = {
@@ -206,7 +208,10 @@ class FileProvider(object):
             'project': 'my/test-project',
             'metadata': {
                 'sample': generator.name()
-            }
+            },
+            'tags': [
+                generator.name()
+            ]
         }
 
     def download_info(self):
@@ -245,6 +250,12 @@ class FileProvider(object):
         file = FileProvider.default_file()
         self.request_mocker.patch(
             '/files/{id}/metadata'.format(id=id), json=file['metadata']
+        )
+
+    def tags_can_be_saved(self, id):
+        file = FileProvider.default_file()
+        self.request_mocker.request(
+            'PUT', '/files/{id}/tags'.format(id=id), json=file['tags']
         )
 
     def files_exist_for_project(self, project, num_of_files):
@@ -295,6 +306,21 @@ class FileProvider(object):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
         url = '/files?project={project}&origin.{key}={value}'.format(
             project=project, key=key, value=value
+        )
+        href = self.base_url + url
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(num_of_files)})
+
+    def files_exist_for_file_tag(self, project, tags, num_of_files):
+        items = [FileProvider.default_file() for _ in range(num_of_files)]
+        url = '/files?project={project}&tag={tag1}&tag={tag2}'.format(
+            project=project, tag1=tags[0], tag2=tags[1]
         )
         href = self.base_url + url
         links = []
@@ -443,7 +469,7 @@ class TaskProvider(object):
         }
 
     def tasks_exists_for_project(self, project, num_of_tasks):
-        items = [AppProvider.default_app() for _ in range(num_of_tasks)]
+        items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
         project_url = '/tasks?project={project}'.format(project=project)
         href = self.base_url + project_url
 
@@ -457,7 +483,7 @@ class TaskProvider(object):
             'x-total-matching-query': str(num_of_tasks)})
 
     def tasks_in_project_for_parent(self, project, parent, num_of_tasks):
-        items = [AppProvider.default_app() for _ in range(num_of_tasks)]
+        items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
         url = '/tasks?project={project}&parent={parent}'.format(
             project=project, parent=parent
         )
@@ -477,8 +503,25 @@ class TaskProvider(object):
         self.request_mocker.get(href_no_parent, json=response, headers={
             'x-total-matching-query': str(num_of_tasks)})
 
+    def tasks_in_project(self, project, num_of_tasks):
+        items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
+        url = '/tasks?project={project}'.format(
+            project=project
+        )
+        href = self.base_url + url
+
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(num_of_tasks)})
+
     def tasks_exist_for_parent(self, parent, num_of_tasks):
-        items = [AppProvider.default_app() for _ in range(num_of_tasks)]
+        items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
         url = '/tasks?parent={parent}'.format(parent=parent)
         href = self.base_url + url
         links = []

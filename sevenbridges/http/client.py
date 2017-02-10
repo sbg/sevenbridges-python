@@ -1,13 +1,17 @@
 import json
+import logging
 import platform
 from datetime import datetime as dt
 
 import requests
 
 import sevenbridges
+from sevenbridges.config import Config, format_proxies
 from sevenbridges.decorators import check_for_error
 from sevenbridges.errors import SbgError
 from sevenbridges.http.error_handlers import maintenance_sleeper
+
+log = logging.getLogger(__name__)
 
 client_info = {
     'version': sevenbridges.__version__,
@@ -18,29 +22,34 @@ client_info = {
 }
 
 
-def format_proxies(proxies):
-    """
-    Helper method for request proxy key compatibility.
-    :param proxies: Proxies dictionary
-    :return: Dict compatible with request proxy format.
-    """
-    if proxies:
-        return {
-            'http': proxies.get('http-proxy', None),
-            'https': proxies.get('https-proxy', None)
-        }
-    return {}
-
-
 def generate_session(proxies=None):
     """
-    Helper method to generate request sessions.
+    Utility method to generate request sessions.
     :param proxies: Proxies dictionary.
     :return: requests.Session object.
     """
     session = requests.Session()
-    session.proxies = format_proxies(proxies)
+    session.proxies = proxies
     return session
+
+
+# noinspection PyBroadException
+def config_vars(profiles):
+    """
+    Utility method to fetch config vars using ini section profile
+    :param profiles: profile name.
+    :return:
+    """
+    for profile in profiles:
+        try:
+            config = Config(profile)
+            url = config.api_endpoint
+            token = config.auth_token
+            proxies = config.proxies
+            return url, token, proxies
+        except Exception as e:
+            pass
+    return None, None, None
 
 
 # noinspection PyTypeChecker
@@ -53,14 +62,24 @@ class HttpClient(object):
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, proxies=None, error_handlers=None):
 
-        if config is not None:
-            url = config.api_url
+        if (url, token, config) == (None, None, None):
+            url, token, proxies = config_vars([None, 'default'])
+
+        elif config is not None:
+            url = config.api_endpoint
             token = config.auth_token
-            oauth_token = config.oauth_token
             proxies = config.proxies
 
+        else:
+            url = url
+            token = token
+            oauth_token = oauth_token
+            proxies = format_proxies(proxies)
+
         if not url:
-            raise SbgError(message="Url is missing!")
+            raise SbgError('URL is missing!'
+                           ' Configuration may contain errors, '
+                           'or you forgot to pass the url param.')
 
         self.url = url.rstrip('/')
         self._session = generate_session(proxies)
@@ -139,7 +158,7 @@ class HttpClient(object):
         else:
             headers = headers.update(self.headers)
         if not self.token or self.oauth_token:
-            raise SbgError(message="Api instance must be authenticated.")
+            raise SbgError(message='Api instance must be authenticated.')
 
         if hasattr(self, '_session_id'):
             if 'X-SBG-Auth-Token' in self.headers:
@@ -148,12 +167,16 @@ class HttpClient(object):
                 del self.headers['Authorization']
             self.headers['X-SBG-Session-Id'] = getattr(self, '_session_id')
 
+        d = {'verb': verb, 'url': url, 'headers': headers, 'params': params}
         if not stream:
+            d.update({'data': data})
+            log.debug("Request", extra=d)
             response = self._session.request(
                 verb, url, params=params, data=json.dumps(data),
                 headers=headers, timeout=self.timeout, stream=stream
             )
         else:
+            log.debug('Stream Request', extra=d)
             response = self._session.request(
                 verb, url, params=params, stream=stream, allow_redirects=True,
             )

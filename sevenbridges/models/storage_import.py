@@ -1,3 +1,4 @@
+import logging
 import six
 
 from sevenbridges.meta.resource import Resource
@@ -12,6 +13,8 @@ from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
 )
+
+log = logging.getLogger(__name__)
 
 
 # noinspection PyArgumentList
@@ -81,6 +84,11 @@ class Import(Resource):
             data['properties'] = properties
 
         api = api if api else cls._API
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        log.info('submit import', extra=extra)
         _import = api.post(cls._URL['query'], data=data).json()
         return Import(api=api, **_import)
 

@@ -17,10 +17,10 @@ sevenbridges.http.client module
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.http.middlewares module
-------------------------------------
+sevenbridges.http.error_handlers module
+---------------------------------------
 
-.. automodule:: sevenbridges.http.middlewares
+.. automodule:: sevenbridges.http.error_handlers
     :members:
     :undoc-members:
     :show-inheritance:

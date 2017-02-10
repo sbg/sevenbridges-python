@@ -1,16 +1,16 @@
 import io
+import math
 import os
 import threading
 import time
 
 import six
 
-import math
-from sevenbridges.http.client import generate_session
 from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
-from sevenbridges.transfer.utils import Progress, total_parts
+from sevenbridges.http.client import generate_session
 from sevenbridges.models.enums import PartSize, TransferState
+from sevenbridges.transfer.utils import Progress, total_parts
 
 
 def _get_part_url(api, url, upload, part):
@@ -83,7 +83,7 @@ def _submit_part(session, url, part, timeout):
 def _upload_part(api, session, url, upload, part_number, part, retry_count,
                  timeout):
     """
-    Userd by the worker to upload a part to the storage service.
+    Used by the worker to upload a part to the storage service.
     :param api: Api instance.
     :param session: Storage service session.
     :param url: Part url.
@@ -255,6 +255,8 @@ class Upload(threading.Thread):
         self._project = project
         self._file_path = file_path
         self._file_size = os.path.getsize(self._file_path)
+        if self._file_size == 0:
+            raise SbgError('File size must not be 0.')
 
         self._verify_file_size()
         self._verify_part_size()

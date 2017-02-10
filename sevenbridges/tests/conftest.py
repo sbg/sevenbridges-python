@@ -1,5 +1,5 @@
-import pytest
 import faker
+import pytest
 import requests_mock
 
 from sevenbridges import Api
@@ -13,6 +13,8 @@ from sevenbridges.tests.verifiers import (
     VolumeVerifier)
 
 generator = faker.Factory.create()
+
+requests_mock.mock.case_sensitive = True
 
 
 @pytest.fixture
@@ -87,3 +89,27 @@ def api(base_url):
 @pytest.fixture
 def base_url():
     return generator.url()[:-1]
+
+
+@pytest.fixture
+def config_parser():
+    class ConfigParser(object):
+        def __init__(self, data):
+            self.data = data
+
+        def get(self, profile, item):
+            return self.data[profile][item]
+
+        def read(self, stream):
+            pass
+
+    class Mock(object):
+        def __init__(self, data):
+            self.data = data
+
+        def __call__(self, *args, **kwargs):
+            data = dict(kwargs)
+            data.update(self.data)
+            return ConfigParser(data)
+
+    return Mock

@@ -1,4 +1,6 @@
 import uuid
+from datetime import datetime
+
 import faker
 import pytest
 from sevenbridges.models.volume import Volume
@@ -91,3 +93,17 @@ def test_transform_volume(volume):
 def test_transform_volume_invalid_values(volume):
     with pytest.raises(SbgError):
         Transform.to_volume(volume)
+
+
+@pytest.mark.parametrize("datestring,expected", [
+    ('2017-01-10T14:04:23', '2017-01-10T14:04:23'),
+    (datetime(2017, 1, 10, 14, 4, 23, 838459), '2017-01-10T14:04:23'),
+])
+def test_transform_datestring(datestring, expected):
+    assert Transform.to_datestring(datestring) == expected
+
+
+@pytest.mark.parametrize("datestring", ['', None, [], {}])
+def test_transform_datestring_invalid(datestring):
+    with pytest.raises(SbgError):
+        Transform.to_datestring(datestring)

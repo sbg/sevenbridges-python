@@ -1,7 +1,10 @@
+import logging
 import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import HrefField
+
+log = logging.getLogger(__name__)
 
 
 class Endpoints(Resource):
@@ -31,6 +34,11 @@ class Endpoints(Resource):
         :return: Endpoints object.
         """
         api = api if api else cls._API
+        extra = {
+            'resource': cls.__name__,
+            'query': {}
+        }
+        log.info('getting resource', extra=extra)
         endpoints = api.get(url=cls._URL['get']).json()
         return Endpoints(api=api, **endpoints)
 

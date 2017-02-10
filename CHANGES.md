@@ -1,3 +1,28 @@
+0.7.0 (2016-02-10)
+==================
+- Changes in the library configuration. The location and format of the configuration files
+has changed. This makes this version backwards incompatible. For information
+regarding where to place new configuration, the names of the variables and the usage
+can be found within documentation.
+- Add logging for resource and http client.
+- Add option to query files using tags.
+- Add option to query tasks by timestamps.
+- Add parameter to file save method to control if error should be raised.
+- Add additional tests.
+
+
+- Bugfixes
+ - [Issue #64](https://github.com/sbg/sevenbridges-python/issues/64)
+ - [Issue #63](https://github.com/sbg/sevenbridges-python/issues/63)
+ - [Issue #62](https://github.com/sbg/sevenbridges-python/issues/62)
+ - [Issue #61](https://github.com/sbg/sevenbridges-python/issues/61)
+ - [Issue #56](https://github.com/sbg/sevenbridges-python/issues/56)
+ - [Issue #55](https://github.com/sbg/sevenbridges-python/issues/55)
+ - [Issue #54](https://github.com/sbg/sevenbridges-python/issues/54)
+ - [Issue #53](https://github.com/sbg/sevenbridges-python/issues/53)
+ - [Issue #49](https://github.com/sbg/sevenbridges-python/issues/49)
+
+
 0.6.1 (2016-10-19)
 ==================
 Removing duplicated error handlers that occur during api object
