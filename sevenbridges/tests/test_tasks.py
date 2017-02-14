@@ -206,3 +206,17 @@ def test_get_execution_details(api, given, verifier):
 
     # verification
     verifier.task.execution_details_fetched(id=id)
+
+
+def test_raw_response(api, given, verifier):
+    # precondition
+    id = generator.uuid4()
+    given.task.task_exists(id=id)
+
+    # action
+    task = api.tasks.get(id=id)
+
+    # verification
+    verifier.task.task_fetched(id=id)
+    assert isinstance(task.raw, dict)
+    assert {'app', 'href', 'id', 'inputs'} <= set(task.raw.keys())
