@@ -45,7 +45,6 @@ class ResourceMeta(type):
                     urls = None
                 self._data = DataContainer(urls=urls, api=self._api)
                 self._dirty = {}
-                self.raw = kwargs
                 for k, v in kwargs.items():
                     if k in fields:
                         value = fields[k].validate(v)
