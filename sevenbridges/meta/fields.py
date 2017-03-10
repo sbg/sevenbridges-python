@@ -1,6 +1,8 @@
-import six
 from uuid import UUID
 from datetime import datetime
+
+import six
+
 from sevenbridges.errors import ReadOnlyPropertyError, ValidationError
 
 empty = object()
@@ -19,6 +21,14 @@ class Field(object):
             raise ReadOnlyPropertyError(
                 'Property {} is marked as read only!'.format(self.name)
             )
+
+        # handle metadata. If metadata is set use _method to signal
+        # that the resource should be overwritten.
+        if self.name == 'metadata':
+            instance._method = 'PUT'
+            if value is None:
+                raise ValidationError('Not a valid dictionary!')
+
         value = self.validate(value)
         try:
             current_value = instance._data[self.name]
@@ -47,8 +57,10 @@ class Field(object):
 
 # noinspection PyProtectedMember
 class CompoundField(Field):
-    def __init__(self, cls, name=None, read_only=False):
-        super(CompoundField, self).__init__(name=name, read_only=read_only)
+    def __init__(self, cls, name=None, read_only=False, validator=None):
+        super(CompoundField, self).__init__(
+            name=name, read_only=read_only, validator=validator
+        )
         self.cls = cls
 
     def __get__(self, instance, owner):
@@ -66,8 +78,11 @@ class CompoundListField(Field):
         self.cls = cls
 
     def __get__(self, instance, owner):
-        return [self.cls(api=instance._api, **item) for item in
-                instance._data[self.name]]
+        if instance._data[self.name]:
+            return [self.cls(api=instance._api, **item) for item in
+                    instance._data[self.name]]
+        else:
+            return []
 
 
 class DictField(Field, dict):

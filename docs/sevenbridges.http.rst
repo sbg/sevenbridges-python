@@ -17,4 +17,12 @@ sevenbridges.http.client module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.http.error_handlers module
+---------------------------------------
+
+.. automodule:: sevenbridges.http.error_handlers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 

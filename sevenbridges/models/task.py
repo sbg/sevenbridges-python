@@ -1,21 +1,27 @@
+import logging
 import six
 
-from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import SbgError
+from sevenbridges.errors import (
+    SbgError, TaskValidationError
+)
+from sevenbridges.meta.fields import (
+    HrefField, UuidField, StringField, CompoundField, DateTimeField,
+    BooleanField, DictField
+)
+from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.app import App
+from sevenbridges.models.compound.price import Price
 from sevenbridges.models.compound.tasks.batch_by import BatchBy
 from sevenbridges.models.compound.tasks.batch_group import BatchGroup
 from sevenbridges.models.compound.tasks.execution_status import ExecutionStatus
 from sevenbridges.models.compound.tasks.input import Input
 from sevenbridges.models.compound.tasks.output import Output
-from sevenbridges.models.compound.price import Price
 from sevenbridges.models.execution_details import ExecutionDetails
 from sevenbridges.models.file import File
-from sevenbridges.meta.fields import (
-    HrefField, UuidField, StringField, CompoundField, DateTimeField,
-    BooleanField, DictField
-)
+
+log = logging.getLogger(__name__)
 
 
 class Task(Resource):
@@ -60,13 +66,22 @@ class Task(Resource):
 
     @classmethod
     def query(cls, project=None, status=None, batch=None,
-              parent=None, offset=None, limit=None, api=None):
+              parent=None, created_from=None, created_to=None,
+              started_from=None, started_to=None, ended_from=None,
+              ended_to=None, offset=None, limit=None, api=None):
         """
-        Query (List) tasks
+        Query (List) tasks. Date parameters may be both strings and python date
+        objects.
         :param project: Target project. optional.
         :param status: Task status.
         :param batch: Only batch tasks.
         :param parent: Parent batch task identifier.
+        :param ended_to: All tasks that ended until this date.
+        :param ended_from: All tasks that ended from this date.
+        :param started_to: All tasks that were started until this date.
+        :param started_from: All tasks that were started from this date.
+        :param created_to: All tasks that were created until this date.
+        :param created_from: All tasks that were created from this date.
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :param api: Api instance.
@@ -77,15 +92,31 @@ class Task(Resource):
             parent = Transform.to_task(parent)
         if project:
             project = Transform.to_project(project)
+        if created_from:
+            created_from = Transform.to_datestring(created_from)
+        if created_to:
+            created_to = Transform.to_datestring(created_to)
+        if started_from:
+            started_from = Transform.to_datestring(started_from)
+        if started_to:
+            started_to = Transform.to_datestring(started_to)
+        if ended_from:
+            ended_from = Transform.to_datestring(ended_from)
+        if ended_to:
+            ended_to = Transform.to_datestring(ended_to)
+
         return super(Task, cls)._query(
             url=cls._URL['query'], project=project, status=status, batch=batch,
-            parent=parent, offset=offset, limit=limit, fields='_all', api=api
+            parent=parent, created_from=created_from, created_to=created_to,
+            started_from=started_from, started_to=started_to,
+            ended_from=ended_from, ended_to=ended_to, offset=offset,
+            limit=limit, fields='_all', api=api
         )
 
     @classmethod
     def create(cls, name, project, app, revision=None, batch_input=None,
-               batch_by=None,
-               inputs=None, description=None, run=False, api=None):
+               batch_by=None, inputs=None, description=None, run=False,
+               disable_batch=False, api=None):
 
         """
         Creates a task on server.
@@ -98,15 +129,24 @@ class Task(Resource):
         :param inputs: Input map.
         :param description: Task description.
         :param run: True if you want to run a task upon creation.
+        :param disable_batch: If True disables batching of a batch task.
         :param api: Api instance.
         :return: Task object.
+        :raises: TaskValidationError if validation Fails.
+        :raises: SbgError if any exception occurs during request.
         """
         task_data = {}
+        params = {}
 
         project = Transform.to_project(project)
-        app = Transform.to_app(app)
+
+        app_id = Transform.to_app(app)
+
         if revision:
-            app = app + "/" + six.text_type(revision)
+            app_id = app_id + "/" + six.text_type(revision)
+        else:
+            if isinstance(app, App):
+                app_id = app_id + "/" + six.text_type(app.revision)
 
         task_inputs = {'inputs': {}}
         for k, v in inputs.items():
@@ -134,28 +174,33 @@ class Task(Resource):
             else:
                 task_inputs['inputs'][k] = v
 
-        if batch_input:
+        if batch_input and batch_by:
             task_data['batch_input'] = batch_input
-
-        if batch_by:
             task_data['batch_by'] = batch_by
+            if disable_batch:
+                params.update({'batch': False})
 
         task_meta = {
             'name': name,
             'project': project,
-            'app': app,
+            'app': app_id,
             'description': description
         }
         task_data.update(task_meta)
         task_data.update(task_inputs)
 
-        params = {'action': 'run'} if run else {}
+        if run:
+            params.update({'action': 'run'})
+
         api = api if api else cls._API
         created_task = api.post(cls._URL['query'], data=task_data,
                                 params=params).json()
         if run and 'errors' in created_task:
             if bool(created_task['errors']):
-                raise SbgError('Unable to run task! Task contains errors.')
+                raise TaskValidationError(
+                    'Unable to run task! Task contains errors.',
+                    task=Task(api=api, **created_task)
+                )
 
         return Task(api=api, **created_task)
 
@@ -205,6 +250,11 @@ class Task(Resource):
         :param inplace Apply action on the current object or return a new one.
         :return: Task object.
         """
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {'id': self.id}
+        }
+        log.info('abort task', extra=extra)
         task_data = self._api.post(
             url=self._URL['abort'].format(id=self.id)).json()
         return Task(api=self._api, **task_data)
@@ -220,6 +270,11 @@ class Task(Resource):
         params = {}
         if not batch:
             params['batch'] = False
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {'id': self.id, 'batch': batch}
+        }
+        log.info('run task', extra=extra)
         task_data = self._api.post(
             url=self._URL['run'].format(id=self.id), params=params).json()
         return Task(api=self._api, **task_data)
@@ -252,6 +307,11 @@ class Task(Resource):
                         task_request_data['inputs'][input_id] = in_list
                     else:
                         task_request_data['inputs'][input_id] = input_value
+            extra = {
+                'resource': self.__class__.__name__,
+                'query': {'id': self.id, 'data': task_request_data}
+            }
+            log.info('save task', extra=extra)
             data = self._api.patch(url=self._URL['get'].format(id=self.id),
                                    data=task_request_data).json()
             task = Task(api=self._api, **data)
@@ -269,6 +329,11 @@ class Task(Resource):
         Retrieves execution details for a task.
         :return: Execution details instance.
         """
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {'id': self.id}
+        }
+        log.info('get execution details', extra=extra)
         data = self._api.get(
             self._URL['execution_details'].format(id=self.id)).json()
         return ExecutionDetails(api=self._api, **data)

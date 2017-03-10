@@ -44,6 +44,7 @@ class ImportExportState:
 
 
 class TaskStatus:
+    DRAFT = 'DRAFT'
     CREATING = 'CREATING'
     QUEUED = 'QUEUED'
     RUNNING = 'RUNNING'

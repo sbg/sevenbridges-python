@@ -56,3 +56,11 @@ Thumbs.db
 *.ipr
 *.iws
 *.iml
+
+# Eclipse specific files/directories #
+######################################
+.project
+.pydevproject
+.python-version
+.settings
+

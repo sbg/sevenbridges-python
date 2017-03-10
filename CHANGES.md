@@ -1,3 +1,91 @@
+0.7.0 (2016-02-10)
+==================
+- Changes in the library configuration. The location and format of the configuration files
+has changed. This makes this version backwards incompatible. For information
+regarding where to place new configuration, the names of the variables and the usage
+can be found within documentation.
+- Add logging for resource and http client.
+- Add option to query files using tags.
+- Add option to query tasks by timestamps.
+- Add parameter to file save method to control if error should be raised.
+- Add additional tests.
+
+
+- Bugfixes
+ - [Issue #64](https://github.com/sbg/sevenbridges-python/issues/64)
+ - [Issue #63](https://github.com/sbg/sevenbridges-python/issues/63)
+ - [Issue #62](https://github.com/sbg/sevenbridges-python/issues/62)
+ - [Issue #61](https://github.com/sbg/sevenbridges-python/issues/61)
+ - [Issue #56](https://github.com/sbg/sevenbridges-python/issues/56)
+ - [Issue #55](https://github.com/sbg/sevenbridges-python/issues/55)
+ - [Issue #54](https://github.com/sbg/sevenbridges-python/issues/54)
+ - [Issue #53](https://github.com/sbg/sevenbridges-python/issues/53)
+ - [Issue #49](https://github.com/sbg/sevenbridges-python/issues/49)
+
+
+0.6.1 (2016-10-19)
+==================
+Removing duplicated error handlers that occur during api object
+instantiation.
+
+0.6.0 (2016-10-17)
+==================
+
+Added support for error_handlers. Users can now register error_handlers
+that will be executed upon each request. 
+
+- Bugfixes
+  - [Issue #45](https://github.com/sbg/sevenbridges-python/issues/45)
+  - [Issue #46](https://github.com/sbg/sevenbridges-python/issues/46)
+
+
+
+0.5.4 (2016-09-30)
+==================
+- Bugfixes
+  - [Issue #42](https://github.com/sbg/sevenbridges-python/issues/42)
+  - [Issue #43](https://github.com/sbg/sevenbridges-python/issues/43)
+
+
+
+0.5.3 (2016-09-23)
+==================
+- Bugfixes
+  - [Issue #40](https://github.com/sbg/sevenbridges-python/issues/40)
+  - [Issue #41](https://github.com/sbg/sevenbridges-python/issues/41)
+
+
+
+0.5.2 (2016-09-15)
+==================
+- Bugfixes
+  - [Issue #35](https://github.com/sbg/sevenbridges-python/issues/35)
+  - [Issue #39](https://github.com/sbg/sevenbridges-python/issues/39)
+  
+
+0.5.1 (2016-08-29)
+==================
+- Bugfixes
+  - [Issue #28](https://github.com/sbg/sevenbridges-python/issues/28)
+  
+0.5.0 (2016-08-29)
+==================
+
+- Project settings available on project resource. These settings
+  can be currently used to create locked projects.
+- File now have tags. User is able to view/set/edit tags.
+- Support for proxies. User can now configure library to use proxies.
+
+
+- Bugfixes
+  - [Issue #30](https://github.com/sbg/sevenbridges-python/issues/30)
+  - [Issue #29](https://github.com/sbg/sevenbridges-python/issues/29)
+  - [Issue #28](https://github.com/sbg/sevenbridges-python/issues/28)
+  - [Issue #24](https://github.com/sbg/sevenbridges-python/issues/24)
+  - [Issue #23](https://github.com/sbg/sevenbridges-python/issues/23)
+  - [Issue #14](https://github.com/sbg/sevenbridges-python/issues/14)
+
+
 0.4.4 (2016-08-19)
 ==================
 - Upload changes

@@ -1,5 +1,7 @@
 import faker
+import pytest
 
+from sevenbridges.errors import SbgError
 
 generator = faker.Factory.create()
 
@@ -15,7 +17,7 @@ def test_files_query(api, given, verifier):
 
     # action
     project = api.projects.get(id)
-    projects = api.files.query(project=project, limit=10)
+    projects = api.files.query(project=project, limit=total)
 
     # verification
     assert projects.total == total
@@ -89,6 +91,27 @@ def test_files_query_file_origin(api, given, verifier):
     verifier.file.queried_with_file_origin(id, key, value)
 
 
+def test_files_query_tags(api, given, verifier):
+    # preconditions
+    total = 10
+    owner = generator.user_name()
+    project_short_name = generator.slug()
+    id = '{}/{}'.format(owner, project_short_name)
+    tags = ['test1', 'test2']
+    given.file.files_exist_for_file_tag(id, tags, 10)
+    given.project.exists(id=id)
+
+    # action
+    _ = api.projects.get(id)
+    projects = api.files.query(project=id, tags=tags, limit=10)
+
+    # verification
+    assert projects.total == total
+    assert len(projects) == total
+
+    verifier.file.queried_with_file_tags(id, tags)
+
+
 def test_files_copy(api, given, verifier):
     # preconditions
     id = generator.uuid4()
@@ -135,3 +158,24 @@ def test_files_save(api, given, verifier):
 
     # verifier
     verifier.file.file_saved(id)
+
+
+@pytest.mark.parametrize("tags", [['test'], ['test', 'test2']])
+def test_files_save_tags(api, given, verifier, tags):
+    # precondition
+    id = generator.uuid4()
+    given.file.exists(id=id, tags=['test'])
+
+    given.file.can_be_saved(id=id)
+    given.file.metadata_can_be_saved(id)
+    given.file.tags_can_be_saved(id)
+    # action
+    file = api.files.get(id)
+    file.tags = tags
+    if len(tags) == 1:
+        with pytest.raises(SbgError):
+            file.save()
+        return
+    else:
+        file.save()
+    verifier.file.file_saved_tags(id)
