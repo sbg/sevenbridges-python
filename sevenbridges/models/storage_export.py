@@ -3,11 +3,9 @@ import six
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.volumes.properties import VolumeProperties
 from sevenbridges.models.file import File
-
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.error import Error
 from sevenbridges.models.compound.volumes.volume_file import VolumeFile
-
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
@@ -89,12 +87,11 @@ class Export(Resource):
         return Export(api=api, **_export)
 
     @classmethod
-    def query(cls, project=None, volume=None, state=None, offset=None,
+    def query(cls, volume=None, state=None, offset=None,
               limit=None, api=None):
 
         """
         Query (List) exports.
-        :param project: Optional project identifier.
         :param volume: Optional volume identifier.
         :param state: Optional import sate.
         :param api: Api instance.
@@ -102,12 +99,10 @@ class Export(Resource):
         """
         api = api or cls._API
 
-        if project:
-            project = Transform.to_project(project)
         if volume:
             volume = Transform.to_volume(volume)
 
         return super(Export, cls)._query(
-            url=cls._URL['query'], project=project, volume=volume, state=state,
-            offset=offset, limit=limit, fields='_all', api=api
+            url=cls._URL['query'], volume=volume, state=state, offset=offset,
+            limit=limit, fields='_all', api=api
         )

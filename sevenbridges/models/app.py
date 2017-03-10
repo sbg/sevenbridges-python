@@ -1,8 +1,8 @@
 import re
+
 import six
 
 from sevenbridges.meta.resource import Resource
-from sevenbridges.errors import SbgError
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, DictField
@@ -97,11 +97,6 @@ class App(Resource):
         :param api: Api instance.
         :return: App object.
         """
-        try:
-            id = id.rsplit('/', 1)[0]
-        except IndexError:
-            SbgError(message='Malformed app id %s, '
-                             'expecting owner/project/app/revision' % id)
 
         api = api if api else cls._API
         app = api.post(url=cls._URL['create_revision'].format(

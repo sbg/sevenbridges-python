@@ -154,14 +154,14 @@ class Volume(Resource):
         return self._api.imports.query(volume=self, project=project,
                                        state=state, offset=offset, limit=limit)
 
-    def get_exports(self, project=None, state=None, offset=None, limit=None):
+    def get_exports(self, state=None, offset=None, limit=None):
         """
         Fetches exports for this volume.
-        :param project: Optional project identifier.
         :param state: Optional state.
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :return: Collection object.
         """
-        return self._api.exports.query(volume=self, project=project,
-                                       state=state, offset=offset, limit=limit)
+        return self._api.exports.query(volume=self, state=state, offset=offset,
+                                       limit=limit
+                                       )

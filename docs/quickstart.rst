@@ -1,13 +1,19 @@
-
 Quickstart
 ==========
+
+On this page, you'll find a reference for the Seven Bridges API Python client.
+
+We encourage you to consult our other API resources:
+
+* The Seven Bridges Github repository, `okAPI <https://github.com/sbg/okAPI/tree/master/Recipes/SBPLAT>`_, which includes Python example scripts such as recipes (which allow you to perform specific tasks) and tutorials (which will walk you through entire analyses) via the API. These recipes and tutorials make use of the sevenbridges-python bindings below.
+* The Seven Bridges API documentation on our `Knowledge Center <http://docs.sevenbridges.com/docs/the-api>`_, which includes a reference collection of API requests to help you get started right away.
 
 Authentication and Configuration
 --------------------------------
 
 In order to authenticate with the API, you should pass the following items to sevenbridges-python:
 
-(a) Your authentication token;
+(a) Your authentication token
 (b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or for the Seven Bridges Cancer Genomics Cloud (CGC).
 
 You can find your authentication token on the respective pages:
@@ -69,7 +75,7 @@ as key-value arguments into the :code:`Api` object.
 
 .. code:: python
 
-    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='27d598b71beb4660952739ed5f94ebda')
+    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
 
 *Note* - you can initialize several API clients with
 different credentials or environments.
@@ -86,6 +92,7 @@ different credentials or environments.
     os.environ['AUTH_TOKEN'] = '<TOKEN_HERE>'
     
     c = sbg.Config()
+
     api = sbg.Api(config=c)
 
 3. Initialize the library using a configuration file
@@ -113,7 +120,39 @@ instantiated the configuration class, pass it to the API class constructor.
     c = sbg.Config(profile='sbpla')
     api = sbg.Api(config=c)
 
-   
+
+Proxy configuration
+--------------------------------
+
+Proxy configuration can be supplied in three different ways.
+
+    - explicit initialization
+
+    .. code:: python
+
+     api = sb.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>',
+            proxies={'https-proxy':'host:port', 'http-proxy': 'host:port'})
+
+    - environment variables
+
+    .. code:: python
+
+        os.environ['HTTP_PROXY'] = 'host:port'
+        os.environ['HTTPS_PROXY'] = 'host:port'
+
+    - .sbgrc configuration file
+
+    .. code::
+
+        [sbpla]
+        api-url = https://api.sbgenomics.com/v2
+        auth-token = <TOKEN_HERE>
+        https-proxy=host:port
+        http-proxy=host:port
+
+.. note:: Once you set the proxy, all calls including upload and download will use the proxy settings.
+
+
 Rate limit
 ----------
 
@@ -128,6 +167,7 @@ obtained using your :code:`Api` object, as follows.
     api.limit, 
     api.remaining, 
     api.reset_time
+
 
 Managing users
 --------------
@@ -468,7 +508,9 @@ Each file has the following properties:
 
 ``origin`` - File origin information, indicating the task that created the file.
 
-``metadata`` - File metadata
+``tags`` - File tags.
+
+``metadata`` - File metadata.
 
 File methods
 ~~~~~~~~~~~~
@@ -478,6 +520,8 @@ Files have the following methods:
 -  Copy the file from one project to another: ``copy()``
 -  Download the file: ``download()``
 -  Save modifications to the file to the server ``save()``
+-  Delete the resource: ``delete()``
+
 
 See the examples below for information on the arguments these methods take:
 
@@ -517,7 +561,71 @@ Examples
     # Optionally, path can contain a full path on local filesystem
     new_file.download(path='my_new_file_on_disk')
 
-Managing volumes, exports and imports
+Managing file upload and download
+-------------------------------------
+
+``sevenbridges-python`` library provides both synchronous and asynchronous
+way of uploading or downloading files.
+
+File Download
+~~~~~~~~
+
+Synchronous file download:
+
+.. code:: python
+
+    file = api.files.get('file-identifier')
+    file.download('/home/bar/foo/file.bam')
+
+Asynchronous file download:
+
+.. code:: python
+
+    file = api.files.get('file-identifier')
+    download = file.download('/home/bar/foo.bam', wait=False)
+    download.status() # Gets the status of the download.
+    download.start() # Starts the download.
+    download.pause() # Pauses the download.
+    download.resume() # Resumes the download.
+    download.stop() # Stops the download.
+    download.wait() # Block the main loop until download completes.
+
+You can register the callback or error callback function to the
+download handle: ``download.add_callback(callback=my_callback, errorback=my_error_back)``
+
+Registered callback method will be invoked on completion of the download. The errorback
+method will be invoked if error happens during download.
+
+File Upload
+~~~~~~~~
+
+Synchronous file upload:
+
+.. code:: python
+
+    # Get the project where we want to upload files.
+    project = api.projects.get('project-identifier')
+    api.files.upload('/home/bar/foo/file.fastq', project)
+    # Optionally we can set file name of the uploaded file.
+    api.files.upload('/home/bar/foo/file.fastq', project, file_name='new.fastq')
+
+Asynchronous file upload:
+
+.. code:: python
+
+    upload = api.files.upload('/home/bar/foo/file.fastq', 'project-identifier', wait=False)
+    upload.status() # Gets the status of the upload.
+    upload.start() # Starts the upload.
+    upload.pause() # Pauses the upload.
+    upload.resume() # Resumes the upload.
+    upload.stop() # Stops the upload.
+    upload.wait() # Block the main loop until upload completes.
+
+You can register the callback or error callback in the same manner as it
+was described for asynchronous file download.
+
+
+Managing volumes: connecting cloud storage to the Platform
 -------------------------------------
 
 Volumes authorize the Platform to access and query objects on a specified cloud storage (Amazon Web Services or Google Cloud Storage) on your behalf. As for as all other resources, the sevenbridges-python library enables you to effectively query volumes, import files from a volume to a project or export files from a project to the volume. 
@@ -552,19 +660,19 @@ Each volume has the following properties:
 
 ``id`` - Volume identifier in format owner/name.
 
-``name`` - Volume name.
+``name`` - Volume name. Learn more about this in our `Knowledge Center <http://docs.sevenbridges.com/docs/volumes#section-volume-name>`_.
 
-``access_mode`` - Whether the volume is created as read-only (RO) or read-write (RW).
+``access_mode`` - Whether the volume was created as read-only (RO) or read-write (RW). Learn more about this in our `Knowledge Center <http://docs.sevenbridges.com/docs/volumes#section-access-mode>`_.
 
-``active`` - Whether the volume is active or not.
+``active`` - Whether or not this volume is active.
 
-``created_on`` - Time when the volume was created on.
+``created_on`` - Time when the volume was created.
 
 ``modified_on`` - Time when the volume was last modified.
 
-``description`` - Volume description
+``description`` - An optional description of this volume.
 
-``service`` - Information about the underlying storage service
+``service`` - This object contains the information about the cloud service that this volume represents.
 
 Volume methods
 ~~~~~~~~~~~~~~
@@ -574,10 +682,10 @@ Volumes have the following methods:
 -  Refresh the volume with data from the server: ``reload()``
 -  Get imports for a particular volume ``get_imports()``
 -  Get exports for a particular volume ``get_exports()``
--  Create new volume based on AWS S3 provider ``create_s3_volume()``
--  Create new volume based on Google Cloud Storage provider - ``create_google_volume()``
+-  Create a new volume based on the AWS S3 service -  ``create_s3_volume()``
+-  Create a new volume based on Google Cloud Storage service  - ``create_google_volume()``
 -  Save modifications to the volume to the server ``save()``
--  Delete the volume ``delete()``
+-  Unlink the volume ``delete()``
 
 See the examples below for information on the arguments these methods take:
 
@@ -591,12 +699,16 @@ Examples
 
     # Create a new volume based on AWS S3 for exporting files
     volume_export = api.volumes.create_s3_volume(name='my_output_volume', bucket='my_bucket', access_key_id='AKIAIOSFODNN7EXAMPLE',secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',access_mode='RW')
-    # List all volumes available 
+    # List all volumes available
     volumes = api.volumes.query()
      
 
 Import properties
 ~~~~~~~~~~~~~~~~~
+
+When you import a file from a volume into a project on the Platform,  you are importing a file from your cloud storage provider (Amazon Web Services or Google Cloud Storage) via the volume onto the Platform.
+
+If successful, an alias will be created on the Platform. Aliases appear as files on the Platform and can be copied, executed, and modified as such. They refer back to the respective file on the given volume.
 
 Each import has the following properties:
 
@@ -612,7 +724,7 @@ Each import has the following properties:
 
 ``result`` - If the import was completed, contains the result of the import - a ``File`` object.
 
-``error`` - Contains the ``Error`` object, in case the import failed.
+``error`` - Contains the ``Error`` object if the import failed.
 
 ``overwrite`` - Whether the import was set to overwrite file at destination or not.
 
@@ -626,7 +738,7 @@ Import methods
 Imports have the following methods:
 
 -  Refresh the import with data from the server: ``reload()``
--  Submit import, by specifying source and destination of the import - ``submit_import()``
+-  Start an import  by specifying the source and the destination of the import - ``submit_import()``
 -  Delete the import -  ``delete()``
 
 See the examples below for information on the arguments these methods take:
@@ -636,11 +748,11 @@ Examples
 
 .. code:: python
 
-    # Import file to a project
+    # Import a  file to a project
     my_project = api.projects.get(id='my_project')
     bucket_location = 'fastq/my_file.fastq'
     imp = api.imports.submit_import(volume=volume_import, project=my_project, location=bucket_location)
-    # Wait until import finishes
+    # Wait until the import finishes
     while True:
           import_status = imp.reload().state
           if import_status in (ImportExportState.COMPLETED, ImportExportState.FAILED):
@@ -650,9 +762,15 @@ Examples
     if imp.state == ImportExportState.COMPLETED:
           imported_file = imp.result
 
-                        
+
 Export properties
 ~~~~~~~~~~~~~~~~~
+
+When you export a file from a project on the Platform into a volume, you are essentially writing to your cloud storage bucket on Amazon Web Services or Google Cloud Storage via the volume.
+
+Note that the file selected for export must not be a public file or an alias. Aliases are objects stored in your cloud storage bucket which have been made available on the Platform.
+
+The volume you are exporting to must be configured for read-write access. To do this, set the ``access_mode`` parameter to ``RW`` when creating or modifying a volume. Learn more about this from our `Knowledge Center <http://docs.sevenbridges.com/docs/volumes#section-access-mode>`_.
 
 Each export has the following properties:
 
@@ -666,16 +784,15 @@ Each export has the following properties:
 
 ``state`` - State of the export. Can be *PENDING*, *RUNNING*, *COMPLETED* and *FAILED*.
 
-``result`` - If the export was completed, contains the result of the import - a ``File`` object.
+``result`` - If the export was completed, this contains the result of the import - a ``File`` object.
 
-``error`` - Contains the ``Error`` object, in case the import failed.
+``error`` - Contains the ``Error`` object if the export failed.
 
-``overwrite`` - Whether the import was set to overwrite file at destination or not.
+``overwrite`` - Whether or not the export was set to overwrite the file at the destination.
 
-``started_on`` - Contains the date and time when the import was started.
+``started_on`` - Contains the date and time when the export  was started.
 
-``finished_on`` - Contains the date and time when the import was finished.
-
+``finished_on`` - Contains the date and time when the export was finished.
 
 Export methods
 ~~~~~~~~~~~~~~
@@ -684,7 +801,7 @@ Exports have the following methods:
 
 -  Refresh the export with data from the server: ``reload()``
 -  Submit export, by specifying source and destination of the import: ``submit_import()``
--  Delete the import: ``delete()``
+-  Delete the export: ``delete()``
 
 See the examples below for information on the arguments these methods take:
 
@@ -695,8 +812,8 @@ Examples
 .. code:: python
 
     #
-    #   Export a set of files to a volume 
-    #      
+    #   Export a set of files to a volume
+    #
     # Get files from a project
     files_to_export = api.files.query(project=my_project).all()
     # And export all the files to the output bucket
@@ -716,7 +833,7 @@ Examples
                         done_len += 1
                  time.sleep(10)
           if done_len == num_exports:
-                 done = True    
+                 done = True
     
 Managing apps
 -------------
@@ -757,7 +874,7 @@ Each app has the following available properties:
 App methods
 ~~~~~~~~~~~
 
-Currently there are no specific app methods, apart from class methods mentioned above.
+- App only has class methods that were mentioned above.
 
 Managing tasks
 --------------

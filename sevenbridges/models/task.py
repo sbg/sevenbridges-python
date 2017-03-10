@@ -2,7 +2,9 @@ import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.errors import SbgError
+from sevenbridges.errors import (
+    SbgError, TaskValidationError
+)
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.tasks.batch_by import BatchBy
 from sevenbridges.models.compound.tasks.batch_group import BatchGroup
@@ -100,6 +102,8 @@ class Task(Resource):
         :param run: True if you want to run a task upon creation.
         :param api: Api instance.
         :return: Task object.
+        :raises: TaskValidationError if validation Fails.
+        :raises: SbgError if any exception occurs during request.
         """
         task_data = {}
 
@@ -155,7 +159,10 @@ class Task(Resource):
                                 params=params).json()
         if run and 'errors' in created_task:
             if bool(created_task['errors']):
-                raise SbgError('Unable to run task! Task contains errors.')
+                raise TaskValidationError(
+                    'Unable to run task! Task contains errors.',
+                    task=Task(api=api, **created_task)
+                )
 
         return Task(api=api, **created_task)
 

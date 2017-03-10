@@ -43,6 +43,14 @@ class ValidationError(SbgError):
         )
 
 
+class TaskValidationError(SbgError):
+    def __init__(self, message, task=None):
+        self.task = task
+        super(TaskValidationError, self).__init__(
+            code=-1, status=-1, message=message
+        )
+
+
 class PaginationError(SbgError):
     def __init__(self, message):
         super(PaginationError, self).__init__(
@@ -91,6 +99,20 @@ class TooManyRequests(SbgError):
         )
 
 
+class ServerError(SbgError):
+    def __init__(self, code=None, message=None, more_info=None):
+        super(ServerError, self).__init__(
+            code=code, status=500, message=message, more_info=more_info
+        )
+
+
+class ServiceUnavailable(SbgError):
+    def __init__(self, code=None, message=None, more_info=None):
+        super(ServiceUnavailable, self).__init__(
+            code=code, status=503, message=message, more_info=more_info
+        )
+
+
 class MethodNotAllowed(SbgError):
     def __init__(self, code=None, message=None, more_info=None):
         super(MethodNotAllowed, self).__init__(
@@ -108,5 +130,12 @@ class RequestTimeout(SbgError):
 class LocalFileAlreadyExists(SbgError):
     def __init__(self, code=None, message=None, more_info=None):
         super(LocalFileAlreadyExists, self).__init__(
+            code=code, status=-1, message=message, more_info=more_info
+        )
+
+
+class ExecutionDetailsInvalidTaskType(SbgError):
+    def __init__(self, code=None, message=None, more_info=None):
+        super(ExecutionDetailsInvalidTaskType, self).__init__(
             code=code, status=-1, message=message, more_info=more_info
         )

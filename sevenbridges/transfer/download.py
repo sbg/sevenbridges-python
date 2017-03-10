@@ -5,9 +5,12 @@ import time
 
 import requests
 from requests.adapters import HTTPAdapter
+
 from requests.packages.urllib3 import Retry
+import six
 
 from sevenbridges.errors import SbgError
+from sevenbridges.http.client import generate_session
 from sevenbridges.transfer.utils import Part, Progress, total_parts
 from sevenbridges.models.enums import PartSize, TransferState
 
@@ -130,7 +133,7 @@ class DPartedFile(object):
         return parts
 
 
-# noinspection PyCallingNonCallable,PyTypeChecker
+# noinspection PyCallingNonCallable,PyTypeChecker,PyProtectedMember
 class Download(threading.Thread):
     def __init__(self, url, file_path,
                  part_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, retry_count=5,
@@ -151,17 +154,14 @@ class Download(threading.Thread):
             raise SbgError('Api instance missing.')
 
         if part_size and part_size < PartSize.DOWNLOAD_MINIMUM_PART_SIZE:
+            self._status = TransferState.FAILED
             raise SbgError(
                 'Part size is too small! Minimum get_parts size is {}'.format(
                     PartSize.DOWNLOAD_MINIMUM_PART_SIZE)
             )
 
         # initializes the session
-        self._session = requests.Session()
-        self._session.mount('https://', HTTPAdapter(
-            max_retries=Retry(
-                total=5, status_forcelist=[500, 503], backoff_factor=0.1)
-        ))
+
         self.url = url
         self._file_path = file_path
 
@@ -181,6 +181,14 @@ class Download(threading.Thread):
         self._errorback = None
         self._progress_callback = None
         self._time_started = 0
+
+        adapter = HTTPAdapter(max_retries=Retry(
+            total=self._retry, status_forcelist=[500, 503], backoff_factor=0.1)
+        )
+        self._session = generate_session(
+            'https://', adapter, self._api.session.proxies
+        )
+
         try:
             self._file_size = self._get_file_size()
         except SbgError as error:
@@ -190,6 +198,11 @@ class Download(threading.Thread):
                 raise error
         self._status = TransferState.PREPARING
         self._stop_signal = False
+
+    def __repr__(self):
+        return six.text_type(
+            '<Download: status={status}>'.format(status=self.status)
+        )
 
     @property
     def progress(self):
@@ -272,13 +285,7 @@ class Download(threading.Thread):
         """
         Blocks until download is completed.
         """
-        if self._status == TransferState.RUNNING:
-            self.join()
-            self._status = TransferState.COMPLETED
-        else:
-            raise SbgError(
-                'Unable to wait. Download not in RUNNING state.'
-            )
+        self.join()
 
     def start(self):
         """
@@ -341,14 +348,13 @@ class Download(threading.Thread):
             return self._callback(self._status)
 
     def _get_file_size(self):
-
         """
         Fetches file size by reading the Content-Length header
         for the resource.
         :return: File size.
         """
         try:
-            response = requests.get(
+            response = self._session.get(
                 self.url, timeout=self._timeout, stream=True
             )
         except requests.RequestException as e:
