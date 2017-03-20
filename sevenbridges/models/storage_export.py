@@ -2,7 +2,6 @@ import logging
 
 import six
 
-from sevenbridges.http.utils import AdvanceAccess
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
@@ -73,7 +72,6 @@ class Export(Resource):
         """
         data = {}
         params = {}
-        headers = {}
 
         volume = Transform.to_volume(volume)
         file = Transform.to_file(file)
@@ -91,10 +89,6 @@ class Export(Resource):
         data['destination'] = destination
         data['overwrite'] = overwrite
 
-        if copy_only:
-            params['copy_only'] = True
-            headers[AdvanceAccess.aa_header] = AdvanceAccess.aa_header_value
-
         extra = {
             'resource': cls.__name__,
             'query': data
@@ -102,9 +96,15 @@ class Export(Resource):
         log.info('submit export', extra=extra)
 
         api = api if api else cls._API
-        _export = api.post(
-            cls._URL['query'], data=data, params=params, headers=headers
-        ).json()
+
+        if copy_only:
+            params['copy_only'] = True
+            _export = api.post(
+                cls._URL['query'], data=data, params=params).json()
+        else:
+            _export = api.post(
+                cls._URL['query'], data=data).json()
+
         return Export(api=api, **_export)
 
     @classmethod
