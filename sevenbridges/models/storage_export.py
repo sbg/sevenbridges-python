@@ -1,16 +1,18 @@
 import logging
+
 import six
 
-from sevenbridges.meta.resource import Resource
-from sevenbridges.models.compound.volumes.properties import VolumeProperties
-from sevenbridges.models.file import File
-from sevenbridges.meta.transformer import Transform
-from sevenbridges.models.compound.error import Error
-from sevenbridges.models.compound.volumes.volume_file import VolumeFile
+from sevenbridges.http.advance_access import advance_access
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
 )
+from sevenbridges.meta.resource import Resource
+from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.compound.error import Error
+from sevenbridges.models.compound.volumes.properties import VolumeProperties
+from sevenbridges.models.compound.volumes.volume_file import VolumeFile
+from sevenbridges.models.file import File
 
 log = logging.getLogger(__name__)
 
@@ -56,7 +58,7 @@ class Export(Resource):
 
     @classmethod
     def submit_export(cls, file, volume, location, properties=None,
-                      overwrite=False, api=None):
+                      overwrite=False, copy_only=False, api=None):
 
         """
         Submit new export job.
@@ -65,10 +67,13 @@ class Export(Resource):
         :param location: Volume location.
         :param properties: Properties dictionary.
         :param overwrite: If true it will overwrite file if exists
+        :param copy_only: If true files are kept on SevenBridges bucket.
         :param api: Api Instance.
         :return: Export object.
         """
         data = {}
+        params = {}
+
         volume = Transform.to_volume(volume)
         file = Transform.to_file(file)
         destination = {
@@ -85,13 +90,23 @@ class Export(Resource):
         data['destination'] = destination
         data['overwrite'] = overwrite
 
-        api = api if api else cls._API
         extra = {
             'resource': cls.__name__,
             'query': data
         }
         log.info('submit export', extra=extra)
-        _export = api.post(cls._URL['query'], data=data).json()
+
+        api = api if api else cls._API
+
+        if copy_only:
+            params['copy_only'] = True
+            with advance_access(api):
+                _export = api.post(
+                    cls._URL['query'], data=data, params=params).json()
+        else:
+            _export = api.post(
+                cls._URL['query'], data=data).json()
+
         return Export(api=api, **_export)
 
     @classmethod

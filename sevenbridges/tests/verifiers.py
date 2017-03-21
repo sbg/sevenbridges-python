@@ -1,6 +1,7 @@
-
-
 # noinspection PyProtectedMember
+from sevenbridges.http.advance_access import AdvanceAccessHeader
+
+
 class Assert(object):
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
@@ -18,6 +19,12 @@ class Assert(object):
         assert False, 'Query string not matched \n{} != \n{}'.format(
             qs, hist.qs
         )
+
+    def check_header_present(self, header):
+        for hist in self.request_mocker._adapter.request_history:
+            if header in hist.headers:
+                return True
+        assert False, 'AA headers missing'
 
 
 class ProjectVerifier(object):
@@ -222,3 +229,12 @@ class VolumeVerifier(object):
 
     def modified(self, _id):
         self.checker.check_url('/storage/volumes/{}'.format(_id))
+
+
+class AdvanceAccessVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def headers_present(self):
+        self.checker.check_header_present(AdvanceAccessHeader.key)

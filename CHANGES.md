@@ -1,3 +1,7 @@
+0.7.1 (2017-03-21)
+==================
+- Copy only feature for volumes advance access
+
 0.7.0 (2016-02-10)
 ==================
 - Changes in the library configuration. The location and format of the configuration files
