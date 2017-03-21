@@ -2,6 +2,7 @@ import logging
 
 import six
 
+from sevenbridges.http.advance_access import advance_access
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
@@ -99,8 +100,9 @@ class Export(Resource):
 
         if copy_only:
             params['copy_only'] = True
-            _export = api.post(
-                cls._URL['query'], data=data, params=params).json()
+            with advance_access(api):
+                _export = api.post(
+                    cls._URL['query'], data=data, params=params).json()
         else:
             _export = api.post(
                 cls._URL['query'], data=data).json()

@@ -10,7 +10,7 @@ from sevenbridges.tests.providers import (
 from sevenbridges.tests.verifiers import (
     EndpointVerifier, ProjectVerifier, UserVerifier, MemberVerifier,
     FileVerifier, AppVerifier, TaskVerifier,
-    VolumeVerifier)
+    VolumeVerifier, AdvanceAccessVerifier)
 
 generator = faker.Factory.create()
 
@@ -59,6 +59,7 @@ class Verifier(object):
         self.app = AppVerifier(request_mocker)
         self.task = TaskVerifier(request_mocker)
         self.volume = VolumeVerifier(request_mocker)
+        self.aa = AdvanceAccessVerifier(request_mocker)
 
 
 @pytest.fixture
