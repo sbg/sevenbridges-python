@@ -1,3 +1,6 @@
+0.7.2 (2017-03-30)
+- Add option to add users to project using email.
+
 0.7.1 (2017-03-21)
 ==================
 - Copy only feature for volumes advance access

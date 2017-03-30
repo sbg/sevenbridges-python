@@ -20,6 +20,7 @@ class Member(Resource):
 
     href = HrefField()
     username = StringField(read_only=False)
+    email = StringField(read_only=False)
     permissions = CompoundField(Permissions, read_only=False)
 
     def __str__(self):
@@ -36,7 +37,7 @@ class Member(Resource):
         if bool(data):
             url = six.text_type(self.href) + self._URL['permissions']
             extra = {'resource': self.__class__.__name__, 'query': data}
-            log.info('upload file', extra=extra)
+            log.info('Save permissions', extra=extra)
             self._api.patch(url=url, data=data, append_base=False)
         else:
             raise ResourceNotModified()

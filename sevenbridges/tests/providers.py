@@ -169,9 +169,12 @@ class MemberProvider(object):
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(num_of_members)})
 
-    def member_exist(self, project, username):
+    def member_exist(self, project, username=None, email=None):
         member = self.default_member(project, username)
-        member.update({'username': username})
+        if username:
+            member.update({'username': username})
+        if email:
+            member.update({'email': email})
         url = '/projects/{project}/members'.format(
             project=project
         )

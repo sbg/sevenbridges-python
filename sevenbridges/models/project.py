@@ -1,4 +1,5 @@
 import logging
+
 import six
 
 from sevenbridges.decorators import inplace_reload
@@ -158,12 +159,12 @@ class Project(Resource):
         :return: Member object.
         """
         user = Transform.to_user(user)
-        data = {}
+        data = {'username': user}
         if isinstance(permissions, dict):
-            data = {
-                'username': user,
+            data.update({
                 'permissions': permissions
-            }
+            })
+
         extra = {
             'resource': self.__class__.__name__,
             'query': {
@@ -171,7 +172,34 @@ class Project(Resource):
                 'data': data,
             }
         }
-        log.info('add member', extra=extra)
+        log.info('Add member using username', extra=extra)
+        response = self._api.post(
+            url=self._URL['members_query'].format(id=self.id), data=data)
+        member_data = response.json()
+        return Member(api=self._api, **member_data)
+
+    def add_member_email(self, email, permissions=None):
+        """
+        Add a member to the project using member email.
+        :param email: Member email.
+        :param permissions: Permissions dictionary.
+        :return: Member object.
+        """
+        data = {'email': email}
+
+        if isinstance(permissions, dict):
+            data.update({
+                'permissions': permissions
+            })
+
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+                'data': data,
+            }
+        }
+        log.info('Add member using email', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()

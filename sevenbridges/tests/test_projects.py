@@ -112,6 +112,31 @@ def test_project_add_member(api, given, verifier):
     verifier.member.member_added(project=id)
 
 
+def test_project_add_member_email(api, given, verifier):
+    # preconditions
+    owner = generator.user_name()
+    project_short_name = generator.slug()
+    id = '{}/{}'.format(owner, project_short_name)
+    email = generator.email()
+    given.project.exists(id=id)
+    mocked_member = given.member.member_exist(project=id, email=email)
+
+    # action
+    project = api.projects.get(id)
+    member = project.add_member_email(mocked_member['email'],
+                                      mocked_member['permissions'])
+    assert member.email == mocked_member['email']
+    assert member.permissions['write'] == mocked_member['permissions']['write']
+    assert member.permissions['read'] == mocked_member['permissions']['read']
+    assert member.permissions['copy'] == mocked_member['permissions']['copy']
+    assert member.permissions['execute'] == mocked_member['permissions'][
+        'execute']
+    assert member.permissions['admin'] == mocked_member['permissions']['admin']
+
+    # verifier
+    verifier.member.member_added(project=id)
+
+
 def test_project_remove_member(api, given, verifier):
     # preconditions
     owner = generator.user_name()
