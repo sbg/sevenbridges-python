@@ -38,9 +38,8 @@ def inplace_reload(method):
 
 
 def retry_on_excs(excs, retry_count=3, delay=1):
-    """
-    Retry decorator used to retry callables on for specific exceptions.
-    
+    """Retry decorator used to retry callables on for specific exceptions.
+
     :param excs: Exceptions tuple.
     :param retry_count: Retry count.
     :param delay: Delay in seconds between retries.
@@ -83,7 +82,7 @@ def retry(retry_count):
             for backoff in range(retry_count):
                 try:
                     return f(*args, **kwargs)
-                except Exception as e:
+                except:
                     time.sleep(2 ** backoff)
             else:
                 raise SbgError('{}: failed to complete: {}'.format(

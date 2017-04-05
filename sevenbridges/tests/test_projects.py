@@ -46,7 +46,7 @@ def test_create_project(api, given, verifier, name):
         verifier.project.created()
     else:
         with pytest.raises(SbgError):
-            _ = api.projects.create(
+            api.projects.create(
                 name=name, billing_group=billing_group,
                 description=project_description
             )
