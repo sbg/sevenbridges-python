@@ -5,7 +5,7 @@ from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import HrefField, StringField
 from sevenbridges.meta.transformer import Transform
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class User(Resource):
@@ -50,7 +50,7 @@ class User(Resource):
             'resource': cls.__name__,
             'query': {}
         }
-        log.info('getting me', extra=extra)
+        logger.info('Fetching user information', extra=extra)
         user_data = api.get(cls._URL['me']).json()
         return User(api=api, **user_data)
 

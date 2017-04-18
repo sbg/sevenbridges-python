@@ -7,7 +7,7 @@ sevenbridges-python
 import logging
 
 
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config
@@ -27,6 +27,6 @@ from sevenbridges.models.storage_export import Export
 from sevenbridges.models.storage_import import Import
 from sevenbridges.models.volume import Volume
 from sevenbridges.models.enums import *
-
+from sevenbridges.errors import *
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())

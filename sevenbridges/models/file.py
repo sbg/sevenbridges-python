@@ -20,7 +20,7 @@ from sevenbridges.models.enums import PartSize
 from sevenbridges.transfer.download import Download
 from sevenbridges.transfer.upload import Upload
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class File(Resource):
@@ -129,7 +129,7 @@ class File(Resource):
             'part_size': part_size,
             'wait': wait,
         }}
-        log.info('upload file', extra=extra)
+        logger.info('Uploading file', extra=extra)
         project = Transform.to_project(project)
         upload = Upload(
             path, project, file_name=file_name, overwrite=overwrite,
@@ -159,7 +159,7 @@ class File(Resource):
             'id': self.id,
             'data': data
         }}
-        log.info('copying file', extra=extra)
+        logger.info('Copying file', extra=extra)
         new_file = self._api.post(url=self._URL['copy'].format(id=self.id),
                                   data=data).json()
         return File(api=self._api, **new_file)
@@ -200,7 +200,7 @@ class File(Resource):
             'chunk_size': chunk_size,
             'wait': wait,
         }}
-        log.info('download file', extra=extra)
+        logger.info('Downloading file', extra=extra)
         info = self.download_info()
         download = Download(
             url=info.url, file_path=path, retry_count=retry, timeout=timeout,

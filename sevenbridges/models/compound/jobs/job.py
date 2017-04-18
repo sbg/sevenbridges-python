@@ -1,10 +1,12 @@
 import six
 
+from sevenbridges.meta.fields import (
+    StringField, DateTimeField, CompoundField, BooleanField
+)
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.jobs.job_docker import JobDocker
-from sevenbridges.models.compound.jobs.job_log import Logs
 from sevenbridges.models.compound.jobs.job_instance import Instance
-from sevenbridges.meta.fields import StringField, DateTimeField, CompoundField
+from sevenbridges.models.compound.jobs.job_log import Logs
 
 
 class Job(Resource):
@@ -17,6 +19,7 @@ class Job(Resource):
     end_time = DateTimeField(read_only=True)
     status = StringField(read_only=True)
     command_line = StringField(read_only=True)
+    retried = BooleanField(read_only=True)
     instance = CompoundField(Instance, read_only=True)
     docker = CompoundField(JobDocker, read_only=True)
     logs = CompoundField(Logs, read_only=True)

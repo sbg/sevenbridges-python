@@ -10,7 +10,7 @@ from sevenbridges.meta.fields import (
 )
 from sevenbridges.models.enums import VolumeType
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 # noinspection PyProtectedMember
@@ -93,7 +93,7 @@ class Volume(Resource):
             'resource': cls.__name__,
             'query': data
         }
-        log.info('create s3 volume', extra=extra)
+        logger.info('Creating s3 volume', extra=extra)
         response = api.post(url=cls._URL['query'], data=data).json()
         return Volume(api=api, **response)
 
@@ -138,7 +138,7 @@ class Volume(Resource):
             'resource': cls.__name__,
             'query': data
         }
-        log.info('create google volume', extra=extra)
+        logger.info('Creating google volume', extra=extra)
         response = api.post(url=cls._URL['query'], data=data).json()
         return Volume(api=api, **response)
 
@@ -156,7 +156,7 @@ class Volume(Resource):
                     'modified_data': modified_data
                 }
             }
-            log.info('save volume', extra=extra)
+            logger.info('Saving volume', extra=extra)
             data = self._api.patch(url=self._URL['get'].format(id=self.id),
                                    data=modified_data).json()
             volume = Volume(api=self._api, **data)

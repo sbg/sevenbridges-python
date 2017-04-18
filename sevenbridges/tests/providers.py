@@ -1,3 +1,5 @@
+import time
+
 import faker
 
 generator = faker.Factory.create()
@@ -24,6 +26,31 @@ class EndpointProvider(object):
 
     def defined(self):
         self.request_mocker.get('/'.format(id), json=self.endpoints())
+
+
+class RateLimitProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default_rate():
+        return {
+            'rate': {
+                'limit': 1000,
+                "remaining": 1000,
+                'reset': (int(time.time() + 60))
+            },
+            'instance_limit': {
+                'limit': 1000,
+                'remaining': 999
+            }
+        }
+
+    def limit_available(self, **kwargs):
+        rate = self.default_rate()
+        rate.update(kwargs)
+        self.request_mocker.get('/rate_limit', json=rate)
 
 
 class UserProvider(object):

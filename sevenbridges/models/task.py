@@ -21,7 +21,7 @@ from sevenbridges.models.compound.tasks.output import Output
 from sevenbridges.models.execution_details import ExecutionDetails
 from sevenbridges.models.file import File
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Task(Resource):
@@ -215,7 +215,7 @@ class Task(Resource):
             'resource': self.__class__.__name__,
             'query': {'id': self.id}
         }
-        log.info('abort task', extra=extra)
+        logger.info('Aborting task', extra=extra)
         task_data = self._api.post(
             url=self._URL['abort'].format(id=self.id)).json()
         return Task(api=self._api, **task_data)
@@ -235,7 +235,7 @@ class Task(Resource):
             'resource': self.__class__.__name__,
             'query': {'id': self.id, 'batch': batch}
         }
-        log.info('run task', extra=extra)
+        logger.info('Running task', extra=extra)
         task_data = self._api.post(
             url=self._URL['run'].format(id=self.id), params=params).json()
         return Task(api=self._api, **task_data)
@@ -272,7 +272,7 @@ class Task(Resource):
                 'resource': self.__class__.__name__,
                 'query': {'id': self.id, 'data': task_request_data}
             }
-            log.info('save task', extra=extra)
+            logger.info('Saving task', extra=extra)
             data = self._api.patch(url=self._URL['get'].format(id=self.id),
                                    data=task_request_data).json()
             task = Task(api=self._api, **data)
@@ -294,7 +294,7 @@ class Task(Resource):
             'resource': self.__class__.__name__,
             'query': {'id': self.id}
         }
-        log.info('get execution details', extra=extra)
+        logger.info('Get execution details', extra=extra)
         data = self._api.get(
             self._URL['execution_details'].format(id=self.id)).json()
         return ExecutionDetails(api=self._api, **data)

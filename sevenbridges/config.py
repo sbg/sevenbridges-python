@@ -117,9 +117,9 @@ class Config(object):
         elif cfg_profile:
             self.proxies = format_proxies(cfg_profile.proxies)
 
-        logging.info(
+        logger.info(
             'Client settings: [url={}] [token={}] [proxy={}]'.format(
-                self.auth_token,
-                self.api_endpoint, self.proxies)
+                self.api_endpoint,
+                self.auth_token, self.proxies)
 
         )

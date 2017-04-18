@@ -9,7 +9,7 @@ from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, DictField
 )
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class App(Resource):
@@ -77,7 +77,7 @@ class App(Resource):
             'id': id,
             'revision': revision
         }}
-        log.info('get revision', extra=extra)
+        logger.info('Get revision', extra=extra)
         app = api.get(url=cls._URL['get_revision'].format(
             id=id, revision=revision)).json()
         return App(api=api, **app)
@@ -96,7 +96,7 @@ class App(Resource):
             'id': id,
             'data': raw
         }}
-        log.info('install app', extra=extra)
+        logger.info('Installing app', extra=extra)
         app = api.post(url=cls._URL['raw'].format(id=id), data=raw).json()
         app_wrapper = api.get(url=cls._URL['get'].format(
             id=app['sbg:id'])).json()
@@ -118,7 +118,7 @@ class App(Resource):
             'id': id,
             'data': raw
         }}
-        log.info('create revision', extra=extra)
+        logger.info('Creating app revision', extra=extra)
         app = api.post(url=cls._URL['create_revision'].format(
             id=id, revision=revision), data=raw).json()
         app_wrapper = api.get(
@@ -143,7 +143,7 @@ class App(Resource):
             'id': self.id,
             'data': data
         }}
-        log.info('copying app', extra=extra)
+        logger.info('Copying app', extra=extra)
         app = self._api.post(url=self._URL['copy'].format(id=self.id),
                              data=data).json()
         return App(api=self._api, **app)

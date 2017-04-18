@@ -14,7 +14,7 @@ from sevenbridges.models.compound.projects.settings import Settings
 from sevenbridges.models.link import Link
 from sevenbridges.models.member import Member
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Project(Resource):
@@ -100,7 +100,7 @@ class Project(Resource):
             'resource': cls.__name__,
             'query': data
         }
-        log.info('create project', extra=extra)
+        logger.info('Creating project', extra=extra)
         project_data = api.post(url=cls._URL['create'], data=data).json()
         return Project(api=api, **project_data)
 
@@ -120,7 +120,7 @@ class Project(Resource):
                     'modified_data': modified_data
                 }
             }
-            log.info('save project', extra=extra)
+            logger.info('Saving project', extra=extra)
             data = self._api.patch(url=self._URL['get'].format(id=self.id),
                                    data=modified_data).json()
             project = Project(api=self._api, **data)
@@ -139,7 +139,7 @@ class Project(Resource):
             'resource': self.__class__.__name__,
             'query': {'id': self.id}
         }
-        log.info('get members', extra=extra)
+        logger.info('Get members', extra=extra)
         response = self._api.get(
             url=self._URL['members_query'].format(id=self.id),
             params={'offset': offset, 'limit': limit})
@@ -172,7 +172,7 @@ class Project(Resource):
                 'data': data,
             }
         }
-        log.info('Add member using username', extra=extra)
+        logger.info('Adding member using username', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -199,7 +199,7 @@ class Project(Resource):
                 'data': data,
             }
         }
-        log.info('Add member using email', extra=extra)
+        logger.info('Adding member using email', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -284,7 +284,7 @@ class Project(Resource):
                 'user': user,
             }
         }
-        log.info('remove member', extra=extra)
+        logger.info('Removing member', extra=extra)
         self._api.delete(
             url=self._URL['members_get'].format(id=self.id, member=member)
         )

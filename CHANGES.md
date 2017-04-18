@@ -1,4 +1,15 @@
+0.7.3 (2017-04-18)
+==================
+- Instance limit information added.
+- Expanded task execution resource to reflect limit information.
+- Bugfixes
+ - [Issue #70](https://github.com/sbg/sevenbridges-python/issues/69)
+ - [Issue #69](https://github.com/sbg/sevenbridges-python/issues/69)
+ - [Issue #68](https://github.com/sbg/sevenbridges-python/issues/68)
+ - [Issue #67](https://github.com/sbg/sevenbridges-python/issues/68)
+
 0.7.2 (2017-03-30)
+==================
 - Add option to add users to project using email.
 
 0.7.1 (2017-03-21)

@@ -14,7 +14,7 @@ from sevenbridges.meta.fields import (
     DictField
 )
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 # noinspection PyArgumentList
@@ -88,7 +88,7 @@ class Import(Resource):
             'resource': cls.__name__,
             'query': data
         }
-        log.info('submit import', extra=extra)
+        logger.info('Submitting import', extra=extra)
         _import = api.post(cls._URL['query'], data=data).json()
         return Import(api=api, **_import)
 

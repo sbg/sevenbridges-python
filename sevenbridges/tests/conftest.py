@@ -6,11 +6,13 @@ from sevenbridges import Api
 from sevenbridges.tests.providers import (
     ProjectProvider, EndpointProvider, UserProvider, MemberProvider,
     FileProvider, AppProvider, TaskProvider,
-    VolumeProvider)
+    VolumeProvider, RateLimitProvider
+)
 from sevenbridges.tests.verifiers import (
     EndpointVerifier, ProjectVerifier, UserVerifier, MemberVerifier,
-    FileVerifier, AppVerifier, TaskVerifier,
-    VolumeVerifier, AdvanceAccessVerifier)
+    FileVerifier, AppVerifier, TaskVerifier, VolumeVerifier,
+    AdvanceAccessVerifier
+)
 
 generator = faker.Factory.create()
 
@@ -37,6 +39,7 @@ class Precondition(object):
     def __init__(self, request_mocker, base_url):
         self.user = UserProvider(request_mocker, base_url)
         self.endpoints = EndpointProvider(request_mocker, base_url)
+        self.rate = RateLimitProvider(request_mocker, base_url)
         self.project = ProjectProvider(request_mocker, base_url)
         self.member = MemberProvider(request_mocker, base_url)
         self.file = FileProvider(request_mocker, base_url)

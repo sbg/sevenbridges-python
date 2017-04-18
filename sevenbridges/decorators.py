@@ -1,4 +1,5 @@
 import functools
+import logging
 import threading
 import time
 
@@ -9,6 +10,8 @@ from sevenbridges.errors import (
     RequestTimeout, Conflict, TooManyRequests, SbgError, ServerError,
     ServiceUnavailable
 )
+
+logger = logging.getLogger(__name__)
 
 
 def inplace_reload(method):
@@ -32,6 +35,41 @@ def inplace_reload(method):
             return obj
 
     return wrapped
+
+
+def retry_on_excs(excs, retry_count=3, delay=1):
+    """
+    Retry decorator used to retry callables on for specific exceptions.
+    
+    :param excs: Exceptions tuple.
+    :param retry_count: Retry count.
+    :param delay: Delay in seconds between retries.
+    :return: Wrapped function object.
+    """
+
+    def wrapper(f):
+        @functools.wraps(f)
+        def deco(*args, **kwargs):
+            for i in range(0, retry_count):
+                try:
+                    return f(*args, **kwargs)
+                except excs:
+                    if logger:
+                        logger.warning(
+                            'HTTPError caught.Retrying ...'.format(f.__name__),
+                            exc_info=True
+                        )
+                    time.sleep(delay)
+            else:
+                logger.error(
+                    '{} failed after {} retries'.format(
+                        f.__name__, retry_count)
+                )
+            return f(*args, **kwargs)
+
+        return deco
+
+    return wrapper
 
 
 def retry(retry_count):

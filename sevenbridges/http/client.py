@@ -11,7 +11,7 @@ from sevenbridges.decorators import check_for_error
 from sevenbridges.errors import SbgError
 from sevenbridges.http.error_handlers import maintenance_sleeper
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 client_info = {
     'version': sevenbridges.__version__,
@@ -170,13 +170,13 @@ class HttpClient(object):
         d = {'verb': verb, 'url': url, 'headers': headers, 'params': params}
         if not stream:
             d.update({'data': data})
-            log.debug("Request", extra=d)
+            logger.debug("Request", extra=d)
             response = self._session.request(
                 verb, url, params=params, data=json.dumps(data),
                 headers=headers, timeout=self.timeout, stream=stream
             )
         else:
-            log.debug('Stream Request', extra=d)
+            logger.debug('Stream Request', extra=d)
             response = self._session.request(
                 verb, url, params=params, stream=stream, allow_redirects=True,
             )

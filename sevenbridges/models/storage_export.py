@@ -14,7 +14,7 @@ from sevenbridges.models.compound.volumes.properties import VolumeProperties
 from sevenbridges.models.compound.volumes.volume_file import VolumeFile
 from sevenbridges.models.file import File
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 # noinspection PyArgumentList
@@ -94,10 +94,9 @@ class Export(Resource):
             'resource': cls.__name__,
             'query': data
         }
-        log.info('submit export', extra=extra)
+        logger.info('Submitting export', extra=extra)
 
         api = api if api else cls._API
-
         if copy_only:
             params['copy_only'] = True
             with advance_access(api):

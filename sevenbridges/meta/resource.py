@@ -8,7 +8,7 @@ from sevenbridges.http.client import HttpClient
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.fields import Field
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 # noinspection PyProtectedMember
@@ -106,7 +106,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         api = kwargs.pop('api', cls._API)
         url = kwargs.pop('url')
         extra = {'resource': cls.__name__, 'query': kwargs}
-        log.info('querying resource', extra=extra)
+        logger.info('Querying {} resource'.format(cls), extra=extra)
         response = api.get(url=url, params=kwargs)
         data = response.json()
         total = response.headers['x-total-matching-query']
@@ -131,7 +131,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         api = api if api else cls._API
         if 'get' in cls._URL:
             extra = {'resource': cls.__name__, 'query': {'id': id}}
-            log.info('getting resource', extra=extra)
+            logger.info('Fetching {} resource'.format(cls), extra=extra)
             resource = api.get(url=cls._URL['get'].format(id=id)).json()
             return cls(api=api, **resource)
         else:
@@ -144,7 +144,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         if 'delete' in self._URL:
             extra = {'resource': self.__class__.__name__, 'query': {
                 'id': self.id}}
-            log.info("deleting resource", extra=extra)
+            logger.info("Deleting {} resource.".format(self), extra=extra)
             self._api.delete(url=self._URL['delete'].format(id=self.id))
         else:
             raise SbgError('Resource can not be deleted!')
@@ -156,7 +156,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         try:
             extra = {'resource': self.__class__.__name__, 'query': {
                 'id': self.id}}
-            log.info('reloading resource', extra=extra)
+            logger.info('Reloading {} resource.'.format(self), extra=extra)
             data = self._api.get(self.href, append_base=False).json()
             resource = self.__class__(api=self._api, **data)
         except Exception:
