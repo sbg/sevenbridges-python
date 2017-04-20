@@ -164,6 +164,7 @@ Proxy configuration can be supplied in three different ways.
 
 .. note:: Once you set the proxy, all calls including upload and download will use the proxy settings.
 
+
 Rate limit
 ----------
 
@@ -179,6 +180,37 @@ obtained using your :code:`Api` object, as follows.
     api.remaining
     api.reset_time
 
+
+Error Handlers
+--------------
+
+Error handler is a callable that accepts the :code:`api` and :code:`response` objects and returns the response object.
+They are most useful when additional logic needs to be implemented based on request result.
+
+Example:
+
+.. code::
+
+    def error_handler(api, response):
+        # Do something with the response object
+        return response
+
+
+sevenbridges-python library comes bundled with several useful error handlers. The most used ones
+are :code:`maintenance_sleeper` and :code:`rate_limit_sleeper` which pause your code execution until the SevenBridges/CGC
+public API is in maintenance mode or when the rate limit is breached.
+
+
+Usage:
+
+.. code::
+
+    from sevenbridges.http.error_handlers import rate_limit_sleeper, maintenance_sleeper
+    api = sb.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>',
+            error_handlers=[rate_limit_sleeper, maintenance_sleeper])
+
+
+.. note:: Api object instantiated in this way with error handlers attached will be resilient to server maintenance and rate limiting.
 
 Managing users
 --------------
