@@ -1,10 +1,10 @@
 0.7.4 (2017-05-13)
 ==================
 - Bugfixes
- - [Issue #72](https://github.com/sbg/sevenbridges-python/issues/72)
- - [Issue #75](https://github.com/sbg/sevenbridges-python/issues/75)
- - [Issue #77](https://github.com/sbg/sevenbridges-python/issues/77)
- - [Issue #78](https://github.com/sbg/sevenbridges-python/issues/78)
+  - [Issue #72](https://github.com/sbg/sevenbridges-python/issues/72)
+  - [Issue #75](https://github.com/sbg/sevenbridges-python/issues/75)
+  - [Issue #77](https://github.com/sbg/sevenbridges-python/issues/77)
+  - [Issue #78](https://github.com/sbg/sevenbridges-python/issues/78)
 
 0.7.3 (2017-04-18)
 ==================
@@ -12,10 +12,10 @@
 - Expanded task execution resource to reflect limit information.
 
 - Bugfixes
- - [Issue #70](https://github.com/sbg/sevenbridges-python/issues/69)
- - [Issue #69](https://github.com/sbg/sevenbridges-python/issues/69)
- - [Issue #68](https://github.com/sbg/sevenbridges-python/issues/68)
- - [Issue #67](https://github.com/sbg/sevenbridges-python/issues/68)
+  - [Issue #70](https://github.com/sbg/sevenbridges-python/issues/69)
+  - [Issue #69](https://github.com/sbg/sevenbridges-python/issues/69)
+  - [Issue #68](https://github.com/sbg/sevenbridges-python/issues/68)
+  - [Issue #67](https://github.com/sbg/sevenbridges-python/issues/68)
 
 0.7.2 (2017-03-30)
 ==================
@@ -39,15 +39,15 @@ can be found within documentation.
 
 
 - Bugfixes
- - [Issue #64](https://github.com/sbg/sevenbridges-python/issues/64)
- - [Issue #63](https://github.com/sbg/sevenbridges-python/issues/63)
- - [Issue #62](https://github.com/sbg/sevenbridges-python/issues/62)
- - [Issue #61](https://github.com/sbg/sevenbridges-python/issues/61)
- - [Issue #56](https://github.com/sbg/sevenbridges-python/issues/56)
- - [Issue #55](https://github.com/sbg/sevenbridges-python/issues/55)
- - [Issue #54](https://github.com/sbg/sevenbridges-python/issues/54)
- - [Issue #53](https://github.com/sbg/sevenbridges-python/issues/53)
- - [Issue #49](https://github.com/sbg/sevenbridges-python/issues/49)
+  - [Issue #64](https://github.com/sbg/sevenbridges-python/issues/64)
+  - [Issue #63](https://github.com/sbg/sevenbridges-python/issues/63)
+  - [Issue #62](https://github.com/sbg/sevenbridges-python/issues/62)
+  - [Issue #61](https://github.com/sbg/sevenbridges-python/issues/61)
+  - [Issue #56](https://github.com/sbg/sevenbridges-python/issues/56)
+  - [Issue #55](https://github.com/sbg/sevenbridges-python/issues/55)
+  - [Issue #54](https://github.com/sbg/sevenbridges-python/issues/54)
+  - [Issue #53](https://github.com/sbg/sevenbridges-python/issues/53)
+  - [Issue #49](https://github.com/sbg/sevenbridges-python/issues/49)
 
 
 0.6.1 (2016-10-19)
