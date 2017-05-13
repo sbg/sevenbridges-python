@@ -114,7 +114,7 @@ configuration. There are three ways you can pass configure the library:
    the config object.
 2. Put the API endpoint and token in the environment variables
    ``API_URL`` and ``AUTH_TOKEN`` respectively.
-3. Use the configuration file ``$HOME/.sbgrc`` with defined parameters.
+3. Use the configuration file ``$HOME/.sevenbridges/credentials`` with defined parameters.
 
 Explicit initialization
 ~~~~~~~~~~~~~~~~~~~~~~~

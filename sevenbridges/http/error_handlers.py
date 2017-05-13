@@ -21,6 +21,7 @@ def rate_limit_sleeper(api, response):
         headers = response.headers
         remaining_time = headers.get('X-RateLimit-Reset')
         sleep = int(remaining_time) - int(time.time())
+        logger.warning('Rate limit reached! Waiting for {}s'.format(sleep))
         time.sleep(sleep + 5)
         response = api.session.send(response.request)
     return response
@@ -37,7 +38,10 @@ def maintenance_sleeper(api, response):
         response_body = response.json()
         if 'code' in response_body:
             if response_body['code'] == 0:
-                time.sleep(300)
+                sleep = 300
+                logger.warning('API Maintenance in progress!'
+                               ' Waiting for {}s'.format(sleep))
+                time.sleep(sleep)
                 response = api.session.send(response.request)
             else:
                 return response
@@ -55,6 +59,10 @@ def general_error_sleeper(api, response):
 
     """
     while response.status_code >= 500:
-        time.sleep(300)
+        sleep = 300
+        logger.warning('Caught {} status code!'' Waiting for {}s'.format(
+            response.status_code, sleep)
+        )
+        time.sleep(sleep)
         response = api.session.send(response.request)
     return response

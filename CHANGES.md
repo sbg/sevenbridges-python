@@ -1,7 +1,16 @@
+0.7.4 (2017-05-13)
+==================
+- Bugfixes
+ - [Issue #72](https://github.com/sbg/sevenbridges-python/issues/72)
+ - [Issue #75](https://github.com/sbg/sevenbridges-python/issues/75)
+ - [Issue #77](https://github.com/sbg/sevenbridges-python/issues/77)
+ - [Issue #78](https://github.com/sbg/sevenbridges-python/issues/78)
+
 0.7.3 (2017-04-18)
 ==================
 - Instance limit information added.
 - Expanded task execution resource to reflect limit information.
+
 - Bugfixes
  - [Issue #70](https://github.com/sbg/sevenbridges-python/issues/69)
  - [Issue #69](https://github.com/sbg/sevenbridges-python/issues/69)

@@ -6,10 +6,11 @@ import time
 import requests
 import six
 
+from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
 from sevenbridges.http.client import generate_session
-from sevenbridges.transfer.utils import Part, Progress, total_parts
 from sevenbridges.models.enums import PartSize, TransferState
+from sevenbridges.transfer.utils import Part, Progress, total_parts
 
 
 def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
@@ -55,6 +56,19 @@ def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
         os.close(fp)
         error = SbgError('Failed to download file after %s attempts.' % retry)
         raise error
+
+
+def _get_content_length(session, url, timeout):
+    try:
+        response = session.get(url, timeout=timeout, stream=True)
+    except requests.RequestException as e:
+        raise SbgError(str(e))
+
+    file_size = response.headers.get('Content-Length', None)
+    if file_size is None:
+        raise SbgError('Server did not provide Content-Length Headers!')
+
+    return file_size
 
 
 class DPartedFile(object):
@@ -165,7 +179,7 @@ class Download(threading.Thread):
         # append unique suffix to the file
         self._temp_file = self._file_path + '.' + hashlib.sha1(
             self._file_path.encode('utf-8')).hexdigest()[:10]
-        self._retry = retry_count
+        self._retry_count = retry_count
         self._timeout = timeout
         if part_size:
             self._part_size = part_size
@@ -307,7 +321,7 @@ class Download(threading.Thread):
                                   self.url,
                                   self._file_size,
                                   self._part_size,
-                                  self._retry,
+                                  self._retry_count,
                                   self._timeout,
                                   self._api.download_pool)
 
@@ -345,18 +359,11 @@ class Download(threading.Thread):
         for the resource.
         :return: File size.
         """
-        try:
-            response = self._session.get(
-                self.url, timeout=self._timeout, stream=True
-            )
-        except requests.RequestException as e:
-            raise SbgError(str(e))
-
-        file_size = response.headers.get('Content-Length', None)
-        if not file_size:
-            raise SbgError('Server did not provide Content-Length Headers!')
-
-        if int(file_size) == 0:
+        file_size = retry(self._retry_count)(_get_content_length)(
+            self._session, self.url, self._timeout
+        )
+        file_size = int(file_size)
+        if file_size == 0:
             raise SbgError('File size is 0. Refusing to download.')
 
-        return int(file_size)
+        return file_size
