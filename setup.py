@@ -24,7 +24,7 @@ setup(
     long_description=io.open('README.rst', 'r').read(),
     platforms=['Windows', 'POSIX', 'MacOS'],
     maintainer='Seven Bridges Genomics Inc.',
-    maintainer_email='developer@sbgenomics.com',
+    maintainer_email='senad.ibraimoski@sbgenomics.com',
     url='https://github.com/sbg/sevenbridges-python',
     license='Apache Software License 2.0',
     include_package_data=True,
