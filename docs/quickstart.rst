@@ -1041,6 +1041,36 @@ Single task
     # Task can also be ran by invoking .run() method on the draft task.
     task.run()
 
+Using the `smart_create` function that automatically finds file objects from the given project:
+
+.. code:: python
+
+    # Task name
+    task_name = 'my-first-task'
+
+    # Project in which I want to run a task.
+    project_id = 'my-username/my-project'
+
+    # App I want to use to run a task
+    app = 'my-username/my-project/my-app'
+
+    # Inputs
+    file_inputs = {'FastQC-Reads': ['mate1.fastq', 'mate2.fastq']}
+    # Note that these are plain file names. The method will retrieve the file objects
+    # from the project for you
+    app_settings = {'setting1': 42, 'setting2': 'towel'}
+
+    try:
+        task = api.tasks.smart_create(
+            name=name, project=project, app=app,
+            file_inputs=file_inputs, app_settings=app_settings, run=True)
+    except SbError:
+        print('I was unable to run the task.')
+
+    # Task can also be ran by invoking .run() method on the draft task.
+    task.run()
+
+
 Batch task
 ~~~~~~~~~~
 
