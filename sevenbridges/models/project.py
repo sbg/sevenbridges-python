@@ -62,6 +62,33 @@ class Project(Resource):
         return super(Project, cls)._query(
             url=url, offset=offset, limit=limit, fields='_all', api=api
         )
+        
+    @classmethod
+    def find(cls, owner, project_name, exact=True):
+        """
+        Finds a project of a specificed user given the name.
+        :param owner: The owner of the project
+        :param project_name: the name of the project
+        :param exact: If True, the `project_name` is matched exactly, otherwise any projects which containes 
+                      part of the `project_name` supplied is returned. The search is executed in a case sensitive way.
+        :return: None if nothing find, one project if exact is True, a list of projects otherwise 
+        """
+        collection = cls.query(owner=owner).all()
+        result = None
+        matched = []
+        if exact:
+            for project in collection:
+                if project.name == project_name:
+                    result = project
+                    break
+        else:
+            for project in collection:
+                if project_name in project.name:
+                    matched.append(project)
+            result = matched
+            
+        return result
+        
 
     @classmethod
     def create(cls, name, billing_group=None, description=None, tags=None,
