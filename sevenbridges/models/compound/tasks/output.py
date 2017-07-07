@@ -21,10 +21,11 @@ class Output(CompoundMutableDict, Resource):
                 if inputs['class'].lower() == 'file':
                     return File(id=inputs['path'], api=self._api)
             elif isinstance(inputs, list):
-                items = [File(id=item['path'], api=self._api)
-                         if isinstance(item, dict) else item
-                         for item in inputs
-                         ]
+                items = [
+                    File(id=i['path'], api=self._api)
+                    if isinstance(i, dict) else i
+                    for i in inputs
+                ]
                 return items
             else:
                 return inputs

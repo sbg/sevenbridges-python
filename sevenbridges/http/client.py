@@ -47,7 +47,7 @@ def config_vars(profiles):
             token = config.auth_token
             proxies = config.proxies
             return url, token, proxies
-        except Exception:
+        except:
             pass
     return None, None, None
 

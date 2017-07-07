@@ -1,5 +1,5 @@
 import faker
-import pytest
+
 
 generator = faker.Factory.create()
 
