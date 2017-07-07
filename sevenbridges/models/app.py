@@ -1,13 +1,13 @@
+import logging
 import re
 
-import logging
 import six
 
-from sevenbridges.meta.resource import Resource
-from sevenbridges.meta.transformer import Transform
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, DictField
 )
+from sevenbridges.meta.resource import Resource
+from sevenbridges.meta.transformer import Transform
 
 logger = logging.getLogger(__name__)
 
@@ -45,12 +45,14 @@ class App(Resource):
         )
 
     @classmethod
-    def query(cls, project=None, visibility=None, offset=None, limit=None,
-              api=None):
+    def query(cls, project=None, visibility=None, q=None, id=None, offset=None,
+              limit=None, api=None):
         """
         Query (List) apps.
-        :param visibility:
-        :param project:
+        :param project: Source project.
+        :param visibility: private|public for private or public apps.
+        :param q: List containing search terms.
+        :param id: List contains app ids. Fetch apps with specific ids.
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :param api: Api instance.

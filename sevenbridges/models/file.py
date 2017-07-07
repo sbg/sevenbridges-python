@@ -230,13 +230,12 @@ class File(Resource):
         if silent or bool(modified_data):
             # If metadata is to be set
             if 'metadata' in modified_data:
-                try:
-                    _ = self._method
+                if hasattr(self, '_method'):
                     self._api.put(
                         url=self._URL['metadata'].format(id=self.id),
                         data=modified_data['metadata']
                     )
-                except AttributeError:
+                else:
                     self._api.patch(
                         url=self._URL['metadata'].format(id=self.id),
                         data=modified_data['metadata']

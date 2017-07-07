@@ -667,3 +667,30 @@ class VolumeProvider(object):
         volume.update(kwargs)
         url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
         self.request_mocker.patch(url, json=volume)
+
+
+class ActionProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default_copy_result():
+        copy_result = {
+            'id': {
+                "status": "ok",
+                "new_file_id": "2",
+                "new_file_name": "test"
+            }
+        }
+        return copy_result
+
+    def feedback_set(self):
+        url = self.base_url + "/action/notifications/feedback"
+        self.request_mocker.post(url)
+
+    def can_bulk_copy(self, **kwargs):
+        result = self.default_copy_result()
+        result.update(kwargs)
+        url = self.base_url + "/action/files/copy"
+        self.request_mocker.post(url, json=result)

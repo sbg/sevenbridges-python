@@ -37,7 +37,7 @@ def test_files_query_file_name(api, given, verifier):
     given.project.exists(id=id)
 
     # action
-    project = api.projects.get(id)
+    api.projects.get(id)
     projects = api.files.query(project=id, names=[file_name], limit=10)
 
     # verification
@@ -59,7 +59,7 @@ def test_files_query_file_metadata(api, given, verifier):
     given.project.exists(id=id)
 
     # action
-    project = api.projects.get(id)
+    api.projects.get(id)
     projects = api.files.query(project=id, metadata={key: value}, limit=10)
 
     # verification
@@ -81,7 +81,7 @@ def test_files_query_file_origin(api, given, verifier):
     given.project.exists(id=id)
 
     # action
-    _ = api.projects.get(id)
+    api.projects.get(id)
     projects = api.files.query(project=id, origin={key: value}, limit=10)
 
     # verification
@@ -102,7 +102,7 @@ def test_files_query_tags(api, given, verifier):
     given.project.exists(id=id)
 
     # action
-    _ = api.projects.get(id)
+    api.projects.get(id)
     projects = api.files.query(project=id, tags=tags, limit=10)
 
     # verification

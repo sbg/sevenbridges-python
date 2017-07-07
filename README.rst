@@ -1,7 +1,8 @@
 sevenbridges-python
 ===================
 
-|PyPI version| |Documentation| |Licence|
+
+|Travis| |PyPI version| |Documentation| |Licence|
 
 `CHANGESETS <CHANGES.md>`__
 
@@ -205,6 +206,8 @@ more detailed examples consult the documentation, hosted on readthedocs.
    :target: http://sevenbridges-python.readthedocs.org/en/latest/
 .. |Licence| image:: https://img.shields.io/badge/licence-Apache-orange.svg
    :target: https://github.com/sbg/sevenbridges-python/blob/master/LICENCE
+.. |Travis| image:: https://travis-ci.org/sbg/sevenbridges-python.png
+   :target: https://travis-ci.org/sbg/sevenbridges-python
 
 
 Contributing

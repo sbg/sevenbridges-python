@@ -51,3 +51,9 @@ class TaskStatus:
     COMPLETED = 'COMPLETED'
     ABORTED = 'ABORTED'
     FAILED = 'FAILED'
+
+
+class FeedbackType:
+    IDEA = 'IDEA'
+    THOUGHT = 'THOUGHT'
+    PROBLEM = 'PROBLEM'

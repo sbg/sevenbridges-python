@@ -4,7 +4,7 @@ def test_get_my_info(api, given, verifier):
     given.user.authenticated()
 
     # action
-    _ = api.users.me()
+    api.users.me()
 
     # verification
     verifier.user.authenticated_user_fetched()

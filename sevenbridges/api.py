@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from sevenbridges.http.client import HttpClient
+from sevenbridges.models.actions import Actions
 from sevenbridges.models.app import App
 from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.endpoints import Endpoints
@@ -30,6 +31,7 @@ class Api(HttpClient):
     imports = Import
     exports = Export
     rate_limit = RateLimit
+    actions = Actions
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, download_max_workers=16, upload_max_workers=16,

@@ -238,3 +238,15 @@ class AdvanceAccessVerifier(object):
 
     def headers_present(self):
         self.checker.check_header_present(AdvanceAccessHeader.key)
+
+
+class ActionVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def feedback_received(self):
+        self.checker.check_url('/action/notifications/feedback')
+
+    def bulk_copy_done(self):
+        self.checker.check_url('/action/files/copy')

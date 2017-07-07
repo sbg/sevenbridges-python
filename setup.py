@@ -1,20 +1,30 @@
 import io
+import os
+import re
 import sys
-
 from setuptools import setup, find_packages
 
-version = "0.8.0"
 
-install_requires = []
-
-if sys.version_info < (3, 0):
-    with open('requirements2.txt') as fp:
-        required = fp.readlines()
-        install_requires.extend(required)
+# If version file exists, this happens during the installation phase,
+# read the version from the version file.
+# If the version file does not exist, this is during the build phase,
+# read the version from TRAVIS_TAG and create a version file for packaging.
+VERSION_FILE = 'VERSION'
+if os.path.isfile(VERSION_FILE):
+    with io.open(VERSION_FILE, 'r', encoding='utf-8') as f:
+        version = f.read()
 else:
-    with open('requirements3.txt') as fp:
-        required = fp.readlines()
-        install_requires.extend(required)
+    version = os.environ.get('TRAVIS_TAG', '0.0.0')
+    with io.open(VERSION_FILE, 'w', encoding='utf-8') as f:
+        f.write(version)
+
+
+with open('requirements.txt') as fp:
+    install_requires = fp.readlines()
+if sys.version_info < (3, 0):
+    reg = re.compile('''^.*?;\s*python_version\s*<\s*'3\..*$''')
+    install_requires = [i for i in install_requires if not reg.match(i)]
+
 
 setup(
     name='sevenbridges-python',

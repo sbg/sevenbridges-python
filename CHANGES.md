@@ -1,6 +1,8 @@
 0.8.0
 ==================
 - Added Contributors notice.
+- Added Actions service. Possibility to send_feedback and do bulk file copy.
+- Added actions service test.
 
 - Bugfixes
   - [Issue #80](https://github.com/sbg/sevenbridges-python/issues/80)
