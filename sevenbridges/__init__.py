@@ -25,10 +25,9 @@ from sevenbridges.models.file import File
 from sevenbridges.models.storage_export import Export
 from sevenbridges.models.storage_import import Import
 from sevenbridges.models.volume import Volume
-from sevenbridges.models.marker import Marker
 
 from sevenbridges.models.enums import (
-    PartSize, TransferState, VolumeType, VolumeAccessMode, FileStorageType,
+    TransferState, VolumeType, VolumeAccessMode, FileStorageType,
     ImportExportState, TaskStatus
 )
 from sevenbridges.errors import (

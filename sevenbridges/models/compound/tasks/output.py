@@ -2,7 +2,6 @@ from sevenbridges.errors import ReadOnlyPropertyError
 from sevenbridges.meta.comp_mutable_dict import CompoundMutableDict
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.tasks import map_input_output
-from sevenbridges.models.compound.tasks import map_input_output
 
 
 # noinspection PyProtectedMember
