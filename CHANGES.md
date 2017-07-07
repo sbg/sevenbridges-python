@@ -1,8 +1,10 @@
-0.8.0
+0.8.0 (2017-07-07)
 ==================
 - Added Contributors notice.
-- Added Actions service. Possibility to send_feedback and do bulk file copy.
-- Added actions service test.
+- Added Actions service calls. Users are now able to send feedback to Sevenbridges and bulk copy files. Tests included.
+- Added markers service calls. Users are now able to set,get,modify and delete markers on bam files. Advance Access feature - Possibility to be changed in the future.
+- Volume modifications. Added volume permissions calls and possibility to deactivate volume.
+- Travis setup.
 
 - Bugfixes
   - [Issue #80](https://github.com/sbg/sevenbridges-python/issues/80)
@@ -10,13 +12,13 @@
   - [Issue #82](https://github.com/sbg/sevenbridges-python/issues/82)
   - [Issue #84](https://github.com/sbg/sevenbridges-python/issues/84)
   - [Issue #86](https://github.com/sbg/sevenbridges-python/issues/86)
-  - [Issue #88](https://github.com/sbg/sevenbridges-python/issues/86)
+  - [Issue #88](https://github.com/sbg/sevenbridges-python/issues/88)
 
 0.7.4 (2017-05-13)
 ==================
 - Bugfixes
   - [Issue #72](https://github.com/sbg/sevenbridges-python/issues/72)
-  - [Issue #75](https://github.com/sbg/sevenbridges-python/issues/75)
+  - [Issue #75](https://github.com/sbg/sevenbridges-python/issues/75)a
   - [Issue #77](https://github.com/sbg/sevenbridges-python/issues/77)
   - [Issue #78](https://github.com/sbg/sevenbridges-python/issues/78)
 

@@ -7,6 +7,7 @@ from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.file import File
 from sevenbridges.models.invoice import Invoice
+from sevenbridges.models.marker import Marker
 from sevenbridges.models.project import Project
 from sevenbridges.models.rate_limit import RateLimit
 from sevenbridges.models.storage_export import Export
@@ -32,6 +33,7 @@ class Api(HttpClient):
     exports = Export
     rate_limit = RateLimit
     actions = Actions
+    markers = Marker
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, download_max_workers=16, upload_max_workers=16,

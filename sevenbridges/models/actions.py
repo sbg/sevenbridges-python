@@ -1,6 +1,12 @@
+import logging
+
+import six
+
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.enums import FeedbackType
+
+logger = logging.getLogger(__name__)
 
 
 class Actions(Resource):
@@ -8,6 +14,9 @@ class Actions(Resource):
         'send_feedback': '/action/notifications/feedback',
         'bulk_copy': '/action/files/copy'
     }
+
+    def __str__(self):
+        return six.text_type('<Actions>')
 
     @classmethod
     def send_feedback(cls, type=FeedbackType.IDEA, text=None, api=None):
@@ -22,6 +31,11 @@ class Actions(Resource):
             'type': type,
             'text': text,
         }
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        logger.info('Sending feedback', extra=extra)
         api.post(url=cls._URL['send_feedback'], data=data)
 
     @classmethod
@@ -39,4 +53,9 @@ class Actions(Resource):
             'project': destination_project,
             'file_ids': files
         }
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        logger.info('Performing bulk copy', extra=extra)
         return api.post(url=cls._URL['bulk_copy'], data=data).json()
