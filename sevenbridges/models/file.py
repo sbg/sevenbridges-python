@@ -72,7 +72,9 @@ class File(Resource):
         project = Transform.to_project(project)
         query_params = {}
 
-        if names and isinstance(names, list):
+        if names is not None and isinstance(names, list):
+            if len(names) == 0:
+                names.append("")
             query_params['name'] = names
 
         metadata_params = {}

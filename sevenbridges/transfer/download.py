@@ -1,4 +1,5 @@
 import hashlib
+import io
 import os
 import threading
 import time
@@ -35,18 +36,26 @@ def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
     if end_byte is not None:
         headers['Range'] = 'bytes=%d-%d' % (int(start_byte), int(end_byte))
 
+    cause = None
+
     # Retry
     for retry in range(retry):
         try:
             response = session.get(
                 url, headers=headers, timeout=timeout, stream=True
             )
+            response.raise_for_status()
             part_size = response.headers.get('Content-Length')
             os.lseek(fp, start_byte, os.SEEK_SET)
             for part in response.iter_content(32 * PartSize.KB):
                 os.write(fp, part)
             os.close(fp)
-        except requests.RequestException:
+        except requests.HTTPError as e:
+            cause = e
+            time.sleep(2 ** retry)
+            continue
+        except requests.RequestException as e:
+            cause = e
             time.sleep(2 ** retry)
             continue
         else:
@@ -54,8 +63,8 @@ def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
 
     else:
         os.close(fp)
-        error = SbgError('Failed to download file after %s attempts.' % retry)
-        raise error
+        raise SbgError('Failed to download file after {} attempts.'
+                       ' Response: {}'.format(retry, six.text_type(cause)))
 
 
 def _get_content_length(session, url, timeout):
@@ -364,6 +373,6 @@ class Download(threading.Thread):
         )
         file_size = int(file_size)
         if file_size == 0:
-            raise SbgError('File size is 0. Refusing to download.')
-
+            with io.open(self._file_path, 'a'):
+                pass
         return file_size

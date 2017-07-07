@@ -205,3 +205,19 @@ more detailed examples consult the documentation, hosted on readthedocs.
    :target: http://sevenbridges-python.readthedocs.org/en/latest/
 .. |Licence| image:: https://img.shields.io/badge/licence-Apache-orange.svg
    :target: https://github.com/sbg/sevenbridges-python/blob/master/LICENCE
+
+
+Contributing
+------------
+
+Contributions, bug reports and issues are very welcome.
+
+You can make your own contributions by forking the develop branch of this repository, making your changes, and issuing pull request on the develop branch.
+Contributors should read the `Seven Bridges Notice to Contributors <CONTRIBUTORS_NOTICE.md>`_ and sign the `Seven Bridges Contributor Agreement <https://secure.na1.echosign.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhAqt_9rHEqy2MggS0uWRmKHUN2HYi8DWNjkgg5N68iKAhRFTy7k2AOEpRHMMorxc_0*>`_ before submitting a pull request.
+
+Copyright
+---------
+
+Copyright (c) 2016-2017 Seven Bridges Genomics, Inc. All rights reserved.
+
+This project is open-source via the `Apache 2.0 License <http://www.apache.org/licenses/LICENSE-2.0>`_.

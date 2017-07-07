@@ -361,6 +361,7 @@ class Upload(threading.Thread):
                 self._URL['upload_complete'].format(upload_id=self._upload_id)
             ).json()
             self._result = File(api=self._api, **response)
+            self._status = TransferState.COMPLETED
 
         except SbgError as e:
             self._status = TransferState.FAILED

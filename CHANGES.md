@@ -1,3 +1,15 @@
+0.8.0
+==================
+- Added Contributors notice.
+
+- Bugfixes
+  - [Issue #80](https://github.com/sbg/sevenbridges-python/issues/80)
+  - [Issue #81](https://github.com/sbg/sevenbridges-python/issues/81)
+  - [Issue #82](https://github.com/sbg/sevenbridges-python/issues/82)
+  - [Issue #84](https://github.com/sbg/sevenbridges-python/issues/84)
+  - [Issue #86](https://github.com/sbg/sevenbridges-python/issues/86)
+  - [Issue #88](https://github.com/sbg/sevenbridges-python/issues/86)
+
 0.7.4 (2017-05-13)
 ==================
 - Bugfixes
