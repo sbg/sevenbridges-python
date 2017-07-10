@@ -909,6 +909,8 @@ can also invoke the following class-specific methods:
 -  ``install_app()`` - Installs your app on the server, using its CWL desription.
 -  ``create_revision()`` - Creates a new revision of the specified app.
 
+.. note:: Listing public apps can be achieved by invoking ``api.apps.query(visibility='public')``
+
 App properties
 ~~~~~~~~~~~~~~
 

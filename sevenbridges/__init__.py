@@ -6,7 +6,7 @@ sevenbridges-python
 """
 import logging
 
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config

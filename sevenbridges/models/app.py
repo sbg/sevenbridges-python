@@ -22,6 +22,7 @@ class App(Resource):
         'get_revision': '/apps/{id}/{revision}',
         'create_revision': '/apps/{id}/{revision}/raw',
         'copy': '/apps/{id}/actions/copy',
+        'sync': '/apps/{id}/actions/sync',
         'raw': '/apps/{id}/raw'
     }
     href = HrefField()
@@ -62,7 +63,7 @@ class App(Resource):
             project = Transform.to_project(project)
         api = api or cls._API
         return super(App, cls)._query(url=cls._URL['query'], project=project,
-                                      visibility=visibility,
+                                      visibility=visibility, q=q, id=id,
                                       offset=offset, limit=limit, api=api)
 
     @classmethod
@@ -148,4 +149,12 @@ class App(Resource):
         logger.info('Copying app', extra=extra)
         app = self._api.post(url=self._URL['copy'].format(id=self.id),
                              data=data).json()
+        return App(api=self._api, **app)
+
+    def sync(self):
+        """
+        Syncs the parent app changes with the current app instance.
+        :return: Synced App object.
+        """
+        app = self._api.post(url=self._URL['sync'].format(id=self.id)).json()
         return App(api=self._api, **app)

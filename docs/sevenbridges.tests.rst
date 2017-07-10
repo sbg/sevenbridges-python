@@ -25,6 +25,22 @@ sevenbridges.tests.providers module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.tests.test_aa module
+---------------------------------
+
+.. automodule:: sevenbridges.tests.test_aa
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges.tests.test_actions module
+--------------------------------------
+
+.. automodule:: sevenbridges.tests.test_actions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.tests.test_apps module
 -----------------------------------
 
@@ -41,10 +57,10 @@ sevenbridges.tests.test_config module
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.tests.test_endpoints_users module
-----------------------------------------------
+sevenbridges.tests.test_endpoints_rate module
+---------------------------------------------
 
-.. automodule:: sevenbridges.tests.test_endpoints_users
+.. automodule:: sevenbridges.tests.test_endpoints_rate
     :members:
     :undoc-members:
     :show-inheritance:
@@ -85,6 +101,14 @@ sevenbridges.tests.test_transformer module
 ------------------------------------------
 
 .. automodule:: sevenbridges.tests.test_transformer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges.tests.test_users module
+------------------------------------
+
+.. automodule:: sevenbridges.tests.test_users
     :members:
     :undoc-members:
     :show-inheritance:

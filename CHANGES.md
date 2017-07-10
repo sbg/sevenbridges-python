@@ -1,3 +1,9 @@
+0.8.1 (2017-07-10)
+==================
+- Added documentation on how to query public apps.
+- Added marker documentation.
+- Fixed missing query params from apps query.
+
 0.8.0 (2017-07-07)
 ==================
 - Added Contributors notice.

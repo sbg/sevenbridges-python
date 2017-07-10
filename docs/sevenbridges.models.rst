@@ -16,6 +16,14 @@ Subpackages
 Submodules
 ----------
 
+sevenbridges.models.actions module
+----------------------------------
+
+.. automodule:: sevenbridges.models.actions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.models.app module
 ------------------------------
 
@@ -88,6 +96,14 @@ sevenbridges.models.link module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.models.marker module
+---------------------------------
+
+.. automodule:: sevenbridges.models.marker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.models.member module
 ---------------------------------
 
@@ -100,6 +116,14 @@ sevenbridges.models.project module
 ----------------------------------
 
 .. automodule:: sevenbridges.models.project
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges.models.rate_limit module
+-------------------------------------
+
+.. automodule:: sevenbridges.models.rate_limit
     :members:
     :undoc-members:
     :show-inheritance:

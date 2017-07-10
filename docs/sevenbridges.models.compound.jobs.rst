@@ -33,6 +33,14 @@ sevenbridges.models.compound.jobs.job_instance module
     :undoc-members:
     :show-inheritance:
 
+sevenbridges.models.compound.jobs.job_instance_disk module
+----------------------------------------------------------
+
+.. automodule:: sevenbridges.models.compound.jobs.job_instance_disk
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.models.compound.jobs.job_log module
 ------------------------------------------------
 

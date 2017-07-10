@@ -9,6 +9,14 @@ sevenbridges.http package
 Submodules
 ----------
 
+sevenbridges.http.advance_access module
+---------------------------------------
+
+.. automodule:: sevenbridges.http.advance_access
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sevenbridges.http.client module
 -------------------------------
 
