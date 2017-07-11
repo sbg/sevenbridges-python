@@ -1023,10 +1023,10 @@ Single task
 .. code:: python
 
     # Task name
-    task_name = 'my-first-task'
+    name = 'my-first-task'
     
     # Project in which I want to run a task.
-    project_id = 'my-username/my-project'
+    project = 'my-username/my-project'
     
     # App I want to use to run a task
     app = 'my-username/my-project/my-app'
@@ -1049,17 +1049,17 @@ Batch task
 .. code:: python
 
     # Task name
-    task_name = 'my-first-task'
+    name = 'my-first-task'
     
     # Project in which to run the task.
-    project_id = 'my-username/my-project'
+    project = 'my-username/my-project'
     
     # App to use to run the task
     app = 'my-username/my-project/my-app'
     
     # Inputs
     inputs = {}
-    inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
+    inputs['FastQC-Reads'] = api.files.query(project=project, metadata={'sample': 'some-sample'})
     
     # Specify that one task should be created per file (i.e. batch tasks by file).
     batch_by = {'type': 'item'}
