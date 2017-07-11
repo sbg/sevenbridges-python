@@ -45,7 +45,7 @@ We recommend that you pay particular attention to the section 'Managing Projects
 Initializing the library
 ------------------------
 
-Once you have obtained your authentication token from one of the URLs listed above, you can initialize the :code:`Api` object defined by this library by passing in your authentication token and endpiont. There are three methods to do this. Details of each method are given below:
+Once you have obtained your authentication token from one of the URLs listed above, you can initialize the :code:`Api` object defined by this library by passing in your authentication token and endpoint. There are three methods to do this. Details of each method are given below:
 
 1. Pass the parameters ``url`` and ``token`` and optional ``proxies`` explicitly when initializing the
    API object.
@@ -369,7 +369,8 @@ Project methods -- an introduction to methods in the sevenbridges-python library
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are two types of methods in the sevenbridges-python library: static
-and dynamic. Static methods are invoked on the :code:`Api` object instance. Dynamic methods are invoked from the instance of the object representing the resource (e.g. the project).
+and dynamic. Static methods are invoked on the :code:`Api` object instance.
+Dynamic methods are invoked from the instance of the object representing the resource (e.g. the project).
 
 Static methods include:
 
@@ -395,7 +396,7 @@ So, suppose that ``project`` is an instance of ``Project`` object. Then, we can:
    the object from the server.
 3. Save changes to the server: ``project.save()`` saves all properties
 
-The following example shows some of the methods used to manipulatate projects.
+The following example shows some of the methods used to manipulate projects.
 
 .. code:: python
 
@@ -515,7 +516,7 @@ Managing files
 --------------
 
 Files are an integral part of each analysis. As for as all other resources, the
-sevenbridges-python library enables you to efectively query files, in order to retreive each file's details and metadata. The request to get a file's information can be made in the
+sevenbridges-python library enables you to effectively query files, in order to retrieve each file's details and metadata. The request to get a file's information can be made in the
 same manner as for projects and billing, presented above. 
 
 The available methods for fetching specific files are ``query`` and ``get``:
@@ -893,11 +894,11 @@ Examples
 Managing apps
 -------------
 
-Managing apps (tools and workfows) with the sevenbridges-python library is simple. Apps on the Seven
+Managing apps (tools and workflows) with the sevenbridges-python library is simple. Apps on the Seven
 Bridges Platform and CGC are implemented using the Common Workflow Language (CWL)
 specification
 https://github.com/common-workflow-language/common-workflow-language.
-The sevenbridges-python currenty supports only Draft 2 format of the
+The sevenbridges-python currently supports only Draft 2 format of the
 CWL.
 Each app has a CWL description, expressed in JSON.
 
@@ -906,7 +907,7 @@ way as for other resources, using the ``query()`` and ``get`` methods. You
 can also invoke the following class-specific methods:
 
 -  ``get_revision()`` - Returns a specific app revision.
--  ``install_app()`` - Installs your app on the server, using its CWL desription.
+-  ``install_app()`` - Installs your app on the server, using its CWL description.
 -  ``create_revision()`` - Creates a new revision of the specified app.
 
 .. note:: Listing public apps can be achieved by invoking ``api.apps.query(visibility='public')``
@@ -980,7 +981,7 @@ the ``batch_by`` criteria.
 
 ``price`` - Task cost.
 
-``inputs`` - Inputs that were subbmited to the task.
+``inputs`` - Inputs that were submitted to the task.
 
 ``outputs`` - Generated outputs from the task.
 
@@ -1003,7 +1004,7 @@ The following class and instance methods are available for tasks:
 -  Refresh the task object information with the date from the server:
    ``refresh()``.
 -  Save task modifications to the sever: ``save()``.
--  Get task exection datails: ``get_execution_details()``.
+-  Get task execution details: ``get_execution_details()``.
 -  Get batch children if the task is a batch task:
    ``get_batch_children()``.
 
