@@ -14,7 +14,7 @@
 
 import os
 import sys
-from sevenbridges import __version__ as version_pkg
+
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -23,6 +23,7 @@ from sevenbridges import __version__ as version_pkg
 extra_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ['SPHINX_DOC'] = 'True'
 sys.path.append(extra_path)
+from sevenbridges import __version__ as version_pkg
 
 # -- General configuration ------------------------------------------------
 

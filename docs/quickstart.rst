@@ -20,11 +20,13 @@ You can find your authentication token on the respective pages:
 
 -  https://igor.sbgenomics.com/developers for the Seven Bridges Platform
 -  https://cgc.sbgenomics.com/developers for the CGC
+-  https://cavatica.sbgenomics.com/developer for Cavatica
 
 The API endpoints for each environment are:
 
 -  https://api.sbgenomics.com/v2 for the Seven Bridges Platform
 -  https://cgc-api.sbgenomics.com/v2 for the CGC.
+-  https://cavatica-api.sbgenomics.com/v2 for CAVATICA
 
 
 .. note:: We will see below how to supply information about your auth token and endpoint to the library.
@@ -34,6 +36,7 @@ For more information about the API, including details of the available parameter
 
 -  http://docs.sevenbridges.com/docs/the-api for the Seven Bridges Platform.
 -  http://docs.cancergenomicscloud.org/docs/the-cgc-api for the CGC.
+-  http://docs.cavatica.org/docs/the-api for CAVATICA
 
 
 How to use the Quickstart
@@ -89,7 +92,7 @@ different credentials or environments.
     import os
     
     # Usually these variables would be set in the shell beforehand
-    os.environ['SB_API_ENDPOINT'] = '<https://api.sbgenomics.com/v2 or https://cgc-api.sbgenomics.com/v2>'
+    os.environ['SB_API_ENDPOINT'] = '<https://api.sbgenomics.com/v2' # or 'https://cgc-api.sbgenomics.com/v2>' for cgc, or 'https://cavatica-api.sbgenomics.com/v2' for cavatica
     os.environ['SB_AUTH_TOKEN'] = '<TOKEN_HERE>'
 
     api = sbg.Api()
@@ -107,6 +110,10 @@ the environment (the Seven Bridges Platform, or the CGC) indicated in square bra
 
     [cgc]
     api_endpoint = https://cgc-api.sbgenomics.com/v2
+    auth_token = <TOKEN_HERE>
+    
+    [cavatica]
+    api_endpoint = https://cavatica-api.sbgenomics.com/v2
     auth_token = <TOKEN_HERE>
 
 
