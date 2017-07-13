@@ -90,8 +90,8 @@ for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
 
 You can find your authentication token on the respective pages:
 
--  https://igor.sbgenomics.com/developers for the Seven Bridges Platform
--  https://cgc.sbgenomics.com/developers for the CGC
+-  https://igor.sbgenomics.com/developer for the Seven Bridges Platform
+-  https://cgc.sbgenomics.com/developer for the CGC
 -  https://cavatica.sbgenomics.com/developer for Cavatica
 
 The API endpoints for each environment are:
