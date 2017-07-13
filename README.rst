@@ -82,27 +82,34 @@ invoke: :
 Authentication and Configuration
 --------------------------------
 
-In order to authenticate with the API, sevenbridges-python library
-requires that you pass in your authentication token and the URL endpoint
-for the environment you are working in: either the Seven Bridges
-Platform or the Cancer Genomics Cloud.
+In order to authenticate with the API, you should pass the following items to sevenbridges-python:
 
-You can find your authentication token on the respective platform pages:
+(a) Your authentication token
+(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or 
+for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
 
--  https://igor.sbgenomics.com/developers - for the Seven Bridges
-   Platform
--  https://cgc.sbgenomics.com/developers - for the CGC
+You can find your authentication token on the respective pages:
 
-    The API endpoints for the platforms are:
+-  https://igor.sbgenomics.com/developers for the Seven Bridges Platform
+-  https://cgc.sbgenomics.com/developers for the CGC
+-  https://cavatica.sbgenomics.com/developer for Cavatica
+
+The API endpoints for each environment are:
 
 -  https://api.sbgenomics.com/v2 for the Seven Bridges Platform
--  https://cgc-api.sbgenomics.com/v2 for the CGC
+-  https://cgc-api.sbgenomics.com/v2 for the CGC.
+-  https://cavatica-api.sbgenomics.com/v2 for CAVATICA
 
-The API documentation is available:
 
--  http://docs.sevenbridges.com/docs/the-api for the Seven Bridges
-   Platform.
--  http://docs.cancergenomicscloud.org/docs/the-cgc-api for the CGC
+.. note:: We will see below how to supply information about your auth token and endpoint to the library.
+
+
+For more information about the API, including details of the available parameters for each API call, you should check 
+the API documentation before using this library:
+
+-  http://docs.sevenbridges.com/docs/the-api for the Seven Bridges Platform.
+-  http://docs.cancergenomicscloud.org/docs/the-cgc-api for the CGC.
+-  http://docs.cavatica.org/docs/the-api for CAVATICA
 
 Initialize configuration using the configuration file
 -----------------------------------------------------
@@ -146,7 +153,7 @@ Initialization via config file
 .. code:: python
 
     import sevenbridges as sbg
-    config = sbg.Config(profile='my-profile-cgc')
+    config = sbg.Config(profile='cgc')
 
 Notes on config file format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -159,8 +166,12 @@ The ``$HOME/.sevenbridges/credentials`` file has a simple .ini file format, for 
     api_endpoint = https://api.sbgenomics.com/v2
     auth_token = <TOKEN_HERE>
 
-    [my-profile-cgc]
+    [cgc]
     api_endpoint = https://cgc-api.sbgenomics.com/v2
+    auth_token = <TOKEN_HERE>
+    
+    [cavatica]
+    api_endpoint = https://cavatica-api.sbgenomics.com/v2
     auth_token = <TOKEN_HERE>
 
 Initializing the sevenbridges-python library
@@ -215,8 +226,10 @@ Contributing
 
 Contributions, bug reports and issues are very welcome.
 
-You can make your own contributions by forking the develop branch of this repository, making your changes, and issuing pull request on the develop branch.
-Contributors should read the `Seven Bridges Notice to Contributors <CONTRIBUTORS_NOTICE.md>`_ and sign the `Seven Bridges Contributor Agreement <https://secure.na1.echosign.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhAqt_9rHEqy2MggS0uWRmKHUN2HYi8DWNjkgg5N68iKAhRFTy7k2AOEpRHMMorxc_0*>`_ before submitting a pull request.
+You can make your own contributions by forking the develop branch of this repository, 
+making your changes, and issuing pull request on the develop branch.
+Contributors should read the `Seven Bridges Notice to Contributors <CONTRIBUTORS_NOTICE.md>`_ and 
+sign the `Seven Bridges Contributor Agreement <https://secure.na1.echosign.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhAqt_9rHEqy2MggS0uWRmKHUN2HYi8DWNjkgg5N68iKAhRFTy7k2AOEpRHMMorxc_0*>`_ before submitting a pull request.
 
 Copyright
 ---------
