@@ -14,12 +14,13 @@ Authentication and Configuration
 In order to authenticate with the API, you should pass the following items to sevenbridges-python:
 
 (a) Your authentication token
-(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or for the Seven Bridges Cancer Genomics Cloud (CGC).
+(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or 
+for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
 
 You can find your authentication token on the respective pages:
 
--  https://igor.sbgenomics.com/developers for the Seven Bridges Platform
--  https://cgc.sbgenomics.com/developers for the CGC
+-  https://igor.sbgenomics.com/developer for the Seven Bridges Platform
+-  https://cgc.sbgenomics.com/developer for the CGC
 -  https://cavatica.sbgenomics.com/developer for Cavatica
 
 The API endpoints for each environment are:
@@ -100,7 +101,7 @@ different credentials or environments.
 3. Initialize the library using a configuration file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The configuration file, ``$HOME/.sevenbridges/credentials``, has a simple ``.ini`` file format, with
-the environment (the Seven Bridges Platform, or the CGC) indicated in square brackets, as shown:
+the environment (the Seven Bridges Platform, or the CGC, or Cavatica) indicated in square brackets, as shown:
 
 ::
 
