@@ -101,9 +101,6 @@ The API endpoints for each environment are:
 -  https://cavatica-api.sbgenomics.com/v2 for CAVATICA
 
 
-.. note:: We will see below how to supply information about your auth token and endpoint to the library.
-
-
 For more information about the API, including details of the available parameters for each API call, you should check 
 the API documentation before using this library:
 
