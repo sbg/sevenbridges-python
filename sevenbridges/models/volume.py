@@ -191,9 +191,10 @@ class Volume(Resource):
 
         objects = [
             VolumeObject(api=self._api, **item) for item in data['items']
+            # noqa: F812
         ]
         prefixes = [
-            VolumePrefix(api=self._api, **prefix) for prefix in
+            VolumePrefix(api=self._api, **prefix) for prefix in  # noqa: F812
             data['prefixes']
         ]
         return VolumeCollection(
