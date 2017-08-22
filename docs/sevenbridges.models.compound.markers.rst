@@ -1,5 +1,5 @@
-sevenbridges.models.compound.markers package
-============================================
+sevenbridges\.models\.compound\.markers package
+===============================================
 
 .. automodule:: sevenbridges.models.compound.markers
     :members:
@@ -9,8 +9,8 @@ sevenbridges.models.compound.markers package
 Submodules
 ----------
 
-sevenbridges.models.compound.markers.position module
-----------------------------------------------------
+sevenbridges\.models\.compound\.markers\.position module
+--------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.markers.position
     :members:

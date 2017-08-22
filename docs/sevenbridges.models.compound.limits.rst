@@ -1,5 +1,5 @@
-sevenbridges.models.compound.limits package
-===========================================
+sevenbridges\.models\.compound\.limits package
+==============================================
 
 .. automodule:: sevenbridges.models.compound.limits
     :members:
@@ -9,8 +9,8 @@ sevenbridges.models.compound.limits package
 Submodules
 ----------
 
-sevenbridges.models.compound.limits.rate module
------------------------------------------------
+sevenbridges\.models\.compound\.limits\.rate module
+---------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.limits.rate
     :members:

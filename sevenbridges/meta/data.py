@@ -12,15 +12,17 @@ class DataContainer(object):
 
     def fetch(self):
         href = self.data.get('href', None)
+        headers = dict(self.api.headers)
+
         if href is not None:
-            self.data = self.api.get(self.data['href'],
+            self.data = self.api.get(self.data['href'], headers=headers,
                                      append_base=False).json()
         else:
             resource_id = self.data.get('id', None)
             if resource_id is None:
                 return
             self.data = self.api.get(self._URL['get'].format(id=resource_id),
-                                     append_base=True).json()
+                                     headers=headers, append_base=True).json()
         self.fetched = True
 
     def __getitem__(self, item):

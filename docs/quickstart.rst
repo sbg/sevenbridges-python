@@ -130,9 +130,23 @@ instantiated the configuration class, pass it to the API class constructor.
 If not profile is set it will use the default profile.
 
 .. note:: if user creates the api object ``api=sbg.Api()`` and does not pass any information the
-          library will first search whether the environment variables are set. If not it will check
+library will first search whether the environment variables are set. If not it will check
           if the configuration file is present and read the ``[default]`` profile. If that also fails
           it will raise an exception
+
+
+Advance Access Features
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Advance access features are subject to a change. To enable them just pass
+the :code:`advance_access=True` flag when instantiating the library
+
+.. code:: python
+
+    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>', advance_access=True)
+
+.. note:: - Advance access features are subject to a change. No guarantee of any sort is given for AA API calls maintainability.
+
 
 Proxy configuration
 -------------------
@@ -426,12 +440,14 @@ Other project methods include:
    ``project.get_members()`` - returns a ``Collection`` of members and
    their permissions
 2. Add a member to the project - ``project.add_member()``
-3. Remove a member from the project - ``project.remove_member()``
-4. List files from the project - ``project.get_files()``
-5. Add files to the project - ``project.add_files()`` - you can add a
+3. Add a team member to the project - ``project.add_member_team()``
+4. Add a division member to the project - ``project.add_member_division()``
+5. Remove a member from the project - ``project.remove_member()``
+6. List files from the project - ``project.get_files()``
+7. Add files to the project - ``project.add_files()`` - you can add a
    single ``File`` or a ``Collection`` of files
-6. List apps from the project - ``project.get_apps()``
-7. List tasks from the project - ``project.get_tasks()``
+8. List apps from the project - ``project.get_apps()``
+9. List tasks from the project - ``project.get_tasks()``
 
 Manage billing
 --------------
@@ -753,6 +769,11 @@ Volumes have the following methods:
 -  Create a new volume based on Google Cloud Storage service  - ``create_google_volume()``
 -  Save modifications to the volume to the server ``save()``
 -  Unlink the volume ``delete()``
+-  Get volume members ``get_members()``
+-  Add a member to the project - ``add_member()``
+-  Add a team member to the project - ``add_member_team()``
+-  Add a division member to the project - ``add_member_division()``
+
 
 See the examples below for information on the arguments these methods take:
 

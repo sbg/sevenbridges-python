@@ -20,32 +20,32 @@ Subpackages
 Submodules
 ----------
 
-sevenbridges.api module
------------------------
+sevenbridges\.api module
+------------------------
 
 .. automodule:: sevenbridges.api
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.config module
---------------------------
+sevenbridges\.config module
+---------------------------
 
 .. automodule:: sevenbridges.config
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.decorators module
-------------------------------
+sevenbridges\.decorators module
+-------------------------------
 
 .. automodule:: sevenbridges.decorators
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.errors module
---------------------------
+sevenbridges\.errors module
+---------------------------
 
 .. automodule:: sevenbridges.errors
     :members:

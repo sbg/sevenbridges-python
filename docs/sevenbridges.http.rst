@@ -1,5 +1,5 @@
-sevenbridges.http package
-=========================
+sevenbridges\.http package
+==========================
 
 .. automodule:: sevenbridges.http
     :members:
@@ -9,24 +9,16 @@ sevenbridges.http package
 Submodules
 ----------
 
-sevenbridges.http.advance_access module
----------------------------------------
-
-.. automodule:: sevenbridges.http.advance_access
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-sevenbridges.http.client module
--------------------------------
+sevenbridges\.http\.client module
+---------------------------------
 
 .. automodule:: sevenbridges.http.client
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.http.error_handlers module
----------------------------------------
+sevenbridges\.http\.error\_handlers module
+------------------------------------------
 
 .. automodule:: sevenbridges.http.error_handlers
     :members:

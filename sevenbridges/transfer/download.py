@@ -233,7 +233,7 @@ class Download(threading.Thread):
 
     @property
     def duration(self):
-        return time.time() - self._time_started
+        return (time.time() - self._time_started) * 1000
 
     @property
     def path(self):

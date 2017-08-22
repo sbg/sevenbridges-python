@@ -49,6 +49,9 @@ class CompoundMutableDict(dict):
             values.append((k, self[k]))
         return values
 
+    def __eq__(self, other):
+        return self.equals(other)
+
     def equals(self, other):
-        same = self._parent._data[self._name] == other.parent._data[self._name]
-        return type(self) == type(other) and same
+        eq = self._parent._data[self._name] == other._parent._data[self._name]
+        return type(self) == type(other) and eq

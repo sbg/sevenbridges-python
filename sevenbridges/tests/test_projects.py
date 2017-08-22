@@ -216,7 +216,7 @@ def test_member_permissions_save(api, given, verifier):
     member.permissions['admin'] = True
     member.save()
 
-    assert username in repr(member)
+    assert username == member.username
 
     # verifier
     verifier.member.member_permissions_modified(id, mocked_member['username'])

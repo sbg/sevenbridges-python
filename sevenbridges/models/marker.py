@@ -4,7 +4,6 @@ import six
 
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
-from sevenbridges.http.advance_access import advance_access
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField
 )
@@ -34,8 +33,10 @@ class Marker(Resource):
     def __str__(self):
         return six.text_type('<Marker: id={id}>'.format(id=self.id))
 
+    def __eq__(self, other):
+        return self.id == other.id and self.__class__ == other.__class__
+
     @classmethod
-    @advance_access()
     def query(cls, file, offset=None, limit=None, api=None):
         """
         Queries genome markers on a file.
@@ -54,7 +55,6 @@ class Marker(Resource):
         )
 
     @classmethod
-    @advance_access()
     def create(cls, file, name, position, chromosome, private=True, api=None):
         """
         Create a marker on a file.
@@ -86,7 +86,6 @@ class Marker(Resource):
         return Marker(api=api, **marker_data)
 
     @inplace_reload
-    @advance_access()
     def save(self, inplace=True):
         """
         Saves all modification to the marker on the server.
@@ -111,5 +110,7 @@ class Marker(Resource):
             raise ResourceNotModified()
 
     def delete(self):
-        with advance_access(self._api):
-            super(Marker, self).delete()
+        super(Marker, self).delete()
+
+    def reload(self):
+        super(Marker, self).reload()

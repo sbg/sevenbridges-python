@@ -1,5 +1,5 @@
-sevenbridges.models.compound package
-====================================
+sevenbridges\.models\.compound package
+======================================
 
 .. automodule:: sevenbridges.models.compound
     :members:
@@ -23,24 +23,24 @@ Subpackages
 Submodules
 ----------
 
-sevenbridges.models.compound.error module
------------------------------------------
+sevenbridges\.models\.compound\.error module
+--------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.error
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.price module
------------------------------------------
+sevenbridges\.models\.compound\.price module
+--------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.price
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.price_breakdown module
----------------------------------------------------
+sevenbridges\.models\.compound\.price\_breakdown module
+-------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.price_breakdown
     :members:

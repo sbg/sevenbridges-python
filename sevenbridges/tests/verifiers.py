@@ -1,7 +1,4 @@
 # noinspection PyProtectedMember
-from sevenbridges.http.advance_access import AdvanceAccessHeader
-
-
 class Assert(object):
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
@@ -227,17 +224,23 @@ class VolumeVerifier(object):
     def created(self):
         self.checker.check_url('/storage/volumes')
 
-    def modified(self, _id):
-        self.checker.check_url('/storage/volumes/{}'.format(_id))
+    def modified(self, id):
+        self.checker.check_url('/storage/volumes/{}'.format(id))
 
 
-class AdvanceAccessVerifier(object):
+class MarkerVerifier(object):
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
-    def headers_present(self):
-        self.checker.check_header_present(AdvanceAccessHeader.key)
+    def queried(self):
+        self.checker.check_url('/genome/markers')
+
+    def created(self):
+        self.checker.check_url('/genome/markers')
+
+    def modified(self, _id):
+        self.checker.check_url('/genome/markers/{}'.format(_id))
 
 
 class ActionVerifier(object):
@@ -250,3 +253,63 @@ class ActionVerifier(object):
 
     def bulk_copy_done(self):
         self.checker.check_url('/action/files/copy')
+
+
+class DivisionVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def division_fetched(self, id):
+        self.checker.check_url('/divisions/{}'.format(id))
+
+    def divisions_fetched(self):
+        self.checker.check_url('/divisions')
+
+    def teams_fetched(self, id):
+        self.checker.check_url("/teams?division={}".format(id))
+
+
+class TeamVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def team_fetched(self, id):
+        self.checker.check_url('/teams/{}'.format(id))
+
+    def teams_fetched(self):
+        self.checker.check_url('/teams')
+
+    def created(self):
+        self.checker.check_url('/teams')
+
+    def modified(self, id):
+        self.checker.check_url('/teams/{}'.format(id))
+
+    def members_fetched(self, id):
+        self.checker.check_url('/teams/{}/members'.format(id))
+
+
+class ImportsVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def queried(self):
+        self.checker.check_url('/storage/imports')
+
+    def submitted(self):
+        self.checker.check_url("/storage/imports")
+
+
+class ExportsVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def queried(self):
+        self.checker.check_url('/storage/exports')
+
+    def submitted(self):
+        self.checker.check_url("/storage/exports")

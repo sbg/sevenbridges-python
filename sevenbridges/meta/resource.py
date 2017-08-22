@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 import six
 
@@ -57,6 +57,9 @@ class ResourceMeta(type):
             def equals(self, other):
                 return type(self) == type(other) and self._data == other._data
 
+            def deepcopy(self):
+                return self.__class__(api=self._api, **self._data.data)
+
             if '__str__' not in dct:
                 dct['__str__'] = lambda self: self.__class__.__name__
             if '__repr__' not in dct:
@@ -67,6 +70,7 @@ class ResourceMeta(type):
 
             dct['__init__'] = init
             dct['equals'] = equals
+            dct['deepcopy'] = deepcopy
             dct['_modified_data'] = modified_data
 
         return type.__new__(cls, name, bases, dct)

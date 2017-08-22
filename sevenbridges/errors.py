@@ -58,6 +58,13 @@ class PaginationError(SbgError):
         )
 
 
+class AdvanceAccessError(SbgError):
+    def __init__(self, message=None):
+        super(AdvanceAccessError, self).__init__(
+            code=-1, status=-1, message=message
+        )
+
+
 class BadRequest(SbgError):
     def __init__(self, code=None, message=None, more_info=None):
         super(BadRequest, self).__init__(

@@ -1,6 +1,8 @@
 import six
 
-from sevenbridges.errors import PaginationError
+from sevenbridges.errors import PaginationError, SbgError
+from sevenbridges.models.compound.volumes.volume_object import VolumeObject
+from sevenbridges.models.compound.volumes.volume_prefix import VolumePrefix
 from sevenbridges.models.link import Link
 
 
@@ -42,7 +44,7 @@ class Collection(list):
 
     def _load(self, url):
         if self.resource is None:
-            raise NotImplemented('Undefined collection resource.')
+            raise SbgError('Undefined collection resource.')
         else:
             response = self._api.get(url, append_base=False)
             data = response.json()
@@ -79,6 +81,48 @@ class Collection(list):
     def __repr__(self):
         return six.text_type(
             '<Collection: total={total}, available={items}>'.format(
+                total=self.total, items=len(self._items)
+            )
+        )
+
+
+class VolumeCollection(Collection):
+    def __init__(self, href, items, links, prefixes, api):
+        super(VolumeCollection, self).__init__(
+            VolumeObject, href, 0, items, links, api)
+        self.prefixes = prefixes
+
+    @property
+    def total(self):
+        return -1
+
+    def previous_page(self):
+        raise PaginationError('Cannot paginate backwards')
+
+    def _load(self, url):
+        if self.resource is None:
+            raise SbgError('Undefined collection resource.')
+        else:
+            response = self._api.get(url, append_base=False)
+            data = response.json()
+            items = [
+                self.resource(api=self._api, **group) for group in
+                data['items']
+            ]
+            prefixes = [
+                VolumePrefix(api=self._api, **prefix) for prefix in
+                data['prefixes']
+            ]
+            links = [Link(**link) for link in data['links']]
+            href = data['href']
+            return VolumeCollection(
+                href=href, items=items, links=links,
+                prefixes=prefixes, api=self._api
+            )
+
+    def __repr__(self):
+        return six.text_type(
+            '<VolumeCollection: items={items}>'.format(
                 total=self.total, items=len(self._items)
             )
         )
