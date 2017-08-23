@@ -1,3 +1,7 @@
+0.9.1 (2017-08-23)
+==================
+- Fix small bug for interruptible instances.
+
 0.9.0 (2017-08-22)
 ==================
 - Added support for managing volume permissions.
