@@ -196,7 +196,7 @@ class Task(Resource):
         task_data.update(task_meta)
         task_data.update(task_inputs)
 
-        task_data['use_interruptible_instances'] = interruptible,
+        task_data['use_interruptible_instances'] = interruptible
 
         if run:
             params.update({'action': 'run'})
