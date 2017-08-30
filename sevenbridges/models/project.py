@@ -45,7 +45,10 @@ class Project(Resource):
         return six.text_type('<Project: id={id}>'.format(id=self.id))
 
     def __eq__(self, other):
-        return self.id == other.id and self.__class__ == other.__class__
+        if self is other:
+            return True
+        else:
+            return self.id == other.id and self.__class__ == other.__class__
 
     @classmethod
     def query(cls, owner=None, offset=None, limit=None, api=None):

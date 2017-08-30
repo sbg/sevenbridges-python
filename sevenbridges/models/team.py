@@ -33,7 +33,10 @@ class Team(Resource):
         return six.text_type('<Team: id={id}>'.format(id=self.id))
 
     def __eq__(self, other):
-        return self.id == other.id and self.__class__ == other.__class__
+        if self is other:
+            return True
+        else:
+            return self.id == other.id and self.__class__ == other.__class__
 
     @classmethod
     def query(cls, division, offset=None, limit=None, api=None):

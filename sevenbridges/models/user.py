@@ -31,7 +31,10 @@ class User(Resource):
     city = StringField(read_only=True)
 
     def __eq__(self, other):
-        return self.username == other.username
+        if self is other:
+            return True
+        else:
+            return self.username == other.username
 
     def __str__(self):
         return six.text_type(

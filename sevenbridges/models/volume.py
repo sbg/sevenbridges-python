@@ -45,6 +45,12 @@ class Volume(Resource):
     modified_on = DateTimeField(read_only=True)
     active = BooleanField(read_only=True)
 
+    def __eq__(self, other):
+        if self is other:
+            return True
+        else:
+            return self.id == other.id and self.__class__ == other.__class__
+
     def __str__(self):
         return six.text_type('<Volume: id={id}>'.format(id=self.id))
 

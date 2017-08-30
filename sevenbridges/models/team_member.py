@@ -17,9 +17,12 @@ class TeamMember(Resource):
     username = StringField(read_only=False)
     role = StringField(read_only=True)
 
+    def __eq__(self, other):
+        if self is other:
+            return True
+        else:
+            return self.id == other.id and self.__class__ == other.__class__
+
     def __str__(self):
         return six.text_type('<Team member: username={username}>'
                              .format(username=self.username))
-
-    def __eq__(self, other):
-        return self.id == other.id and self.__class__ == other.__class__

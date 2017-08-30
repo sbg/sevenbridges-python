@@ -1,3 +1,7 @@
+0.9.2 (2017-08-30)
+==================
+- Fix `__eq__` method for main resources.
+
 0.9.1 (2017-08-23)
 ==================
 - Fix small bug for interruptible instances.
