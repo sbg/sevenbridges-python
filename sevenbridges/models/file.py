@@ -55,10 +55,13 @@ class File(Resource):
         return six.text_type('<File: id={id}>'.format(id=self.id))
 
     def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
         if self is other:
             return True
-        else:
-            return self.id == other.id and self.__class__ == other.__class__
+        return self.id == other.id and self.__class__ == other.__class__
 
     @classmethod
     def query(cls, project, names=None, metadata=None, origin=None, tags=None,

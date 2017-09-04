@@ -1,7 +1,5 @@
 import logging
 import os
-from configparser import NoSectionError
-
 from six.moves import configparser as cp
 
 from sevenbridges.errors import SbgError
@@ -76,7 +74,7 @@ class Profile(object):
             }
         except KeyError:
             return format_proxies({})
-        except NoSectionError:
+        except cp.NoSectionError:
             return format_proxies({})
 
     @property
@@ -86,7 +84,7 @@ class Profile(object):
                 'mode', 'advance_access')) if self.config_parser else False
         except KeyError:
             return False
-        except NoSectionError:
+        except cp.NoSectionError:
             return False
 
 

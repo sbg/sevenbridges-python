@@ -1,3 +1,9 @@
+0.9.3 (2017-09-40)
+==================
+- Fix broken py2 compatibility
+- Improve requirement handling for setup.py
+- Fix `__eq__` method (yet again)
+
 0.9.2 (2017-08-30)
 ==================
 - Fix `__eq__` method for main resources.
