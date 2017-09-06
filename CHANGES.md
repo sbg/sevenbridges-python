@@ -1,4 +1,4 @@
-0.9.3 (2017-09-40)
+0.9.3 (2017-09-04)
 ==================
 - Fix broken py2 compatibility
 - Improve requirement handling for setup.py
