@@ -1,4 +1,8 @@
-0.9.3 (2017-09-40)
+0.9.4 (2017-09-29)
+==================
+- Maintenance sleeper now retries on JsonDecode errors up to 15 seconds. (3x5s)
+
+0.9.3 (2017-09-04)
 ==================
 - Fix broken py2 compatibility
 - Improve requirement handling for setup.py
