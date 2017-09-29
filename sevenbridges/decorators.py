@@ -4,6 +4,7 @@ import threading
 import time
 
 import requests
+import six
 
 from sevenbridges.errors import (
     BadRequest, Unauthorized, Forbidden, NotFound, MethodNotAllowed,
@@ -132,8 +133,8 @@ def check_for_error(func):
                 e.more_info = data['more_info']
             raise e
         except requests.RequestException as e:
-            raise SbgError(message=str(e))
+            raise SbgError(message=six.text_type(e))
         except ValueError as e:
-            raise SbgError(message=str(e))
+            raise SbgError(message=six.text_type(e))
 
     return wrapper
