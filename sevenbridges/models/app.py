@@ -40,6 +40,15 @@ class App(Resource):
         else:
             return self._id
 
+    def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
+        if self is other:
+            return True
+        return self.id == other.id and self.__class__ == other.__class__
+
     def __str__(self):
         return six.text_type('<App: id={id} rev={rev}>'.format(
             id=self.id, rev=self.revision)

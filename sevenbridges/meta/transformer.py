@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import six
+
 from sevenbridges.errors import SbgError
 
 
@@ -90,6 +91,18 @@ class Transform(object):
             raise SbgError('Invalid volume parameter!')
 
     @staticmethod
+    def to_marker(marker):
+        from sevenbridges.models.marker import Marker
+        if not marker:
+            raise SbgError('Marker is required!')
+        elif isinstance(marker, Marker):
+            return marker.id
+        elif isinstance(marker, six.string_types):
+            return marker
+        else:
+            raise SbgError('Invalid marker parameter!')
+
+    @staticmethod
     def to_datestring(d):
         if not d:
             raise SbgError('Date is required!')
@@ -97,3 +110,27 @@ class Transform(object):
             return d
         elif isinstance(d, datetime):
             return d.isoformat().split('.', 1)[0]
+
+    @staticmethod
+    def to_division(division):
+        from sevenbridges.models.division import Division
+        if not division:
+            raise SbgError('Division is required!')
+        elif isinstance(division, Division):
+            return division.id
+        elif isinstance(division, six.string_types):
+            return division
+        else:
+            raise SbgError('Invalid division parameter!')
+
+    @staticmethod
+    def to_team(team):
+        from sevenbridges.models.team import Team
+        if not team:
+            raise SbgError('Team is required!')
+        elif isinstance(team, Team):
+            return team.id
+        elif isinstance(team, six.string_types):
+            return team
+        else:
+            raise SbgError('Invalid team parameter!')

@@ -1,5 +1,7 @@
+import io
 import logging
 import os
+import tempfile
 
 import six
 
@@ -51,6 +53,15 @@ class File(Resource):
 
     def __str__(self):
         return six.text_type('<File: id={id}>'.format(id=self.id))
+
+    def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
+        if self is other:
+            return True
+        return self.id == other.id and self.__class__ == other.__class__
 
     @classmethod
     def query(cls, project, names=None, metadata=None, origin=None, tags=None,
@@ -298,3 +309,24 @@ class File(Resource):
             delattr(self, '_method')
         except AttributeError:
             pass
+
+    def content(self, path=None, overwrite=True):
+        """
+        Downloads file to the specified path or as temporary file
+        and reads the file content in memory.
+         Should not be used on very large files.
+
+        :param path: Path for file download If omitted tmp file will be used.
+        :param overwrite: Overwrite file if exists locally
+        :return: File content.
+        """
+
+        if path:
+            self.download(wait=True, path=path, overwrite=overwrite)
+            with io.open(path, 'r') as fp:
+                return fp.read()
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            self.download(wait=True, path=tmpfile.name, overwrite=overwrite)
+            with io.open(tmpfile.name, 'r') as fp:
+                return fp.read()

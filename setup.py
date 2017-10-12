@@ -1,9 +1,8 @@
 import io
 import os
-import re
 import sys
-from setuptools import setup, find_packages
 
+from setuptools import setup, find_packages
 
 # If version file exists, this happens during the installation phase,
 # read the version from the version file.
@@ -18,13 +17,9 @@ else:
     with io.open(VERSION_FILE, 'w', encoding='utf-8') as f:
         f.write(version)
 
-
-with open('requirements.txt') as fp:
-    install_requires = fp.readlines()
-if sys.version_info < (3, 0):
-    reg = re.compile('''^.*?;\s*python_version\s*<\s*'3\..*$''')
-    install_requires = [i for i in install_requires if not reg.match(i)]
-
+install_requires = ["six==1.10.0", "requests==2.18.3"]
+if sys.version_info < (3,):
+    install_requires.append("futures==3.0.4")
 
 setup(
     name='sevenbridges-python',

@@ -1,6 +1,5 @@
 import logging
 import os
-
 from six.moves import configparser as cp
 
 from sevenbridges.errors import SbgError
@@ -25,8 +24,8 @@ def format_proxies(proxies):
 class Profile(object):
     CREDENTIALS = os.path.join(os.path.expanduser('~'), '.sevenbridges',
                                'credentials')
-    PROXIES = os.path.join(os.path.expanduser('~'), '.sevenbridges',
-                           'sevenbridges-python', 'config')
+    CONFIG = os.path.join(os.path.expanduser('~'), '.sevenbridges',
+                          'sevenbridges-python', 'config')
 
     def __init__(self, profile):
         if not os.path.isfile(self.CREDENTIALS):
@@ -38,21 +37,23 @@ class Profile(object):
             'auth_token': None,
             'api_endpoint': None,
         })
-        self.proxies_parser = cp.ConfigParser({
+        self.config_parser = cp.ConfigParser({
             'http_proxy': None,
-            'api_endpoint': None
+            'https_proxy': None,
+            'advance_access': False,
         })
         self.credentials_parser.read(self.CREDENTIALS)
 
-        if not os.path.isfile(self.PROXIES):
-            self.proxies_parser = None
-            logging.info('No proxy configuration present. Skipping...')
+        if not os.path.isfile(self.CONFIG):
+            self.config_parser = None
+            logging.info('No custom configuration present. Skipping...')
         else:
-            self.proxies_parser = cp.ConfigParser({
+            self.config_parser = cp.ConfigParser({
                 'http_proxy': None,
-                'https_proxy': None
+                'https_proxy': None,
+                'advance_access': False,
             })
-            self.proxies_parser.read(self.PROXIES)
+            self.config_parser.read(self.CONFIG)
 
     @property
     def api_endpoint(self):
@@ -64,12 +65,27 @@ class Profile(object):
 
     @property
     def proxies(self):
-        return {
-            'http_proxy': self.proxies_parser.get(
-                'proxies', 'http_proxy') if self.proxies_parser else None,
-            'https_proxy': self.proxies_parser.get(
-                'proxies', 'https_proxy') if self.proxies_parser else None
-        }
+        try:
+            return {
+                'http_proxy': self.config_parser.get(
+                    'proxies', 'http_proxy') if self.config_parser else None,
+                'https_proxy': self.config_parser.get(
+                    'proxies', 'https_proxy') if self.config_parser else None
+            }
+        except KeyError:
+            return format_proxies({})
+        except cp.NoSectionError:
+            return format_proxies({})
+
+    @property
+    def advance_access(self):
+        try:
+            return bool(self.config_parser.get(
+                'mode', 'advance_access')) if self.config_parser else False
+        except KeyError:
+            return False
+        except cp.NoSectionError:
+            return False
 
 
 class Config(object):
@@ -77,7 +93,7 @@ class Config(object):
     Utility configuration class.
     """
 
-    def __init__(self, profile=None, proxies=None):
+    def __init__(self, profile=None, proxies=None, advance_access=None):
         """
         Configures the bindings to use api url and token specified
         in the .ini like configuration file.
@@ -102,15 +118,22 @@ class Config(object):
             if not self.api_endpoint:
                 logger.warning('Missing SB_API_ENDPOINT os variable.')
                 raise SbgError('Missing SB_API_ENDPOINT')
+            self.advance_access = False
         else:
             cfg_profile = Profile(profile)
             self.auth_token = cfg_profile.auth_token
             self.api_endpoint = cfg_profile.api_endpoint
+            self.advance_access = cfg_profile.advance_access
 
         if proxies:
             self.proxies = format_proxies(proxies)
         elif cfg_profile:
             self.proxies = format_proxies(cfg_profile.proxies)
+
+        if advance_access:
+            self.advance_access = advance_access
+        elif cfg_profile:
+            self.advance_access = cfg_profile.advance_access
 
         logger.info(
             'Client settings: [url={}] [token={}] [proxy={}]'.format(

@@ -1,18 +1,19 @@
 import logging
+
 import six
 
-from sevenbridges.meta.resource import Resource
-from sevenbridges.models.file import File
-from sevenbridges.meta.transformer import Transform
-from sevenbridges.models.compound.error import Error
-from sevenbridges.models.compound.volumes.volume_file import VolumeFile
-from sevenbridges.models.compound.volumes.import_destination import (
-    ImportDestination
-)
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
 )
+from sevenbridges.meta.resource import Resource
+from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.compound.error import Error
+from sevenbridges.models.compound.volumes.import_destination import (
+    ImportDestination
+)
+from sevenbridges.models.compound.volumes.volume_file import VolumeFile
+from sevenbridges.models.file import File
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,15 @@ class Import(Resource):
 
     def __str__(self):
         return six.text_type('<Import: id={id}>'.format(id=self.id))
+
+    def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
+        if self is other:
+            return True
+        return self.id == other.id and self.__class__ == other.__class__
 
     @property
     def result(self):

@@ -1,4 +1,5 @@
 import six
+
 from sevenbridges.meta.fields import StringField
 from sevenbridges.meta.resource import Resource
 
@@ -17,3 +18,7 @@ class VolumeFile(Resource):
                 volume=self.volume, location=self.location
             )
         )
+
+    def __eq__(self, other):
+        is_cls = self.__class__ == other.__class__
+        return self.location == other.location and is_cls

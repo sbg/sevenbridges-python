@@ -1,5 +1,5 @@
-sevenbridges.models.compound.volumes package
-============================================
+sevenbridges\.models\.compound\.volumes package
+===============================================
 
 .. automodule:: sevenbridges.models.compound.volumes
     :members:
@@ -9,42 +9,58 @@ sevenbridges.models.compound.volumes package
 Submodules
 ----------
 
-sevenbridges.models.compound.volumes.credentials module
--------------------------------------------------------
+sevenbridges\.models\.compound\.volumes\.credentials module
+-----------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.volumes.credentials
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.volumes.import_destination module
---------------------------------------------------------------
+sevenbridges\.models\.compound\.volumes\.import\_destination module
+-------------------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.volumes.import_destination
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.volumes.properties module
-------------------------------------------------------
+sevenbridges\.models\.compound\.volumes\.properties module
+----------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.volumes.properties
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.volumes.service module
----------------------------------------------------
+sevenbridges\.models\.compound\.volumes\.service module
+-------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.volumes.service
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.volumes.volume_file module
--------------------------------------------------------
+sevenbridges\.models\.compound\.volumes\.volume\_file module
+------------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.volumes.volume_file
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges\.models\.compound\.volumes\.volume\_object module
+--------------------------------------------------------------
+
+.. automodule:: sevenbridges.models.compound.volumes.volume_object
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges\.models\.compound\.volumes\.volume\_prefix module
+--------------------------------------------------------------
+
+.. automodule:: sevenbridges.models.compound.volumes.volume_prefix
     :members:
     :undoc-members:
     :show-inheritance:

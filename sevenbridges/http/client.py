@@ -18,8 +18,12 @@ client_info = {
     'os': platform.system(),
     'python': platform.python_version(),
     'requests': requests.__version__,
-
 }
+
+
+class AAHeader:
+    key = 'X-Sbg-Advance-Access'
+    value = 'Advance'
 
 
 def generate_session(proxies=None):
@@ -46,10 +50,11 @@ def config_vars(profiles):
             url = config.api_endpoint
             token = config.auth_token
             proxies = config.proxies
-            return url, token, proxies
+            aa = config.advance_access
+            return url, token, proxies, aa
         except:
             pass
-    return None, None, None
+    return None, None, None, None
 
 
 # noinspection PyTypeChecker
@@ -60,21 +65,26 @@ class HttpClient(object):
     """
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
-                 timeout=None, proxies=None, error_handlers=None):
+                 timeout=None, proxies=None, error_handlers=None,
+                 advance_access=None):
 
-        if (url, token, config) == (None, None, None):
-            url, token, proxies = config_vars([None, 'default'])
+        if (url, token, config, advance_access) == (None, None, None, False):
+            url, token, proxies, advance_access = config_vars(
+                [None, 'default']
+            )
 
         elif config is not None:
             url = config.api_endpoint
             token = config.auth_token
             proxies = config.proxies
+            advance_access = config.advance_access
 
         else:
             url = url
             token = token
             oauth_token = oauth_token
             proxies = format_proxies(proxies)
+            advance_access = advance_access
 
         if not url:
             raise SbgError('URL is missing!'
@@ -106,6 +116,11 @@ class HttpClient(object):
                            'Please provide at least one token value.'
                            )
 
+        self.aa = advance_access
+        if self.aa:
+            logger.warning('Advance access features enabled. '
+                           'AA API calls can be subjected to changes'
+                           )
         self.error_handlers = [maintenance_sleeper]
         if error_handlers and isinstance(error_handlers, list):
             for handler in error_handlers:
@@ -167,10 +182,14 @@ class HttpClient(object):
                 del self.headers['Authorization']
             self.headers['X-SBG-Session-Id'] = getattr(self, '_session_id')
 
+        # If advance access is enabled
+        if self.aa:
+            self.headers[AAHeader.key] = AAHeader.value
+
         d = {'verb': verb, 'url': url, 'headers': headers, 'params': params}
         if not stream:
             d.update({'data': data})
-            logger.debug("Request", extra=d)
+            logger.debug("Request %s", str(d), extra=d)
             response = self._session.request(
                 verb, url, params=params, data=json.dumps(data),
                 headers=headers, timeout=self.timeout, stream=stream

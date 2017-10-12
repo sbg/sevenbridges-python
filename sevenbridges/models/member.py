@@ -1,4 +1,5 @@
 import logging
+
 import six
 
 from sevenbridges.decorators import inplace_reload
@@ -12,20 +13,31 @@ logger = logging.getLogger(__name__)
 
 class Member(Resource):
     """
-    Central resource for managing project members.
+    Central resource for managing members.
+    This resource is reused on both projects and volumes.
     """
     _URL = {
         'permissions': '/permissions'
     }
-
     href = HrefField()
+    id = StringField(read_only=True)
     username = StringField(read_only=False)
     email = StringField(read_only=False)
+    type = StringField(read_only=False)
     permissions = CompoundField(Permissions, read_only=False)
 
     def __str__(self):
-        return six.text_type('<Member: username={username}>'
-                             .format(username=self.username))
+        return six.text_type('<Member: id={id}>'
+                             .format(id=self.id))
+
+    def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
+        if self is other:
+            return True
+        return self.id == other.id and self.__class__ == other.__class__
 
     @inplace_reload
     def save(self, inplace=True):

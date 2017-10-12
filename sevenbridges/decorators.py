@@ -4,6 +4,7 @@ import threading
 import time
 
 import requests
+import six
 
 from sevenbridges.errors import (
     BadRequest, Unauthorized, Forbidden, NotFound, MethodNotAllowed,
@@ -37,7 +38,7 @@ def inplace_reload(method):
     return wrapped
 
 
-def retry_on_excs(excs, retry_count=3, delay=1):
+def retry_on_excs(excs, retry_count=3, delay=5):
     """Retry decorator used to retry callables on for specific exceptions.
 
     :param excs: Exceptions tuple.
@@ -132,8 +133,8 @@ def check_for_error(func):
                 e.more_info = data['more_info']
             raise e
         except requests.RequestException as e:
-            raise SbgError(message=str(e))
+            raise SbgError(message=six.text_type(e))
         except ValueError as e:
-            raise SbgError(message=str(e))
+            raise SbgError(message=six.text_type(e))
 
     return wrapper

@@ -44,6 +44,15 @@ class Project(Resource):
     def __str__(self):
         return six.text_type('<Project: id={id}>'.format(id=self.id))
 
+    def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
+        if self is other:
+            return True
+        return self.id == other.id and self.__class__ == other.__class__
+
     @classmethod
     def query(cls, owner=None, offset=None, limit=None, api=None):
         """
@@ -159,7 +168,7 @@ class Project(Resource):
         :return: Member object.
         """
         user = Transform.to_user(user)
-        data = {'username': user}
+        data = {'username': user, 'type': 'USER'}
         if isinstance(permissions, dict):
             data.update({
                 'permissions': permissions
@@ -173,6 +182,60 @@ class Project(Resource):
             }
         }
         logger.info('Adding member using username', extra=extra)
+        response = self._api.post(
+            url=self._URL['members_query'].format(id=self.id), data=data)
+        member_data = response.json()
+        return Member(api=self._api, **member_data)
+
+    def add_member_team(self, team, permissions):
+        """
+        Add a member (team) to a project.
+        :param team: Team object or team identifier.
+        :param permissions: Permissions dictionary.
+        :return: Member object.
+        """
+        team = Transform.to_team(team)
+        data = {'id': team, 'type': 'TEAM'}
+        if isinstance(permissions, dict):
+            data.update({
+                'permissions': permissions
+            })
+
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+                'data': data,
+            }
+        }
+        logger.info('Adding team member using team id', extra=extra)
+        response = self._api.post(
+            url=self._URL['members_query'].format(id=self.id), data=data)
+        member_data = response.json()
+        return Member(api=self._api, **member_data)
+
+    def add_member_division(self, division, permissions):
+        """
+        Add a member (team) to a project.
+        :param division: Division object or division identifier.
+        :param permissions: Permissions dictionary.
+        :return: Member object.
+        """
+        division = Transform.to_division(division)
+        data = {'id': division, 'type': 'DIVISION'}
+        if isinstance(permissions, dict):
+            data.update({
+                'permissions': permissions
+            })
+
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+                'data': data,
+            }
+        }
+        logger.info('Adding team member using division id', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -204,6 +267,24 @@ class Project(Resource):
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
         return Member(api=self._api, **member_data)
+
+    def remove_member(self, user):
+        """
+        Remove member from the project.
+        :param user: User to be removed.
+        """
+        member = Transform.to_user(user)
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+                'user': user,
+            }
+        }
+        logger.info('Removing member', extra=extra)
+        self._api.delete(
+            url=self._URL['members_get'].format(id=self.id, member=member)
+        )
 
     def get_files(self, offset=None, limit=None):
         """
@@ -271,20 +352,27 @@ class Project(Resource):
         return self._api.exports.query(project=self.id, volume=volume,
                                        state=state, offset=offset, limit=limit)
 
-    def remove_member(self, user):
+    def create_task(self, name, app, revision=None, batch_input=None,
+                    batch_by=None, inputs=None, description=None, run=False,
+                    disable_batch=False, interruptible=True):
         """
-        Remove member from the project.
-        :param user: User to be removed.
+        Creates a task for this project.
+
+        :param name: Task name.
+        :param app: CWL app identifier.
+        :param revision: CWL app revision.
+        :param batch_input: Batch input.
+        :param batch_by: Batch criteria.
+        :param inputs: Input map.
+        :param description: Task description.
+        :param run: True if you want to run a task upon creation.
+        :param disable_batch: True if you want to disable batching.
+        :param interruptible: True if you want to use interruptible instances.
+        :return: Task object.
         """
-        member = Transform.to_user(user)
-        extra = {
-            'resource': self.__class__.__name__,
-            'query': {
-                'id': self.id,
-                'user': user,
-            }
-        }
-        logger.info('Removing member', extra=extra)
-        self._api.delete(
-            url=self._URL['members_get'].format(id=self.id, member=member)
+        return self._api.tasks.create(
+            name=name, project=self, app=app, revision=revision,
+            batch_input=batch_input, batch_by=batch_by, inputs=inputs,
+            description=description, run=run, disable_batch=disable_batch,
+            interruptible=interruptible
         )

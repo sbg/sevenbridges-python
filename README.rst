@@ -85,8 +85,8 @@ Authentication and Configuration
 In order to authenticate with the API, you should pass the following items to sevenbridges-python:
 
 (a) Your authentication token
-(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or 
-for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
+
+(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
 
 You can find your authentication token on the respective pages:
 
@@ -214,7 +214,7 @@ more detailed examples consult the documentation, hosted on readthedocs.
    :target: http://sevenbridges-python.readthedocs.org/en/latest/
 .. |Licence| image:: https://img.shields.io/badge/licence-Apache-orange.svg
    :target: https://github.com/sbg/sevenbridges-python/blob/master/LICENCE
-.. |Travis| image:: https://travis-ci.org/sbg/sevenbridges-python.png
+.. |Travis| image:: https://travis-ci.org/sbg/sevenbridges-python.svg
    :target: https://travis-ci.org/sbg/sevenbridges-python
 
 

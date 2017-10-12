@@ -23,8 +23,3 @@ class Output(CompoundMutableDict, Resource):
 
     def __setitem__(self, key, value):
         raise ReadOnlyPropertyError('Can not modify read only properties.')
-
-    def copy(self):
-        data = self._parent._data[self._name]
-        data.update({'parent': self._parent, 'api': self._api})
-        return Output(**data)

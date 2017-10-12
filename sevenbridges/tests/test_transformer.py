@@ -3,11 +3,15 @@ from datetime import datetime
 
 import faker
 import pytest
-from sevenbridges.models.volume import Volume
+
+from sevenbridges import (
+    Project, Task, App, File,
+    User, BillingGroup, Marker, Division
+)
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.transformer import Transform
-
-from sevenbridges import Project, Task, App, File, User, BillingGroup
+from sevenbridges.models.team import Team
+from sevenbridges.models.volume import Volume
 
 generator = faker.Factory.create()
 
@@ -107,3 +111,21 @@ def test_transform_datestring(datestring, expected):
 def test_transform_datestring_invalid(datestring):
     with pytest.raises(SbgError):
         Transform.to_datestring(datestring)
+
+
+@pytest.mark.parametrize("marker", [str(generator.uuid4()),
+                                    Marker(id=generator.uuid4())])
+def test_transform_marker(marker):
+    Transform.to_marker(marker)
+
+
+@pytest.mark.parametrize("division", [generator.name(),
+                                      Division(id=generator.name())])
+def test_transform_divisions(division):
+    Transform.to_division(division)
+
+
+@pytest.mark.parametrize("team", [str(generator.uuid4()),
+                                  Team(id=generator.uuid4())])
+def test_transform_teams(team):
+    Transform.to_team(team)

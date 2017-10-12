@@ -25,6 +25,7 @@ or install it into your site-packages by invoking:
 
 If you are interested in reviewing this documentation locally, clone the repository and
 invoke:
+
 ::
     $ make html
 

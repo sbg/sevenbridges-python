@@ -7,12 +7,13 @@ from sevenbridges.tests.providers import (
     ProjectProvider, EndpointProvider, UserProvider, MemberProvider,
     FileProvider, AppProvider, TaskProvider,
     VolumeProvider, RateLimitProvider,
-    ActionProvider)
+    ActionProvider, DivisionProvider, TeamProvider, MarkerProvider,
+    ImportsProvider, ExportsProvider, TeamMemberProvider)
 from sevenbridges.tests.verifiers import (
     EndpointVerifier, ProjectVerifier, UserVerifier, MemberVerifier,
-    FileVerifier, AppVerifier, TaskVerifier, VolumeVerifier,
-    AdvanceAccessVerifier,
-    ActionVerifier)
+    FileVerifier, AppVerifier, TaskVerifier, VolumeVerifier, ActionVerifier,
+    DivisionVerifier, TeamVerifier, MarkerVerifier, ImportsVerifier,
+    ExportsVerifier)
 
 generator = faker.Factory.create()
 
@@ -47,6 +48,12 @@ class Precondition(object):
         self.task = TaskProvider(request_mocker, base_url)
         self.volume = VolumeProvider(request_mocker, base_url)
         self.action = ActionProvider(request_mocker, base_url)
+        self.division = DivisionProvider(request_mocker, base_url)
+        self.team = TeamProvider(request_mocker, base_url)
+        self.marker = MarkerProvider(request_mocker, base_url)
+        self.imports = ImportsProvider(request_mocker, base_url)
+        self.exports = ExportsProvider(request_mocker, base_url)
+        self.team_member = TeamMemberProvider(request_mocker, base_url)
 
 
 class Verifier(object):
@@ -63,8 +70,12 @@ class Verifier(object):
         self.app = AppVerifier(request_mocker)
         self.task = TaskVerifier(request_mocker)
         self.volume = VolumeVerifier(request_mocker)
-        self.aa = AdvanceAccessVerifier(request_mocker)
         self.action = ActionVerifier(request_mocker)
+        self.division = DivisionVerifier(request_mocker)
+        self.team = TeamVerifier(request_mocker)
+        self.marker = MarkerVerifier(request_mocker)
+        self.imports = ImportsVerifier(request_mocker)
+        self.exports = ExportsVerifier(request_mocker)
 
 
 @pytest.fixture

@@ -6,7 +6,7 @@
 
 
 sevenbridges-python documentation!
-=========================
+==================================
 
 sevenbridges-python is a `Python <http://www.python.org/>`_ library that provides an interface for the `Seven Bridges Platform <http://docs.sevenbridges.com/docs/the-api>`_ and `Cancer Genomics Cloud <http://docs.cancergenomicscloud.org/docs/the-cgc-api>`_ public APIs.
 

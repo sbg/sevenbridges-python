@@ -1,3 +1,45 @@
+0.9.4 (2017-09-29)
+==================
+- Maintenance sleeper now retries on JsonDecode errors up to 15 seconds. (3x5s)
+
+0.9.3 (2017-09-04)
+==================
+- Fix broken py2 compatibility
+- Improve requirement handling for setup.py
+- Fix `__eq__` method (yet again)
+
+0.9.2 (2017-08-30)
+==================
+- Fix `__eq__` method for main resources.
+
+0.9.1 (2017-08-23)
+==================
+- Fix small bug for interruptible instances.
+
+0.9.0 (2017-08-22)
+==================
+- Added support for managing volume permissions.
+- Added support for listing volume content.
+- Added support for interruptable instances
+- Added support for Enterprise account features.
+- Added support for Advance Access Features
+  Note that now all Advance Access features will be only enabled if its
+  specified on the config level or explicitly when instantiating API object.
+- All resources now implement deepcopy method to provide a way to copy an resource instance.
+- `__eq__` method overridden on first level models (project, tasks etc) to allow easy comparision and enable `in` operator for Collection resources.
+- Added primitive file content methods that downloads file and retrieves content.
+- Update requests version 2.18.3.
+- Documentation is updated to reflect new changes.
+- Multiple tests added for both old and new resources.
+
+- Backwards incompatible changes
+  - Duration of download/upload is not in milliseconds.
+  - `copy` method is removed from Input/Output model.
+
+- Bugfixes
+  - [Issue #93](https://github.com/sbg/sevenbridges-python/issues/93)
+
+
 0.8.1 (2017-07-10)
 ==================
 - Added documentation on how to query public apps.

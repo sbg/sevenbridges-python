@@ -1,4 +1,5 @@
 import logging
+
 import six
 
 from sevenbridges.decorators import inplace_reload
@@ -61,9 +62,19 @@ class Task(Resource):
     price = CompoundField(Price, read_only=True)
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
+    use_interruptible_instances = BooleanField()
 
     def __str__(self):
         return six.text_type('<Task: id={id}>'.format(id=self.id))
+
+    def __eq__(self, other):
+        if self is None and other:
+            return False
+        if other is None and self:
+            return False
+        if self is other:
+            return True
+        return self.id == other.id and self.__class__ == other.__class__
 
     @classmethod
     def query(cls, project=None, status=None, batch=None,
@@ -117,7 +128,7 @@ class Task(Resource):
     @classmethod
     def create(cls, name, project, app, revision=None, batch_input=None,
                batch_by=None, inputs=None, description=None, run=False,
-               disable_batch=False, api=None):
+               disable_batch=False, interruptible=True, api=None):
 
         """
         Creates a task on server.
@@ -131,6 +142,7 @@ class Task(Resource):
         :param description: Task description.
         :param run: True if you want to run a task upon creation.
         :param disable_batch: If True disables batching of a batch task.
+        :param interruptible: If True interruptible instance will be used.
         :param api: Api instance.
         :return: Task object.
         :raises: TaskValidationError if validation Fails.
@@ -185,10 +197,12 @@ class Task(Resource):
             'name': name,
             'project': project,
             'app': app_id,
-            'description': description
+            'description': description,
         }
         task_data.update(task_meta)
         task_data.update(task_inputs)
+
+        task_data['use_interruptible_instances'] = interruptible
 
         if run:
             params.update({'action': 'run'})
@@ -222,16 +236,20 @@ class Task(Resource):
         return Task(api=self._api, **task_data)
 
     @inplace_reload
-    def run(self, batch=True, inplace=True):
+    def run(self, batch=True, interruptible=True, inplace=True):
         """
         Run task
         :param batch if False batching will be disabled.
+        :param interruptible: If true interruptible instance
+        will be used.
         :param inplace Apply action on the current object or return a new one.
         :return: Task object.
         """
         params = {}
         if not batch:
             params['batch'] = False
+
+        params['use_interruptible_instances'] = interruptible
         extra = {
             'resource': self.__class__.__name__,
             'query': {'id': self.id, 'batch': batch}

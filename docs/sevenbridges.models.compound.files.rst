@@ -1,5 +1,5 @@
-sevenbridges.models.compound.files package
-==========================================
+sevenbridges\.models\.compound\.files package
+=============================================
 
 .. automodule:: sevenbridges.models.compound.files
     :members:
@@ -9,32 +9,32 @@ sevenbridges.models.compound.files package
 Submodules
 ----------
 
-sevenbridges.models.compound.files.download_info module
--------------------------------------------------------
+sevenbridges\.models\.compound\.files\.download\_info module
+------------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.files.download_info
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.files.file_origin module
------------------------------------------------------
+sevenbridges\.models\.compound\.files\.file\_origin module
+----------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.files.file_origin
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.files.file_storage module
-------------------------------------------------------
+sevenbridges\.models\.compound\.files\.file\_storage module
+-----------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.files.file_storage
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.files.metadata module
---------------------------------------------------
+sevenbridges\.models\.compound\.files\.metadata module
+------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.files.metadata
     :members:

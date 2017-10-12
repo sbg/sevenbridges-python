@@ -25,7 +25,7 @@ def test_os_environ_config_with_api(base_url, monkeypatch):
         'SB_AUTH_TOKEN': 'token',
         'SB_API_ENDPOINT': base_url,
         'HTTP_PROXY': base_url,
-        'HTTPS_PROXY': base_url
+        'HTTPS_PROXY': base_url,
     }
     monkeypatch.setattr(os, 'environ', mock_env)
 
@@ -125,3 +125,27 @@ def test_config_profile_explicit_proxy(base_url, monkeypatch, config_parser):
     assert api.token == data['profile']['auth_token']
     assert api.session.proxies.get('http') == proxies['http_proxy']
     assert api.session.proxies.get('https') == proxies['https_proxy']
+
+
+def test_config_advance_access(base_url, monkeypatch, config_parser):
+    def is_file(f):
+        if f == Profile.CREDENTIALS or f == Profile.CONFIG:
+            return True
+        else:
+            return False
+
+    data = {
+        'profile': {
+            'auth_token': 'token',
+            'api_endpoint': base_url
+        },
+        'mode': {
+            'advance_access': True
+        }
+    }
+    parser = config_parser(data)
+    monkeypatch.setattr(configparser, 'ConfigParser', parser)
+    monkeypatch.setattr(os.path, 'isfile', is_file)
+
+    api = Api(config=Config('profile'))
+    assert api.aa is True

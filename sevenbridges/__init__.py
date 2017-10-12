@@ -6,7 +6,7 @@ sevenbridges-python
 """
 import logging
 
-__version__ = "0.8.1"
+__version__ = "0.9.4"
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config
@@ -25,6 +25,8 @@ from sevenbridges.models.file import File
 from sevenbridges.models.storage_export import Export
 from sevenbridges.models.storage_import import Import
 from sevenbridges.models.volume import Volume
+from sevenbridges.models.marker import Marker
+from sevenbridges.models.division import Division
 
 from sevenbridges.models.enums import (
     TransferState, VolumeType, VolumeAccessMode, FileStorageType,
@@ -43,9 +45,9 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 __all__ = [
     'Api', 'Config', 'Invoice', 'BillingGroup', 'BillingGroupBreakdown',
     'User', 'Endpoints', 'Project', 'Task', 'App', 'Member', 'Permissions',
-    'File', 'Export', 'Import', 'Volume', 'Marker'
+    'File', 'Export', 'Import', 'Volume', 'Marker', 'Division',
     # Enums
-                                          'PartSize', 'TransferState',
+    'TransferState',
     'VolumeType', 'VolumeAccessMode',
     'FileStorageType', 'ImportExportState', 'TaskStatus',
     # Errors

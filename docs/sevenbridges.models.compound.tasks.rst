@@ -1,5 +1,5 @@
-sevenbridges.models.compound.tasks package
-==========================================
+sevenbridges\.models\.compound\.tasks package
+=============================================
 
 .. automodule:: sevenbridges.models.compound.tasks
     :members:
@@ -9,40 +9,40 @@ sevenbridges.models.compound.tasks package
 Submodules
 ----------
 
-sevenbridges.models.compound.tasks.batch_by module
---------------------------------------------------
+sevenbridges\.models\.compound\.tasks\.batch\_by module
+-------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.tasks.batch_by
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.tasks.batch_group module
------------------------------------------------------
+sevenbridges\.models\.compound\.tasks\.batch\_group module
+----------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.tasks.batch_group
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.tasks.execution_status module
-----------------------------------------------------------
+sevenbridges\.models\.compound\.tasks\.execution\_status module
+---------------------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.tasks.execution_status
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.tasks.input module
------------------------------------------------
+sevenbridges\.models\.compound\.tasks\.input module
+---------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.tasks.input
     :members:
     :undoc-members:
     :show-inheritance:
 
-sevenbridges.models.compound.tasks.output module
-------------------------------------------------
+sevenbridges\.models\.compound\.tasks\.output module
+----------------------------------------------------
 
 .. automodule:: sevenbridges.models.compound.tasks.output
     :members:

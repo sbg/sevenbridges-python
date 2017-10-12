@@ -21,8 +21,3 @@ class Input(CompoundMutableDict, Resource):
             return map_input_output(inputs, self._api)
         except:
             return None
-
-    def copy(self):
-        data = self._parent._data[self._name]
-        data.update({'parent': self._parent, 'api': self._api})
-        return Input(**data)
