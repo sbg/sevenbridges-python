@@ -2,6 +2,7 @@ import logging
 
 import six
 
+from sevenbridges.http.client import client_info
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.enums import FeedbackType
@@ -19,18 +20,22 @@ class Actions(Resource):
         return six.text_type('<Actions>')
 
     @classmethod
-    def send_feedback(cls, type=FeedbackType.IDEA, text=None, api=None):
+    def send_feedback(cls, type=FeedbackType.IDEA, referrer=None, text=None,
+                      api=None):
         """
         Sends feedback to sevenbridges.
         :param type: FeedbackType wither IDEA, PROBLEM or THOUGHT.
         :param text: Feedback text.
+        :param referrer: Feedback referrer.
         :param api: Api instance.
         """
         api = api if api else cls._API
-        data = {
-            'type': type,
-            'text': text,
-        }
+        data = {'type': type,
+                'text': text,
+                'referrer': referrer if referrer else six.text_type(
+                    client_info
+                )}
+
         extra = {
             'resource': cls.__name__,
             'query': data

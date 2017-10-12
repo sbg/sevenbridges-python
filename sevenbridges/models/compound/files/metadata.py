@@ -17,3 +17,6 @@ class Metadata(CompoundMutableDict, Resource):
             return self._parent._data[self._name][item]
         except KeyError:
             return None
+
+    def __eq__(self, other):
+        return dict(self) == dict(other)

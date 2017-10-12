@@ -474,10 +474,7 @@ class Upload(threading.Thread):
         :raises SbgError: If upload is not in PREPARING state.
         """
         if self._status == TransferState.PREPARING:
-            self._running.set()
             super(Upload, self).start()
-            self._status = TransferState.RUNNING
-            self._time_started = time.time()
         else:
             raise SbgError(
                 'Unable to start. Upload not in PREPARING state.'
@@ -487,10 +484,9 @@ class Upload(threading.Thread):
         """
         Runs the thread! Should not be used use start() method instead.
         """
-        if self._status != TransferState.PREPARING:
-            raise SbgError(
-                'Can not start. Upload not in PREPARING state.'
-            )
+        self._running.set()
+        self._status = TransferState.RUNNING
+        self._time_started = time.time()
 
         # Initializes the upload
         self._initialize_upload()

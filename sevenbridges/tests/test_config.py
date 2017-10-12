@@ -149,3 +149,24 @@ def test_config_advance_access(base_url, monkeypatch, config_parser):
 
     api = Api(config=Config('profile'))
     assert api.aa is True
+
+
+def test_config_explicit_advance_access(base_url, monkeypatch, config_parser):
+    def is_file(f):
+        if f == Profile.CREDENTIALS or f == Profile.CONFIG:
+            return True
+        else:
+            return False
+
+    data = {
+        'profile': {
+            'auth_token': 'token',
+            'api_endpoint': base_url
+        }
+    }
+    parser = config_parser(data)
+    monkeypatch.setattr(configparser, 'ConfigParser', parser)
+    monkeypatch.setattr(os.path, 'isfile', is_file)
+
+    api = Api(config=Config('profile'), advance_access=True)
+    assert api.aa is True

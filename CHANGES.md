@@ -1,3 +1,11 @@
+0.9.5 (2017-10-12)
+==================
+- Bugfixes:
+  - [Issue #98](https://github.com/sbg/sevenbridges-python/issues/98)
+  - [Issue #99](https://github.com/sbg/sevenbridges-python/issues/99)
+  
+- Full support for AA features.
+  
 0.9.4 (2017-09-29)
 ==================
 - Maintenance sleeper now retries on JsonDecode errors up to 15 seconds. (3x5s)
