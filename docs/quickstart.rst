@@ -129,10 +129,29 @@ instantiated the configuration class, pass it to the API class constructor.
 
 If not profile is set it will use the default profile.
 
-.. note:: if user creates the api object ``api=sbg.Api()`` and does not pass any information the
-library will first search whether the environment variables are set. If not it will check
+.. note:: If user creates the api object ``api=sbg.Api()`` and does not pass any information the
+          library will first search whether the environment variables are set. If not it will check
           if the configuration file is present and read the ``[default]`` profile. If that also fails
           it will raise an exception
+
+
+Advance Access Features
+^^^^^^^^^^^^^^^^^^^^^^^
+Advance access features are subject to a change. To enable them just pass
+the :code:`advance_access=True` flag when instantiating the library
+
+.. code:: python
+
+    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>', advance_access=True)
+
+.. note:: - Advance access features are subject to a change. No guarantee of any sort is given for AA API calls maintainability.
+
+If you fully understand the above mentioned limitation of Advance access features and are certain you want to use the features across your scripts, you can set this in the `$HOME/.sevenbridges/sevenbridges-python/config` configuration file.
+
+    .. code::
+
+        [mode]
+        advance_access=True
 
 
 Advance Access Features
