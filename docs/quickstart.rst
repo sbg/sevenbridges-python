@@ -137,7 +137,6 @@ library will first search whether the environment variables are set. If not it w
 
 Advance Access Features
 ^^^^^^^^^^^^^^^^^^^^^^^
-
 Advance access features are subject to a change. To enable them just pass
 the :code:`advance_access=True` flag when instantiating the library
 
@@ -146,6 +145,13 @@ the :code:`advance_access=True` flag when instantiating the library
     api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>', advance_access=True)
 
 .. note:: - Advance access features are subject to a change. No guarantee of any sort is given for AA API calls maintainability.
+
+If you fully understand the above mentioned limitation of Advance access features and are certain you want to use the features across your scripts, you can set this in the `$HOME/.sevenbridges/sevenbridges-python/config` configuration file.
+
+    .. code::
+
+        [mode]
+        advance_access=True
 
 
 Proxy configuration
