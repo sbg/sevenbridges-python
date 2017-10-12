@@ -129,10 +129,8 @@ instantiated the configuration class, pass it to the API class constructor.
 
 If not profile is set it will use the default profile.
 
-.. note:: if user creates the api object ``api=sbg.Api()`` and does not pass any information the
-library will first search whether the environment variables are set. If not it will check
-          if the configuration file is present and read the ``[default]`` profile. If that also fails
-          it will raise an exception
+.. note:: if user creates the api object ``api=sbg.Api()`` and does not pass any information the library will first search whether the environment variables are set. If not it will check
+          if the configuration file is present and read the ``[default]`` profile. If that also fail it will raise an exception
 
 
 Advance Access Features
