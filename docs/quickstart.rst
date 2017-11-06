@@ -100,6 +100,7 @@ different credentials or environments.
 
 3. Initialize the library using a configuration file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The configuration file, ``$HOME/.sevenbridges/credentials``, has a simple ``.ini`` file format, with
 the environment (the Seven Bridges Platform, or the CGC, or Cavatica) indicated in square brackets, as shown:
 
