@@ -52,6 +52,13 @@ class CompoundMutableDict(dict):
     def __eq__(self, other):
         return self.equals(other)
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def equals(self, other):
-        eq = self._parent._data[self._name] == other._parent._data[self._name]
-        return type(self) == type(other) and eq
+        if not hasattr(other, '__class__'):
+            return False
+        if not self.__class__ == other.__class__:
+            return False
+        return self is other or \
+            self._parent._data[self._name] == other._parent._data[self._name]

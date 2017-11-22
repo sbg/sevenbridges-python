@@ -55,7 +55,11 @@ class ResourceMeta(type):
                 return self._dirty
 
             def equals(self, other):
-                return type(self) == type(other) and self._data == other._data
+                if not hasattr(other, '__class__'):
+                    return False
+                if not self.__class__ == other.__class__:
+                    return False
+                return self is other or self._data == other._data
 
             def deepcopy(self):
                 return self.__class__(api=self._api, **self._data.data)
