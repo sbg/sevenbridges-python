@@ -3,7 +3,7 @@ import six
 from sevenbridges.errors import PaginationError, SbgError
 from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 from sevenbridges.models.compound.volumes.volume_prefix import VolumePrefix
-from sevenbridges.models.link import Link
+from sevenbridges.models.link import Link, VolumeLink
 
 
 class Collection(list):
@@ -96,6 +96,16 @@ class VolumeCollection(Collection):
     def total(self):
         return -1
 
+    def next_page(self):
+        """
+        Fetches next result set.
+        :return: VolumeCollection object.
+        """
+        for link in self.links:
+            if link.next:
+                return self._load(link.next)
+        raise PaginationError('No more entries.')
+
     def previous_page(self):
         raise PaginationError('Cannot paginate backwards')
 
@@ -113,7 +123,7 @@ class VolumeCollection(Collection):
                 VolumePrefix(api=self._api, **prefix) for prefix in
                 data['prefixes']
             ]
-            links = [Link(**link) for link in data['links']]
+            links = [VolumeLink(**link) for link in data['links']]
             href = data['href']
             return VolumeCollection(
                 href=href, items=items, links=links,
