@@ -668,6 +668,67 @@ class VolumeProvider(object):
         url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
         self.request_mocker.patch(url, json=volume)
 
+    def paginated_file_list(self, limit, num_of_files, volume_id, volume_data):
+        all_items = [
+            {
+                'href': (
+                    self.base_url +
+                    '/storage/volumes/{}/list'
+                    .format(volume_id)
+                ),
+                'location': generator.uuid4(),
+                'volume': volume_id,
+                'type': 's3'
+            } for _ in range(num_of_files)
+        ]
+
+        all_links = []
+        for i in range(0, num_of_files, limit):
+            href = (
+                self.base_url +
+                '/storage/volumes/{id}/list/?offset={offset}&limit={limit}'
+                .format(id=volume_id, offset=str(i), limit=str(limit))
+            )
+            items = all_items[i:i + limit]
+
+            links = []
+            if i + limit < num_of_files:
+                next_url = (
+                    '/storage/volumes/{id}/list/'
+                    '?offset={offset}&limit={limit}&fields=_all'
+                    .format(
+                        id=volume_id, offset=str(i + limit), limit=str(limit)))
+                next_page_link = {
+                    'next': self.base_url + next_url
+                }
+                links.append(next_page_link)
+
+            all_links.append(links)
+            response = {
+                'href': href,
+                'items': items,
+                'links': links,
+                'prefixes': []
+            }
+            self.request_mocker.get(href, json=response, headers={
+                'x-total-matching-query': str(num_of_files)})
+
+        volume = VolumeProvider.default_volume()
+        volume.update(volume_data)
+
+        url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
+        self.request_mocker.get(url, json=volume)
+
+        list_url = (
+            self.base_url + '/storage/volumes/{}/list'.format(volume['id']))
+        list_data = {
+            'href': list_url,
+            'items': all_items[:limit],
+            'links': all_links[0],
+            'prefixes': []
+        }
+        self.request_mocker.get(list_url, json=list_data)
+
 
 class MarkerProvider(object):
     def __init__(self, request_mocker, base_url):
