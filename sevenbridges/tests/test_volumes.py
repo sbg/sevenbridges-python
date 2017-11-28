@@ -71,3 +71,27 @@ def test_modify_volume(api, given, verifier):
     # verifier
     assert volume.description == description
     verifier.volume.modified(volume.id)
+
+
+def test_volume_pagination(api, given):
+    # preconditions
+    limit = 2
+    total = 10
+    volume_id = 'test_volume'
+    volume_data = {'id': volume_id}
+
+    given.volume.paginated_file_list(
+        limit=limit,
+        volume_id=volume_id,
+        num_of_files=total,
+        volume_data=volume_data
+    )
+    volume = api.volumes.get(id=volume_id)
+
+    # action
+    item_list = volume.list(limit=limit)
+    items = [item for item in item_list.all()]
+
+    # verifier
+    assert len(item_list) == limit
+    assert len(items) == total

@@ -14,7 +14,7 @@ from sevenbridges.models.compound.volumes.service import VolumeService
 from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 from sevenbridges.models.compound.volumes.volume_prefix import VolumePrefix
 from sevenbridges.models.enums import VolumeType
-from sevenbridges.models.link import Link
+from sevenbridges.models.link import Link, VolumeLink
 from sevenbridges.models.member import Member
 
 logger = logging.getLogger(__name__)
@@ -196,7 +196,7 @@ class Volume(Resource):
             url=self._URL['list'].format(id=self.id), params=params).json()
 
         href = data['href']
-        links = [Link(**link) for link in data['links']]
+        links = [VolumeLink(**link) for link in data['links']]
 
         objects = [
             VolumeObject(api=self._api, **item) for item in data['items']
