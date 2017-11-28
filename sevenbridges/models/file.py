@@ -311,7 +311,7 @@ class File(Resource):
         except AttributeError:
             pass
 
-    def content(self, path=None, overwrite=True):
+    def content(self, path=None, overwrite=True, encoding='utf-8'):
         """
         Downloads file to the specified path or as temporary file
         and reads the file content in memory.
@@ -319,15 +319,15 @@ class File(Resource):
 
         :param path: Path for file download If omitted tmp file will be used.
         :param overwrite: Overwrite file if exists locally
+        :param encoding: File encoding, by default it is UTF-8
         :return: File content.
         """
-
         if path:
             self.download(wait=True, path=path, overwrite=overwrite)
-            with io.open(path, 'r') as fp:
+            with io.open(path, 'r', encoding=encoding) as fp:
                 return fp.read()
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             self.download(wait=True, path=tmpfile.name, overwrite=overwrite)
-            with io.open(tmpfile.name, 'r') as fp:
+            with io.open(tmpfile.name, 'r', encoding=encoding) as fp:
                 return fp.read()
