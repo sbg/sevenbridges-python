@@ -1,3 +1,10 @@
+0.9.7 (2017-11-29)
+==================
+- Bugfixes:
+  - Fix `__eq__` methods for all resources
+  - Fix input editing
+  - Fix compound fields so they return the correct value
+
 0.9.6 (2017-11-06)
 ==================
 - Doc improvement
