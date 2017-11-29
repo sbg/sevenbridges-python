@@ -20,5 +20,11 @@ class VolumeFile(Resource):
         )
 
     def __eq__(self, other):
-        is_cls = self.__class__ == other.__class__
-        return self.location == other.location and is_cls
+        if not hasattr(other, '__class__'):
+            return False
+        if not self.__class__ == other.__class__:
+            return False
+        return self is other or self.location == other.location
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

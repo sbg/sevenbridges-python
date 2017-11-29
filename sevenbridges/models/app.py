@@ -41,13 +41,14 @@ class App(Resource):
             return self._id
 
     def __eq__(self, other):
-        if self is None and other:
+        if not hasattr(other, '__class__'):
             return False
-        if other is None and self:
+        if not self.__class__ == other.__class__:
             return False
-        if self is other:
-            return True
-        return self.id == other.id and self.__class__ == other.__class__
+        return self is other or self.id == other.id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __str__(self):
         return six.text_type('<App: id={id} rev={rev}>'.format(

@@ -163,6 +163,33 @@ def test_run_task(api, given, batch, inplace, verifier):
         verifier.task.action_performed(id, 'run')
 
 
+def test_modify_inputs(api, given, verifier):
+    # precondition
+    owner = generator.user_name()
+    project_short_name = generator.slug()
+    project_id = '{}/{}'.format(owner, project_short_name)
+    given.project.exists(id=project_id)
+    given.file.files_exist_for_project(project_id, 1)
+    id = generator.uuid4()
+    given.task.task_exists(id=id)
+    given.task.task_can_be_saved(id=id, status='DRAFT')
+
+    # action
+    project = api.projects.get(id=project_id)
+    files = project.get_files(limit=1)
+    task = api.tasks.get(id)
+    task.name = generator.name()
+    task.description = generator.name()
+    task.inputs = {'test': []}
+
+    for key, value in task.inputs.items():
+        task.inputs[key] = files[0]
+
+    task.save()
+    assert task.status == 'DRAFT'
+    verifier.task.task_saved(id)
+
+
 def test_save_task(api, given, verifier):
     # precondition
     owner = generator.user_name()
