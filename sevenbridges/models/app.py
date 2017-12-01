@@ -4,9 +4,14 @@ import re
 import six
 
 from sevenbridges.meta.fields import (
-    HrefField, StringField, IntegerField, DictField
+    DictField,
+    HrefField,
+    StringField,
+    IntegerField,
 )
+from sevenbridges.errors import SbgError
 from sevenbridges.meta.resource import Resource
+from sevenbridges.models.enums import AppRawFormat
 from sevenbridges.meta.transformer import Transform
 
 logger = logging.getLogger(__name__)
@@ -25,6 +30,12 @@ class App(Resource):
         'sync': '/apps/{id}/actions/sync',
         'raw': '/apps/{id}/raw'
     }
+
+    _CONTENT_TYPE = {
+        AppRawFormat.JSON: 'application/json',
+        AppRawFormat.YAML: 'application/yaml'
+    }
+
     href = HrefField()
     _id = StringField(read_only=True, name='id')
     project = StringField(read_only=True)
@@ -96,23 +107,40 @@ class App(Resource):
         return App(api=api, **app)
 
     @classmethod
-    def install_app(cls, id, raw, api=None):
+    def install_app(cls, id, raw, api=None, raw_format=None):
         """
         Installs and app.
         :param id:  App identifier.
         :param raw: Raw cwl data.
         :param api: Api instance.
+        :param raw_format: Format of raw app data being sent, json by default
         :return: App object.
         """
         api = api if api else cls._API
-        extra = {'resource': cls.__name__, 'query': {
-            'id': id,
-            'data': raw
-        }}
+        raw_format = raw_format.lower() if raw_format else AppRawFormat.JSON
+        extra = {
+            'resource': cls.__name__,
+            'query': {
+                'id': id,
+                'data': raw
+            }
+        }
         logger.info('Installing app', extra=extra)
-        app = api.post(url=cls._URL['raw'].format(id=id), data=raw).json()
-        app_wrapper = api.get(url=cls._URL['get'].format(
-            id=app['sbg:id'])).json()
+
+        # Set content type for raw app data
+        if raw_format not in cls._CONTENT_TYPE.keys():
+            raise SbgError(
+                'Unsupported raw data format: "{}".'
+                .format(raw_format))
+        headers = {'Content-Type': cls._CONTENT_TYPE[raw_format]}
+
+        app = api.post(
+            url=cls._URL['raw'].format(id=id),
+            data=raw,
+            headers=headers,
+        ).json()
+        app_wrapper = api.get(
+            url=cls._URL['get'].format(id=app['sbg:id'])).json()
         return App(api=api, **app_wrapper)
 
     @classmethod

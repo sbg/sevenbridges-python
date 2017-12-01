@@ -57,3 +57,8 @@ class FeedbackType:
     IDEA = 'IDEA'
     THOUGHT = 'THOUGHT'
     PROBLEM = 'PROBLEM'
+
+
+class AppRawFormat:
+    JSON = 'json'
+    YAML = 'yaml'
