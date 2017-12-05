@@ -17,3 +17,13 @@ class Metadata(CompoundMutableDict, Resource):
             return self._parent._data[self._name][item]
         except KeyError:
             return None
+
+    def __eq__(self, other):
+        if not hasattr(other, '__class__'):
+            return False
+        if not self.__class__ == other.__class__:
+            return False
+        return self is other or dict(self) == dict(other)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

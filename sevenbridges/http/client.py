@@ -38,15 +38,16 @@ def generate_session(proxies=None):
 
 
 # noinspection PyBroadException
-def config_vars(profiles):
+def config_vars(profiles, advance_access):
     """
     Utility method to fetch config vars using ini section profile
     :param profiles: profile name.
+    :param advance_access: advance_access flag.
     :return:
     """
     for profile in profiles:
         try:
-            config = Config(profile)
+            config = Config(profile, advance_access=advance_access)
             url = config.api_endpoint
             token = config.auth_token
             proxies = config.proxies
@@ -66,18 +67,18 @@ class HttpClient(object):
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, proxies=None, error_handlers=None,
-                 advance_access=None):
+                 advance_access=False):
 
-        if (url, token, config, advance_access) == (None, None, None, False):
+        if (url, token, config) == (None, None, None):
             url, token, proxies, advance_access = config_vars(
-                [None, 'default']
+                [None, 'default'], advance_access
             )
 
         elif config is not None:
             url = config.api_endpoint
             token = config.auth_token
             proxies = config.proxies
-            advance_access = config.advance_access
+            advance_access = advance_access or config.advance_access
 
         else:
             url = url

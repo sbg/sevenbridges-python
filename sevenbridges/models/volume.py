@@ -14,7 +14,7 @@ from sevenbridges.models.compound.volumes.service import VolumeService
 from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 from sevenbridges.models.compound.volumes.volume_prefix import VolumePrefix
 from sevenbridges.models.enums import VolumeType
-from sevenbridges.models.link import Link
+from sevenbridges.models.link import Link, VolumeLink
 from sevenbridges.models.member import Member
 
 logger = logging.getLogger(__name__)
@@ -46,13 +46,14 @@ class Volume(Resource):
     active = BooleanField(read_only=True)
 
     def __eq__(self, other):
-        if self is None and other:
+        if not hasattr(other, '__class__'):
             return False
-        if other is None and self:
+        if not self.__class__ == other.__class__:
             return False
-        if self is other:
-            return True
-        return self.id == other.id and self.__class__ == other.__class__
+        return self is other or self.id == other.id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __str__(self):
         return six.text_type('<Volume: id={id}>'.format(id=self.id))
@@ -196,7 +197,7 @@ class Volume(Resource):
             url=self._URL['list'].format(id=self.id), params=params).json()
 
         href = data['href']
-        links = [Link(**link) for link in data['links']]
+        links = [VolumeLink(**link) for link in data['links']]
 
         objects = [
             VolumeObject(api=self._api, **item) for item in data['items']

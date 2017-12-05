@@ -373,6 +373,6 @@ class Download(threading.Thread):
         )
         file_size = int(file_size)
         if file_size == 0:
-            with io.open(self._file_path, 'a'):
+            with io.open(self._file_path, 'a', encoding='utf-8'):
                 pass
         return file_size

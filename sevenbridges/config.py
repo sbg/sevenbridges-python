@@ -118,7 +118,7 @@ class Config(object):
             if not self.api_endpoint:
                 logger.warning('Missing SB_API_ENDPOINT os variable.')
                 raise SbgError('Missing SB_API_ENDPOINT')
-            self.advance_access = False
+            self.advance_access = advance_access if advance_access else False
         else:
             cfg_profile = Profile(profile)
             self.auth_token = cfg_profile.auth_token

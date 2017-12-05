@@ -64,7 +64,7 @@ class CompoundField(Field):
         self.cls = cls
 
     def __get__(self, instance, owner):
-        if instance._data[self.name]:
+        if instance._data[self.name] is not empty:
             return self.cls(api=instance._api, parent=instance,
                             **(instance._data[self.name]))
         else:

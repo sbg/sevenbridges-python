@@ -31,10 +31,14 @@ class User(Resource):
     city = StringField(read_only=True)
 
     def __eq__(self, other):
-        if self is other:
-            return True
-        else:
-            return self.username == other.username
+        if not hasattr(other, '__class__'):
+            return False
+        if not self.__class__ == other.__class__:
+            return False
+        return self is other or self.username == other.username
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __str__(self):
         return six.text_type(

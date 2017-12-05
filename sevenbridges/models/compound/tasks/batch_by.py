@@ -48,5 +48,9 @@ class BatchBy(Resource, dict):
                 self[k] = other[k]
 
     def equals(self, other):
-        same = self.parent._data[self._name] == other.parent._data[self._name]
-        return type(self) == type(other) and same
+        if not hasattr(other, '__class__'):
+            return False
+        if not self.__class__ == other.__class__:
+            return False
+        return self is other or \
+            self._parent._data[self._name] == other._parent._data[self._name]

@@ -1,3 +1,22 @@
+0.9.7 (2017-11-29)
+==================
+- Bugfixes:
+  - Fix `__eq__` methods for all resources
+  - Fix input editing
+  - Fix compound fields so they return the correct value
+
+0.9.6 (2017-11-06)
+==================
+- Doc improvement
+
+0.9.5 (2017-10-12)
+==================
+- Bugfixes:
+  - [Issue #98](https://github.com/sbg/sevenbridges-python/issues/98)
+  - [Issue #99](https://github.com/sbg/sevenbridges-python/issues/99)
+  
+- Full support for AA features.
+  
 0.9.4 (2017-09-29)
 ==================
 - Maintenance sleeper now retries on JsonDecode errors up to 15 seconds. (3x5s)
