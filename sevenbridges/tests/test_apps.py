@@ -1,6 +1,9 @@
 import faker
 import pytest
 
+from sevenbridges.errors import SbgError
+
+
 generator = faker.Factory.create()
 
 
@@ -69,6 +72,37 @@ def test_install_app(api, given, verifier):
     # verification
     assert app.id == app_id
     verifier.app.app_installed(app_id)
+
+
+def test_install_app_formats(api, given, verifier):
+    # preconditions
+    app_json_id = "me/my-project/my-app-json"
+    app_yaml_id = "me/my-project/my-app-yaml"
+    app_invalid_id = "me/my-project/my-app-invalid"
+
+    given.app.app_exists(id=app_json_id)
+    given.app.app_exists(id=app_yaml_id)
+    given.app.app_exists(id=app_invalid_id)
+    given.app.app_can_be_installed(id=app_json_id)
+    given.app.app_can_be_installed(id=app_yaml_id)
+    given.app.app_can_be_installed(id=app_invalid_id)
+
+    raw_json = {'sbg:id': app_json_id}
+    raw_yaml = {'sbg:id': app_yaml_id}
+    raw_invalid = {'sbg:id': app_invalid_id}
+
+    # action
+    app_json = api.apps.install_app(app_json_id, raw_json, raw_format='json')
+    app_yaml = api.apps.install_app(app_yaml_id, raw_yaml, raw_format='yaml')
+
+    with pytest.raises(SbgError):
+        api.apps.install_app(app_invalid_id, raw_invalid, raw_format='invalid')
+
+    # verification
+    assert app_json.id == app_json_id
+    assert app_yaml.id == app_yaml_id
+    verifier.app.app_installed(app_json_id)
+    verifier.app.app_installed(app_yaml_id)
 
 
 def test_create_app_revision(api, given, verifier):
