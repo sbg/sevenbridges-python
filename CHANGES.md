@@ -1,3 +1,10 @@
+0.9.8 (2017-12-05)
+==================
+- Improvements:
+  - Add encoding to file content method (uses utf-8 by default)
+  - [Issue #102](https://github.com/sbg/sevenbridges-python/issues/102)
+  - Fix CHANGESETS link in README
+
 0.9.7 (2017-11-29)
 ==================
 - Bugfixes:
