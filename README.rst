@@ -4,7 +4,7 @@ sevenbridges-python
 
 |Travis| |PyPI version| |Documentation| |Licence|
 
-`CHANGESETS <CHANGES.md>`__
+`CHANGESETS <https://github.com/sbg/sevenbridges-python/blob/develop/CHANGES.md>`__
 
 sevenbridges-python is a `Python <http://www.python.org/>`__ library
 that provides an interface for `the Seven Bridges
@@ -213,7 +213,7 @@ more detailed examples consult the documentation, hosted on readthedocs.
 .. |Documentation| image:: https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest
    :target: http://sevenbridges-python.readthedocs.org/en/latest/
 .. |Licence| image:: https://img.shields.io/badge/licence-Apache-orange.svg
-   :target: https://github.com/sbg/sevenbridges-python/blob/master/LICENCE
+   :target: https://github.com/sbg/sevenbridges-python/blob/develop/LICENCE
 .. |Travis| image:: https://travis-ci.org/sbg/sevenbridges-python.svg
    :target: https://travis-ci.org/sbg/sevenbridges-python
 
