@@ -8,9 +8,9 @@ sevenbridges-python
 
 sevenbridges-python is a `Python <http://www.python.org/>`__ library
 that provides an interface for `the Seven Bridges
-Platform <https://www.sbgenomics.com/>`__ and `Cancer Genomics
-Cloud <http://www.cancergenomicscloud.org/>`__ public APIs. It works
-with Python versions 2.6+ and supports Python 3.
+Platform <https://www.sbgenomics.com/>`__ the `Cancer Genomics
+Cloud <http://www.cancergenomicscloud.org/>`__ and `Cavatica <http://www.cavatica.org>`__ 
+public APIs. It works with Python versions 2.6+ and supports Python 3.
 
 The `Seven Bridges Platform <https://www.sbgenomics.com/>`__ is a
 cloud-based environment for conducting bioinformatic analyses. It is a
@@ -31,6 +31,13 @@ The CGC makes more than a petabyte of multi-dimensional data available
 immediately to authorized researchers. You can add your own data to
 analyze alongside TCGA using predefined analytical workflows or your own
 tools.
+
+`Cavatica <http://www.cavatica.org/>`__, powered by `Seven
+Bridges <https://www.sbgenomics.com/>`__, is a data analysis and sharing 
+platform designed to accelerate discovery in a scalable, cloud-based compute 
+environment where data, results, and workflows are shared among the 
+world's research community. Cavatica is built in collaboration with the 
+Children Hospital of Philadelphia
 
 Installation
 ------------
