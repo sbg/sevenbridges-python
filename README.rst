@@ -37,7 +37,7 @@ Bridges <https://www.sbgenomics.com/>`__, is a data analysis and sharing
 platform designed to accelerate discovery in a scalable, cloud-based compute 
 environment where data, results, and workflows are shared among the 
 world's research community. Cavatica is built in collaboration with the 
-Children Hospital of Philadelphia
+Children Hospital of Philadelphia and it is focused on pediatric data.
 
 Installation
 ------------
