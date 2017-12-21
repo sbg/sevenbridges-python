@@ -64,9 +64,10 @@ class CompoundField(Field):
         self.cls = cls
 
     def __get__(self, instance, owner):
-        if instance._data[self.name] is not empty:
-            return self.cls(api=instance._api, parent=instance,
-                            **(instance._data[self.name]))
+        data = instance._data[self.name]
+        # empty is used for read only fields, None all for others
+        if data is not empty and data is not None:
+            return self.cls(api=instance._api, parent=instance, **data)
         else:
             return None
 
@@ -78,9 +79,10 @@ class CompoundListField(Field):
         self.cls = cls
 
     def __get__(self, instance, owner):
-        if instance._data[self.name]:
-            return [self.cls(api=instance._api, **item) for item in
-                    instance._data[self.name]]
+        data = instance._data[self.name]
+        # empty is used for read only fields, None for all others
+        if data is not empty and data is not None:
+            return [self.cls(api=instance._api, **item) for item in data]
         else:
             return []
 
