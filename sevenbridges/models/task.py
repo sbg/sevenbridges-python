@@ -51,7 +51,7 @@ class Task(Resource):
     start_time = DateTimeField(read_only=True)
     created_time = DateTimeField(read_only=True)
     end_time = DateTimeField(read_only=True)
-    batch = BooleanField(read_only=True)
+    batch = BooleanField(read_only=False)
     batch_by = CompoundField(BatchBy, read_only=False)
     batch_group = CompoundField(BatchGroup, read_only=True)
     batch_input = StringField(read_only=False)
