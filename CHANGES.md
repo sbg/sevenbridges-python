@@ -1,3 +1,11 @@
+0.9.9 (2017-12-21)
+==================
+- Improvements:
+  - Make task batching toggleable with batch property
+
+- Bugfixes:
+  - Fix `__get__` methods for None vales in CompoundField and CompoundFieldList
+
 0.9.8 (2017-12-05)
 ==================
 - Improvements:
