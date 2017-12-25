@@ -162,31 +162,9 @@ class Task(Resource):
             if isinstance(app, App):
                 app_id = app_id + "/" + six.text_type(app.revision)
 
-        task_inputs = {'inputs': {}}
-        for k, v in inputs.items():
-            if isinstance(v, File):
-                input = {
-                    'class': 'File',
-                    'path': v.id,
-                }
-                task_inputs['inputs'][k] = input
-            elif isinstance(v, list):
-                input_list = []
-                for inp in v:
-                    if isinstance(inp, File):
-                        input = {
-                            'class': 'File',
-                            'path': inp.id,
-                        }
-                        if inp.name:
-                            input['name'] = inp.name
-                        input_list.append(input)
-
-                    else:
-                        input_list.append(inp)
-                task_inputs['inputs'][k] = input_list
-            else:
-                task_inputs['inputs'][k] = v
+        task_inputs = {
+            'inputs': Task._serialize_inputs(inputs) if inputs else {}
+        }
 
         if batch_input and batch_by:
             task_data['batch_input'] = batch_input
@@ -273,21 +251,7 @@ class Task(Resource):
             inputs = modified_data.pop('inputs', None)
             task_request_data.update(modified_data)
             if inputs:
-                task_request_data['inputs'] = {}
-                for input_id, input_value in inputs.items():
-                    if isinstance(input_value, File):
-                        in_file = Task._to_api_file_format(input_value)
-                        task_request_data['inputs'][input_id] = in_file
-                    elif isinstance(input_value, list):
-                        in_list = [item for item in input_value if
-                                   not isinstance(item, File)]
-                        in_list.extend([Task._to_api_file_format(item)
-                                        for item in input_value if
-                                        isinstance(item, File)])
-
-                        task_request_data['inputs'][input_id] = in_list
-                    else:
-                        task_request_data['inputs'][input_id] = input_value
+                task_request_data['inputs'] = self._serialize_inputs(inputs)
             extra = {
                 'resource': self.__class__.__name__,
                 'query': {'id': self.id, 'data': task_request_data}
@@ -297,6 +261,33 @@ class Task(Resource):
                                    data=task_request_data).json()
             task = Task(api=self._api, **data)
             return task
+
+    @staticmethod
+    def _serialize_inputs(inputs):
+        """Serialize task input dictionary"""
+        serialized_inputs = {}
+        for input_id, input_value in inputs.items():
+            if isinstance(input_value, list):
+                serialized_list = Task._serialize_input_list(input_value)
+                serialized_inputs[input_id] = serialized_list
+            else:
+                if isinstance(input_value, File):
+                    input_value = Task._to_api_file_format(input_value)
+                serialized_inputs[input_id] = input_value
+        return serialized_inputs
+
+    @staticmethod
+    def _serialize_input_list(input_value):
+        """Recursively serialize task input list"""
+        input_list = []
+        for item in input_value:
+            if isinstance(item, list):
+                input_list.append(Task._serialize_input_list(item))
+            else:
+                if isinstance(item, File):
+                    item = Task._to_api_file_format(item)
+                input_list.append(item)
+        return input_list
 
     @staticmethod
     def _to_api_file_format(_file):
