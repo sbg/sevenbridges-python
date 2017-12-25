@@ -1,3 +1,8 @@
+0.10.0 (2017-12-25)
+==================
+- Bugfixes:
+  - Fix file serialization for input lists of greater depth
+
 0.9.9 (2017-12-21)
 ==================
 - Improvements:
