@@ -23,7 +23,7 @@ class ResourceMeta(type):
     resource fields.
     """
 
-    def __new__(cls, name, bases, dct):
+    def __new__(mcs, name, bases, dct):
         # Attach fields object fo resource instance.
         fields = {}
         for k, v in dct.items():
@@ -77,7 +77,7 @@ class ResourceMeta(type):
             dct['deepcopy'] = deepcopy
             dct['_modified_data'] = modified_data
 
-        return type.__new__(cls, name, bases, dct)
+        return type.__new__(mcs, name, bases, dct)
 
     def __get__(cls, obj, objtype=None):
         # SPHINX_DOC part is for generating documentation

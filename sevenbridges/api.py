@@ -22,22 +22,22 @@ from sevenbridges.models.volume import Volume
 class Api(HttpClient):
     """Api aggregates all resource classes into single place"""
 
-    users = User
-    endpoints = Endpoints
-    projects = Project
-    files = File
+    actions = Actions
     apps = App
     billing_groups = BillingGroup
-    invoices = Invoice
-    tasks = Task
-    volumes = Volume
-    imports = Import
-    exports = Export
-    rate_limit = RateLimit
-    actions = Actions
-    markers = Marker
     divisions = Division
+    endpoints = Endpoints
+    exports = Export
+    files = File
+    imports = Import
+    invoices = Invoice
+    markers = Marker
+    projects = Project
+    rate_limit = RateLimit
+    tasks = Task
     teams = Team
+    users = User
+    volumes = Volume
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, download_max_workers=16, upload_max_workers=16,
