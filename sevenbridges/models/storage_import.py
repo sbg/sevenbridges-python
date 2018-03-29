@@ -2,12 +2,14 @@ import logging
 
 import six
 
+from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.models.compound.error import Error
 from sevenbridges.models.compound.volumes.import_destination import (
     ImportDestination
@@ -26,6 +28,9 @@ class Import(Resource):
     _URL = {
         'query': '/storage/imports',
         'get': '/storage/imports/{id}',
+
+        'bulk_get': '/bulk/storage/imports/get',
+        'bulk_create': '/bulk/storage/imports/create',
     }
 
     href = HrefField()
@@ -126,3 +131,73 @@ class Import(Resource):
             url=cls._URL['query'], project=project, volume=volume, state=state,
             fields='_all', offset=offset, limit=limit, api=api
         )
+
+    @classmethod
+    def bulk_get(cls, import_ids, api=None):
+        """
+        Retrieve imports in bulk
+        :param import_ids: List of import ids to retrieve
+        :param api: Api object
+        :return:
+        """
+        api = api or cls._API
+        import_ids = [Transform.to_import(import_) for import_ in import_ids]
+        data = {'import_ids': import_ids}
+
+        response = api.post(url=cls._URL['bulk_get'], data=data)
+        return cls.parse_bulk_records(
+            response=response,
+            record_cls=ImportBulkRecord
+        )
+
+    @classmethod
+    def bulk_submit_imports(cls, imports, api=None):
+        """
+        Create imports in bulk
+        :param imports:
+        :param api:
+        :return:
+        """
+        if not imports:
+            raise SbgError('Imports are required')
+
+        api = api or cls._API
+
+        items = []
+        for import_ in imports:
+            volume = Transform.to_volume(import_.get('volume'))
+            location = import_.get('location')
+            project = Transform.to_project(import_.get('project'))
+            name = import_.get('name')
+            overwrite = import_.get('overwrite', False)
+
+            item = {
+                'source': {
+                    'volume': volume,
+                    'location': location
+                },
+                'destination': {
+                    'project': project
+                },
+                'overwrite': overwrite
+            }
+
+            if name:
+                item['destination']['name'] = name
+
+            items.append(item)
+
+        data = {'items': items}
+
+        response = api.post(url=cls._URL['bulk_create'], data=data)
+        return cls.parse_bulk_records(
+            response=response,
+            record_cls=ImportBulkRecord
+        )
+
+
+class ImportBulkRecord(BulkRecord):
+    resource = CompoundField(cls=Import)
+
+    def __str__(self):
+        return six.text_type('<ImportBulkRecord>')

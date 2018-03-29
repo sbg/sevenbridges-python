@@ -134,3 +134,27 @@ class Transform(object):
             return team
         else:
             raise SbgError('Invalid team parameter!')
+
+    @staticmethod
+    def to_import(import_):
+        from sevenbridges.models.storage_import import Import
+        if not import_:
+            raise SbgError('Import is required!')
+        elif isinstance(import_, Import):
+            return import_.id
+        elif isinstance(import_, six.string_types):
+            return import_
+        else:
+            raise SbgError('Invalid import parameter!')
+
+    @staticmethod
+    def to_export(export):
+        from sevenbridges.models.storage_export import Export
+        if not export:
+            raise SbgError('Export is required!')
+        elif isinstance(export, Export):
+            return export.id
+        elif isinstance(export, six.string_types):
+            return export
+        else:
+            raise SbgError('Invalid export parameter!')

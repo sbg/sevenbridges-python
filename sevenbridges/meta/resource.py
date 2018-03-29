@@ -178,3 +178,17 @@ class Resource(six.with_metaclass(ResourceMeta)):
         self._data = resource._data
         self._dirty = resource._dirty
         return self
+
+    @classmethod
+    def parse_bulk_records(cls, response, record_cls, api=None):
+        api = api if api else cls._API
+        records = []
+        data = response.json()
+        for item in data.get('items', []):
+            record = record_cls(api=api)
+            if 'error' in item:
+                record.error = item['error']
+            if 'resource' in item:
+                record.resource = item['resource']
+            records.append(record)
+        return records

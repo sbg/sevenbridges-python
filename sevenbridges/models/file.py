@@ -7,13 +7,16 @@ import six
 
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
-    ResourceNotModified, SbgError, LocalFileAlreadyExists
+    SbgError,
+    ResourceNotModified,
+    LocalFileAlreadyExists
 )
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, CompoundField, DateTimeField,
     BasicListField)
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.models.compound.files.download_info import DownloadInfo
 from sevenbridges.models.compound.files.file_origin import FileOrigin
 from sevenbridges.models.compound.files.file_storage import FileStorage
@@ -36,7 +39,12 @@ class File(Resource):
         'copy': '/files/{id}/actions/copy',
         'download_info': '/files/{id}/download_info',
         'metadata': '/files/{id}/metadata',
-        'tags': '/files/{id}/tags'
+        'tags': '/files/{id}/tags',
+
+        'bulk_get': '/bulk/files/get',
+        'bulk_delete': '/bulk/files/delete',
+        'bulk_update': '/bulk/files/update',
+        'bulk_edit': '/bulk/files/edit',
     }
 
     href = HrefField()
@@ -331,3 +339,110 @@ class File(Resource):
             self.download(wait=True, path=tmpfile.name, overwrite=overwrite)
             with io.open(tmpfile.name, 'r', encoding=encoding) as fp:
                 return fp.read()
+
+    @classmethod
+    def bulk_get(cls, file_ids, api=None):
+        """
+        Retrieve files with specified ids in bulk
+        :param file_ids: Ids of files to be retrieved.
+        :param api: Api instance
+        :return:
+        """
+        api = api or cls._API
+        file_ids = [Transform.to_file(file_) for file_ in file_ids]
+        data = {'file_ids': file_ids}
+
+        logger.info('Getting files in bulk.')
+        response = api.post(url=cls._URL['bulk_get'], data=data)
+        return cls.parse_bulk_records(
+            response=response,
+            record_cls=FileBulkRecord
+        )
+
+    @classmethod
+    def bulk_delete(cls, file_ids, api=None):
+        """
+        Delete files with specified ids in bulk
+        :param file_ids: Ids of files to be deleted
+        :param api: Api instance
+        :return:
+        """
+        api = api or cls._API
+        file_ids = [Transform.to_file(file_) for file_ in file_ids]
+        data = {'file_ids': file_ids}
+
+        logger.info('Deleting files in bulk.')
+        response = api.post(url=cls._URL['bulk_delete'], data=data)
+        return cls.parse_bulk_records(
+            response=response,
+            record_cls=FileBulkRecord
+        )
+
+    @classmethod
+    def bulk_update(cls, files, api=None):
+        """
+        Update files with specified ids in bulk
+        :param api: Api instance
+        :param files: Files to be updated
+        :return:
+        """
+        if not files:
+            raise SbgError('Files are required.')
+
+        api = api or cls._API
+        data = {
+            'items': [
+                {
+                    'id': file_.id,
+                    'name': file_.name,
+                    'tags': file_.tags,
+                    'metadata': file_.metadata,
+                }
+                for file_ in files
+            ]
+        }
+
+        logger.info('Updating files in bulk.')
+        response = api.post(url=cls._URL['bulk_update'], data=data)
+        return cls.parse_bulk_records(
+            response=response,
+            record_cls=FileBulkRecord
+        )
+
+    @classmethod
+    def bulk_edit(cls, files, api=None):
+        """
+        Edit files with specified ids in bulk
+        :param files: Files to be updated
+        :param api: Api instance
+        :return: List of FileBulkRecords
+        """
+        if not files:
+            raise SbgError('Files are required.')
+
+        api = api or cls._API
+        data = {
+            'items': [
+                {
+                    'id': file_.id,
+                    'name': file_.name,
+                    'tags': file_.tags,
+                    'metadata': file_.metadata,
+                }
+                for file_ in files
+            ]
+        }
+
+        logger.info('Editing files in bulk.')
+        response = api.post(url=cls._URL['bulk_edit'], data=data)
+        return cls.parse_bulk_records(
+            response=response,
+            record_cls=FileBulkRecord
+        )
+
+
+class FileBulkRecord(BulkRecord):
+    resource = CompoundField(cls=File)
+
+    def __str__(self):
+        return six.text_type('<FileBulkRecord>')
