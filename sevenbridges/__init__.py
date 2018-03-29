@@ -4,6 +4,7 @@ sevenbridges-python
 :copyright: 2016 Seven Bridges Genomics Inc.
 :license: Apache 2.0
 """
+import ssl
 import logging
 
 __version__ = "0.10.0"
@@ -57,3 +58,10 @@ __all__ = [
     'ServerError', 'ServiceUnavailable', 'MethodNotAllowed', 'RequestTimeout',
     'LocalFileAlreadyExists', 'ExecutionDetailsInvalidTaskType'
 ]
+
+required_ssl_version = (1, 0, 1)
+if ssl.OPENSSL_VERSION_INFO < required_ssl_version:
+    raise SbgError(
+        'OpenSSL version included in this python version must be '
+        'at least 1.0.1 or greater. Please update your environment build.'
+    )
