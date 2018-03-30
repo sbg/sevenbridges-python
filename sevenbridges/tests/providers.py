@@ -257,6 +257,47 @@ class FileProvider(object):
         file['href'] = href
         self.request_mocker.get('/files/{id}'.format(id=id), json=file)
 
+    def exist(self, files):
+        all_files = []
+        for file_data in files:
+            file = FileProvider.default_file()
+            file.update(file_data)
+            id = file['id']
+            href = file['href'] + 'files/{}'.format(id)
+            file['href'] = href
+            self.request_mocker.get('/files/{id}'.format(id=id), json=file)
+            all_files.append({'resource': file})
+
+        data = {'items': all_files}
+        self.request_mocker.post('/bulk/files/get', json=data)
+
+    def can_be_updated_in_bulk(self, files):
+        all_files = []
+        for file_data in files:
+            file = FileProvider.default_file()
+            file.update(file_data)
+            all_files.append({'resource': file})
+        data = {'items': all_files}
+        self.request_mocker.post('/bulk/files/update', json=data)
+
+    def can_be_edited_in_bulk(self, files):
+        all_files = []
+        for file_data in files:
+            file = FileProvider.default_file()
+            file.update(file_data)
+            all_files.append({'resource': file})
+        data = {'items': all_files}
+        self.request_mocker.post('/bulk/files/edit', json=data)
+
+    def can_be_deleted_in_bulk(self, files):
+        all_files = []
+        for file_data in files:
+            file = FileProvider.default_file()
+            file.update(file_data)
+            all_files.append({'resource': file})
+        data = {'items': all_files}
+        self.request_mocker.post('/bulk/files/delete', json=data)
+
     def download_info_defined(self, id):
         json = self.download_info()
         url = '/files/{id}/download_info'.format(id=id)
@@ -960,6 +1001,39 @@ class ImportsProvider(object):
         imports.update(kwargs)
         self.request_mocker.post('/storage/imports', json=imports)
 
+    def can_be_retrieved_in_bulk(self, imports_data):
+        imports = []
+        for import_data in imports_data:
+            import_ = self.default_import()
+            import_.update(import_data)
+            imports.append({'resource': import_})
+
+        data = {'items': imports}
+        self.request_mocker.post('/bulk/storage/imports/get', json=data)
+
+    def can_be_submitted_in_bulk(self, imports_data):
+        imports = []
+        for import_data in imports_data:
+            import_ = {
+                'source': {
+                    'volume': import_data.get('volume'),
+                    'location': import_data.get('location'),
+                },
+                'destination': {
+                    'project': import_data.get('project'),
+                },
+                'overwrite': import_data.get('overwrite', False)
+            }
+
+            name = import_data.get('name')
+            if name:
+                import_['destination']['name'] = name
+
+            imports.append({'resource': import_})
+
+        data = {'items': imports}
+        self.request_mocker.post('/bulk/storage/imports/create', json=data)
+
 
 class ExportsProvider(object):
     def __init__(self, request_mocker, base_url):
@@ -991,3 +1065,32 @@ class ExportsProvider(object):
         exports = self.default_export()
         exports.update(kwargs)
         self.request_mocker.post('/storage/exports', json=exports)
+
+    def can_be_retrieved_in_bulk(self, exports_data):
+        exports = []
+        for export_data in exports_data:
+            export = self.default_export()
+            export.update(export_data)
+            exports.append({'resource': export})
+
+        data = {'items': exports}
+        self.request_mocker.post('/bulk/storage/exports/get', json=data)
+
+    def can_be_submitted_in_bulk(self, exports_data):
+        exports = []
+        for export_data in exports_data:
+            export = {
+                'source': {
+                    'file': export_data.get('file')
+                },
+                'destination': {
+                    'volume': export_data.get('volume'),
+                    'location': export_data.get('location')
+                },
+                'properties': export_data.get('properties', {}),
+                'overwrite': export_data.get('overwrite', False)
+            }
+            exports.append({'resource': export})
+
+        data = {'items': exports}
+        self.request_mocker.post('/bulk/storage/exports/create', json=data)

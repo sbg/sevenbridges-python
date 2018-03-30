@@ -179,3 +179,83 @@ def test_files_save_tags(api, given, verifier, tags):
     else:
         file.save()
     verifier.file.file_saved_tags(id)
+
+
+def test_files_bulk_get(api, given, verifier):
+    # preconditions
+    total = 10
+    file_ids = [generator.uuid4() for _ in range(total)]
+    items = [{'id': _id} for _id in file_ids]
+    given.file.exist(items)
+
+    # action
+    response = api.files.bulk_get(file_ids)
+
+    # verification
+    assert len(response) == total
+    verifier.file.bulk_retrieved()
+
+
+def test_files_bulk_update(api, given, verifier):
+    # preconditions
+    total = 10
+    file_ids = [generator.uuid4() for _ in range(total)]
+    items = [{'id': _id} for _id in file_ids]
+
+    given.file.exist(items)
+
+    for item in items:
+        item['metadata'] = {
+            'test_key': 'test_value'
+        }
+
+    given.file.can_be_updated_in_bulk(items)
+    files = [api.files.get(_id) for _id in file_ids]
+
+    # action
+    response = api.files.bulk_update(files)
+
+    # verification
+    assert len(response) == total
+    verifier.file.bulk_updated()
+
+
+def test_files_bulk_edit(api, given, verifier):
+    # preconditions
+    total = 10
+    file_ids = [generator.uuid4() for _ in range(total)]
+    items = [{'id': _id} for _id in file_ids]
+
+    given.file.exist(items)
+
+    for item in items:
+        item['metadata'] = {
+            'test_key': 'test_value'
+        }
+
+    given.file.can_be_edited_in_bulk(items)
+    files = [api.files.get(_id) for _id in file_ids]
+
+    # action
+    response = api.files.bulk_edit(files)
+
+    # verification
+    assert len(response) == total
+    verifier.file.bulk_edited()
+
+
+def test_files_bulk_delete(api, given, verifier):
+    # preconditions
+    total = 10
+    file_ids = [generator.uuid4() for _ in range(total)]
+    items = [{'id': _id} for _id in file_ids]
+
+    given.file.exist(items)
+    given.file.can_be_deleted_in_bulk(items)
+
+    # action
+    response = api.files.bulk_delete(file_ids)
+
+    # verification
+    assert len(response) == total
+    verifier.file.bulk_deleted()
