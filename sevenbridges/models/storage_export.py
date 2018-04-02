@@ -154,10 +154,7 @@ class Export(Resource):
         data = {'export_ids': export_ids}
 
         response = api.post(url=cls._URL['bulk_get'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=ExportBulkRecord
-        )
+        return ExportBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
     def bulk_submit_exports(cls, exports, api=None):
@@ -197,10 +194,7 @@ class Export(Resource):
         data = {'items': items}
 
         response = api.post(url=cls._URL['bulk_create'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=ExportBulkRecord
-        )
+        return ExportBulkRecord.parse_records(response=response, api=api)
 
 
 class ExportBulkRecord(BulkRecord):

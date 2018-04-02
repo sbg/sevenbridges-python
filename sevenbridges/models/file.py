@@ -354,10 +354,7 @@ class File(Resource):
 
         logger.info('Getting files in bulk.')
         response = api.post(url=cls._URL['bulk_get'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=FileBulkRecord
-        )
+        return FileBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
     def bulk_delete(cls, file_ids, api=None):
@@ -373,10 +370,7 @@ class File(Resource):
 
         logger.info('Deleting files in bulk.')
         response = api.post(url=cls._URL['bulk_delete'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=FileBulkRecord
-        )
+        return FileBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
     def bulk_update(cls, files, api=None):
@@ -404,10 +398,7 @@ class File(Resource):
 
         logger.info('Updating files in bulk.')
         response = api.post(url=cls._URL['bulk_update'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=FileBulkRecord
-        )
+        return FileBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
     def bulk_edit(cls, files, api=None):
@@ -435,10 +426,7 @@ class File(Resource):
 
         logger.info('Editing files in bulk.')
         response = api.post(url=cls._URL['bulk_edit'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=FileBulkRecord
-        )
+        return FileBulkRecord.parse_records(response=response, api=api)
 
 
 class FileBulkRecord(BulkRecord):

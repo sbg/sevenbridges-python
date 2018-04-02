@@ -145,10 +145,7 @@ class Import(Resource):
         data = {'import_ids': import_ids}
 
         response = api.post(url=cls._URL['bulk_get'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=ImportBulkRecord
-        )
+        return ImportBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
     def bulk_submit_imports(cls, imports, api=None):
@@ -190,10 +187,7 @@ class Import(Resource):
         data = {'items': items}
 
         response = api.post(url=cls._URL['bulk_create'], data=data)
-        return cls.parse_bulk_records(
-            response=response,
-            record_cls=ImportBulkRecord
-        )
+        return ImportBulkRecord.parse_records(response=response, api=api)
 
 
 class ImportBulkRecord(BulkRecord):
