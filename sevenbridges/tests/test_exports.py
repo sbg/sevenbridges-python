@@ -66,7 +66,7 @@ def test_exports_bulk_submit(api, given, verifier):
     given.exports.can_be_submitted_in_bulk(exports)
 
     # action
-    response = api.exports.bulk_submit_exports(exports)
+    response = api.exports.bulk_submit(exports)
 
     # verification
     assert len(response) == total

@@ -143,26 +143,27 @@ class Export(Resource):
         )
 
     @classmethod
-    def bulk_get(cls, export_ids, api=None):
+    def bulk_get(cls, exports, api=None):
         """
-        :param export_ids:
-        :param api:
-        :return:
+        Retrieve exports in bulk.
+        :param exports: Exports to be retrieved.
+        :param api: Api instance.
+        :return: list of ExportBulkRecord objects.
         """
         api = api or cls._API
-        export_ids = [Transform.to_export(export) for export in export_ids]
+        export_ids = [Transform.to_export(export) for export in exports]
         data = {'export_ids': export_ids}
 
         response = api.post(url=cls._URL['bulk_get'], data=data)
         return ExportBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
-    def bulk_submit_exports(cls, exports, api=None):
+    def bulk_submit(cls, exports, api=None):
         """
         Create exports in bulk.
-        :param exports:
-        :param api:
-        :return:
+        :param exports: Exports to be submitted in bulk.
+        :param api: Api instance.
+        :return: list of ExportBulkRecord objects.
         """
         if not exports:
             raise SbgError('Exports are required')

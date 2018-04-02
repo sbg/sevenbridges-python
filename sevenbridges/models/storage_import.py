@@ -133,27 +133,27 @@ class Import(Resource):
         )
 
     @classmethod
-    def bulk_get(cls, import_ids, api=None):
+    def bulk_get(cls, imports, api=None):
         """
         Retrieve imports in bulk
-        :param import_ids: List of import ids to retrieve
-        :param api: Api object
-        :return:
+        :param imports: Imports to be retrieved.
+        :param api: Api instance.
+        :return: List of ImportBulkRecord objects.
         """
         api = api or cls._API
-        import_ids = [Transform.to_import(import_) for import_ in import_ids]
+        import_ids = [Transform.to_import(import_) for import_ in imports]
         data = {'import_ids': import_ids}
 
         response = api.post(url=cls._URL['bulk_get'], data=data)
         return ImportBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
-    def bulk_submit_imports(cls, imports, api=None):
+    def bulk_submit(cls, imports, api=None):
         """
-        Create imports in bulk
-        :param imports:
-        :param api:
-        :return:
+        Submit imports in bulk
+        :param imports: Imports to be retrieved.
+        :param api: Api instance.
+        :return: List of ImportBulkRecord objects.
         """
         if not imports:
             raise SbgError('Imports are required')

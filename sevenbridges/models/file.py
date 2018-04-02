@@ -341,15 +341,15 @@ class File(Resource):
                 return fp.read()
 
     @classmethod
-    def bulk_get(cls, file_ids, api=None):
+    def bulk_get(cls, files, api=None):
         """
         Retrieve files with specified ids in bulk
-        :param file_ids: Ids of files to be retrieved.
-        :param api: Api instance
-        :return:
+        :param files: Files to be retrieved.
+        :param api: Api instance.
+        :return: List of FileBulkRecord objects.
         """
         api = api or cls._API
-        file_ids = [Transform.to_file(file_) for file_ in file_ids]
+        file_ids = [Transform.to_file(file_) for file_ in files]
         data = {'file_ids': file_ids}
 
         logger.info('Getting files in bulk.')
@@ -357,15 +357,15 @@ class File(Resource):
         return FileBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
-    def bulk_delete(cls, file_ids, api=None):
+    def bulk_delete(cls, files, api=None):
         """
         Delete files with specified ids in bulk
-        :param file_ids: Ids of files to be deleted
-        :param api: Api instance
-        :return:
+        :param files: Files to be deleted.
+        :param api: Api instance.
+        :return: List of FileBulkRecord objects.
         """
         api = api or cls._API
-        file_ids = [Transform.to_file(file_) for file_ in file_ids]
+        file_ids = [Transform.to_file(file_) for file_ in files]
         data = {'file_ids': file_ids}
 
         logger.info('Deleting files in bulk.')
@@ -376,9 +376,9 @@ class File(Resource):
     def bulk_update(cls, files, api=None):
         """
         Update files with specified ids in bulk
-        :param api: Api instance
-        :param files: Files to be updated
-        :return:
+        :param files: Files to be updated.
+        :param api: Api instance.
+        :return: List of FileBulkRecord objects.
         """
         if not files:
             raise SbgError('Files are required.')
@@ -404,9 +404,9 @@ class File(Resource):
     def bulk_edit(cls, files, api=None):
         """
         Edit files with specified ids in bulk
-        :param files: Files to be updated
-        :param api: Api instance
-        :return: List of FileBulkRecords
+        :param files: Files to be updated.
+        :param api: Api instance.
+        :return: List of FileBulkRecord objects.
         """
         if not files:
             raise SbgError('Files are required.')
