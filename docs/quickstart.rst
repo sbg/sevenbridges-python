@@ -1109,3 +1109,153 @@ Batch task
                                 inputs=inputs, batch_input=batch_input, batch_by=batch_by, run=True)
     except SbError:
         print('I was unable to run a batch task.')
+
+
+Managing bulk operations
+------------------------
+
+Bulk operations are supported for:
+
+    - Files
+    - Import jobs
+    - Export jobs
+
+All bulk operations return a list of objects that contain a resource or an
+error. The state of any object can be checked with the ``valid`` property. If
+``valid`` is set to True, ``resource`` is available, otherwise ``error`` is
+populated. Example:
+
+.. code:: python
+
+    response = api.files.bulk_get(files=files)
+    for record in response:
+        if record.valid:
+            print(record.resource)
+        else:
+            print(record.error)
+
+Files
+~~~~~
+
+The following operations are supported:
+
+    - ``bulk_get`` - Retrieves multiple files.
+    - ``bulk_edit`` - Edits multiple files.
+    - ``bulk_update`` - Updates multiple files.
+    - ``bulk_delete`` - Deletes multiple files.
+
+Retrieval and deletion are done by passing files (or file ids) in a list:
+
+.. code:: python
+
+    # Retrieve files
+    files = ['<FILE_ID>', '<FILE_ID>', '<FILE_ID>']
+    response = api.files.bulk_get(files=files)
+
+    # Delete files
+    files = [file1, file2, file3]
+    response = api.files.bulk_delete(files=files)
+
+Editing and updating are done on file objects:
+
+.. code:: python
+
+    # Edit files
+    files = [file1, file2, file3]
+    response = api.files.bulk_edit(files=files)
+
+    # Update files
+    files = [file1, file2, file3]
+    response = api.files.bulk_update(files=files)
+
+
+Imports
+~~~~~~~
+
+The following operations are supported:
+
+    - ``bulk_get`` - Retrieves multiple import jobs.
+    - ``bulk_submit`` - Submits multiple import jobs.
+
+Bulk retrieval, like the one for files requires a list of jobs:
+
+.. code:: python
+
+    # Retrieve imports
+    imports = ['<IMPORT_ID>', '<IMPORT_ID>', '<IMPORT_ID>']
+    response = api.imports.bulk_get(imports=imports)
+
+Submitting in bulk can be done with a list of dictionaries with the required
+data for each job, for example:
+
+.. code:: python
+
+    volume = api.volumes.get('user/volume')
+    project = api.project.get('user/project')
+
+    # Submit import jobs
+    imports = [
+        {
+            'volume': volume,
+            'location': '/data/example_file.txt',
+            'project': project,
+            'name': 'example_file.txt',
+            'overwrite': False
+        },
+        {
+            'volume': volume,
+            'location': '/data/example_file_2.txt',
+            'project': project,
+            'name': 'example_file_2.txt',
+            'overwrite': True
+        }
+    ]
+    response = api.imports.bulk_submit(imports=imports)
+
+Exports
+~~~~~~~
+
+The following operations are supported:
+
+    - ``bulk_get`` - Retrieves multiple export jobs.
+    - ``bulk_submit`` - Submits multiple export jobs.
+
+Bulk retrieval, like the one for files requires a list of jobs:
+
+
+.. code:: python
+
+    # Retrieve exports
+    exports = ['<EXPORT_ID>', '<EXPORT_ID>', '<EXPORT_ID>']
+    response = api.exports.bulk_get(exports=exports)
+
+
+Submitting in bulk can be done with a list of dictionaries with the required
+data for each job, for example:
+
+.. code:: python
+
+    volume = api.volumes.get('user/volume')
+
+    # Submit export jobs
+    exports = [
+        {
+            'file': 'example_file.txt',
+            'volume': volume,
+            'location': '/data/example_file.txt',
+            'properties': {
+                'some_property': 'value'
+            }
+            'overwrite': True
+        },
+        {
+            'file': 'example_file_2.txt',
+            'volume': volume,
+            'location': '/data/example_file_2.txt',
+            'properties': {
+                'some_property_2': 'value_2'
+            },
+            'overwrite': False
+        },
+    ]
+    response = api.exports.bulk_submit(exports=exports)

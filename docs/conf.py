@@ -16,7 +16,6 @@ import os
 import sys
 
 
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -56,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'sevenbridges-python'
-copyright = u'2016, Seven Bridges Genomics Inc.'
+copyright = u'2018, Seven Bridges Genomics Inc.'
 author = u'Seven Bridges Genomics'
 
 # The version info for the project you're documenting, acts as replacement for

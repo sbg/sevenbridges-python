@@ -238,6 +238,6 @@ sign the `Seven Bridges Contributor Agreement <https://secure.na1.echosign.com/p
 Copyright
 ---------
 
-Copyright (c) 2016-2017 Seven Bridges Genomics, Inc. All rights reserved.
+Copyright (c) 2016-2018 Seven Bridges Genomics, Inc. All rights reserved.
 
 This project is open-source via the `Apache 2.0 License <http://www.apache.org/licenses/LICENSE-2.0>`_.

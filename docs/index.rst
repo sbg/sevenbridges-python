@@ -15,16 +15,11 @@ The Seven Bridges Platform is a cloud-based environment for conducting bioinform
 The The Cancer Genomics Cloud (CGC), powered by Seven Bridges, is also a cloud-based computation environment. It was built as one of three pilot systems funded by the National Cancer Institute to explore the paradigm of colocalizing massive genomics datasets, like The Cancer Genomics Atlas (TCGA), alongside secure and scalable computational resources to analyze them. The CGC makes more than a petabyte of multi-dimensional data available immediately to authorized researchers. You can add your own data to analyze alongside TCGA using predefined analytical workflows or your own tools.
 
 Content
------------
+-------
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   installation
-   quickstart
-   sevenbridges
-
-
-
-
-
+    installation
+    quickstart
+    sevenbridges
