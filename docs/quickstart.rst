@@ -14,8 +14,7 @@ Authentication and Configuration
 In order to authenticate with the API, you should pass the following items to sevenbridges-python:
 
 (a) Your authentication token
-(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or 
-for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
+(b) The API endpoint you will be interacting with. This is either the endpoint for the Seven Bridges Platform or for the Seven Bridges Cancer Genomics Cloud (CGC) or for CAVATICA.
 
 You can find your authentication token on the respective pages:
 
@@ -779,6 +778,7 @@ Volumes have the following methods:
 -  Add a member to the project - ``add_member()``
 -  Add a team member to the project - ``add_member_team()``
 -  Add a division member to the project - ``add_member_division()``
+-  List files that belong to a volume - ``list()``
 
 
 See the examples below for information on the arguments these methods take:
@@ -789,18 +789,46 @@ Examples
 .. code:: python
 
     # Create a new volume based on AWS S3 for importing files
-    volume_import = api.volumes.create_s3_volume(name='my_input_volume', bucket='my_bucket',access_key_id='AKIAIOSFODNN7EXAMPLE',secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',access_mode='RO')
+    volume_import = api.volumes.create_s3_volume(
+        name='my_input_volume',
+        bucket='my_bucket',
+        access_key_id='AKIAIOSFODNN7EXAMPLE',
+        secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+        access_mode='RO'
+    )
 
     # Create a new volume based on AWS S3 for exporting files
-    volume_export = api.volumes.create_s3_volume(name='my_output_volume', bucket='my_bucket', access_key_id='AKIAIOSFODNN7EXAMPLE',secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',access_mode='RW')
+    volume_export = api.volumes.create_s3_volume(
+        name='my_output_volume',
+        bucket='my_bucket',
+        access_key_id='AKIAIOSFODNN7EXAMPLE',
+        secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+        access_mode='RW'
+    )
+
     # List all volumes available
     volumes = api.volumes.query()
-     
+
+    # List all files in volume
+    file_list = volume.list()
+
+    # The previous call only returns the first page of results, retrieving all
+    # files in a volume root directory is done by using 'all'. This does not
+    # include files in subdirectories
+    for volume_file in volume.list().all():
+        print(volume_file)
+
+    # Subdirectories are stored in prefixes
+    prefixes = file_list.prefixes
+
+    # Files in first subdirectory
+    prefix = prefixes[0].prefix
+    file_list_sub = volume.list(prefix=prefix)
 
 Import properties
 ~~~~~~~~~~~~~~~~~
 
-When you import a file from a volume into a project on the Platform,  you are importing a file from your cloud storage provider (Amazon Web Services or Google Cloud Storage) via the volume onto the Platform.
+When you import a file from a volume into a project on the Platform, you are importing a file from your cloud storage provider (Amazon Web Services or Google Cloud Storage) via the volume onto the Platform.
 
 If successful, an alias will be created on the Platform. Aliases appear as files on the Platform and can be copied, executed, and modified as such. They refer back to the respective file on the given volume.
 
@@ -1139,10 +1167,10 @@ Files
 
 The following operations are supported:
 
-    - ``bulk_get`` - Retrieves multiple files.
-    - ``bulk_edit`` - Edits multiple files.
-    - ``bulk_update`` - Updates multiple files.
-    - ``bulk_delete`` - Deletes multiple files.
+    - ``bulk_get()`` - Retrieves multiple files.
+    - ``bulk_edit()`` - Edits multiple files.
+    - ``bulk_update()`` - Updates multiple files.
+    - ``bulk_delete()`` - Deletes multiple files.
 
 Retrieval and deletion are done by passing files (or file ids) in a list:
 
@@ -1174,8 +1202,8 @@ Imports
 
 The following operations are supported:
 
-    - ``bulk_get`` - Retrieves multiple import jobs.
-    - ``bulk_submit`` - Submits multiple import jobs.
+    - ``bulk_get()`` - Retrieves multiple import jobs.
+    - ``bulk_submit()`` - Submits multiple import jobs.
 
 Bulk retrieval, like the one for files requires a list of jobs:
 
@@ -1217,8 +1245,8 @@ Exports
 
 The following operations are supported:
 
-    - ``bulk_get`` - Retrieves multiple export jobs.
-    - ``bulk_submit`` - Submits multiple export jobs.
+    - ``bulk_get()`` - Retrieves multiple export jobs.
+    - ``bulk_submit()`` - Submits multiple export jobs.
 
 Bulk retrieval, like the one for files requires a list of jobs:
 
