@@ -23,6 +23,10 @@ class Assert(object):
                 return True
         assert False, 'AA headers missing'
 
+    def check_post_data(self):
+        for hist in self.request_mocker._adapter.request_history:
+            print(hist)
+
 
 class ProjectVerifier(object):
     def __init__(self, request_mocker):
@@ -136,6 +140,18 @@ class FileVerifier(object):
 
     def download_info_fetched(self, id):
         self.checker.check_url('/files/{}/download_info'.format(id))
+
+    def bulk_retrieved(self):
+        self.checker.check_url('/bulk/files/get')
+
+    def bulk_updated(self):
+        self.checker.check_url('/bulk/files/update')
+
+    def bulk_edited(self):
+        self.checker.check_url('/bulk/files/edit')
+
+    def bulk_deleted(self):
+        self.checker.check_url('/bulk/files/delete')
 
 
 class AppVerifier(object):
@@ -302,6 +318,12 @@ class ImportsVerifier(object):
     def submitted(self):
         self.checker.check_url("/storage/imports")
 
+    def bulk_retrieved(self):
+        self.checker.check_url('/bulk/storage/imports/get')
+
+    def bulk_submitted(self):
+        self.checker.check_url('/bulk/storage/imports/create')
+
 
 class ExportsVerifier(object):
     def __init__(self, request_mocker):
@@ -313,3 +335,9 @@ class ExportsVerifier(object):
 
     def submitted(self):
         self.checker.check_url("/storage/exports")
+
+    def bulk_retrieved(self):
+        self.checker.check_url('/bulk/storage/exports/get')
+
+    def bulk_submitted(self):
+        self.checker.check_url('/bulk/storage/exports/create')

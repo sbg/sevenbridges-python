@@ -8,6 +8,10 @@ from sevenbridges.errors import SbgError
 class Transform(object):
     @staticmethod
     def to_project(project):
+        """Serializes project to id string
+        :param project: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.project import Project
         if not project:
             raise SbgError('Project is required!')
@@ -20,6 +24,10 @@ class Transform(object):
 
     @staticmethod
     def to_task(task):
+        """Serializes task to id string
+        :param task: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.task import Task
         if not task:
             raise SbgError('Task is required!')
@@ -32,6 +40,10 @@ class Transform(object):
 
     @staticmethod
     def to_app(app):
+        """Serializes app to id string
+        :param app: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.app import App
         if not app:
             raise SbgError('App is required!')
@@ -44,6 +56,10 @@ class Transform(object):
 
     @staticmethod
     def to_file(file_):
+        """Serializes file to id string
+        :param file_: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.file import File
         if not file_:
             raise SbgError('File is required!')
@@ -56,6 +72,10 @@ class Transform(object):
 
     @staticmethod
     def to_user(user):
+        """Serializes user to id string
+        :param user: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.user import User
         if not user:
             raise SbgError('User is required!')
@@ -68,6 +88,10 @@ class Transform(object):
 
     @staticmethod
     def to_billing_group(billing_group):
+        """Serializes billing_group to id string
+        :param billing_group: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.billing_group import BillingGroup
         if not billing_group:
             raise SbgError('Billing group is required!')
@@ -80,6 +104,10 @@ class Transform(object):
 
     @staticmethod
     def to_volume(volume):
+        """Serializes volume to id string
+        :param volume: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.volume import Volume
         if not volume:
             raise SbgError('Volume is required!')
@@ -92,6 +120,10 @@ class Transform(object):
 
     @staticmethod
     def to_marker(marker):
+        """Serializes marker to string
+        :param marker: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.marker import Marker
         if not marker:
             raise SbgError('Marker is required!')
@@ -104,6 +136,10 @@ class Transform(object):
 
     @staticmethod
     def to_datestring(d):
+        """Serializes date to string
+        :param d: object to serialize
+        :return: string date
+        """
         if not d:
             raise SbgError('Date is required!')
         elif isinstance(d, six.string_types):
@@ -113,6 +149,10 @@ class Transform(object):
 
     @staticmethod
     def to_division(division):
+        """Serializes division to id string
+        :param division: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.division import Division
         if not division:
             raise SbgError('Division is required!')
@@ -125,6 +165,10 @@ class Transform(object):
 
     @staticmethod
     def to_team(team):
+        """Serializes team to id string
+        :param team: object to serialize
+        :return: string id
+        """
         from sevenbridges.models.team import Team
         if not team:
             raise SbgError('Team is required!')
@@ -134,3 +178,48 @@ class Transform(object):
             return team
         else:
             raise SbgError('Invalid team parameter!')
+
+    @staticmethod
+    def to_import(import_):
+        """Serializes import to id string
+        :param import_: object to serialize
+        :return: string id
+        """
+        from sevenbridges.models.storage_import import Import
+        if not import_:
+            raise SbgError('Import is required!')
+        elif isinstance(import_, Import):
+            return import_.id
+        elif isinstance(import_, six.string_types):
+            return import_
+        else:
+            raise SbgError('Invalid import parameter!')
+
+    @staticmethod
+    def to_export(export):
+        """Serializes export to id string
+        :param export: object to serialize
+        :return: string id
+        """
+        from sevenbridges.models.storage_export import Export
+        if not export:
+            raise SbgError('Export is required!')
+        elif isinstance(export, Export):
+            return export.id
+        elif isinstance(export, six.string_types):
+            return export
+        else:
+            raise SbgError('Invalid export parameter!')
+
+    @staticmethod
+    def to_location(location):
+        """Serializes location to string
+        :param location: object to serialize
+        :return: string
+        """
+        if not location:
+            raise SbgError('Location is required!')
+        if isinstance(location, six.string_types):
+            return location
+        else:
+            raise SbgError('Invalid location parameter!')

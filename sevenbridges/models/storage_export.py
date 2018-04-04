@@ -2,12 +2,14 @@ import logging
 
 import six
 
+from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
     DictField
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.models.compound.error import Error
 from sevenbridges.models.compound.volumes.properties import VolumeProperties
 from sevenbridges.models.compound.volumes.volume_file import VolumeFile
@@ -24,6 +26,9 @@ class Export(Resource):
     _URL = {
         'query': '/storage/exports',
         'get': '/storage/exports/{id}',
+
+        'bulk_get': '/bulk/storage/exports/get',
+        'bulk_create': '/bulk/storage/exports/create',
     }
 
     href = HrefField()
@@ -136,3 +141,65 @@ class Export(Resource):
             url=cls._URL['query'], volume=volume, state=state, offset=offset,
             limit=limit, fields='_all', api=api
         )
+
+    @classmethod
+    def bulk_get(cls, exports, api=None):
+        """
+        Retrieve exports in bulk.
+        :param exports: Exports to be retrieved.
+        :param api: Api instance.
+        :return: list of ExportBulkRecord objects.
+        """
+        api = api or cls._API
+        export_ids = [Transform.to_export(export) for export in exports]
+        data = {'export_ids': export_ids}
+
+        response = api.post(url=cls._URL['bulk_get'], data=data)
+        return ExportBulkRecord.parse_records(response=response, api=api)
+
+    @classmethod
+    def bulk_submit(cls, exports, api=None):
+        """
+        Create exports in bulk.
+        :param exports: Exports to be submitted in bulk.
+        :param api: Api instance.
+        :return: list of ExportBulkRecord objects.
+        """
+        if not exports:
+            raise SbgError('Exports are required')
+
+        api = api or cls._API
+
+        items = []
+        for export in exports:
+            file_ = Transform.to_file(export.get('file'))
+            volume = Transform.to_volume(export.get('volume'))
+            location = Transform.to_location(export.get('location'))
+            properties = export.get('properties', {})
+            overwrite = export.get('overwrite', False)
+
+            item = {
+                'source': {
+                    'file': file_
+                },
+                'destination': {
+                    'volume': volume,
+                    'location': location
+                },
+                'properties': properties,
+                'overwrite': overwrite
+            }
+
+            items.append(item)
+
+        data = {'items': items}
+
+        response = api.post(url=cls._URL['bulk_create'], data=data)
+        return ExportBulkRecord.parse_records(response=response, api=api)
+
+
+class ExportBulkRecord(BulkRecord):
+    resource = CompoundField(cls=Export)
+
+    def __str__(self):
+        return six.text_type('<ExportBulkRecord>')

@@ -31,3 +31,43 @@ def test_exports_submit(api, given, verifier):
 
     assert exports.id == id
     verifier.exports.submitted()
+
+
+def test_exports_bulk_get(api, given, verifier):
+    # preconditions
+    total = 10
+
+    export_ids = [generator.uuid4() for _ in range(total)]
+    exports = [{'id': id_} for id_ in export_ids]
+    given.exports.can_be_retrieved_in_bulk(exports)
+
+    # action
+    response = api.exports.bulk_get(export_ids)
+
+    # verification
+    assert len(response) == total
+    verifier.exports.bulk_retrieved()
+
+
+def test_exports_bulk_submit(api, given, verifier):
+    # preconditions
+    total = 10
+
+    exports = [
+        {
+            'file': generator.name(),
+            'volume': generator.name(),
+            'location': generator.name(),
+            'properties': {},
+            'overwrite': True
+        }
+        for _ in range(total)
+    ]
+    given.exports.can_be_submitted_in_bulk(exports)
+
+    # action
+    response = api.exports.bulk_submit(exports)
+
+    # verification
+    assert len(response) == total
+    verifier.exports.bulk_submitted()

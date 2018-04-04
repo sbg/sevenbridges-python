@@ -9,14 +9,6 @@ sevenbridges\.models\.compound\.volumes package
 Submodules
 ----------
 
-sevenbridges\.models\.compound\.volumes\.credentials module
------------------------------------------------------------
-
-.. automodule:: sevenbridges.models.compound.volumes.credentials
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 sevenbridges\.models\.compound\.volumes\.import\_destination module
 -------------------------------------------------------------------
 
