@@ -174,7 +174,7 @@ class Export(Resource):
         for export in exports:
             file_ = Transform.to_file(export.get('file'))
             volume = Transform.to_volume(export.get('volume'))
-            location = export.get('location')
+            location = Transform.to_location(export.get('location'))
             properties = export.get('properties', {})
             overwrite = export.get('overwrite', False)
 

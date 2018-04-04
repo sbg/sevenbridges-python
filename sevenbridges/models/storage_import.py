@@ -163,9 +163,9 @@ class Import(Resource):
         items = []
         for import_ in imports:
             volume = Transform.to_volume(import_.get('volume'))
-            location = import_.get('location')
+            location = Transform.to_location(import_.get('location'))
             project = Transform.to_project(import_.get('project'))
-            name = import_.get('name')
+            name = import_.get('name', None)
             overwrite = import_.get('overwrite', False)
 
             item = {
