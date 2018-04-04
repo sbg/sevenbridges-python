@@ -1,5 +1,6 @@
 """
 sevenbridges-python
+~~~~~~~~~~~~~~~~~~~
 :copyright: 2018 Seven Bridges Genomics Inc.
 :license: Apache 2.0
 """

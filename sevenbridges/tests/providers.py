@@ -244,29 +244,30 @@ class FileProvider(object):
             ]
         }
 
-    def download_info(self):
+    @staticmethod
+    def download_info():
         return {
             'url': generator.url()
         }
 
     def exists(self, **kwargs):
-        file = FileProvider.default_file()
-        file.update(kwargs)
-        id = file['id']
-        href = file['href'] + 'files/{}'.format(id)
-        file['href'] = href
-        self.request_mocker.get('/files/{id}'.format(id=id), json=file)
+        file_ = FileProvider.default_file()
+        file_.update(kwargs)
+        id_ = file_['id']
+        href = file_['href'] + 'files/{}'.format(id_)
+        file_['href'] = href
+        self.request_mocker.get('/files/{id}'.format(id=id_), json=file_)
 
     def exist(self, files):
         all_files = []
         for file_data in files:
-            file = FileProvider.default_file()
-            file.update(file_data)
-            id = file['id']
-            href = file['href'] + 'files/{}'.format(id)
-            file['href'] = href
-            self.request_mocker.get('/files/{id}'.format(id=id), json=file)
-            all_files.append({'resource': file})
+            file_ = FileProvider.default_file()
+            file_.update(file_data)
+            id_ = file_['id']
+            href = file_['href'] + 'files/{}'.format(id_)
+            file_['href'] = href
+            self.request_mocker.get('/files/{id}'.format(id=id_), json=file_)
+            all_files.append({'resource': file_})
 
         data = {'items': all_files}
         self.request_mocker.post('/bulk/files/get', json=data)
@@ -274,27 +275,27 @@ class FileProvider(object):
     def can_be_updated_in_bulk(self, files):
         all_files = []
         for file_data in files:
-            file = FileProvider.default_file()
-            file.update(file_data)
-            all_files.append({'resource': file})
+            file_ = FileProvider.default_file()
+            file_.update(file_data)
+            all_files.append({'resource': file_})
         data = {'items': all_files}
         self.request_mocker.post('/bulk/files/update', json=data)
 
     def can_be_edited_in_bulk(self, files):
         all_files = []
         for file_data in files:
-            file = FileProvider.default_file()
-            file.update(file_data)
-            all_files.append({'resource': file})
+            file_ = FileProvider.default_file()
+            file_.update(file_data)
+            all_files.append({'resource': file_})
         data = {'items': all_files}
         self.request_mocker.post('/bulk/files/edit', json=data)
 
     def can_be_deleted_in_bulk(self, files):
         all_files = []
         for file_data in files:
-            file = FileProvider.default_file()
-            file.update(file_data)
-            all_files.append({'resource': file})
+            file_ = FileProvider.default_file()
+            file_.update(file_data)
+            all_files.append({'resource': file_})
         data = {'items': all_files}
         self.request_mocker.post('/bulk/files/delete', json=data)
 
@@ -304,29 +305,29 @@ class FileProvider(object):
         self.request_mocker.get(url, json=json)
 
     def can_be_copied(self, id=None, new_id=None):
-        file = FileProvider.default_file()
-        file['id'] = id
-        id = file['id']
-        file['id'] = new_id
+        file_ = FileProvider.default_file()
+        file_['id'] = id
+        id = file_['id']
+        file_['id'] = new_id
         self.request_mocker.request(
-            'POST', '/files/{id}/actions/copy'.format(id=id), json=file)
+            'POST', '/files/{id}/actions/copy'.format(id=id), json=file_)
 
     def can_be_saved(self, id=None):
-        file = FileProvider.default_file()
-        file['id'] = id
+        file_ = FileProvider.default_file()
+        file_['id'] = id
         self.request_mocker.patch('/files/{id}'.format(id=id),
-                                  json=file)
+                                  json=file_)
 
     def metadata_can_be_saved(self, id):
-        file = FileProvider.default_file()
+        file_ = FileProvider.default_file()
         self.request_mocker.patch(
-            '/files/{id}/metadata'.format(id=id), json=file['metadata']
+            '/files/{id}/metadata'.format(id=id), json=file_['metadata']
         )
 
     def tags_can_be_saved(self, id):
-        file = FileProvider.default_file()
+        file_ = FileProvider.default_file()
         self.request_mocker.request(
-            'PUT', '/files/{id}/tags'.format(id=id), json=file['tags']
+            'PUT', '/files/{id}/tags'.format(id=id), json=file_['tags']
         )
 
     def files_exist_for_project(self, project, num_of_files):
