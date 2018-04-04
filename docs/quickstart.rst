@@ -1189,13 +1189,14 @@ Editing and updating are done on file objects:
 .. code:: python
 
     # Edit files
-    files = [file1, file2, file3]
+    files = [edited_file1, edited_file2, edited_file3]
     response = api.files.bulk_edit(files=files)
 
     # Update files
-    files = [file1, file2, file3]
+    files = [updated_file1, updated_file2, updated_file3]
     response = api.files.bulk_update(files=files)
 
+Properties that can be edited are ``name``, ``tags`` and ``metadata``.
 
 Imports
 ~~~~~~~
@@ -1205,7 +1206,7 @@ The following operations are supported:
     - ``bulk_get()`` - Retrieves multiple import jobs.
     - ``bulk_submit()`` - Submits multiple import jobs.
 
-Bulk retrieval, like the one for files requires a list of jobs:
+Bulk retrieval, similarly to api.files.bulk_get(), requires a list of jobs:
 
 .. code:: python
 
@@ -1248,7 +1249,7 @@ The following operations are supported:
     - ``bulk_get()`` - Retrieves multiple export jobs.
     - ``bulk_submit()`` - Submits multiple export jobs.
 
-Bulk retrieval, like the one for files requires a list of jobs:
+Bulk retrieval, similarly to api.files.bulk_get(), requires a list of jobs:
 
 
 .. code:: python
