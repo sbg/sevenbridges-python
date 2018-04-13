@@ -1,3 +1,7 @@
+0.11.0 (2018-04-13)
+==================
+- Added support for bulk operations with files, imports and exports
+
 0.10.0 (2017-12-25)
 ==================
 - Bugfixes:
@@ -14,7 +18,7 @@
 0.9.8 (2017-12-05)
 ==================
 - Improvements:
-  - Add encoding to file content method (uses utf-8 by default)
+  - Added encoding to file content method (uses utf-8 by default)
   - [Issue #102](https://github.com/sbg/sevenbridges-python/issues/102)
   - Fix CHANGESETS link in README
 
