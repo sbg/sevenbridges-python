@@ -158,7 +158,7 @@ Initialization via config file
 
     import sevenbridges as sbg
     config = sbg.Config(profile='cgc')
-	api = sbg.Api(config=config)
+    api = sbg.Api(config=config)
 
 Notes on config file format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
