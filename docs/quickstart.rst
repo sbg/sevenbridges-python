@@ -888,11 +888,20 @@ Examples
 Export properties
 ~~~~~~~~~~~~~~~~~
 
-When you export a file from a project on the Platform into a volume, you are essentially writing to your cloud storage bucket on Amazon Web Services or Google Cloud Storage via the volume.
+When you export a file from a project on the Platform into a volume, you are essentially writing to 
+your cloud storage bucket on Amazon Web Services or Google Cloud Storage via the volume.
 
-Note that the file selected for export must not be a public file or an alias. Aliases are objects stored in your cloud storage bucket which have been made available on the Platform.
+Note that the file selected for export must not be a public file or an alias. Aliases are objects stored 
+in your cloud storage bucket which have been made available on the Platform.
 
-The volume you are exporting to must be configured for read-write access. To do this, set the ``access_mode`` parameter to ``RW`` when creating or modifying a volume. Learn more about this from our `Knowledge Center <http://docs.sevenbridges.com/docs/volumes#section-access-mode>`_.
+The volume you are exporting to must be configured for read-write access. To do this, set the ``access_mode`` 
+parameter to ``RW`` when creating or modifying a volume. Learn more about this from 
+our `Knowledge Center <http://docs.sevenbridges.com/docs/volumes#section-access-mode>`_.
+
+If an export command is successful, the original project file will become an alias to the newly exported object 
+on the volume. The source file will be deleted from the Platform and, if no more copies of this file exist, 
+it will no longer count towards your total storage price on the Platform. Once you export a file from the Platform 
+to a volume, it is no longer part of the storage on the Platform and cannot be exported again.
 
 Each export has the following properties:
 

@@ -134,7 +134,7 @@ Explicit initialization
 .. code:: python
 
     import sevenbridges as sbg
-    api_config = sbg.Config(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
+    api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
 
 Initialization via environment variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,6 +158,7 @@ Initialization via config file
 
     import sevenbridges as sbg
     config = sbg.Config(profile='cgc')
+    api = sbg.Api(config=config)
 
 Notes on config file format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
