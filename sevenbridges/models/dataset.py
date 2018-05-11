@@ -103,19 +103,14 @@ class Dataset(Resource):
             dataset = Dataset(api=self._api, **data)
             return dataset
 
-    def get_members(self, offset=None, limit=None, api=None):
+    def get_members(self, api=None):
         """Retrieve dataset members
-        :param offset: Pagination offset
-        :param limit: Pagination limit
         :param api: Api instance
         :return: Collection object
         """
         api = api or self._API
 
-        response = api.get(
-            url=self._URL['members'].format(id=self.id),
-            params={'offset': offset, 'limit': limit}
-        )
+        response = api.get(url=self._URL['members'].format(id=self.id))
 
         data = response.json()
         total = response.headers['x-total-matching-query']
