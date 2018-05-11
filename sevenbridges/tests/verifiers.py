@@ -341,3 +341,49 @@ class ExportsVerifier(object):
 
     def bulk_submitted(self):
         self.checker.check_url('/bulk/storage/exports/create')
+
+
+class DatasetVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def fetched(self, id):
+        self.checker.check_url('/datasets/{}'.format(id))
+
+    def queried(self, visibility=None):
+        qs = {
+            'fields': ['_all']
+        }
+
+        if visibility:
+            qs['visibility'] = visibility
+
+        self.checker.check_url('/datasets') and self.checker.check_query(qs)
+
+    def owned_by(self, username):
+        qs = {
+            'fields': ['_all']
+        }
+
+        self.checker.check_url(
+            '/datasets/{}'.format(username)) and self.checker.check_query(qs)
+
+    def saved(self, id):
+        self.checker.check_url('/datasets/{}'.format(id))
+
+    def members_retrieved(self, id):
+        self.checker.check_url('/datasets/{}/members'.format(id))
+
+    def member_retrieved(self, id, member_username):
+        self.checker.check_url(
+            '/datasets/{}/members/{}'.format(id, member_username)
+        )
+
+    def member_removed(self, id, member_username):
+        self.checker.check_url(
+            '/datasets/{}/members/{}'.format(id, member_username)
+        )
+
+    def member_added(self, id):
+        self.checker.check_url('/datasets/{}/members'.format(id))

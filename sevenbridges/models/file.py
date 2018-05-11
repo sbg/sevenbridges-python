@@ -73,10 +73,10 @@ class File(Resource):
         return not self.__eq__(other)
 
     @classmethod
-    def query(cls, project, names=None, metadata=None, origin=None, tags=None,
-              offset=None, limit=None, api=None):
+    def query(cls, project=None, names=None, metadata=None, origin=None, tags=None,
+              offset=None, limit=None, dataset=None, api=None):
         """
-        Query ( List ) projects
+        Query ( List ) files, requires project or dataset
         :param project: Project id
         :param names: Name list
         :param metadata: Metadata query dict
@@ -84,13 +84,24 @@ class File(Resource):
         :param tags: List of tags to filter on
         :param offset: Pagination offset
         :param limit: Pagination limit
+        :param dataset: Dataset id
         :param api: Api instance.
         :return: Collection object.
         """
         api = api or cls._API
 
-        project = Transform.to_project(project)
         query_params = {}
+
+        if project:
+            project = Transform.to_project(project)
+            query_params['project'] = project
+
+        if dataset:
+            dataset = Transform.to_dataset(dataset)
+            query_params['dataset'] = dataset
+
+        if not project and not dataset:
+            raise SbgError('Project or dataset must be provided!')
 
         if names is not None and isinstance(names, list):
             if len(names) == 0:
@@ -115,7 +126,7 @@ class File(Resource):
         query_params.update(origin_params)
 
         return super(File, cls)._query(
-            api=api, url=cls._URL['query'], project=project, offset=offset,
+            api=api, url=cls._URL['query'], offset=offset,
             limit=limit, fields='_all', **query_params
         )
 

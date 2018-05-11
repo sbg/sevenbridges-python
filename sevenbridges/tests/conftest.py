@@ -8,12 +8,12 @@ from sevenbridges.tests.providers import (
     FileProvider, AppProvider, TaskProvider,
     VolumeProvider, RateLimitProvider,
     ActionProvider, DivisionProvider, TeamProvider, MarkerProvider,
-    ImportsProvider, ExportsProvider, TeamMemberProvider)
+    ImportsProvider, ExportsProvider, TeamMemberProvider, DatasetProvider)
 from sevenbridges.tests.verifiers import (
     EndpointVerifier, ProjectVerifier, UserVerifier, MemberVerifier,
     FileVerifier, AppVerifier, TaskVerifier, VolumeVerifier, ActionVerifier,
     DivisionVerifier, TeamVerifier, MarkerVerifier, ImportsVerifier,
-    ExportsVerifier)
+    ExportsVerifier, DatasetVerifier)
 
 generator = faker.Factory.create()
 
@@ -54,6 +54,7 @@ class Precondition(object):
         self.imports = ImportsProvider(request_mocker, base_url)
         self.exports = ExportsProvider(request_mocker, base_url)
         self.team_member = TeamMemberProvider(request_mocker, base_url)
+        self.datasets = DatasetProvider(request_mocker, base_url)
 
 
 class Verifier(object):
@@ -76,6 +77,7 @@ class Verifier(object):
         self.marker = MarkerVerifier(request_mocker)
         self.imports = ImportsVerifier(request_mocker)
         self.exports = ExportsVerifier(request_mocker)
+        self.datasets = DatasetVerifier(request_mocker)
 
 
 @pytest.fixture

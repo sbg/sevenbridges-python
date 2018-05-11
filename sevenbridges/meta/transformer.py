@@ -223,3 +223,27 @@ class Transform(object):
             return location
         else:
             raise SbgError('Invalid location parameter!')
+
+    @staticmethod
+    def to_dataset(dataset):
+        from sevenbridges.models.dataset import Dataset
+        if not dataset:
+            raise SbgError('Dataset is required!')
+        if isinstance(dataset, Dataset):
+            return dataset.id
+        if isinstance(dataset, six.string_types):
+            return dataset
+        else:
+            raise SbgError('Invalid dataset parameter!')
+
+    @staticmethod
+    def to_member(member):
+        from sevenbridges.models.member import Member
+        if not member:
+            raise SbgError('Member is required!')
+        if isinstance(member, Member):
+            return member.username
+        if isinstance(member, six.string_types):
+            return member
+        else:
+            raise SbgError('Invalid member parameter!')

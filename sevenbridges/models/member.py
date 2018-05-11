@@ -27,15 +27,20 @@ class Member(Resource):
     permissions = CompoundField(Permissions, read_only=False)
 
     def __str__(self):
-        return six.text_type('<Member: id={id}>'
-                             .format(id=self.id))
+        return six.text_type(
+            '<Member: username={username}>'.format(username=self.username)
+        )
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
             return False
         if not self.__class__ == other.__class__:
             return False
-        return self is other or self.id == other.id
+        return (
+            self is other or
+            self.id == other.id or
+            self.username == other.username
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)

@@ -454,6 +454,100 @@ Other project methods include:
 8. List apps from the project - ``project.get_apps()``
 9. List tasks from the project - ``project.get_tasks()``
 
+
+Managing datasets
+-----------------
+
+The Cavatica Datasets API functionality is an advance access feature which
+allows you to manage datasets and their members using dedicated API calls.
+
+The following operations are supported:
+
+    - ``query()`` - Query all datasets
+    - ``get_owned_by()`` - Get all datasets owned by a provided user
+    - ``get()`` - Get dataset with the provided id
+    - ``save()`` - Save changes to a dataset
+    - ``delete()`` - Delete dataset
+    - ``get_members()`` - Get all members of a dataset
+    - ``get_member()`` - Get details on a member of a dataset
+    - ``add_member()`` - Add a member to a dataset
+    - ``remove_member()`` - Remove member from a dataset
+
+Dataset properties
+~~~~~~~~~~~~~~~~~~
+
+Each dataset has the following available properties:
+
+``href`` - The URL of the dataset on the API server.
+
+``id`` - Dataset identifier.
+
+``name`` - Dataset name.
+
+``description`` - Dataset description.
+
+
+Member permissions
+~~~~~~~~~~~~~~~~~~
+
+Dataset permissions can be accessed and edited directly on the member object.
+
+Examples
+~~~~~~~~
+
+.. code:: python
+
+    # List all public datasets
+    datasets = api.datasets.query(visibility='public')
+
+    # List all datasets owned by user
+    datasets = api.datasets.query()
+
+    # List datasets by owner
+    datasets_by_owner = api.datasets.get_owned_by('dataset_owner')
+
+    # Get details of a dataset
+    dataset = api.datasets.get('dataset_owner/dataset-name')
+
+    # List members of a dataset
+    members = dataset.get_members()
+
+    # Get details of a dataset member
+    member = dataset.get_member('dataset_member')
+
+    # Modify a dataset member's permissions
+    member.permissions['execute'] = False
+    member.save()
+
+    # Get a dataset member's permissions
+    permissions = member.permissions
+
+    # List dataset files
+    files = api.files.query(dataset=dataset)
+
+    # Edit a dataset
+    dataset.description = 'A new description'
+    dataset.save()
+
+    # Remove a dataset member
+    dataset.remove_member(member=member)
+
+    # Add a dataset member
+    added_member = dataset.add_member(
+        username='new_member',
+        permissions={
+            "write": True,
+            "read": True,
+            "copy": False,
+            "execute": True,
+            "admin": False
+        }
+    )
+
+    # Delete a dataset
+    dataset.delete()
+
+
 Manage billing
 --------------
 

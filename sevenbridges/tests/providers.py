@@ -165,10 +165,20 @@ class MemberProvider(object):
         self.request_mocker = request_mocker
         self.base_url = base_url
 
-    def default_member(self, project, username):
+    def default_member(self, project=None, username=None, dataset=None):
         if username is None:
             username = generator.user_name()
-        url = self.base_url + '/projects/' + project + "/members/" + username
+
+        if dataset is not None:
+            url = (
+                self.base_url + '/datasets/' + dataset + "/members/" + username
+            )
+        else:
+            project = project or generator.name()
+            url = (
+                self.base_url + '/projects/' + project + "/members/" + username
+            )
+
         return {
             'href': url,
             'username': username,
@@ -1095,3 +1105,94 @@ class ExportsProvider(object):
 
         data = {'items': exports}
         self.request_mocker.post('/bulk/storage/exports/create', json=data)
+
+
+class DatasetProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+        self.member_provider = MemberProvider(request_mocker, base_url)
+
+    @staticmethod
+    def default_dataset():
+        return {
+            "id": "{}/{}".format("my", "my-dataset"),
+            "href": generator.url(),
+            "name": generator.name(),
+            "description": generator.name(),
+        }
+
+    def exists(self, **kwargs):
+        dataset = self.default_dataset()
+        dataset.update(kwargs)
+        id = dataset['id']
+        self.request_mocker.get('/datasets/{}'.format(id), json=dataset)
+
+    def query(self, total):
+        items = [self.default_dataset() for _ in range(total)]
+        href = self.base_url + '/datasets'
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def owned_by(self, total, username):
+        items = [self.default_dataset() for _ in range(total)]
+        href = self.base_url + '/datasets/' + username
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def can_be_saved(self, **kwargs):
+        dataset = self.default_dataset()
+        dataset.update(**kwargs)
+        id = dataset['id']
+        self.request_mocker.patch('/datasets/{id}'.format(id=id), json=dataset)
+
+    def has_members(self, id, dataset_name, total):
+        items = [
+            self.member_provider.default_member(dataset=dataset_name)
+            for _ in range(total)
+        ]
+        href = self.base_url + '/datasets/{}/members'.format(id)
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def has_member(self, id, dataset_name, member_username):
+        member = self.member_provider.default_member(
+            username=member_username,
+            dataset=dataset_name
+        )
+
+        href = (
+            self.base_url +
+            '/datasets/{}/members/{}'.format(id, member_username)
+        )
+        self.request_mocker.get(href, json=member)
+
+    def can_remove_member(self, id, member_username):
+        href = (
+            self.base_url +
+            '/datasets/{}/members/{}'.format(id, member_username)
+        )
+        self.request_mocker.delete(href)
+
+    def can_add_member(self, id, member_username):
+        member = self.member_provider.default_member(id, member_username)
+        href = self.base_url + '/datasets/{}/members'.format(id)
+        self.request_mocker.post(href, json=member)

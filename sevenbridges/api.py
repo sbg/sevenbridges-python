@@ -1,22 +1,24 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from sevenbridges.http.client import HttpClient
-from sevenbridges.models.actions import Actions
+
 from sevenbridges.models.app import App
-from sevenbridges.models.billing_group import BillingGroup
-from sevenbridges.models.division import Division
-from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.file import File
-from sevenbridges.models.invoice import Invoice
-from sevenbridges.models.marker import Marker
-from sevenbridges.models.project import Project
-from sevenbridges.models.rate_limit import RateLimit
-from sevenbridges.models.storage_export import Export
-from sevenbridges.models.storage_import import Import
 from sevenbridges.models.task import Task
 from sevenbridges.models.team import Team
 from sevenbridges.models.user import User
+from sevenbridges.models.marker import Marker
 from sevenbridges.models.volume import Volume
+from sevenbridges.models.actions import Actions
+from sevenbridges.models.dataset import Dataset
+from sevenbridges.models.invoice import Invoice
+from sevenbridges.models.project import Project
+from sevenbridges.models.division import Division
+from sevenbridges.models.endpoints import Endpoints
+from sevenbridges.models.rate_limit import RateLimit
+from sevenbridges.models.storage_export import Export
+from sevenbridges.models.storage_import import Import
+from sevenbridges.models.billing_group import BillingGroup
 
 
 class Api(HttpClient):
@@ -25,6 +27,7 @@ class Api(HttpClient):
     actions = Actions
     apps = App
     billing_groups = BillingGroup
+    datasets = Dataset
     divisions = Division
     endpoints = Endpoints
     exports = Export
