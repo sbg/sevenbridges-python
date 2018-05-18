@@ -1,5 +1,6 @@
-import logging
 import os
+import copy
+import logging
 
 import six
 
@@ -39,10 +40,7 @@ class ResourceMeta(type):
         if '__init__' not in dct:
             def init(self, **kwargs):
                 self._api = kwargs.pop('api', None)
-                try:
-                    urls = self._URL
-                except AttributeError:
-                    urls = None
+                urls = getattr(self, '_URL', None)
                 self._data = DataContainer(urls=urls, api=self._api)
                 self._dirty = {}
                 for k, v in kwargs.items():
@@ -50,8 +48,27 @@ class ResourceMeta(type):
                         value = fields[k].validate(v)
                         self._data[k] = value
 
+                self._old = copy.deepcopy(self._data.data)
+
+            def _data_diff(d1, d2):
+                data = {}
+                for key in d1.keys():
+                    if key not in d2.keys():
+                        continue
+                    else:
+                        if type(d1[key]) is dict:
+                            inner_diff = _data_diff(d1[key], d2[key])
+                            if inner_diff:
+                                data[key] = inner_diff
+                        else:
+                            if d1[key] != d2[key]:
+                                data[key] = d2[key]
+                return data
+
             # get modified data from the instance
             def modified_data(self):
+                difference = _data_diff(self._old, self._data.data)
+                self._dirty.update(difference)
                 return self._dirty
 
             def equals(self, other):
