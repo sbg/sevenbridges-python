@@ -7,7 +7,7 @@ sevenbridges-python
 import ssl
 import logging
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config
@@ -20,6 +20,8 @@ from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.project import Project
 from sevenbridges.models.task import Task
 from sevenbridges.models.app import App
+from sevenbridges.models.dataset import Dataset
+from sevenbridges.models.bulk import BulkRecord
 
 from sevenbridges.models.member import Member, Permissions
 from sevenbridges.models.file import File
@@ -46,7 +48,8 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 __all__ = [
     'Api', 'Config', 'Invoice', 'BillingGroup', 'BillingGroupBreakdown',
     'User', 'Endpoints', 'Project', 'Task', 'App', 'Member', 'Permissions',
-    'File', 'Export', 'Import', 'Volume', 'Marker', 'Division',
+    'File', 'Export', 'Import', 'Volume', 'Marker', 'Division', 'Dataset',
+    'BulkRecord',
     # Enums
     'TransferState',
     'VolumeType', 'VolumeAccessMode',

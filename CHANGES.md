@@ -1,6 +1,17 @@
+0.12.0 (2018-05-18)
+==================
+
+- Improvements:
+    - [Issue #104](https://github.com/sbg/sevenbridges-python/issues/104)
+      - Added support for dataset operations
+- Bugfixes:
+    - [Issue #47](https://github.com/sbg/sevenbridges-python/issues/47)
+      - Fixed nested dictionary change detection
+
 0.11.0 (2018-04-13)
 ==================
-- Added support for bulk operations with files, imports and exports
+- Improvements:
+    - Added support for bulk operations with files, imports and exports
 
 0.10.0 (2017-12-25)
 ==================
