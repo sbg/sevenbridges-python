@@ -73,8 +73,8 @@ class File(Resource):
         return not self.__eq__(other)
 
     @classmethod
-    def query(cls, project=None, names=None, metadata=None, origin=None, tags=None,
-              offset=None, limit=None, dataset=None, api=None):
+    def query(cls, project=None, names=None, metadata=None, origin=None,
+              tags=None, offset=None, limit=None, dataset=None, api=None):
         """
         Query ( List ) files, requires project or dataset
         :param project: Project id
