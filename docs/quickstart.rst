@@ -635,12 +635,18 @@ The following properties are attached to each invoice.
 
 ``invoice_period`` - Invoicing period (from-to)
 
-Managing files
---------------
+
+Managing files and folders
+--------------------------
 
 Files are an integral part of each analysis. As for as all other resources, the
 sevenbridges-python library enables you to effectively query files, in order to retrieve each file's details and metadata. The request to get a file's information can be made in the
-same manner as for projects and billing, presented above. 
+same manner as for projects and billing, presented above.
+
+Folders are represented as files with the type "folder".
+
+.. note:: Folder operations are currently under `Advance Access Features`_.
+
 
 The available methods for fetching specific files are ``query`` and ``get``:
 
@@ -663,9 +669,13 @@ Each file has the following properties:
 
 ``id`` - File identifier.
 
+``type`` - File type.
+
 ``name`` - File name.
 
 ``size`` - File size in bytes.
+
+``parent`` - Parent folder.
 
 ``project`` - Identifier of the project that file is located in.
 
@@ -683,12 +693,15 @@ File methods
 ~~~~~~~~~~~~
 Files have the following methods:
 
--  Refresh the file with data from the server: ``reload()``
--  Copy the file from one project to another: ``copy()``
--  Download the file: ``download()``
--  Save modifications to the file to the server ``save()``
--  Delete the resource: ``delete()``
-
+- Refresh the file with data from the server: ``reload()``
+- Copy the file from one project to another: ``copy()``
+- Download the file: ``download()``
+- Save modifications to the file to the server ``save()``
+- Delete the resource: ``delete()``
+- List files in folder: ``list_files()``
+- Create folder: ``create_folder()``
+- Copy file to folder: ``copy_to_folder()``
+- Move file to folder: ``move_to_folder()``
 
 See the examples below for information on the arguments these methods take:
 
@@ -730,6 +743,29 @@ Examples
     # Download a file to the current working directory
     # Optionally, path can contain a full path on local filesystem
     new_file.download(path='my_new_file_on_disk')
+
+    # Get a folder
+    folder = api.files.get('file-identifier')
+
+    # List files in a folder
+    file_list = folder.list_files()
+
+    # Create folder
+    new_folder = api.files.create_folder(
+        name='new_folder_name',
+        project='project-identifier',
+        parent='parent-folder-identifier'
+    )
+
+    # Copy file to folder
+    copied_file = my_file.copy_to_folder(
+        parent=new_folder, name='new-file-name'
+    )
+
+    # Move file to folder
+    moved_file = my_file.move_to_folder(
+        parent=new_folder, name='new-file-name'
+    )
 
 Managing file upload and download
 ---------------------------------
