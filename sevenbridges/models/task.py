@@ -81,7 +81,8 @@ class Task(Resource):
     def query(cls, project=None, status=None, batch=None,
               parent=None, created_from=None, created_to=None,
               started_from=None, started_to=None, ended_from=None,
-              ended_to=None, offset=None, limit=None, api=None):
+              ended_to=None, offset=None, limit=None, order_by=None,
+              order=None, api=None):
         """
         Query (List) tasks. Date parameters may be both strings and python date
         objects.
@@ -97,6 +98,8 @@ class Task(Resource):
         :param created_from: All tasks that were created from this date.
         :param offset: Pagination offset.
         :param limit: Pagination limit.
+        :param order_by: Property to order by.
+        :param order: Ascending or descending ordering.
         :param api: Api instance.
         :return: Collection object.
         """
@@ -123,7 +126,7 @@ class Task(Resource):
             parent=parent, created_from=created_from, created_to=created_to,
             started_from=started_from, started_to=started_to,
             ended_from=ended_from, ended_to=ended_to, offset=offset,
-            limit=limit, fields='_all', api=api
+            limit=limit, order_by=order_by, order=order, fields='_all', api=api
         )
 
     @classmethod

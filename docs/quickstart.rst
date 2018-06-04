@@ -1178,7 +1178,16 @@ Task creation hints
 ~~~~~~~~~~~~~~~~~~~
 
 - Both input files and parameters are passed the same way together in a single dictionary to ``inputs``.
+
+
+Querying tasks
+~~~~~~~~~~~~~~
 - ``api.files.query`` always return an array of files. For single file inputs, use ``api.files.query(project='my-project', names=["one_file.fa"])[0]``.
+
+- Queried tasks can be sorted with the ``order_by`` parameter. Supported fields are ``created_time``, ``start_time``, ``name``, ``end_time``, and ``created_by``.
+- Ordering can be specified with the ``order`` parameter. It is set to ``desc`` by default. Ascending order is set with ``asc``.
+
+.. note:: When querying running tasks it is recommended to use ordering, since the results are paginated and it is possible that some tasks will be duplicated or missed.
 
 
 Task Examples
