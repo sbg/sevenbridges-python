@@ -244,6 +244,7 @@ class FileProvider(object):
         return {
             'href': generator.url(),
             'id': generator.uuid4(),
+            'parent': generator.uuid4(),
             'name': generator.user_name(),
             'project': 'my/test-project',
             'metadata': {
@@ -251,7 +252,8 @@ class FileProvider(object):
             },
             'tags': [
                 generator.name()
-            ]
+            ],
+            'type': generator.slug()
         }
 
     @staticmethod
@@ -316,8 +318,6 @@ class FileProvider(object):
 
     def can_be_copied(self, id=None, new_id=None):
         file_ = FileProvider.default_file()
-        file_['id'] = id
-        id = file_['id']
         file_['id'] = new_id
         self.request_mocker.request(
             'POST', '/files/{id}/actions/copy'.format(id=id), json=file_)
@@ -413,6 +413,49 @@ class FileProvider(object):
         }
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(num_of_files)})
+
+    def files_in_folder(self, num_of_files, folder_id):
+        items = [FileProvider.default_file() for _ in range(num_of_files)]
+        url = '/files/{folder_id}/list'.format(folder_id=folder_id)
+        href = self.base_url + url
+
+        response = {
+            'href': href,
+            'items': items
+        }
+
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(num_of_files)})
+
+    def can_create_folder(self, id=None):
+        file_ = self.default_file()
+        file_['id'] = id
+        file_['type'] = 'folder'
+        self.request_mocker.post('/files'.format(id=id), json=file_)
+
+    def can_copy_to_folder(self, id=None, parent=None, name=None, new_id=None):
+        file_ = self.default_file()
+        file_['id'] = new_id
+        file_['parent'] = parent
+        if name:
+            file_['name'] = name
+
+        self.request_mocker.post(
+            '/files/{file_id}/actions/copy'.format(file_id=id), json=file_
+        )
+
+    def can_move_to_folder(self, id=None, parent=None, name=None):
+        file_ = self.default_file()
+        file_['id'] = id
+        result = {
+            'parent': parent
+        }
+        if name:
+            result['name'] = name
+
+        self.request_mocker.post(
+            '/files/{file_id}/actions/move'.format(file_id=id), json=result
+        )
 
 
 class AppProvider(object):

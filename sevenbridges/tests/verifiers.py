@@ -153,6 +153,18 @@ class FileVerifier(object):
     def bulk_deleted(self):
         self.checker.check_url('/bulk/files/delete')
 
+    def folder_created(self):
+        self.checker.check_url('/files')
+
+    def folder_files_listed(self, id):
+        self.checker.check_url('/files/{}/list'.format(id))
+
+    def copied_to_folder(self, id):
+        self.checker.check_url('/files/{}/actions/copy'.format(id))
+
+    def moved_to_folder(self, id):
+        self.checker.check_url('/files/{}/actions/move'.format(id))
+
 
 class AppVerifier(object):
     def __init__(self, request_mocker):

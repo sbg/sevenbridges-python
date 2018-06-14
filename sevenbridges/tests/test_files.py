@@ -259,3 +259,78 @@ def test_files_bulk_delete(api, given, verifier):
     # verification
     assert len(response) == total
     verifier.file.bulk_deleted()
+
+
+def test_create_folder(api, given, verifier):
+    # precondition
+    name = generator.slug()
+    parent_id = generator.uuid4()
+    project_id = generator.uuid4()
+    given.file.exists(id=parent_id, type='folder')
+    given.project.exists(id=project_id)
+
+    given.file.can_create_folder()
+
+    # actions
+    parent = api.files.get(parent_id)
+    project = api.projects.get(project_id)
+
+    api.files.create_folder(name=name, parent=parent)
+    verifier.file.folder_created()
+
+    api.files.create_folder(name=name, project=project)
+    verifier.file.folder_created()
+
+
+def test_list_files(api, given, verifier):
+    total = 10
+    folder_id = generator.uuid4()
+    given.file.exists(id=folder_id, type='folder')
+
+    given.file.files_in_folder(num_of_files=total, folder_id=folder_id)
+
+    # action
+    folder = api.files.get(folder_id)
+    response = folder.list_files()
+
+    # verification
+    assert len(response) == total
+    verifier.file.folder_files_listed(id=folder_id)
+
+
+def test_copy_to_folder(api, given, verifier):
+    name = generator.slug()
+    new_id = generator.uuid4()
+    file_id = generator.uuid4()
+    folder_id = generator.uuid4()
+    given.file.exists(id=file_id)
+    given.file.exists(id=folder_id, type='folder')
+
+    given.file.can_copy_to_folder(
+        id=file_id, parent=folder_id, name=name, new_id=new_id
+    )
+
+    # action
+    file_ = api.files.get(file_id)
+    new_file = file_.copy_to_folder(folder_id)
+
+    # verification
+    assert new_file.id == new_id
+    verifier.file.copied_to_folder(id=file_id)
+
+
+def test_move_to_folder(api, given, verifier):
+    name = generator.slug()
+    file_id = generator.uuid4()
+    folder_id = generator.uuid4()
+    given.file.exists(id=file_id)
+    given.file.exists(id=folder_id, type='folder')
+
+    given.file.can_move_to_folder(id=file_id, parent=folder_id, name=name)
+
+    # action
+    file_ = api.files.get(file_id)
+    file_.move_to_folder(parent=folder_id)
+
+    # verification
+    verifier.file.moved_to_folder(id=file_id)

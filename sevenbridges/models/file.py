@@ -1,11 +1,10 @@
 import io
-import logging
 import os
+import logging
 import tempfile
 
 import six
 
-from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
     SbgError,
     ResourceNotModified,
@@ -13,17 +12,19 @@ from sevenbridges.errors import (
 )
 from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, CompoundField, DateTimeField,
-    BasicListField)
-from sevenbridges.meta.resource import Resource
-from sevenbridges.meta.transformer import Transform
-from sevenbridges.models.bulk import BulkRecord
-from sevenbridges.models.compound.files.download_info import DownloadInfo
-from sevenbridges.models.compound.files.file_origin import FileOrigin
-from sevenbridges.models.compound.files.file_storage import FileStorage
-from sevenbridges.models.compound.files.metadata import Metadata
+    BasicListField
+)
 from sevenbridges.models.enums import PartSize
-from sevenbridges.transfer.download import Download
+from sevenbridges.meta.resource import Resource
+from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.transfer.upload import Upload
+from sevenbridges.decorators import inplace_reload
+from sevenbridges.transfer.download import Download
+from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.compound.files.metadata import Metadata
+from sevenbridges.models.compound.files.file_storage import FileStorage
+from sevenbridges.models.compound.files.file_origin import FileOrigin
+from sevenbridges.models.compound.files.download_info import DownloadInfo
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ class File(Resource):
     """
     Central resource for managing files.
     """
+    FOLDER_TYPE = 'folder'
+
     _URL = {
         'query': '/files',
         'get': '/files/{id}',
@@ -45,22 +48,31 @@ class File(Resource):
         'bulk_delete': '/bulk/files/delete',
         'bulk_update': '/bulk/files/update',
         'bulk_edit': '/bulk/files/edit',
+
+        'create_folder': '/files',
+        'list_folder': '/files/{id}/list',
+        'copy_to_folder': '/files/{file_id}/actions/copy',
+        'move_to_folder': '/files/{file_id}/actions/move',
     }
 
     href = HrefField()
-    id = StringField()
-    name = StringField(read_only=False)
+    id = StringField(read_only=True)
+    type = StringField(read_only=True)
+    name = StringField()
     size = IntegerField(read_only=True)
+    parent = StringField(read_only=True)
     project = StringField(read_only=True)
     created_on = DateTimeField(read_only=True)
     modified_on = DateTimeField(read_only=True)
     origin = CompoundField(FileOrigin, read_only=True)
     storage = CompoundField(FileStorage, read_only=True)
-    metadata = CompoundField(Metadata, read_only=False)
-    tags = BasicListField(read_only=False)
+    metadata = CompoundField(Metadata)
+    tags = BasicListField()
 
     def __str__(self):
-        return six.text_type('<File: id={id}>'.format(id=self.id))
+        return six.text_type(
+            '<File: id={id} type="{type}"'.format(id=self.id, type=self.type)
+        )
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -71,6 +83,9 @@ class File(Resource):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def is_folder(self):
+        return self.type == self.FOLDER_TYPE
 
     @classmethod
     def query(cls, project=None, names=None, metadata=None, origin=None,
@@ -438,6 +453,111 @@ class File(Resource):
         logger.info('Editing files in bulk.')
         response = api.post(url=cls._URL['bulk_edit'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
+
+    def list_files(self, api=None):
+        """List files in a folder
+        :param api: Api instance
+        :return: List of files
+        """
+        api = api or self._API
+
+        if not self.is_folder():
+            raise SbgError('{name} is not a folder'.format(name=self.name))
+
+        response = api.get(
+            url=self._URL['list_folder'].format(id=self.id)
+        )
+        data = response.json()
+
+        return [
+            File(api=api, **item)
+            for item in data.get('items', {})
+            if item.get('type', self.FOLDER_TYPE)
+        ]
+
+    @classmethod
+    def create_folder(cls, name, parent=None, project=None,
+                      api=None):
+        """Create a new folder
+        :param name: Folder name
+        :param parent: Parent folder
+        :param project: Project to create folder in
+        :param api: Api instance
+        :return: New folder
+        """
+        api = api or cls._API
+
+        data = {
+            'name': name,
+            'type': cls.FOLDER_TYPE
+        }
+
+        if not parent and not project:
+            raise SbgError('Parent or project must be provided')
+
+        if parent and project:
+            raise SbgError(
+                'Providing both "parent" and "project" is not allowed'
+            )
+
+        if parent:
+            data['parent'] = Transform.to_file(file_=parent)
+
+        if project:
+            data['project'] = Transform.to_project(project=project)
+
+        response = api.post(url=cls._URL['create_folder'], data=data).json()
+        return cls(api=api, **response)
+
+    def copy_to_folder(self, parent, name=None, api=None):
+        """Copy file to folder
+        :param parent: Folder to copy file to
+        :param name: New file name
+        :param api: Api instance
+        :return: New file instance
+        """
+        api = api or self._API
+
+        if self.is_folder():
+            raise SbgError('Copying folders is not supported')
+
+        data = {
+            'parent': Transform.to_file(parent)
+        }
+
+        if name:
+            data['name'] = name
+
+        response = api.post(
+            url=self._URL['copy_to_folder'].format(file_id=self.id),
+            data=data
+        ).json()
+        return File(api=api, **response)
+
+    def move_to_folder(self, parent, name=None, api=None):
+        """Move file to folder
+        :param parent: Folder to move file to
+        :param name: New file name
+        :param api: Api instance
+        :return: New file instance
+        """
+        api = api or self._API
+
+        if self.is_folder():
+            raise SbgError('Moving folders is not supported')
+
+        data = {
+            'parent': Transform.to_file(parent)
+        }
+
+        if name:
+            data['name'] = name
+
+        response = api.post(
+            url=self._URL['move_to_folder'].format(file_id=self.id),
+            data=data
+        ).json()
+        return File(api=api, **response)
 
 
 class FileBulkRecord(BulkRecord):
