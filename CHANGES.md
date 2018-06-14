@@ -1,3 +1,10 @@
+0.13.0 (2018-06-14)
+==================
+
+- Improvements:
+    - Added support for folders
+    - Added sorting for task queries
+
 0.12.1 (2018-05-18)
 ==================
 
