@@ -194,4 +194,5 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         self._data = resource._data
         self._dirty = resource._dirty
+        self._old = copy.deepcopy(self._data.data)
         return self
