@@ -1,3 +1,9 @@
+0.13.1 (2018-06-19)
+==================
+
+- Bugfixes:
+    - Fixed resource modification in reload function
+
 0.13.0 (2018-06-14)
 ==================
 
