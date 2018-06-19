@@ -67,7 +67,7 @@ class CompoundField(Field):
         data = instance._data[self.name]
         # empty is used for read only fields, None all for others
         if data is not empty and data is not None:
-            return self.cls(api=instance._api, parent=instance, **data)
+            return self.cls(api=instance._api, _parent=instance, **data)
         else:
             return None
 

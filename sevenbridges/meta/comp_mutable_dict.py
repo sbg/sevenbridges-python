@@ -8,7 +8,7 @@ class CompoundMutableDict(dict):
     """
 
     def __init__(self, **kwargs):
-        self._parent = kwargs.pop('parent')
+        self._parent = kwargs.pop('_parent')
         self._api = kwargs.pop('api')
         for k, v in kwargs.items():
             super(CompoundMutableDict, self).__setitem__(k, v)

@@ -11,7 +11,7 @@ class BatchBy(Resource, dict):
     _name = 'batch_by'
 
     def __init__(self, **kwargs):
-        self.parent = kwargs.pop('parent')
+        self.parent = kwargs.pop('_parent')
         self.api = kwargs.pop('api')
         for k, v in kwargs.items():
             super(BatchBy, self).__setitem__(k, v)
