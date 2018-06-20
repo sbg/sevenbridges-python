@@ -71,9 +71,7 @@ class File(Resource):
     tags = BasicListField()
 
     def __str__(self):
-        return six.text_type(
-            '<File: id={id} type="{type}"'.format(id=self.id, type=self.type)
-        )
+        return six.text_type('<File: id={id}>'.format(id=self.id))
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -86,7 +84,7 @@ class File(Resource):
         return not self.__eq__(other)
 
     def is_folder(self):
-        return self.type == self.FOLDER_TYPE
+        return self.type.lower() == self.FOLDER_TYPE
 
     @classmethod
     def query(cls, project=None, names=None, metadata=None, origin=None,
