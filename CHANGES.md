@@ -1,3 +1,14 @@
+0.15.0 (2018-07-13)
+==================
+
+- Improvements:
+    - Added app copy strategy parameter
+    - Added get_member methods on projects and volumes
+    - All resources now have a field() method for retrieving set values
+    - Allow greater dependency versions, only set minimum requirements
+    - Export and Import results now return entire file
+    - Update documentation
+
 0.14.0 (2018-07-13)
 ==================
 
