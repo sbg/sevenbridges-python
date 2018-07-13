@@ -17,9 +17,9 @@ else:
     with io.open(VERSION_FILE, 'w', encoding='utf-8') as f:
         f.write(version)
 
-install_requires = ["six==1.10.0", "requests==2.18.4"]
+install_requires = ["requests>=2.18.4", "six>=1.10.0"]
 if sys.version_info < (3,):
-    install_requires.append("futures==3.0.4")
+    install_requires.append("futures>=3.0.4")
 
 setup(
     name='sevenbridges-python',
@@ -29,7 +29,7 @@ setup(
     long_description=io.open('README.rst', 'r', encoding='utf-8').read(),
     platforms=['Windows', 'POSIX', 'MacOS'],
     maintainer='Seven Bridges Genomics Inc.',
-    maintainer_email='senad.ibraimoski@sbgenomics.com',
+    maintainer_email='dejan.knezevic@sbgenomics.com',
     url='https://github.com/sbg/sevenbridges-python',
     license='Apache Software License 2.0',
     include_package_data=True,

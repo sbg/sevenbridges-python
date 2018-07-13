@@ -62,3 +62,9 @@ class FeedbackType:
 class AppRawFormat:
     JSON = 'json'
     YAML = 'yaml'
+
+
+class AppCopyStrategy:
+    CLONE = 'clone'
+    DIRECT = 'direct'
+    TRANSIENT = 'transient'

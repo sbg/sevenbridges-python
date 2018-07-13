@@ -1092,7 +1092,7 @@ Examples
                  time.sleep(10)
           if done_len == num_exports:
                  done = True
-    
+
 Managing apps
 -------------
 
@@ -1111,6 +1111,8 @@ can also invoke the following class-specific methods:
 -  ``get_revision()`` - Returns a specific app revision.
 -  ``install_app()`` - Installs your app on the server, using its CWL description.
 -  ``create_revision()`` - Creates a new revision of the specified app.
+-  ``sync()`` - Syncs the parent app changes with the current app instance.
+-  ``copy()`` - Copies the current app.
 
 .. note:: Listing public apps can be achieved by invoking ``api.apps.query(visibility='public')``
 
@@ -1209,6 +1211,7 @@ The following class and instance methods are available for tasks:
 -  Get task execution details: ``get_execution_details()``.
 -  Get batch children if the task is a batch task:
    ``get_batch_children()``.
+-  Clone task and optionally run it: ``clone()``.
 
 Task creation hints
 ~~~~~~~~~~~~~~~~~~~

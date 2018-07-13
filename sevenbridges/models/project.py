@@ -26,8 +26,8 @@ class Project(Resource):
         'create': '/projects',
         'get': '/projects/{id}',
         'delete': '/projects/{id}',
+        'member': '/projects/{id}/members/{username}',
         'members_query': '/projects/{id}/members',
-        'members_get': '/projects/{id}/members/{member}',
         'apps': '/apps',
         'files': '/files',
         'tasks': '/tasks'
@@ -269,12 +269,27 @@ class Project(Resource):
         member_data = response.json()
         return Member(api=self._api, **member_data)
 
+    def get_member(self, username, api=None):
+        """
+        Fetches information about a single project member
+        :param username: Member name
+        :param api: Api instance
+        :return: Member object
+        """
+        api = api if api else self._API
+
+        response = api.get(
+            url=self._URL['member'].format(id=self.id, username=username),
+        )
+        data = response.json()
+        return Member(api=api, **data)
+
     def remove_member(self, user):
         """
         Remove member from the project.
         :param user: User to be removed.
         """
-        member = Transform.to_user(user)
+        username = Transform.to_user(user)
         extra = {
             'resource': self.__class__.__name__,
             'query': {
@@ -284,7 +299,7 @@ class Project(Resource):
         }
         logger.info('Removing member', extra=extra)
         self._api.delete(
-            url=self._URL['members_get'].format(id=self.id, member=member)
+            url=self._URL['member'].format(id=self.id, username=username)
         )
 
     def get_files(self, offset=None, limit=None):

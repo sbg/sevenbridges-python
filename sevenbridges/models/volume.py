@@ -31,8 +31,8 @@ class Volume(Resource):
         'delete': '/storage/volumes/{id}',
         'list': '/storage/volumes/{id}/list',
         'object': '/storage/volumes/{id}/object',
+        'member': '/storage/volumes/{id}/members/{username}',
         'members_query': '/storage/volumes/{id}/members',
-        'members_get': '/storage/volumes/{id}/members/{member}',
     }
 
     href = HrefField()
@@ -363,6 +363,21 @@ class Volume(Resource):
         member_data = response.json()
         return Member(api=self._api, **member_data)
 
+    def get_member(self, username, api=None):
+        """
+        Fetches information about a single volume member
+        :param username: Member name
+        :param api: Api instance
+        :return: Member object
+        """
+        api = api if api else self._API
+
+        response = api.get(
+            url=self._URL['member'].format(id=self.id, username=username),
+        )
+        data = response.json()
+        return Member(api=api, **data)
+
     def remove_member(self, user):
         """
         Remove member from the volume.
@@ -378,5 +393,5 @@ class Volume(Resource):
         }
         logger.info('Removing volume member', extra=extra)
         self._api.delete(
-            url=self._URL['members_get'].format(id=self.id, member=member)
+            url=self._URL['member'].format(id=self.id, member=member)
         )

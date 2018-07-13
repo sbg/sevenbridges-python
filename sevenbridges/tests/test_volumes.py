@@ -95,3 +95,19 @@ def test_volume_pagination(api, given):
     # verifier
     assert len(item_list) == limit
     assert len(items) == total
+
+
+def test_volume_get_member(api, given, verifier):
+    # precondition
+    member_username = generator.user_name()
+    id = generator.slug()
+    given.volume.exist(id=id)
+    given.volume.has_member(id, member_username)
+
+    # action
+    volume = api.volumes.get(id)
+    member = volume.get_member(member_username)
+
+    # verification
+    assert member.username == member_username
+    verifier.volume.member_retrieved(id, member_username)

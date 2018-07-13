@@ -47,6 +47,11 @@ class ProjectVerifier(object):
     def saved(self, id):
         self.checker.check_url('/projects/{}'.format(id))
 
+    def member_retrieved(self, id, member_username):
+        self.checker.check_url(
+            '/projects/{}/members/{}'.format(id, member_username)
+        )
+
 
 class MemberVerifier(object):
     def __init__(self, request_mocker):
@@ -254,6 +259,11 @@ class VolumeVerifier(object):
 
     def modified(self, id):
         self.checker.check_url('/storage/volumes/{}'.format(id))
+
+    def member_retrieved(self, id, member_username):
+        self.checker.check_url(
+            '/storage/volumes/{}/members/{}'.format(id, member_username)
+        )
 
 
 class MarkerVerifier(object):

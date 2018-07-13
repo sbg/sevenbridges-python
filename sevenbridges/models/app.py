@@ -11,8 +11,8 @@ from sevenbridges.meta.fields import (
 )
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.resource import Resource
-from sevenbridges.models.enums import AppRawFormat
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.enums import AppRawFormat, AppCopyStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -166,17 +166,30 @@ class App(Resource):
             url=cls._URL['get'].format(id=app['sbg:id'])).json()
         return App(api=api, **app_wrapper)
 
-    def copy(self, project, name=None):
+    def copy(self, project, name=None, strategy=None):
         """
         Copies the current app.
         :param project: Destination project.
         :param name: Destination app name.
+        :param strategy: App copy strategy.
         :return: Copied App object.
+
+        :Copy strategies:
+        clone       copy all revisions and continue getting updates form the
+                    original app (default method when the key is omitted)
+
+        direct      copy only the latest revision and get the updates from
+                    this point on
+
+        transient   copy only the latest revision and continue getting
+                    updates from the original app.
         """
+        strategy = strategy or AppCopyStrategy.CLONE
 
         project = Transform.to_project(project)
         data = {
-            'project': project
+            'project': project,
+            'strategy': strategy
         }
         if name:
             data['name'] = name

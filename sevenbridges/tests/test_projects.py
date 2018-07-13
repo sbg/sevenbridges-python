@@ -87,6 +87,24 @@ def test_project_get_members(api, given, verifier):
     verifier.member.members_fetched(project=id)
 
 
+def test_project_get_member(api, given, verifier):
+    # precondition
+    username = generator.user_name()
+    member_username = generator.user_name()
+    project_name = generator.slug()
+    id = '{}/{}'.format(username, project_name)
+    given.project.exists(id=id)
+    given.project.has_member(id, project_name, member_username)
+
+    # action
+    project = api.projects.get(id)
+    member = project.get_member(member_username)
+
+    # verification
+    assert member.username == member_username
+    verifier.project.member_retrieved(id, member_username)
+
+
 def test_project_add_member(api, given, verifier):
     # preconditions
     owner = generator.user_name()

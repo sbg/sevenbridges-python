@@ -90,6 +90,7 @@ class ProjectProvider(object):
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
+        self.member_provider = MemberProvider(request_mocker, base_url)
 
     @staticmethod
     def default_project():
@@ -159,19 +160,37 @@ class ProjectProvider(object):
             self.request_mocker.get(href, json=response, headers={
                 'x-total-matching-query': str(num_of_projects)})
 
+    def has_member(self, id, project_name, member_username):
+        member = self.member_provider.default_member(
+            username=member_username,
+            project=project_name
+        )
+
+        href = (
+                self.base_url +
+                '/projects/{}/members/{}'.format(id, member_username)
+        )
+        self.request_mocker.get(href, json=member)
+
 
 class MemberProvider(object):
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
 
-    def default_member(self, project=None, username=None, dataset=None):
+    def default_member(self, project=None, username=None, dataset=None,
+                       volume=None):
         if username is None:
             username = generator.user_name()
 
         if dataset is not None:
             url = (
                 self.base_url + '/datasets/' + dataset + "/members/" + username
+            )
+        elif volume is not None:
+            url = (
+                self.base_url + '/storage/volumes' + volume +
+                '/members/' + username
             )
         else:
             project = project or generator.name()
@@ -721,6 +740,7 @@ class VolumeProvider(object):
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
+        self.member_provider = MemberProvider(request_mocker, base_url)
 
     @staticmethod
     def default_volume():
@@ -831,6 +851,18 @@ class VolumeProvider(object):
             'prefixes': []
         }
         self.request_mocker.get(list_url, json=list_data)
+
+    def has_member(self, id, member_username):
+        member = self.member_provider.default_member(
+            username=member_username,
+            volume=id
+        )
+
+        href = (
+                self.base_url +
+                '/storage/volumes/{}/members/{}'.format(id, member_username)
+        )
+        self.request_mocker.get(href, json=member)
 
 
 class MarkerProvider(object):

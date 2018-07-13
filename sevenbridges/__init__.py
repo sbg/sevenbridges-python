@@ -33,8 +33,8 @@ from sevenbridges.models.marker import Marker
 from sevenbridges.models.division import Division
 
 from sevenbridges.models.enums import (
-    TransferState, VolumeType, VolumeAccessMode, FileStorageType,
-    ImportExportState, TaskStatus
+    AppCopyStrategy, AppRawFormat, FileStorageType, ImportExportState,
+    TaskStatus, TransferState, VolumeAccessMode, VolumeType
 )
 from sevenbridges.errors import (
     SbgError, ResourceNotModified, ReadOnlyPropertyError, ValidationError,
@@ -52,9 +52,8 @@ __all__ = [
     'File', 'Export', 'Import', 'Volume', 'Marker', 'Division', 'Team',
     'TeamMember', 'Dataset', 'BulkRecord',
     # Enums
-    'TransferState',
-    'VolumeType', 'VolumeAccessMode',
-    'FileStorageType', 'ImportExportState', 'TaskStatus',
+    'AppCopyStrategy', 'AppRawFormat', 'FileStorageType', 'ImportExportState',
+    'TaskStatus', 'TransferState', 'VolumeAccessMode', 'VolumeType',
     # Errors
     'SbgError', 'ResourceNotModified', 'ReadOnlyPropertyError',
     'ValidationError', 'TaskValidationError', 'PaginationError', 'BadRequest',

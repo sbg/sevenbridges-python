@@ -196,3 +196,11 @@ class Resource(six.with_metaclass(ResourceMeta)):
         self._dirty = resource._dirty
         self._old = copy.deepcopy(self._data.data)
         return self
+
+    def field(self, name):
+        """
+        Return field value if it's set
+        :param name: Field name
+        :return: Field value or None
+        """
+        return self._data.data.get(name, None)

@@ -66,7 +66,7 @@ class Export(Resource):
     @property
     def result(self):
         try:
-            return File(id=self._result['id'], api=self._api)
+            return File(api=self._api, **self._result)
         except TypeError:
             return None
 
