@@ -34,6 +34,7 @@ class Task(Resource):
         'get': '/tasks/{id}',
         'delete': '/tasks/{id}',
         'run': '/tasks/{id}/actions/run',
+        'clone': '/tasks/{id}/actions/clone',
         'abort': '/tasks/{id}/actions/abort',
         'execution_details': "/tasks/{id}/execution_details"
     }
@@ -239,6 +240,26 @@ class Task(Resource):
         logger.info('Running task', extra=extra)
         task_data = self._api.post(
             url=self._URL['run'].format(id=self.id), params=params).json()
+        return Task(api=self._api, **task_data)
+
+    def clone(self, run=True):
+        """
+        Clone task
+        :param run: run task after cloning
+        :return: Task object.
+        """
+        params = {}
+        if run:
+            params.update({'action': 'run'})
+
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {'id': self.id, 'run': run}
+        }
+        logger.info('Cloning task', extra=extra)
+        task_data = self._api.post(
+            url=self._URL['clone'].format(id=self.id), params=params).json()
+
         return Task(api=self._api, **task_data)
 
     @inplace_reload

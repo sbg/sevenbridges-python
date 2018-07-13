@@ -695,6 +695,14 @@ class TaskProvider(object):
             'POST', '/tasks/{}/actions/run'.format(id), json=task
         )
 
+    def task_can_be_clone(self, **kwargs):
+        task = self.default_task()
+        task.update(kwargs)
+        id = task['id']
+        self.request_mocker.request(
+            'POST', '/tasks/{}/actions/clone'.format(id), json=task
+        )
+
     def task_can_be_saved(self, id=None, status=None):
         task = TaskProvider.default_task()
         task['id'] = id

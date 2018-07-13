@@ -163,6 +163,24 @@ def test_run_task(api, given, batch, inplace, verifier):
         verifier.task.action_performed(id, 'run')
 
 
+@pytest.mark.parametrize("run", [True, False])
+def test_clone_task(api, given, run, verifier):
+    # precondition
+    status = 'QUEUED' if run else 'DRAFT'
+    id = generator.uuid4()
+    given.task.task_exists(id=id, status='COMPLETED')
+    given.task.task_can_be_clone(id=id, status=status)
+
+    # action
+    task = api.tasks.get(id)
+    # abort
+    task.clone(run=run)
+
+    # verification
+    assert task.status == status
+    verifier.task.action_performed(id, 'clone')
+
+
 def test_modify_inputs(api, given, verifier):
     # precondition
     owner = generator.user_name()
