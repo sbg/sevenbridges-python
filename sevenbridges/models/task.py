@@ -242,7 +242,6 @@ class Task(Resource):
             url=self._URL['run'].format(id=self.id), params=params).json()
         return Task(api=self._api, **task_data)
 
-    @inplace_reload
     def clone(self, run=True):
         """
         Clone task
