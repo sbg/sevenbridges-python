@@ -168,7 +168,7 @@ def test_clone_task(api, given, run, verifier):
     # precondition
     status = 'QUEUED' if run else 'DRAFT'
     id = generator.uuid4()
-    given.task.task_exists(id=id, status='COMPLETED')
+    given.task.task_exists(id=id, status=status)
     given.task.task_can_be_clone(id=id, status=status)
 
     # action
