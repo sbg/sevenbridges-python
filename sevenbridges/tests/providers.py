@@ -167,8 +167,8 @@ class ProjectProvider(object):
         )
 
         href = (
-                self.base_url +
-                '/projects/{}/members/{}'.format(id, member_username)
+            self.base_url +
+            '/projects/{}/members/{}'.format(id, member_username)
         )
         self.request_mocker.get(href, json=member)
 
@@ -859,8 +859,8 @@ class VolumeProvider(object):
         )
 
         href = (
-                self.base_url +
-                '/storage/volumes/{}/members/{}'.format(id, member_username)
+            self.base_url +
+            '/storage/volumes/{}/members/{}'.format(id, member_username)
         )
         self.request_mocker.get(href, json=member)
 
