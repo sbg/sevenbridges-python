@@ -21,3 +21,4 @@ deploy:
     branch: develop
     distributions: sdist bdist_wheel
     repo: sbg/sevenbridges-python
+  skip_existing: true
