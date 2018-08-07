@@ -1,3 +1,8 @@
+0.15.2 (2018-08-07)
+==================
+
+- Added resource id type validation for get method to prevent invalid requests
+
 0.15.1 (2018-08-03)
 ==================
 
