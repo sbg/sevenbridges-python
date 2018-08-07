@@ -7,6 +7,18 @@ from sevenbridges.errors import SbgError
 
 class Transform(object):
     @staticmethod
+    def to_resource(resource):
+        from sevenbridges.meta.resource import Resource
+        if not resource:
+            raise SbgError('Invalid id value!')
+        elif isinstance(resource, Resource) and hasattr(resource, 'id'):
+            return resource.id
+        elif isinstance(resource, six.string_types):
+            return resource
+        else:
+            raise SbgError('Invalid id value!')
+
+    @staticmethod
     def to_project(project):
         """Serializes project to id string
         :param project: object to serialize

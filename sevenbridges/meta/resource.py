@@ -8,6 +8,7 @@ from sevenbridges.errors import SbgError
 from sevenbridges.http.client import HttpClient
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.fields import Field
+from sevenbridges.meta.transformer import Transform
 
 logger = logging.getLogger(__name__)
 
@@ -151,8 +152,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         :param api: sevenbridges Api instance.
         :return: Resource object.
         """
-        if not id:
-            raise SbgError('Invalid id value!')
+        id = Transform.to_resource(id)
         api = api if api else cls._API
         if 'get' in cls._URL:
             extra = {'resource': cls.__name__, 'query': {'id': id}}
