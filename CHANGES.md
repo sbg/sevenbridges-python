@@ -1,3 +1,8 @@
+0.15.3 (2018-09-11)
+==================
+
+- Fixed regression introduced by python 3.7 in which config parser does not allow for empty values
+
 0.15.2 (2018-08-07)
 ==================
 
