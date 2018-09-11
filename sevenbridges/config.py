@@ -36,12 +36,12 @@ class Profile(object):
         self.credentials_parser = cp.ConfigParser({
             'auth_token': None,
             'api_endpoint': None,
-        })
+        }, allow_no_value=True)
         self.config_parser = cp.ConfigParser({
             'http_proxy': None,
             'https_proxy': None,
             'advance_access': False,
-        })
+        }, allow_no_value=True)
         self.credentials_parser.read(self.CREDENTIALS)
 
         if not os.path.isfile(self.CONFIG):
