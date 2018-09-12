@@ -1,0 +1,46 @@
+image: python:3.7-stretch
+
+variables:
+  REQUIREMENTS: "requirements.txt"
+
+stages:
+- test
+
+.test: &test
+  stage: test
+  before_script:
+  - infinity config build-info
+  - python --version
+  - pip install -U -r $REQUIREMENTS
+  - export PYTHONPATH=$(pwd):$PYTHONPATH
+  script:
+  - flake8 sevenbridges
+  - py.test -v
+  artifacts:
+    paths:
+    - test-report/htmlcov/*
+
+# Test with python 2.7
+test:2.7:
+  <<: *test
+  image: python:2.7
+
+# Test with python 3.4
+test:3.4:
+  <<: *test
+  image: python:3.4
+
+# Test with python 3.5
+test:3.5:
+  <<: *test
+  image: python:3.5
+
+# Test with python 3.6
+test:3.6:
+  <<: *test
+  image: python:3.6
+
+# Test with python 3.7
+test:3.7:
+  <<: *test
+  image: python:3.7-stretch
