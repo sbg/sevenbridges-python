@@ -19,5 +19,5 @@ class Input(CompoundMutableDict, Resource):
         try:
             inputs = self._parent._data[self._name][item]
             return map_input_output(inputs, self._api)
-        except:
+        except Exception:
             return None

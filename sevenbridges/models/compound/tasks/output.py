@@ -18,7 +18,7 @@ class Output(CompoundMutableDict, Resource):
         try:
             output = self._parent._data[self._name][item]
             return map_input_output(output, self._api)
-        except:
+        except Exception:
             return None
 
     def __setitem__(self, key, value):

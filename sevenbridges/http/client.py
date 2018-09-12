@@ -53,7 +53,7 @@ def config_vars(profiles, advance_access):
             proxies = config.proxies
             aa = config.advance_access
             return url, token, proxies, aa
-        except:
+        except Exception:
             pass
     return None, None, None, None
 

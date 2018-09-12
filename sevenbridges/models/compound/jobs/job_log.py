@@ -25,7 +25,7 @@ class Logs(CompoundMutableDict, Resource):
                 return File(id=file_id, api=self._api)
             else:
                 raise SbgError('Unable to fetch {} log file!'.format(item))
-        except:
+        except Exception:
             return None
 
     def __setitem__(self, key, value):
