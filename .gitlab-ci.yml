@@ -15,10 +15,8 @@ stages:
   - export PYTHONPATH=$(pwd):$PYTHONPATH
   script:
   - flake8 sevenbridges
-  - py.test -v --cov=sevenbridges --cov-report=html
-  artifacts:
-    paths:
-    - htmlcov/*
+  - py.test -v --cov=sevenbridges
+
 
 # Test with python 2.7
 test:2.7:
