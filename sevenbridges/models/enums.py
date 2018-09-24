@@ -68,3 +68,4 @@ class AppCopyStrategy:
     CLONE = 'clone'
     DIRECT = 'direct'
     TRANSIENT = 'transient'
+    CLONE_DIRECT = 'clone_direct'
