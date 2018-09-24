@@ -251,3 +251,18 @@ def test_get_execution_details(api, given, verifier):
 
     # verification
     verifier.task.execution_details_fetched(id=id)
+
+
+def test_tasks_bulk_get(api, given, verifier):
+    # preconditions
+    total = 10
+    task_ids = [generator.uuid4() for _ in range(total)]
+    items = [{'id': _id} for _id in task_ids]
+    given.task.exist(items)
+
+    # action
+    response = api.tasks.bulk_get(task_ids)
+
+    # verification
+    assert len(response) == total
+    verifier.task.bulk_retrieved()

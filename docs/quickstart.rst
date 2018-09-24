@@ -1349,6 +1349,21 @@ Editing and updating are done on file objects:
 
 Properties that can be edited are ``name``, ``tags`` and ``metadata``.
 
+Tasks
+~~~~~
+
+The following operations are supported:
+
+    - ``bulk_get()`` - Retrieves multiple tasks.
+
+Retrieval is done by passing tasks (or task ids) in a list:
+
+.. code:: python
+
+    # Retrieve tasks
+    tasks = ['<TASK_ID>', '<TASK_ID>', '<TASK_ID>']
+    response = api.tasks.bulk_get(tasks=tasks)
+
 Imports
 ~~~~~~~
 
