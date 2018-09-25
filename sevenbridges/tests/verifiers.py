@@ -409,3 +409,84 @@ class DatasetVerifier(object):
 
     def member_added(self, id):
         self.checker.check_url('/datasets/{}/members'.format(id))
+
+
+class AutomationVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def fetched(self, id):
+        self.checker.check_url('/automation/automations/{}'.format(id))
+
+    def queried(self, name=None):
+        qs = {}
+        if name:
+            qs['name'] = [name]
+
+        self.checker.check_url('/automation/automations')
+        self.checker.check_query(qs)
+
+    def members_retrieved(self, id):
+        self.checker.check_url(
+            '/automation/automations/{}/members'.format(id)
+        )
+
+    def member_retrieved(self, id, member_username):
+        self.checker.check_url(
+            '/automation/automations/{}/members/{}'.format(id, member_username)
+        )
+
+    def packages_retrieved(self, id):
+        self.checker.check_url(
+            '/automation/automations/{}/packages'.format(id)
+        )
+
+    def runs_retrieved(self, id):
+        self.checker.check_url(
+            '/automation/runs'.format(id)
+        )
+
+    def member_added(self, id):
+        self.checker.check_url('/automation/automations/{}/members'.format(id))
+
+    def member_removed(self, id, username):
+        self.checker.check_url(
+            '/automation/automations/{}/members/{}'.format(id, username))
+
+
+class AutomationMemberVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def saved(self, automation, username):
+        self.checker.check_url('/automation/automations/{}/members/{}'.format(
+            automation, username
+        ))
+
+
+class AutomationRunVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def fetched(self, id):
+        self.checker.check_url('/automation/runs/{}'.format(id))
+
+    def queried(self):
+        qs = {}
+        self.checker.check_url('/automation/runs')
+        self.checker.check_query(qs)
+
+    def log_fetched(self, id):
+        self.checker.check_url('/automation/runs/{}/log'.format(id))
+
+    def state_fetched(self, id):
+        self.checker.check_url('/automation/runs/{}/state'.format(id))
+
+    def created(self):
+        self.checker.check_url('/automation/runs')
+
+    def stopped(self, id):
+        self.checker.check_url('/automation/runs/{}/actions/stop'.format(id))

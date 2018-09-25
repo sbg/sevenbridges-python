@@ -19,6 +19,7 @@ from sevenbridges.models.rate_limit import RateLimit
 from sevenbridges.models.storage_export import Export
 from sevenbridges.models.storage_import import Import
 from sevenbridges.models.billing_group import BillingGroup
+from sevenbridges.models.automation import Automation, AutomationRun
 
 
 class Api(HttpClient):
@@ -26,6 +27,8 @@ class Api(HttpClient):
 
     actions = Actions
     apps = App
+    automations = Automation
+    automation_runs = AutomationRun
     billing_groups = BillingGroup
     datasets = Dataset
     divisions = Division

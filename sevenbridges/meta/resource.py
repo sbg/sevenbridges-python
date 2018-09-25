@@ -128,7 +128,6 @@ class Resource(six.with_metaclass(ResourceMeta)):
         from sevenbridges.models.link import Link
         from sevenbridges.meta.collection import Collection
 
-        #: :type: _HttpClient
         api = kwargs.pop('api', cls._API)
         url = kwargs.pop('url')
         extra = {'resource': cls.__name__, 'query': kwargs}
@@ -136,11 +135,12 @@ class Resource(six.with_metaclass(ResourceMeta)):
         response = api.get(url=url, params=kwargs)
         data = response.json()
         total = response.headers['x-total-matching-query']
-        projects = [cls(api=api, **item) for item in data['items']]
+
+        items = [cls(api=api, **item) for item in data['items']]
         links = [Link(**link) for link in data['links']]
         href = data['href']
         return Collection(
-            resource=cls, href=href, total=total, items=projects,
+            resource=cls, href=href, total=total, items=items,
             links=links, api=api
         )
 
@@ -179,18 +179,21 @@ class Resource(six.with_metaclass(ResourceMeta)):
         Refreshes the resource with the data from the server.
         """
         try:
-            extra = {'resource': self.__class__.__name__, 'query': {
-                'id': self.id}}
-            logger.info('Reloading {} resource.'.format(self), extra=extra)
-            data = self._api.get(self.href, append_base=False).json()
-            resource = self.__class__(api=self._api, **data)
-        except Exception:
-            try:
+            if hasattr(self, 'href'):
+                query = {'id': self.id} if hasattr(self, 'id') else {}
+                extra = {'resource': self.__class__.__name__, 'query': query}
+                logger.info('Reloading {} resource.'.format(self), extra=extra)
+                data = self._api.get(self.href, append_base=False).json()
+                resource = self.__class__(api=self._api, **data)
+            elif hasattr(self, 'id') and hasattr(self, '_URL') and \
+                    'get' in self._URL:
                 data = self._api.get(
                     self._URL['get'].format(id=self.id)).json()
                 resource = self.__class__(api=self._api, **data)
-            except Exception:
+            else:
                 raise SbgError('Resource can not be refreshed!')
+        except Exception:
+            raise SbgError('Resource can not be refreshed!')
 
         self._data = resource._data
         self._dirty = resource._dirty
