@@ -175,14 +175,17 @@ class App(Resource):
         :return: Copied App object.
 
         :Copy strategies:
-        clone       copy all revisions and continue getting updates form the
-                    original app (default method when the key is omitted)
+        clone         copy all revisions and continue getting updates form the
+                      original app (default method when the key is omitted)
 
-        direct      copy only the latest revision and get the updates from
-                    this point on
+        direct        copy only the latest revision and get the updates from
+                      this point on
 
-        transient   copy only the latest revision and continue getting
-                    updates from the original app.
+        clone_direct  copy the app like the direct strategy, but keep all
+                      revisions
+
+        transient     copy only the latest revision and continue getting
+                      updates from the original app
         """
         strategy = strategy or AppCopyStrategy.CLONE
 
