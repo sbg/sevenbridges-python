@@ -1,3 +1,11 @@
+0.16.0 (2018-09-28)
+==================
+
+- Improvements:
+    - Added bulk retrieval of tasks
+    - Added clone_direct app copy strategy
+    - Hide authentication token in debug level logs
+
 0.15.3 (2018-09-11)
 ==================
 
