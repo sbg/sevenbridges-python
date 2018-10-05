@@ -1319,8 +1319,8 @@ Files
 The following operations are supported:
 
     - ``bulk_get()`` - Retrieves multiple files.
-    - ``bulk_edit()`` - Edits multiple files.
-    - ``bulk_update()`` - Updates multiple files.
+    - ``bulk_edit()`` - Modifies the existing information for specified files or add new information while preserving omitted parameters.
+    - ``bulk_update()`` - Sets new information for specified files, replacing all existing information and erasing omitted parameters.
     - ``bulk_delete()`` - Deletes multiple files.
 
 Retrieval and deletion are done by passing files (or file ids) in a list:
