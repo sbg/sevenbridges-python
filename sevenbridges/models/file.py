@@ -401,8 +401,12 @@ class File(Resource):
     @classmethod
     def bulk_update(cls, files, api=None):
         """
-        Update files with specified ids in bulk
-        :param files: Files to be updated.
+        This call updates the details for multiple specified files.
+        Use this call to set new information for the files, thus replacing
+        all existing information and erasing omitted parameters. For each
+        of the specified files, the call sets a new name, new tags and
+        metadata.
+        :param files: List of file instances.
         :param api: Api instance.
         :return: List of FileBulkRecord objects.
         """
@@ -429,8 +433,12 @@ class File(Resource):
     @classmethod
     def bulk_edit(cls, files, api=None):
         """
-        Edit files with specified ids in bulk
-        :param files: Files to be updated.
+        This call edits the details for multiple specified files.
+        Use this call to modify the existing information for the files
+        or add new information while preserving omitted parameters.
+        For each of the specified files, the call edits its name, tags
+        and metadata.
+        :param files: List of file instances.
         :param api: Api instance.
         :return: List of FileBulkRecord objects.
         """
