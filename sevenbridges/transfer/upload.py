@@ -502,35 +502,31 @@ class Upload(threading.Thread):
 
         # Opens the file for reading in binary mode.
         try:
-            fp = io.open(self._file_path, mode='rb')
+            with io.open(self._file_path, mode='rb') as fp:
+                # Creates a partitioned file
+                parted_file = UPartedFile(
+                    fp, self._file_size, self._part_size, self._upload_id,
+                    self._retry, self._timeout, self.session, self._api
+                )
+
+                # Iterates over parts and submits them for upload.
+                for _ in parted_file:
+                    if self._stop_signal:
+                        return
+                    self._running.wait()
+                    self._bytes_done += self._part_size
+                    # If the progress callback is set we need to provide a
+                    # progress object for it.
+                    if self._progress_callback:
+                        progress = Progress(
+                            parted_file.total, parted_file.total_submitted,
+                            self._bytes_done, self._file_size, self.duration
+                        )
+                        self._progress_callback(progress)
         except IOError:
             raise SbgError('Unable to open file {}'.format(self._file_path))
-
-        # Creates a partitioned file
-        parted_file = UPartedFile(
-            fp, self._file_size, self._part_size, self._upload_id,
-            self._retry, self._timeout, self.session, self._api
-        )
-
-        # Iterates over parts and submits them for upload.
-        try:
-            for _ in parted_file:
-                if self._stop_signal:
-                    return
-                self._running.wait()
-                self._bytes_done += self._part_size
-                # If the progress callback is set we need to provide a
-                # progress object for it.
-                if self._progress_callback:
-                    progress = Progress(
-                        parted_file.total, parted_file.total_submitted,
-                        self._bytes_done, self._file_size, self.duration
-                    )
-                    self._progress_callback(progress)
-            fp.close()
         except Exception as e:
             # If the errorback callback is set call it with status
-            fp.close()
             self._status = TransferState.FAILED
             if self._errorback:
                 self._errorback(self._status)
