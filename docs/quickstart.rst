@@ -1319,8 +1319,8 @@ Files
 The following operations are supported:
 
     - ``bulk_get()`` - Retrieves multiple files.
-    - ``bulk_edit()`` - Edits multiple files.
-    - ``bulk_update()`` - Updates multiple files.
+    - ``bulk_edit()`` - Modifies the existing information for specified files or add new information while preserving omitted parameters.
+    - ``bulk_update()`` - Sets new information for specified files, replacing all existing information and erasing omitted parameters.
     - ``bulk_delete()`` - Deletes multiple files.
 
 Retrieval and deletion are done by passing files (or file ids) in a list:
@@ -1348,6 +1348,21 @@ Editing and updating are done on file objects:
     response = api.files.bulk_update(files=files)
 
 Properties that can be edited are ``name``, ``tags`` and ``metadata``.
+
+Tasks
+~~~~~
+
+The following operations are supported:
+
+    - ``bulk_get()`` - Retrieves multiple tasks.
+
+Retrieval is done by passing tasks (or task ids) in a list:
+
+.. code:: python
+
+    # Retrieve tasks
+    tasks = ['<TASK_ID>', '<TASK_ID>', '<TASK_ID>']
+    response = api.tasks.bulk_get(tasks=tasks)
 
 Imports
 ~~~~~~~

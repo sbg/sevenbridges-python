@@ -600,6 +600,20 @@ class TaskProvider(object):
         task['outputs'] = task['inputs']
         return task
 
+    def exist(self, tasks):
+        all_tasks = []
+        for task_data in tasks:
+            task = TaskProvider.default_task()
+            task.update(task_data)
+            id_ = task['id']
+            href = task['href'] + 'tasks/{}'.format(id_)
+            task['href'] = href
+            self.request_mocker.get('/tasks/{id}'.format(id=id_), json=task)
+            all_tasks.append({'resource': task})
+
+        data = {'items': all_tasks}
+        self.request_mocker.post('/bulk/tasks/get', json=data)
+
     @staticmethod
     def execution_details():
         return {

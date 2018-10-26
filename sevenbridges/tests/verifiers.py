@@ -245,6 +245,9 @@ class TaskVerifier(object):
     def execution_details_fetched(self, id):
         self.checker.check_url('/tasks/{id}/execution_details'.format(id=id))
 
+    def bulk_retrieved(self):
+        self.checker.check_url('/bulk/tasks/get')
+
 
 class VolumeVerifier(object):
     def __init__(self, request_mocker):

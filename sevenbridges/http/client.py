@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import platform
@@ -56,6 +57,12 @@ def config_vars(profiles, advance_access):
         except Exception:
             pass
     return None, None, None, None
+
+
+def mask_secrets(request_data):
+    masked = copy.deepcopy(request_data)
+    masked['headers']['X-SBG-Auth-Token'] = '*****'
+    return masked
 
 
 # noinspection PyTypeChecker
@@ -187,16 +194,28 @@ class HttpClient(object):
         if self.aa:
             self.headers[AAHeader.key] = AAHeader.value
 
-        d = {'verb': verb, 'url': url, 'headers': headers, 'params': params}
+        request_data = {
+            'verb': verb,
+            'url': url,
+            'headers': headers,
+            'params': params
+        }
+        masked_request_data = mask_secrets(request_data)
         if not stream:
-            d.update({'data': data})
-            logger.debug("Request %s", str(d), extra=d)
+            masked_request_data.update({'data': data})
+            logger.debug(
+                "Request %s", masked_request_data,
+                extra=masked_request_data
+            )
             response = self._session.request(
                 verb, url, params=params, data=json.dumps(data),
                 headers=headers, timeout=self.timeout, stream=stream
             )
         else:
-            logger.debug('Stream Request', extra=d)
+            logger.debug(
+                'Stream Request %s', masked_request_data,
+                extra=masked_request_data
+            )
             response = self._session.request(
                 verb, url, params=params, stream=stream, allow_redirects=True,
             )

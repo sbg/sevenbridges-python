@@ -2,6 +2,7 @@ import logging
 
 import six
 
+from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
     SbgError, TaskValidationError
@@ -36,7 +37,8 @@ class Task(Resource):
         'run': '/tasks/{id}/actions/run',
         'clone': '/tasks/{id}/actions/clone',
         'abort': '/tasks/{id}/actions/abort',
-        'execution_details': "/tasks/{id}/execution_details"
+        'execution_details': "/tasks/{id}/execution_details",
+        'bulk_get': '/bulk/tasks/get',
     }
 
     href = HrefField()
@@ -343,3 +345,26 @@ class Task(Resource):
         if not self.batch:
             raise SbgError("This task is not a batch task.")
         return self.query(parent=self.id, api=self._api)
+
+    @classmethod
+    def bulk_get(cls, tasks, api=None):
+        """
+        Retrieve tasks with specified ids in bulk
+        :param tasks: Tasks to be retrieved.
+        :param api: Api instance.
+        :return: List of TaskBulkRecord objects.
+        """
+        api = api or cls._API
+        task_ids = [Transform.to_task(task) for task in tasks]
+        data = {'task_ids': task_ids}
+
+        logger.info('Getting tasks in bulk.')
+        response = api.post(url=cls._URL['bulk_get'], data=data)
+        return TaskBulkRecord.parse_records(response=response, api=api)
+
+
+class TaskBulkRecord(BulkRecord):
+    resource = CompoundField(cls=Task)
+
+    def __str__(self):
+        return six.text_type('<TaskBulkRecord>')
