@@ -17,7 +17,7 @@ else:
     with io.open(VERSION_FILE, 'w', encoding='utf-8') as f:
         f.write(version)
 
-install_requires = ["requests>=2.18.4", "six>=1.10.0"]
+install_requires = ["requests>=2.20.0", "six>=1.10.0"]
 if sys.version_info < (3,):
     install_requires.append("futures>=3.0.4")
 
