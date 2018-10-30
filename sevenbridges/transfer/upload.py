@@ -209,10 +209,9 @@ class Upload(threading.Thread):
         'upload_complete': '/upload/multipart/{upload_id}/complete'
     }
 
-    def __init__(self, file_path, project, file_name=None, overwrite=False,
-                 part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE, retry_count=5,
-                 timeout=60, api=None):
-
+    def __init__(self, file_path, project=None, parent=None, file_name=None,
+                 overwrite=False, part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE,
+                 retry_count=5, timeout=60, api=None):
         """
         Multipart File uploader.
 
@@ -228,8 +227,13 @@ class Upload(threading.Thread):
         threading.Thread.__init__(self)
         self.daemon = True
 
-        if not project:
-            raise SbgError('Project identifier is not valid.')
+        if not project and not parent:
+            raise SbgError('Project or parent identifier is required.')
+
+        if project and parent:
+            raise SbgError(
+                'Project and parent identifiers are mutually exclusive.'
+            )
 
         if not file_path:
             raise SbgError('File path is not valid.')
@@ -253,6 +257,7 @@ class Upload(threading.Thread):
             )
         self._part_size = part_size
         self._project = project
+        self._parent = parent
         self._file_path = file_path
         self._file_size = os.path.getsize(self._file_path)
         if self._file_size == 0:
@@ -329,11 +334,15 @@ class Upload(threading.Thread):
         going to be used during multipart upload.
         """
         init_data = {
-            'project': self._project,
             'name': self._file_name,
             'part_size': self._part_size,
             'size': self._file_size
         }
+
+        if self._project:
+            init_data['project'] = self._project
+        elif self._parent:
+            init_data['parent'] = self._parent
 
         init_params = {}
         if self._overwrite:
@@ -493,31 +502,29 @@ class Upload(threading.Thread):
 
         # Opens the file for reading in binary mode.
         try:
-            fp = io.open(self._file_path, mode='rb')
+            with io.open(self._file_path, mode='rb') as fp:
+                # Creates a partitioned file
+                parted_file = UPartedFile(
+                    fp, self._file_size, self._part_size, self._upload_id,
+                    self._retry, self._timeout, self.session, self._api
+                )
+
+                # Iterates over parts and submits them for upload.
+                for _ in parted_file:
+                    if self._stop_signal:
+                        return
+                    self._running.wait()
+                    self._bytes_done += self._part_size
+                    # If the progress callback is set we need to provide a
+                    # progress object for it.
+                    if self._progress_callback:
+                        progress = Progress(
+                            parted_file.total, parted_file.total_submitted,
+                            self._bytes_done, self._file_size, self.duration
+                        )
+                        self._progress_callback(progress)
         except IOError:
             raise SbgError('Unable to open file {}'.format(self._file_path))
-
-        # Creates a partitioned file
-        parted_file = UPartedFile(
-            fp, self._file_size, self._part_size, self._upload_id,
-            self._retry, self._timeout, self.session, self._api
-        )
-
-        # Iterates over parts and submits them for upload.
-        try:
-            for _ in parted_file:
-                if self._stop_signal:
-                    return
-                self._running.wait()
-                self._bytes_done += self._part_size
-                # If the progress callback is set we need to provide a
-                # progress object for it.
-                if self._progress_callback:
-                    progress = Progress(
-                        parted_file.total, parted_file.total_submitted,
-                        self._bytes_done, self._file_size, self.duration
-                    )
-                    self._progress_callback(progress)
         except Exception as e:
             # If the errorback callback is set call it with status
             self._status = TransferState.FAILED

@@ -815,9 +815,13 @@ Synchronous file upload:
 
 .. code:: python
 
-    # Get the project where we want to upload files.
+    # Get the project or parent folder to where we want to upload files.
     project = api.projects.get('project-identifier')
-    api.files.upload('/home/bar/foo/file.fastq', project)
+    api.files.upload('/home/bar/foo/file.fastq', project=project)
+
+    parent_folder = api.files.get('folder-identifier')
+    api.files.upload('/home/bar/foo/file.fastq', parent=parent_folder)
+
     # Optionally we can set file name of the uploaded file.
     api.files.upload('/home/bar/foo/file.fastq', project, file_name='new.fastq')
 

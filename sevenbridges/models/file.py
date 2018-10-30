@@ -145,10 +145,10 @@ class File(Resource):
         )
 
     @classmethod
-    def upload(cls, path, project, file_name=None, overwrite=False, retry=5,
-               timeout=10, part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE,
-               wait=True, api=None):
-
+    def upload(cls, path, project=None, parent=None, file_name=None,
+               overwrite=False, retry=5, timeout=10,
+               part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE, wait=True,
+               api=None):
         """
         Uploads a file using multipart upload and returns an upload handle
         if the wait parameter is set to False. If wait is set to True it
@@ -156,6 +156,7 @@ class File(Resource):
 
         :param path: File path on local disc.
         :param project: Project identifier
+        :param parent: Parent folder identifier
         :param file_name: Optional file name.
         :param overwrite: If true will overwrite the file on the server.
         :param retry:  Number of retries if error occurs during upload.
@@ -177,10 +178,25 @@ class File(Resource):
             'wait': wait,
         }}
         logger.info('Uploading file', extra=extra)
-        project = Transform.to_project(project)
+
+        if not project and not parent:
+            raise SbgError('A project or parent identifier is required.')
+
+        if project and parent:
+            raise SbgError(
+                'Project and parent identifiers are mutually exclusive.'
+            )
+
+        if project:
+            project = Transform.to_project(project)
+
+        if parent:
+            parent = Transform.to_file(parent)
+
         upload = Upload(
-            path, project, file_name=file_name, overwrite=overwrite,
-            retry_count=retry, timeout=timeout, part_size=part_size, api=api
+            file_path=path, project=project, parent=parent,
+            file_name=file_name, overwrite=overwrite, retry_count=retry,
+            timeout=timeout, part_size=part_size, api=api
         )
         if wait:
             upload.start()
