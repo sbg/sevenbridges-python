@@ -180,9 +180,6 @@ class Resource(six.with_metaclass(ResourceMeta)):
         """
         try:
             if hasattr(self, 'href'):
-                query = {'id': self.id} if hasattr(self, 'id') else {}
-                extra = {'resource': self.__class__.__name__, 'query': query}
-                logger.info('Reloading {} resource.'.format(self), extra=extra)
                 data = self._api.get(self.href, append_base=False).json()
                 resource = self.__class__(api=self._api, **data)
             elif hasattr(self, 'id') and hasattr(self, '_URL') and \
@@ -192,6 +189,11 @@ class Resource(six.with_metaclass(ResourceMeta)):
                 resource = self.__class__(api=self._api, **data)
             else:
                 raise SbgError('Resource can not be refreshed!')
+
+            query = {'id': self.id} if hasattr(self, 'id') else {}
+            extra = {'resource': self.__class__.__name__, 'query': query}
+            logger.info('Reloading {} resource.'.format(self), extra=extra)
+
         except Exception:
             raise SbgError('Resource can not be refreshed!')
 
