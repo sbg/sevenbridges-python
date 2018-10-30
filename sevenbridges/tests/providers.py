@@ -1293,3 +1293,257 @@ class DatasetProvider(object):
         member = self.member_provider.default_member(id, member_username)
         href = self.base_url + '/datasets/{}/members'.format(id)
         self.request_mocker.post(href, json=member)
+
+
+class AutomationProvider(object):
+
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+        self.member_provider = AutomationMemberProvider(
+            request_mocker, base_url
+        )
+        self.package_provider = AutomationPackageProvider(
+            request_mocker, base_url
+        )
+        self.run_provider = AutomationRunProvider(request_mocker, base_url)
+
+    @staticmethod
+    def default_automation():
+        return {
+            'href': generator.url(),
+            'id': generator.uuid4(),
+            'name': generator.slug(),
+            'description': generator.slug(),
+            'owner': generator.user_name(),
+            'created_by': generator.user_name(),
+            'created_on': generator.date(),
+            'modified_by': generator.user_name(),
+            'modified_on': generator.date(),
+        }
+
+    def exists(self, **kwargs):
+        automation = self.default_automation()
+        automation.update(kwargs)
+        id = automation['id']
+        self.request_mocker.get(
+            '/automation/automations/{}'.format(id), json=automation
+        )
+
+    def query(self, total):
+        items = [self.default_automation() for _ in range(total)]
+        href = self.base_url + '/automation/automations'
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def has_member(self, id, username):
+        member = self.member_provider.default_automation_member(
+            username=username,
+        )
+        href = (
+            self.base_url +
+            '/automation/automations/{}/members/{}'.format(
+                id, username
+            )
+        )
+        self.request_mocker.get(href, json=member)
+
+    def has_members(self, id, total):
+        items = [
+            self.member_provider.default_automation_member()
+            for _ in range(total)
+        ]
+        href = self.base_url + '/automation/automations/{}/members'.format(id)
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def can_add_member(self, id, username):
+        member = self.member_provider.default_automation_member(
+            id, username
+        )
+        href = self.base_url + '/automation/automations/{}/members'.format(id)
+        self.request_mocker.post(href, json=member)
+
+    def can_remove_member(self, id, username):
+        href = (
+            self.base_url +
+            '/automation/automations/{}/members/{}'.format(id, username)
+        )
+        self.request_mocker.delete(href)
+
+    def has_packages(self, id, total):
+        items = [
+            self.package_provider.default_automation_package()
+            for _ in range(total)
+        ]
+        href = self.base_url + '/automation/automations/{}/packages'.format(id)
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def has_runs(self, id, total):
+        items = [
+            self.run_provider.default_automation_run(automation=id)
+            for _ in range(total)
+        ]
+        href = self.base_url + '/automation/runs'
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+
+class AutomationPackageProvider(object):
+
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default_automation_package():
+        return {
+            'id': generator.uuid4(),
+            'automation': generator.uuid4(),
+            'version': generator.slug(),
+            'location': generator.slug(),
+            'created_by': generator.user_name(),
+            'created_on': generator.date(),
+        }
+
+
+class AutomationMemberProvider(object):
+
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    def default_automation_member(self, automation=None, username=None,
+                                  permissions=None, **kwargs):
+        username = username or generator.user_name()
+        automation = automation or generator.uuid4()
+        permissions = permissions or {
+            'admin': False,
+            'copy': True,
+            'read': True,
+            'write': True,
+            'execute': False,
+        }
+        url = (
+            self.base_url + '/automation/automations/' + automation +
+            "/members/" + username
+        )
+        return {
+            'href': url,
+            'username': username,
+            'permissions': permissions,
+        }
+
+    def exists(self, **kwargs):
+        automation_member = self.default_automation_member(**kwargs)
+        automation_member.update(kwargs)
+        username = automation_member['username']
+        automation = automation_member['automation']
+        self.request_mocker.get(
+            '/automation/automations/{}/members/{}'
+            .format(automation, username), json=automation_member
+        )
+
+    def can_be_saved(self, automation, **kwargs):
+        automation_member = self.default_automation_member()
+        automation_member.update(**kwargs)
+        username = automation_member['username']
+        self.request_mocker.patch(
+            '/automation/automations/{}/members/{}'
+            .format(automation, username),
+            json=automation_member
+        )
+
+
+class AutomationRunProvider(object):
+
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+        self.file_provider = FileProvider(request_mocker, base_url)
+
+    def default_automation_run(self, automation=None):
+        automation = automation or generator.uuid4()
+        return {
+            'href': generator.url(),
+            'id': generator.uuid4(),
+            'automation': automation,
+            'package': generator.uuid4(),
+            'inputs': {},
+            'settings': {},
+            'created_on': generator.date(),
+            'start_time': generator.date(),
+            'end_time': generator.date(),
+            'resumed_from': None,
+            'created_by': generator.user_name(),
+            'status': 'FINISHED',
+            'message': generator.slug(),
+            'execution_details': {
+                'log_file': self.file_provider.default_file(),
+                'state_file': self.file_provider.default_file(),
+            }
+        }
+
+    @staticmethod
+    def default_state():
+        state = {
+            'main': {
+                'started_at': generator.time(),
+                'inputs': {},
+                'substeps': {},
+                'finished_at': generator.time(),
+                'error': {'message': '', 'trace': ''}
+            }
+        }
+        return state
+
+    def exists(self, **kwargs):
+        automation_run = self.default_automation_run()
+        automation_run.update(kwargs)
+        id = automation_run['id']
+        self.request_mocker.get(
+            '/automation/runs/{}'.format(id), json=automation_run
+        )
+
+    def has_state(self, id, state):
+        state = state or self.default_state()
+        href = self.base_url + '/automation/runs/{}/state'.format(id)
+        self.request_mocker.get(href, json=state)
+
+    def can_be_created(self, **kwargs):
+        automation_run = self.default_automation_run()
+        [automation_run.pop(key) for key in ['id', 'href']]
+        automation_run.update(**kwargs)
+        self.request_mocker.request(
+            'POST', '/automation/runs', json=automation_run
+        )
+
+    def can_be_stopped(self, id):
+        self.request_mocker.request(
+            'POST', '/automation/runs/{}/actions/stop'.format(id)
+        )

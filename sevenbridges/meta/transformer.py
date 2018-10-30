@@ -259,3 +259,39 @@ class Transform(object):
             return member
         else:
             raise SbgError('Invalid member parameter!')
+
+    @staticmethod
+    def to_automation(automation):
+        from sevenbridges.models.automation import Automation
+        if not automation:
+            raise SbgError('Automation is required!')
+        if isinstance(automation, Automation):
+            return automation.id
+        if isinstance(automation, six.string_types):
+            return automation
+        else:
+            raise SbgError('Invalid automation parameter!')
+
+    @staticmethod
+    def to_automation_member(member):
+        from sevenbridges.models.automation import AutomationMember
+        if not member:
+            raise SbgError('Automation member is required!')
+        if isinstance(member, AutomationMember):
+            return member.username
+        if isinstance(member, six.string_types):
+            return member
+        else:
+            raise SbgError('Invalid automation member parameter!')
+
+    @staticmethod
+    def to_automation_package(package):
+        from sevenbridges.models.automation import AutomationPackage
+        if not package:
+            raise SbgError('Automation package is required!')
+        if isinstance(package, AutomationPackage):
+            return package.id
+        if isinstance(package, six.string_types):
+            return package
+        else:
+            raise SbgError('Invalid automation package parameter!')

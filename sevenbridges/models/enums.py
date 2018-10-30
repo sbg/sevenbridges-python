@@ -69,3 +69,7 @@ class AppCopyStrategy:
     DIRECT = 'direct'
     TRANSIENT = 'transient'
     CLONE_DIRECT = 'clone_direct'
+
+
+class AutomationRunActions:
+    STOP = 'stop'
