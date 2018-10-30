@@ -1454,3 +1454,143 @@ data for each job, for example:
         },
     ]
     response = api.exports.bulk_submit(exports=exports)
+
+
+Managing automations
+--------------------
+
+The following operations are supported for automations:
+
+    - ``query()`` - Query all automations
+    - ``get()`` - Get automation with the provided id
+    - ``get_packages()`` - Get all packages of an automation
+    - ``get_members()`` - Get all members of an automation
+    - ``get_member()`` - Get details on a member of an automation
+    - ``add_member()`` - Add a member to an automation
+    - ``remove_member()`` - Remove member from an automation
+    - ``get_runs()`` - Get automation runs
+
+The following operations are supported for automation runs:
+
+    - ``query()`` - Query all automation runs
+    - ``get()`` - Get automation run with the provided id
+    - ``create()`` - Create and start new automation run
+    - ``stop()`` - Stop an automation run
+    - ``get_log()`` - Get log file contents for an automation run
+    - ``get_state()`` - Get state file contents for an automation run
+
+Properties
+~~~~~~~~~~
+
+Each automation has the following available properties:
+
+``href`` - The URL of the automation on the API server.
+
+``id`` - Automation identifier.
+
+``name`` - Automation name.
+
+``description`` - Automation description.
+
+``owner`` - Username of the user that owns the automation.
+
+``created_by`` - Username of the user that created the automation.
+
+``created_on`` - Date of the first automation creation.
+
+``modified_by`` - Username of the user that last modified the automation.
+
+``modified_on`` - Date of the last modification of the automation.
+
+Each automation run has the following available properties:
+
+``href`` - The URL of the automation run on the API server.
+
+``id`` - Automation identifier.
+
+``automation`` - Automation identifier of the automation the run belongs to.
+
+``package`` - Automation package identifier of the package the run belongs to.
+
+``inputs`` - Automation run input dictionary.
+
+``settings`` - Automation run settings override dictionary.
+
+``created_on`` - Date of the first automation run creation.
+
+``start_time`` - Date of the automation run start.
+
+``end_time`` - Date of the automation run end.
+
+``resumed_from`` - Automation run identifier of the automation run the run resumed from.
+
+``created_by`` - Username of the user that created the automation run.
+
+``status`` - Current status of the automation run.
+
+``message`` - Message output of the automation run.
+
+``execution_details`` - Execution details of the automation run.
+
+Examples
+~~~~~~~~
+
+.. code:: python
+
+    # List all automations
+    automations = api.automations.query()
+
+    # Get details of an automation
+    automation = api.automations.get('automation_id')
+
+    # List all packages that belong to an automation
+    packages = automation.get_packages()
+
+    # List all members that belong to an automation
+    members = automation.get_members()
+
+    # Get details of an automation member
+    member = automation.get_member('member_username')
+
+    # Add new member to automation
+    username = 'new_member_username'
+    permissions = {
+        'read': True,
+        'write': True,
+        'copy': True,
+        'execute': True,
+        'admin': True,
+    }
+    new_member = automation.add_member(username, permissions)
+
+    # Edit member permissions
+    new_member.permissions['admin'] = False
+    new_member.save()
+
+    # Remove member from automation
+    automation.remove_member('automation_member')
+
+    # List automation runs
+    runs = api.automation_runs.query()
+
+    # Get details of an automation run
+    run = api.automation_runs.get('automation_run_id')
+
+    # Start a new automation run
+    new_run = api.automation_runs.create(
+        package='package_id',
+        inputs={
+            'x': 1,
+            'y': 2,
+            'z': 3
+        }
+    )
+
+    # Stop an automation run
+    new_run.stop()
+
+    # Get automation run log
+    state = run.log()
+
+    # Get automation run state
+    state = run.state()
