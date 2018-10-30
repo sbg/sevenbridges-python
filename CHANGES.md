@@ -1,3 +1,10 @@
+0.17.0 (2018-10-30)
+==================
+
+- Improvements:
+    - Added initial support for automations
+    - Added parent parameter to uploads
+
 0.16.0 (2018-09-28)
 ==================
 

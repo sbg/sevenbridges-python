@@ -7,14 +7,15 @@ sevenbridges-python
 import ssl
 import logging
 
-__version__ = "0.16.0"
+__version__ = "0.17.0"
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config
 
 from sevenbridges.models.invoice import Invoice
-from sevenbridges.models.billing_group import BillingGroup
-from sevenbridges.models.billing_group import BillingGroupBreakdown
+from sevenbridges.models.billing_group import (
+    BillingGroup, BillingGroupBreakdown
+)
 from sevenbridges.models.user import User
 from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.project import Project
@@ -23,7 +24,6 @@ from sevenbridges.models.app import App
 from sevenbridges.models.dataset import Dataset
 from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.models.team import Team, TeamMember
-
 from sevenbridges.models.member import Member, Permissions
 from sevenbridges.models.file import File
 from sevenbridges.models.storage_export import Export
@@ -31,10 +31,13 @@ from sevenbridges.models.storage_import import Import
 from sevenbridges.models.volume import Volume
 from sevenbridges.models.marker import Marker
 from sevenbridges.models.division import Division
+from sevenbridges.models.automation import (
+    Automation, AutomationRun, AutomationPackage, AutomationMember
+)
 
 from sevenbridges.models.enums import (
-    AppCopyStrategy, AppRawFormat, FileStorageType, ImportExportState,
-    TaskStatus, TransferState, VolumeAccessMode, VolumeType
+    AppCopyStrategy, AppRawFormat, AutomationRunActions, FileStorageType,
+    ImportExportState, TaskStatus, TransferState, VolumeAccessMode, VolumeType,
 )
 from sevenbridges.errors import (
     SbgError, ResourceNotModified, ReadOnlyPropertyError, ValidationError,
@@ -47,13 +50,15 @@ from sevenbridges.errors import (
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 __all__ = [
-    'Api', 'Config', 'Invoice', 'BillingGroup', 'BillingGroupBreakdown',
-    'User', 'Endpoints', 'Project', 'Task', 'App', 'Member', 'Permissions',
-    'File', 'Export', 'Import', 'Volume', 'Marker', 'Division', 'Team',
-    'TeamMember', 'Dataset', 'BulkRecord',
+    'Api', 'Automation', 'AutomationRun', 'AutomationMember',
+    'AutomationPackage',  'Config', 'Invoice', 'BillingGroup',
+    'BillingGroupBreakdown', 'User', 'Endpoints', 'Project', 'Task', 'App',
+    'Member', 'Permissions', 'File', 'Export', 'Import', 'Volume', 'Marker',
+    'Division', 'Team', 'TeamMember', 'Dataset', 'BulkRecord',
     # Enums
-    'AppCopyStrategy', 'AppRawFormat', 'FileStorageType', 'ImportExportState',
-    'TaskStatus', 'TransferState', 'VolumeAccessMode', 'VolumeType',
+    'AppCopyStrategy', 'AppRawFormat', 'AutomationRunActions',
+    'FileStorageType', 'ImportExportState', 'TaskStatus', 'TransferState',
+    'VolumeAccessMode', 'VolumeType',
     # Errors
     'SbgError', 'ResourceNotModified', 'ReadOnlyPropertyError',
     'ValidationError', 'TaskValidationError', 'PaginationError', 'BadRequest',
