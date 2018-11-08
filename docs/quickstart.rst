@@ -750,11 +750,12 @@ Examples
     # List files in a folder
     file_list = folder.list_files()
 
-    # Create folder
+    # Create folder (with a project or parent identifier)
     new_folder = api.files.create_folder(
-        name='new_folder_name',
-        project='project-identifier',
-        parent='parent-folder-identifier'
+        name='new_folder_name', project='project-identifier',
+    )
+    new_folder = api.files.create_folder(
+        name='new_folder_name', parent='parent-folder-identifier'
     )
 
     # Copy file to folder
