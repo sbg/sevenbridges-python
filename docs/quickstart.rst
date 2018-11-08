@@ -1237,7 +1237,7 @@ Task Examples
 ~~~~~~~~~~~~~
 
 Single task
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 .. code:: python
 
@@ -1261,9 +1261,33 @@ Single task
     
     # Task can also be ran by invoking .run() method on the draft task.
     task.run()
+    
+    
+Clone a task and run it with modification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes it is convenient to take an already executed task and change 
+only some of the inputs, to then re-run it, using the clone method.
+Note: the clone method has the parameter `run=True` by default, so 
+it is important to set it to `False` if modifications are needed.
+
+.. code:: python
+
+    # Getting the old task by id
+    old_task = api.tasks.get(old_task_id)
+    
+    # clone it without launching it.
+    new_task = old_task.clone(run=False)
+    
+    # Modify the inputs
+    new_task.inputs['somekey'] = "new value"
+    
+    # Save the new task, and run it.
+    new_task.save()
+    new_task.run()
 
 Batch task
-~~~~~~~~~~
+^^^^^^^^^^
 
 .. code:: python
 
