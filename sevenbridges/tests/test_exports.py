@@ -1,4 +1,5 @@
 import faker
+import pytest
 
 generator = faker.Factory.create()
 
@@ -49,7 +50,8 @@ def test_exports_bulk_get(api, given, verifier):
     verifier.exports.bulk_retrieved()
 
 
-def test_exports_bulk_submit(api, given, verifier):
+@pytest.mark.parametrize('copy_only', [True, False])
+def test_exports_bulk_submit(api, given, verifier, copy_only):
     # preconditions
     total = 10
 
@@ -66,8 +68,8 @@ def test_exports_bulk_submit(api, given, verifier):
     given.exports.can_be_submitted_in_bulk(exports)
 
     # action
-    response = api.exports.bulk_submit(exports)
+    response = api.exports.bulk_submit(exports, copy_only=copy_only)
 
     # verification
     assert len(response) == total
-    verifier.exports.bulk_submitted()
+    verifier.exports.bulk_submitted(copy_only)
