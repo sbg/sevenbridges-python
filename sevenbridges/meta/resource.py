@@ -1,11 +1,9 @@
-import os
 import copy
 import logging
 
 import six
 
 from sevenbridges.errors import SbgError
-from sevenbridges.http.client import HttpClient
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.fields import Field
 from sevenbridges.meta.transformer import Transform
