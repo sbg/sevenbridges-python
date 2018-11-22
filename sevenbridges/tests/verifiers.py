@@ -364,8 +364,10 @@ class ExportsVerifier(object):
     def bulk_retrieved(self):
         self.checker.check_url('/bulk/storage/exports/get')
 
-    def bulk_submitted(self):
+    def bulk_submitted(self, copy_only=False):
+        qs = {'copy_only': [str(copy_only)]}
         self.checker.check_url('/bulk/storage/exports/create')
+        self.checker.check_query(qs)
 
 
 class DatasetVerifier(object):

@@ -1,3 +1,12 @@
+0.17.1 (2018-11-22)
+==================
+
+- Improvements:
+    - Added copy_only parameter to bulk exports
+- Bugfixes:
+    - [Issue #107](https://github.com/sbg/sevenbridges-python/issues/107)
+      - Removed unnecessary configuration check
+
 0.17.0 (2018-10-30)
 ==================
 
