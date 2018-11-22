@@ -98,9 +98,6 @@ class ResourceMeta(type):
         return type.__new__(mcs, name, bases, dct)
 
     def __get__(cls, obj, objtype=None):
-        # SPHINX_DOC part is for generating documentation
-        if not isinstance(obj, HttpClient) and not os.environ['SPHINX_DOC']:
-            raise SbgError(message='Improperly configured client!')
         if obj is None:
             return cls
         cls._API = obj

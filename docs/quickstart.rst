@@ -1457,7 +1457,7 @@ data for each job, for example:
             'overwrite': False
         },
     ]
-    response = api.exports.bulk_submit(exports=exports)
+    response = api.exports.bulk_submit(exports=exports, copy_only=False)
 
 
 Managing automations
