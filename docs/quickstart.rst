@@ -717,7 +717,10 @@ Examples
     # Or simply query files by name if you know their exact file name(s)
     files = api.files.query(project='user/myproject', names=['SRR062634.filt.fastq.gz','SRR062635.filt.fastq.gz'])
     my_files = api.files.query(project='user/myproject', metadata = {'sample_id': 'SRR062634'} )
-    
+
+    # Query contents of a folder
+    parent = api.files.get('parent_folder_id')
+    result = api.files.query(parent=parent)
     
     # Edit a file's metadata
     my_file = my_files[0]
