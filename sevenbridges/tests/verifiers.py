@@ -108,6 +108,10 @@ class FileVerifier(object):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10']}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
+    def queried_with_parent(self, parent):
+        qs = {'parent': [parent], 'fields': ['_all'], 'limit': ['10']}
+        self.checker.check_url('/files') and self.checker.check_query(qs)
+
     def queried_with_file_name(self, project, name):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
               'name': [name]}

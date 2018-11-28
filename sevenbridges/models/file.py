@@ -88,7 +88,8 @@ class File(Resource):
 
     @classmethod
     def query(cls, project=None, names=None, metadata=None, origin=None,
-              tags=None, offset=None, limit=None, dataset=None, api=None):
+              tags=None, offset=None, limit=None, dataset=None, api=None,
+              parent=None):
         """
         Query ( List ) files, requires project or dataset
         :param project: Project id
@@ -100,6 +101,7 @@ class File(Resource):
         :param limit: Pagination limit
         :param dataset: Dataset id
         :param api: Api instance.
+        :param parent: Folder id or File object with type folder
         :return: Collection object.
         """
         api = api or cls._API
@@ -114,8 +116,11 @@ class File(Resource):
             dataset = Transform.to_dataset(dataset)
             query_params['dataset'] = dataset
 
-        if not project and not dataset:
-            raise SbgError('Project or dataset must be provided!')
+        if parent:
+            query_params['parent'] = Transform.to_file(parent)
+
+        if not (project or dataset or parent):
+            raise SbgError('Project, dataset or parent must be provided!')
 
         if names is not None and isinstance(names, list):
             if len(names) == 0:
@@ -478,9 +483,11 @@ class File(Resource):
         response = api.post(url=cls._URL['bulk_edit'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
-    def list_files(self, api=None):
+    def list_files(self, offset=None, limit=None, api=None):
         """List files in a folder
         :param api: Api instance
+        :param offset: Pagination offset
+        :param limit: Pagination limit
         :return: List of files
         """
         api = api or self._API
@@ -488,16 +495,11 @@ class File(Resource):
         if not self.is_folder():
             raise SbgError('{name} is not a folder'.format(name=self.name))
 
-        response = api.get(
-            url=self._URL['list_folder'].format(id=self.id)
-        )
-        data = response.json()
+        url = self._URL['list_folder'].format(id=self.id)
 
-        return [
-            File(api=api, **item)
-            for item in data.get('items', {})
-            if item.get('type', self.FOLDER_TYPE)
-        ]
+        return super(File, self.__class__)._query(
+            api=api, url=url, offset=offset, limit=limit, fields='_all'
+        )
 
     @classmethod
     def create_folder(cls, name, parent=None, project=None,
