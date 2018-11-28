@@ -1,3 +1,11 @@
+0.17.2 (2018-11-28)
+==================
+
+- Improvements:
+    - Added parent parameter to file query
+- Bugfixes:
+    - Fixed listing of folder contents
+
 0.17.1 (2018-11-22)
 ==================
 
