@@ -108,6 +108,10 @@ class FileVerifier(object):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10']}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
+    def queried_with_parent(self, parent):
+        qs = {'parent': [parent], 'fields': ['_all'], 'limit': ['10']}
+        self.checker.check_url('/files') and self.checker.check_query(qs)
+
     def queried_with_file_name(self, project, name):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
               'name': [name]}
@@ -364,8 +368,10 @@ class ExportsVerifier(object):
     def bulk_retrieved(self):
         self.checker.check_url('/bulk/storage/exports/get')
 
-    def bulk_submitted(self):
+    def bulk_submitted(self, copy_only=False):
+        qs = {'copy_only': [str(copy_only)]}
         self.checker.check_url('/bulk/storage/exports/create')
+        self.checker.check_query(qs)
 
 
 class DatasetVerifier(object):

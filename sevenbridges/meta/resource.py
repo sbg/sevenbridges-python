@@ -1,11 +1,9 @@
-import os
 import copy
 import logging
 
 import six
 
 from sevenbridges.errors import SbgError
-from sevenbridges.http.client import HttpClient
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.fields import Field
 from sevenbridges.meta.transformer import Transform
@@ -98,9 +96,6 @@ class ResourceMeta(type):
         return type.__new__(mcs, name, bases, dct)
 
     def __get__(cls, obj, objtype=None):
-        # SPHINX_DOC part is for generating documentation
-        if not isinstance(obj, HttpClient) and not os.environ['SPHINX_DOC']:
-            raise SbgError(message='Improperly configured client!')
         if obj is None:
             return cls
         cls._API = obj

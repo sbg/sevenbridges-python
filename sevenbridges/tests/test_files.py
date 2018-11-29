@@ -26,6 +26,24 @@ def test_files_query(api, given, verifier):
     verifier.file.queried(project=project.id)
 
 
+def test_files_query_folder(api, given, verifier):
+    # preconditions
+    total = 10
+    folder_id = str(generator.uuid4())
+    given.file.exists(id=folder_id, type='folder')
+
+    given.file.files_exist_for_folder(folder_id=folder_id, num_of_files=total)
+
+    # action
+    files = api.files.query(parent=folder_id, limit=total)
+
+    # verification
+    assert files.total == total
+    assert len(files) == total
+
+    verifier.file.queried_with_parent(parent=folder_id)
+
+
 def test_files_query_file_name(api, given, verifier):
     # preconditions
     total = 10

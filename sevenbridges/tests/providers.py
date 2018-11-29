@@ -373,6 +373,18 @@ class FileProvider(object):
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(num_of_files)})
 
+    def files_exist_for_folder(self, folder_id, num_of_files):
+        items = [FileProvider.default_file() for _ in range(num_of_files)]
+        href = self.base_url + '/files?parent={}'.format(folder_id)
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(num_of_files)})
+
     def files_exist_for_file_name(self, project, file_name, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
         url = '/files?project={project}&name={name}'.format(
@@ -440,7 +452,8 @@ class FileProvider(object):
 
         response = {
             'href': href,
-            'items': items
+            'items': items,
+            'links': []
         }
 
         self.request_mocker.get(href, json=response, headers={

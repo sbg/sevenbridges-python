@@ -158,10 +158,11 @@ class Export(Resource):
         return ExportBulkRecord.parse_records(response=response, api=api)
 
     @classmethod
-    def bulk_submit(cls, exports, api=None):
+    def bulk_submit(cls, exports, copy_only=False, api=None):
         """
         Create exports in bulk.
         :param exports: Exports to be submitted in bulk.
+        :param copy_only: If true files are kept on SevenBridges bucket.
         :param api: Api instance.
         :return: list of ExportBulkRecord objects.
         """
@@ -193,8 +194,11 @@ class Export(Resource):
             items.append(item)
 
         data = {'items': items}
+        params = {'copy_only': copy_only}
 
-        response = api.post(url=cls._URL['bulk_create'], data=data)
+        response = api.post(
+            url=cls._URL['bulk_create'], params=params, data=data
+        )
         return ExportBulkRecord.parse_records(response=response, api=api)
 
 
