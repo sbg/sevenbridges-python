@@ -135,7 +135,7 @@ class Task(Resource):
     @classmethod
     def create(cls, name, project, app, revision=None, batch_input=None,
                batch_by=None, inputs=None, description=None, run=False,
-               disable_batch=False, interruptible=True, api=None):
+               disable_batch=False, interruptible=None, api=None):
 
         """
         Creates a task on server.
@@ -157,7 +157,10 @@ class Task(Resource):
         """
         task_data = {}
         params = {}
-
+        interruptible = (
+                interruptible or
+                project.settings.get('use_interruptible_instances', False)
+        )
         project = Transform.to_project(project)
 
         app_id = Transform.to_app(app)
@@ -221,7 +224,7 @@ class Task(Resource):
         return Task(api=self._api, **task_data)
 
     @inplace_reload
-    def run(self, batch=True, interruptible=True, inplace=True):
+    def run(self, batch=True, interruptible=None, inplace=True):
         """
         Run task
         :param batch if False batching will be disabled.
@@ -233,8 +236,8 @@ class Task(Resource):
         params = {}
         if not batch:
             params['batch'] = False
-
-        params['use_interruptible_instances'] = interruptible
+        if interruptible is not None:
+            params['use_interruptible_instances'] = interruptible
         extra = {
             'resource': self.__class__.__name__,
             'query': {'id': self.id, 'batch': batch}
