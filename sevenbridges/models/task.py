@@ -65,6 +65,7 @@ class Task(Resource):
     price = CompoundField(Price, read_only=True)
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
+    execution_settings = DictField()
     use_interruptible_instances = BooleanField()
 
     def __str__(self):
@@ -135,7 +136,8 @@ class Task(Resource):
     @classmethod
     def create(cls, name, project, app, revision=None, batch_input=None,
                batch_by=None, inputs=None, description=None, run=False,
-               disable_batch=False, interruptible=True, api=None):
+               disable_batch=False, interruptible=True,
+               execution_settings=None, api=None):
 
         """
         Creates a task on server.
@@ -150,6 +152,7 @@ class Task(Resource):
         :param run: True if you want to run a task upon creation.
         :param disable_batch: If True disables batching of a batch task.
         :param interruptible: If True interruptible instance will be used.
+        :param execution_settings: Execution settings for the task.
         :param api: Api instance.
         :return: Task object.
         :raises: TaskValidationError if validation Fails.
@@ -188,6 +191,9 @@ class Task(Resource):
         task_data.update(task_inputs)
 
         task_data['use_interruptible_instances'] = interruptible
+
+        if execution_settings:
+            task_data.update({'execution_settings': execution_settings})
 
         if run:
             params.update({'action': 'run'})

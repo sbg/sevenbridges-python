@@ -1189,6 +1189,8 @@ the ``batch_by`` criteria.
 
 ``end_time`` - Task end time.
 
+``execution_settings`` - Execution settings for the task.
+
 ``execution_status`` - Task execution status.
 
 ``price`` - Task cost.
@@ -1225,6 +1227,10 @@ Task creation hints
 ~~~~~~~~~~~~~~~~~~~
 
 - Both input files and parameters are passed the same way together in a single dictionary to ``inputs``.
+
+- Supported execution settings are:
+    - `instance_type` - list or a string, can be 'AUTO' or an actual instance type, for example: ['c4.2xlarge;ebs-gp2;2000']
+    - `max_parallel_instances` - Number of instances, >= 1
 
 
 Querying tasks
