@@ -159,7 +159,8 @@ class Task(Resource):
         params = {}
         interruptible = (
                 interruptible or
-                project.settings.get('use_interruptible_instances', False)
+                project.settings.get('use_interruptible_instances') or
+                False
         )
         project = Transform.to_project(project)
 
