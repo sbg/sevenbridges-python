@@ -157,11 +157,6 @@ class Task(Resource):
         """
         task_data = {}
         params = {}
-        interruptible = (
-                interruptible or
-                project.settings['use_interruptible_instances'] or
-                False
-        )
         project = Transform.to_project(project)
 
         app_id = Transform.to_app(app)
@@ -191,7 +186,8 @@ class Task(Resource):
         task_data.update(task_meta)
         task_data.update(task_inputs)
 
-        task_data['use_interruptible_instances'] = interruptible
+        if interruptible is not None:
+            task_data['use_interruptible_instances'] = interruptible
 
         if run:
             params.update({'action': 'run'})
