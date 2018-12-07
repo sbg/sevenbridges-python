@@ -4,6 +4,11 @@ import six
 
 from sevenbridges.models.file import File
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.meta.resource import Resource
+from sevenbridges.decorators import inplace_reload
+from sevenbridges.models.member import Permissions
+from sevenbridges.errors import ResourceNotModified
+from sevenbridges.models.enums import AutomationRunActions
 from sevenbridges.meta.fields import (
     DictField,
     HrefField,
@@ -11,11 +16,6 @@ from sevenbridges.meta.fields import (
     CompoundField,
     DateTimeField,
 )
-from sevenbridges.meta.resource import Resource
-from sevenbridges.decorators import inplace_reload
-from sevenbridges.models.member import Permissions
-from sevenbridges.errors import ResourceNotModified
-from sevenbridges.models.enums import AutomationRunActions
 
 
 logger = logging.getLogger(__name__)
@@ -323,13 +323,14 @@ class Automation(Resource):
         api = api or self._API
         AutomationMember.remove(automation=self.id, user=user, api=api)
 
-    def get_runs(self, package=None, status=None,
+    def get_runs(self, package=None, status=None, name=None,
                  created_by=None, created_from=None, created_to=None,
                  order_by=None, order=None, offset=None, limit=None, api=None):
         """
         Query automation runs that belong to this automation
         :param package: Package id
         :param status: Run status
+        :param name: Automation run name
         :param created_by: Username of member that created the run
         :param created_from: Date the run was created after
         :param created_to: Date the run was created before
@@ -342,7 +343,7 @@ class Automation(Resource):
         """
         api = api or self._API
         return AutomationRun.query(
-            automation=self.id, package=package, status=status,
+            automation=self.id, package=package, status=status, name=name,
             created_by=created_by, created_from=created_from,
             created_to=created_to, order_by=order_by, order=order,
             offset=offset, limit=limit, api=api
@@ -363,6 +364,7 @@ class AutomationRun(Resource):
 
     href = HrefField()
     id = StringField(read_only=True)
+    name = StringField(read_only=True)
     automation = CompoundField(Automation, read_only=True)
     package = CompoundField(AutomationPackage, read_only=True)
     inputs = DictField()
@@ -390,11 +392,12 @@ class AutomationRun(Resource):
         return six.text_type('<AutomationRun: id={id}>'.format(id=self.id))
 
     @classmethod
-    def query(cls, automation=None, package=None, status=None, created_by=None,
-              created_from=None, created_to=None, order_by=None, order=None,
-              offset=None, limit=None, api=None):
+    def query(cls, name=None, automation=None, package=None, status=None,
+              created_by=None, created_from=None, created_to=None,
+              order_by=None, order=None, offset=None, limit=None, api=None):
         """
         Query (List) automation runs.
+        :param name: Automation run name
         :param automation: Automation template
         :param package: Package
         :param status: Run status
@@ -417,6 +420,7 @@ class AutomationRun(Resource):
         api = api or cls._API
         return super(AutomationRun, cls)._query(
             url=cls._URL['query'],
+            name=name,
             automation=automation,
             package=package,
             status=status,
@@ -432,13 +436,14 @@ class AutomationRun(Resource):
 
     @classmethod
     def create(cls, package, inputs=None, settings=None, resume_from=None,
-               api=None):
+               name=None, api=None):
         """
         Create and start a new run.
         :param package: Automation package id
         :param inputs: Input dictionary
         :param settings: Settings override dictionary
         :param resume_from: Run to resume from
+        :param name: Automation run name
         :param api: sevenbridges Api instance
         :return: AutomationRun object
         """
@@ -451,6 +456,8 @@ class AutomationRun(Resource):
             data['settings'] = settings
         if resume_from:
             data['resume_from'] = resume_from
+        if name:
+            data['name'] = name
 
         api = api or cls._API
         automation_run = api.post(
