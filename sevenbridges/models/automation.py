@@ -392,7 +392,7 @@ class AutomationRun(Resource):
         return six.text_type('<AutomationRun: id={id}>'.format(id=self.id))
 
     @classmethod
-    def query(cls, name=None, automation=None, package=None, status=None,
+    def query(cls, automation=None, package=None, status=None, name=None,
               created_by=None, created_from=None, created_to=None,
               order_by=None, order=None, offset=None, limit=None, api=None):
         """
