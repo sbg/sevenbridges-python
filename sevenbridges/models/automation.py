@@ -436,7 +436,7 @@ class AutomationRun(Resource):
 
     @classmethod
     def create(cls, package, inputs=None, settings=None, resume_from=None,
-               name=None, api=None):
+               name=None, secret_settings=None, api=None):
         """
         Create and start a new run.
         :param package: Automation package id
@@ -444,6 +444,8 @@ class AutomationRun(Resource):
         :param settings: Settings override dictionary
         :param resume_from: Run to resume from
         :param name: Automation run name
+        :param secret_settings: dict to override secret_settings from
+        automation template
         :param api: sevenbridges Api instance
         :return: AutomationRun object
         """
@@ -458,6 +460,8 @@ class AutomationRun(Resource):
             data['resume_from'] = resume_from
         if name:
             data['name'] = name
+        if secret_settings:
+            data['secret_settings'] = secret_settings
 
         api = api or cls._API
         automation_run = api.post(

@@ -209,6 +209,7 @@ def test_create_run(api, given, verifier):
     inputs = {}
     name = generator.name()
     id = generator.uuid4()
+    secret_settings = {generator.name(): generator.name()}
     given.automations.exists(id=id)
     given.automations.has_packages(id=id, total=1)
     given.automation_runs.can_be_created()
@@ -216,7 +217,12 @@ def test_create_run(api, given, verifier):
     # action
     automation = api.automations.get(id=id)
     package = automation.get_packages()[0]
-    api.automation_runs.create(package=package, inputs=inputs, name=name)
+    api.automation_runs.create(
+        package=package,
+        inputs=inputs,
+        name=name,
+        secret_settings=secret_settings
+    )
 
     # verification
     verifier.automation_runs.created()
