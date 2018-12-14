@@ -239,6 +239,28 @@ Usage:
 
 .. note:: Api object instantiated in this way with error handlers attached will be resilient to server maintenance and rate limiting.
 
+
+Resource
+--------
+
+Most objects handled by sevenbridges-python are inherited from the :code:`Resource` model, which contains some basic methods for all inherited resources.
+
+Resources support lazy fetching, so if a Resource is created with an :code:`id` or :code:`href` the client will fetch it from the API when any attribute
+is accessed directly (with a dot operator).
+
+All resources contain the ``api`` property which is generally set by the client to be the previously configured default one, but it can be overridden on a Resource level.
+
+All resources implement the following class methods:
+
+- ``get(id='resource_id')`` - Sends a GET request to the API to retrieve the resource
+
+All resources implement the following instance methods:
+
+- ``reload()`` - Re-initializes the resource with it's data from the API server
+- ``delete()`` - Sends a DELETE request to the API to delete the resource
+- ``field(name='field_name')`` - Reads a field value without lazy fetching
+
+
 Managing users
 --------------
 
