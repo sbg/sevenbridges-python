@@ -157,6 +157,7 @@ def test_get_runs(api, given, verifier):
     # precondition
     api.aa = True
     total = 10
+    name = generator.name()
 
     id = generator.uuid4()
     given.automations.exists(id=id)
@@ -164,7 +165,7 @@ def test_get_runs(api, given, verifier):
 
     # action
     automation = api.automations.get(id)
-    runs = automation.get_runs()
+    runs = automation.get_runs(name=name)
 
     # verification
     assert len(runs) == total
@@ -186,12 +187,29 @@ def test_get_run(api, given, verifier):
     verifier.automation_runs.fetched(id=id)
 
 
+def test_query_runs(api, given, verifier):
+    # precondition
+    api.aa = True
+    total = 10
+    name = generator.name()
+    given.automation_runs.query(total=total)
+
+    # action
+    automation_runs = api.automation_runs.query(name=name)
+
+    # verification
+    assert len(automation_runs) == total
+    verifier.automation_runs.queried(name=name)
+
+
 def test_create_run(api, given, verifier):
     # precondition
     api.aa = True
 
     inputs = {}
+    name = generator.name()
     id = generator.uuid4()
+    secret_settings = {generator.name(): generator.name()}
     given.automations.exists(id=id)
     given.automations.has_packages(id=id, total=1)
     given.automation_runs.can_be_created()
@@ -199,7 +217,12 @@ def test_create_run(api, given, verifier):
     # action
     automation = api.automations.get(id=id)
     package = automation.get_packages()[0]
-    api.automation_runs.create(package=package, inputs=inputs)
+    api.automation_runs.create(
+        package=package,
+        inputs=inputs,
+        name=name,
+        secret_settings=secret_settings
+    )
 
     # verification
     verifier.automation_runs.created()
