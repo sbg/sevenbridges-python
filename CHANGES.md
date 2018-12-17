@@ -1,3 +1,9 @@
+0.17.4 (2018-12-17)
+==================
+
+- Improvements:
+    - Added execution_settings parameter to task creation
+
 0.17.3 (2018-12-14)
 ==================
 
