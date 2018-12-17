@@ -1,6 +1,14 @@
+.. |PyPI version| image:: https://badge.fury.io/py/sevenbridges-python.svg
+   :target: https://pypi.python.org/pypi/sevenbridges-python
+.. |Documentation| image:: https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest
+   :target: http://sevenbridges-python.readthedocs.org/en/latest/
+.. |Licence| image:: https://img.shields.io/badge/licence-Apache-orange.svg
+   :target: https://github.com/sbg/sevenbridges-python/blob/develop/LICENCE
+.. |Travis| image:: https://travis-ci.org/sbg/sevenbridges-python.svg
+   :target: https://travis-ci.org/sbg/sevenbridges-python
+
 sevenbridges-python
 ===================
-
 
 |Travis| |PyPI version| |Documentation| |Licence|
 
@@ -38,6 +46,11 @@ platform designed to accelerate discovery in a scalable, cloud-based compute
 environment where data, results, and workflows are shared among the 
 world's research community. Cavatica is built in collaboration with the 
 Children Hospital of Philadelphia and it is focused on pediatric data.
+
+Documentation
+-------------
+
+The latest documentation can be found on `readthedocs <http://sevenbridges-python.readthedocs.org/en/latest>`__.
 
 Installation
 ------------
@@ -215,15 +228,6 @@ more detailed examples consult the documentation, hosted on readthedocs.
     # Fetch project files
     project = projects[0]
     files = project.get_files()
-
-.. |PyPI version| image:: https://badge.fury.io/py/sevenbridges-python.svg
-   :target: https://pypi.python.org/pypi/sevenbridges-python
-.. |Documentation| image:: https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest
-   :target: http://sevenbridges-python.readthedocs.org/en/latest/
-.. |Licence| image:: https://img.shields.io/badge/licence-Apache-orange.svg
-   :target: https://github.com/sbg/sevenbridges-python/blob/develop/LICENCE
-.. |Travis| image:: https://travis-ci.org/sbg/sevenbridges-python.svg
-   :target: https://travis-ci.org/sbg/sevenbridges-python
 
 
 Contributing

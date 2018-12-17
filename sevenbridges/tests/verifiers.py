@@ -483,8 +483,10 @@ class AutomationRunVerifier(object):
     def fetched(self, id):
         self.checker.check_url('/automation/runs/{}'.format(id))
 
-    def queried(self):
+    def queried(self, name=None):
         qs = {}
+        if name:
+            qs['name'] = [name]
         self.checker.check_url('/automation/runs')
         self.checker.check_query(qs)
 

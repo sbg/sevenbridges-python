@@ -1597,11 +1597,17 @@ Examples
 
 .. code:: python
 
+    # Query automation runs with name parameter
+    api.automation_runs.query(name='automation_run_name')
+
     # List all automations
     automations = api.automations.query()
 
     # Get details of an automation
     automation = api.automations.get('automation_id')
+
+    # Get automation runs with name parameter for existing automation
+    automation.get_runs(name='automation_run_name')
 
     # List all packages that belong to an automation
     packages = automation.get_packages()
@@ -1639,6 +1645,7 @@ Examples
     # Start a new automation run
     new_run = api.automation_runs.create(
         package='package_id',
+        name='automation_run_name',
         inputs={
             'x': 1,
             'y': 2,

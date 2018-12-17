@@ -1505,6 +1505,7 @@ class AutomationRunProvider(object):
         return {
             'href': generator.url(),
             'id': generator.uuid4(),
+            'name': generator.name(),
             'automation': automation,
             'package': generator.uuid4(),
             'inputs': {},
@@ -1560,3 +1561,15 @@ class AutomationRunProvider(object):
         self.request_mocker.request(
             'POST', '/automation/runs/{}/actions/stop'.format(id)
         )
+
+    def query(self, total):
+        items = [self.default_automation_run() for _ in range(total)]
+        href = self.base_url + '/automation/runs'
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
