@@ -107,6 +107,26 @@ class ProjectProvider(object):
         id = project['id']
         self.request_mocker.get('/projects/{}'.format(id), json=project)
 
+    def query(self, total, **kwargs):
+        items = [ProjectProvider.default_project() for _ in range(total)]
+        items[0].update(**kwargs)
+        name = kwargs.get('name')
+        owner = kwargs.get('owner')
+        url = '/projects/?fields=_all'
+        if owner:
+            url = '/projects/{}?fields=_all'.format(owner)
+        if name:
+            url += '&name={}'.format(name)
+        href = self.base_url + url
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response,
+                                headers={'x-total-matching-query': str(total)})
+
     def can_be_created(self, **kwargs):
         project = self.default_project()
         [project.pop(key) for key in ['id', 'href']]

@@ -55,22 +55,27 @@ class Project(Resource):
         return not self.__eq__(other)
 
     @classmethod
-    def query(cls, owner=None, offset=None, limit=None, api=None):
+    def query(cls, owner=None, name=None, offset=None, limit=None, api=None):
         """
         Query (List) projects
         :param owner: Owner username.
+        :param name: Project name
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :param api: Api instance.
         :return: Collection object.
         """
         api = api if api else cls._API
+        query_params = {}
         if owner:
             url = cls._URL['query'].format(owner=owner)
         else:
             url = cls._URL['query'].format(owner='')
+        if name:
+            query_params['name'] = name
         return super(Project, cls)._query(
-            url=url, offset=offset, limit=limit, fields='_all', api=api
+            url=url, offset=offset, limit=limit, fields='_all',
+            api=api, **query_params
         )
 
     @classmethod

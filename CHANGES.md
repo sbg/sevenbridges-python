@@ -1,3 +1,11 @@
+0.17.5 (2018-12-21)
+==================
+
+- Improvements:
+    - Enabled querying projects by name parameter
+- Note: 
+    - Querying projects with parameter 'owner=<division_user_username>' will not yield the correct result
+
 0.17.4 (2018-12-17)
 ==================
 

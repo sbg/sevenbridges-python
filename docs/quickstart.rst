@@ -347,6 +347,11 @@ object:
 
 .. code:: python
 
+    # Query projects by project name
+    project_list = api.projects.query(name=project_name)
+
+.. code:: python
+
     # Iterate through all my projects and print their name and id
     for project in api.projects.query().all():
         print (project.id,project.name)

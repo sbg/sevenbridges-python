@@ -44,6 +44,20 @@ class ProjectVerifier(object):
     def created(self):
         self.checker.check_url('/projects')
 
+    def query(self, name=None):
+        qs = {'fields': ['_all']}
+        if name:
+            qs.update({'name': [name]})
+        self.checker.check_url('/projects/') and self.checker.check_query(qs)
+
+    def query_owner(self, owner, name=None):
+        qs = {'fields': ['_all']}
+        if name:
+            qs.update({'name': [name]})
+        self.checker.check_url(
+            '/projects/{}'.format(owner)
+        ) and self.checker.check_query(qs)
+
     def saved(self, id):
         self.checker.check_url('/projects/{}'.format(id))
 
