@@ -1,6 +1,8 @@
 import faker
+import pytest
 
 generator = faker.Factory.create()
+pytestmark = pytest.mark.volumes
 
 
 def test_imports_query(api, given, verifier):
@@ -27,7 +29,32 @@ def test_import_submit(api, given, verifier):
     given.imports.can_be_submitted(id=id)
 
     # action
-    imports = api.imports.submit_import(volume, location, project)
+    imports = api.imports.submit_import(
+        volume=volume,
+        location=location,
+        project=project
+    )
+
+    assert imports.id == id
+    verifier.imports.submitted()
+
+
+def test_import_to_folder_submit(api, given, verifier):
+    # preconditions
+    id = generator.uuid4()
+    volume = generator.name()
+    location = generator.name()
+    parent = generator.name() + "/"
+    given.imports.can_be_submitted(id=id)
+    preserve_folder_structure = False
+
+    # action
+    imports = api.imports.submit_import(
+        volume=volume,
+        location=location,
+        parent=parent,
+        preserve_folder_structure=preserve_folder_structure
+    )
 
     assert imports.id == id
     verifier.imports.submitted()
