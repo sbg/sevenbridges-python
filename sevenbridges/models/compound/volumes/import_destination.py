@@ -10,6 +10,7 @@ class ImportDestination(Resource):
     imported on to SevenBridges platform or related product.
     """
     project = StringField(read_only=True)
+    parent = StringField(read_only=True)
     name = StringField(read_only=True)
 
     def __str__(self):
