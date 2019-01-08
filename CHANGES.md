@@ -1,3 +1,16 @@
+0.17.7 (2019-01-08)
+==================
+
+- Improvements:
+    - Fix readme rendering on PyPi
+
+0.17.6 (2019-01-08)
+==================
+
+- Improvements:
+    - Added parent and preserve_folder_structure parameters and properties to imports
+    - Updated documentation regarding cwl
+
 0.17.5 (2018-12-21)
 ==================
 

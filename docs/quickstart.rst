@@ -1003,9 +1003,9 @@ Each import has the following properties:
 
 ``id`` - Import identifier.
 
-``source`` - Source of the import, object of type ``VolumeFile``, contains info on volume and file location on the volume
+``source`` - Source of the import, object of type ``VolumeFile``, contains info on volume and file location on the volume.
 
-``destination`` - Destination of the import, object of type ``ImportDestination``, containing info on project where the file was imported to and name of the file in the project
+``destination`` - Destination of the import, object of type ``ImportDestination``, containing info on project where the file was imported to and name of the file in the project.
 
 ``state`` - State of the import. Can be *PENDING*, *RUNNING*, *COMPLETED* and *FAILED*.
 
@@ -1018,6 +1018,27 @@ Each import has the following properties:
 ``started_on`` - Contains the date and time when the import was started.
 
 ``finished_on`` - Contains the date and time when the import was finished.
+
+``preserve_folder_structure`` - Whether to keep the exact source folder structure. The default value is true if the item being imported is a folder. Should not be used if you are importing a file.
+
+
+VolumeFile properties
+~~~~~~~~~~~~~~~~~~~~~
+
+``volume`` - Volume ID from which to import the item.
+
+``location`` - Volume-specific location pointing to the file or folder to import. This location should be recognizable to the underlying cloud service as a valid key or path to the item. If the item being imported is a folder, its path should end with a ``/``.
+
+
+ImportDestination properties
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``project`` - The project in which to create the alias.
+
+``parent`` - The ID of the target folder to which the item should be imported. Should not be used together with project. If parent is used, the import will take place into the specified folder, within the project to which the folder belongs. If project is used, the items will be imported to the root of the project's files.
+
+``name`` - The name of the alias to create. This name should be unique to the project. If the name is already in use in the project, you should use the overwrite query parameter in this call to force any item with that name to be deleted before the alias is created. If name is omitted, the alias name will default to the last segment of the complete location (including the prefix) on the volume. Segments are considered to be separated with forward slashes ``/``.
+
 
 Import methods
 ~~~~~~~~~~~~~~
