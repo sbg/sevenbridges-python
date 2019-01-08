@@ -1156,9 +1156,6 @@ Managing apps (tools and workflows) with the sevenbridges-python library is simp
 Bridges Platform and CGC are implemented using the Common Workflow Language (CWL)
 specification
 https://github.com/common-workflow-language/common-workflow-language.
-The sevenbridges-python currently supports only Draft 2 format of the
-CWL.
-Each app has a CWL description, expressed in JSON.
 
 Querying all apps or getting the details of a single app can be done in the same
 way as for other resources, using the ``query()`` and ``get`` methods. You

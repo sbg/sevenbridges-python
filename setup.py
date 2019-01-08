@@ -26,7 +26,7 @@ setup(
     version=version,
     description='SBG API python client bindings',
     install_requires=install_requires,
-    long_description=io.open('README.rst', 'r', encoding='utf-8').read(),
+    long_description=io.open('README.md', 'r', encoding='utf-8').read(),
     platforms=['Windows', 'POSIX', 'MacOS'],
     maintainer='Seven Bridges Genomics Inc.',
     maintainer_email='dejan.knezevic@sbgenomics.com',
