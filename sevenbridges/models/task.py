@@ -65,6 +65,7 @@ class Task(Resource):
     price = CompoundField(Price, read_only=True)
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
+    execution_settings = DictField()
     use_interruptible_instances = BooleanField()
 
     def __str__(self):
@@ -135,7 +136,8 @@ class Task(Resource):
     @classmethod
     def create(cls, name, project, app, revision=None, batch_input=None,
                batch_by=None, inputs=None, description=None, run=False,
-               disable_batch=False, interruptible=None, api=None):
+               disable_batch=False, interruptible=None,
+               execution_settings=None, api=None):
 
         """
         Creates a task on server.
@@ -150,6 +152,7 @@ class Task(Resource):
         :param run: True if you want to run a task upon creation.
         :param disable_batch: If True disables batching of a batch task.
         :param interruptible: If True interruptible instance will be used.
+        :param execution_settings: Execution settings for the task.
         :param api: Api instance.
         :return: Task object.
         :raises: TaskValidationError if validation Fails.
@@ -188,6 +191,9 @@ class Task(Resource):
 
         if interruptible is not None:
             task_data['use_interruptible_instances'] = interruptible
+
+        if execution_settings:
+            task_data.update({'execution_settings': execution_settings})
 
         if run:
             params.update({'action': 'run'})
@@ -275,9 +281,17 @@ class Task(Resource):
         if bool(modified_data):
             task_request_data = {}
             inputs = modified_data.pop('inputs', None)
+            execution_settings = modified_data.pop('execution_settings', None)
             task_request_data.update(modified_data)
+
             if inputs:
                 task_request_data['inputs'] = self._serialize_inputs(inputs)
+
+            if execution_settings:
+                task_request_data['execution_settings'] = (
+                    self._serialize_execution_settings(execution_settings)
+                )
+
             extra = {
                 'resource': self.__class__.__name__,
                 'query': {'id': self.id, 'data': task_request_data}
@@ -287,6 +301,20 @@ class Task(Resource):
                                    data=task_request_data).json()
             task = Task(api=self._api, **data)
             return task
+
+    def _serialize_execution_settings(self, execution_settings):
+        instance_type = execution_settings.get(
+            'instance_type',
+            self.execution_settings.get('instance_type', 'AUTO')
+        )
+        max_parallel_instances = execution_settings.get(
+            'max_parallel_instances',
+            self.execution_settings.get('max_parallel_instances', 1)
+        )
+        return {
+            'instance_type': instance_type,
+            'max_parallel_instances': max_parallel_instances
+        }
 
     @staticmethod
     def _serialize_inputs(inputs):

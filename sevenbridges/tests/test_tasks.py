@@ -81,13 +81,15 @@ def test_create_task(api, given, verifier, run):
     project = api.projects.get(id=project_id)
     files = api.files.query(project=project)
     inputs = {'FastQC': files, 'reads': False, 'some_file': files[0]}
+    execution_settings = {'instance_type': 'AUTO', 'max_parallel_instances': 1}
     given.task.can_be_created(
         batch_by=batch_by, batch_input='FastQC', app=app_id, project=project.id
     )
     # action
     task = api.tasks.create(
         generator.name(), project, app_id, batch_input='FastQC',
-        batch_by=batch_by, inputs=inputs, run=run
+        batch_by=batch_by, inputs=inputs, run=run,
+        execution_settings=execution_settings
     )
 
     # verification

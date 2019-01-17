@@ -239,6 +239,28 @@ Usage:
 
 .. note:: Api object instantiated in this way with error handlers attached will be resilient to server maintenance and rate limiting.
 
+
+Resource
+--------
+
+Most objects handled by sevenbridges-python are inherited from the :code:`Resource` model, which contains some basic methods for all inherited resources.
+
+Resources support lazy fetching, so if a Resource is created with an :code:`id` or :code:`href` the client will fetch it from the API when any attribute
+is accessed directly (with a dot operator).
+
+All resources contain the ``api`` property which is generally set by the client to be the previously configured default one, but it can be overridden on a Resource level.
+
+All resources implement the following class methods:
+
+- ``get(id='resource_id')`` - Sends a GET request to the API to retrieve the resource
+
+All resources implement the following instance methods:
+
+- ``reload()`` - Re-initializes the resource with it's data from the API server
+- ``delete()`` - Sends a DELETE request to the API to delete the resource
+- ``field(name='field_name')`` - Reads a field value without lazy fetching
+
+
 Managing users
 --------------
 
@@ -1189,6 +1211,8 @@ the ``batch_by`` criteria.
 
 ``end_time`` - Task end time.
 
+``execution_settings`` - Execution settings for the task.
+
 ``execution_status`` - Task execution status.
 
 ``price`` - Task cost.
@@ -1225,6 +1249,10 @@ Task creation hints
 ~~~~~~~~~~~~~~~~~~~
 
 - Both input files and parameters are passed the same way together in a single dictionary to ``inputs``.
+
+- Supported execution settings are:
+    - `instance_type` - list or a string, can be 'AUTO' or an actual instance type, for example: ['c4.2xlarge;ebs-gp2;2000']
+    - `max_parallel_instances` - Number of instances, >= 1
 
 
 Querying tasks
@@ -1569,11 +1597,17 @@ Examples
 
 .. code:: python
 
+    # Query automation runs with name parameter
+    api.automation_runs.query(name='automation_run_name')
+
     # List all automations
     automations = api.automations.query()
 
     # Get details of an automation
     automation = api.automations.get('automation_id')
+
+    # Get automation runs with name parameter for existing automation
+    automation.get_runs(name='automation_run_name')
 
     # List all packages that belong to an automation
     packages = automation.get_packages()
@@ -1611,6 +1645,7 @@ Examples
     # Start a new automation run
     new_run = api.automation_runs.create(
         package='package_id',
+        name='automation_run_name',
         inputs={
             'x': 1,
             'y': 2,
