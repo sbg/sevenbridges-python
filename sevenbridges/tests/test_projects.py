@@ -258,3 +258,44 @@ def test_member_permissions_save_no_changes(api, given, verifier):
     member.permissions['read'] = True
     with pytest.raises(ResourceNotModified):
         member.save()
+
+
+def test_query_projects_with_name(api, given, verifier):
+    # preconditions
+    name = generator.name()
+    given.project.query(total=3, name=name)
+
+    # action
+    projects = api.projects.query(name=name)
+
+    # verification
+    assert len(projects) == 3
+    assert projects[0].name == name
+    verifier.project.query(name=name)
+
+
+def test_query_projects_with_owner(api, given, verifier):
+    # preconditions
+    owner = generator.word()
+    given.project.query(total=3, owner=owner)
+
+    # action
+    projects = api.projects.query(owner=owner)
+
+    # verification
+    assert len(projects) == 3
+    verifier.project.query_owner(owner=owner)
+
+
+def test_query_projects_with_name_owner(api, given, verifier):
+    # preconditions
+    owner = generator.word()
+    name = generator.name()
+    given.project.query(total=4, owner=owner, name=name)
+
+    # action
+    projects = api.projects.query(owner=owner, name=name)
+
+    # verification
+    assert len(projects) == 4
+    verifier.project.query_owner(owner=owner, name=name)

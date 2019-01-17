@@ -36,6 +36,7 @@ class Import(Resource):
     href = HrefField()
     id = StringField(read_only=True)
     state = StringField(read_only=True)
+    preserve_folder_structure = BooleanField(read_only=True)
     source = CompoundField(VolumeFile, read_only=True)
     destination = CompoundField(ImportDestination, read_only=True)
     started_on = DateTimeField(read_only=True)
@@ -65,9 +66,9 @@ class Import(Resource):
             return None
 
     @classmethod
-    def submit_import(cls, volume, location, project, name=None,
-                      overwrite=False, properties=None, api=None):
-
+    def submit_import(cls, volume, location, project=None, name=None,
+                      overwrite=False, properties=None, parent=None,
+                      preserve_folder_structure=True, api=None):
         """
         Submits new import job.
         :param volume: Volume identifier.
@@ -76,25 +77,49 @@ class Import(Resource):
         :param name: Optional file name.
         :param overwrite: If true it will overwrite file if exists.
         :param properties: Properties dictionary.
+        :param parent: The ID of the target folder to which the item should be
+            imported. Should not be used together with project.
+        :param preserve_folder_structure: Whether to keep the exact source
+            folder structure. The default value is true if the item being
+            imported is a folder. Should not be used if you are importing
+            a file.
         :param api: Api instance.
         :return: Import object.
         """
         data = {}
         volume = Transform.to_volume(volume)
-        project = Transform.to_project(project)
+
+        if project and parent:
+            raise SbgError(
+                'Project and parent identifiers are mutually exclusive'
+            )
+        elif project:
+            project = Transform.to_project(project)
+            destination = {
+                'project': project
+            }
+        elif parent:
+            parent = Transform.to_file(parent)
+            destination = {
+                'parent': parent
+            }
+        else:
+            raise SbgError('Project or parent identifier is required.')
+
         source = {
             'volume': volume,
             'location': location
         }
-        destination = {
-            'project': project
-        }
+
         if name:
             destination['name'] = name
 
         data['source'] = source
         data['destination'] = destination
         data['overwrite'] = overwrite
+
+        if not preserve_folder_structure:
+            data['preserve_folder_structure'] = preserve_folder_structure
 
         if properties:
             data['properties'] = properties
@@ -111,12 +136,13 @@ class Import(Resource):
     @classmethod
     def query(cls, project=None, volume=None, state=None, offset=None,
               limit=None, api=None):
-
         """
         Query (List) imports.
         :param project: Optional project identifier.
         :param volume: Optional volume identifier.
         :param state: Optional import sate.
+        :param offset: Pagination offset.
+        :param limit: Pagination limit.
         :param api: Api instance.
         :return: Collection object.
         """
