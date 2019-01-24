@@ -1280,7 +1280,7 @@ Task creation hints
 
 Querying tasks
 ~~~~~~~~~~~~~~
-- ``api.tasks.query`` always return an array of tasks. For single task inputs, use ``api.tasks.query(project='my-project', names=["one_file.fa"])[0]``.
+- ``api.tasks.query`` always return an array of tasks. For single task inputs, use ``api.tasks.query(project='my-project')[0]``.
 
 - Queried tasks can be sorted with the ``order_by`` parameter. Supported fields are ``created_time``, ``start_time``, ``name``, ``end_time``, and ``created_by``.
 - Ordering can be specified with the ``order`` parameter. It is set to ``desc`` by default. Ascending order is set with ``asc``.
@@ -1307,7 +1307,7 @@ Single task
 
     # Inputs
     inputs = {}
-    inputs['FastQC-Reads'] = api.tasks.query(project='my-project', metadata={'sample': 'some-sample'})
+    inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
     
     try:
         task = api.tasks.create(name=name, project=project, app=app, inputs=inputs, run=True)
@@ -1357,7 +1357,7 @@ Batch task
 
     # Inputs
     inputs = {}
-    inputs['FastQC-Reads'] = api.tasks.query(project=project, metadata={'sample': 'some-sample'})
+    inputs['FastQC-Reads'] = api.files.query(project=project, metadata={'sample': 'some-sample'})
     
     # Specify that one task should be created per file (i.e. batch tasks by file).
     batch_by = {'type': 'item'}
