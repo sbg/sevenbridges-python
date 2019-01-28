@@ -1,3 +1,9 @@
+0.18.0 (2019-01-28)
+==================
+
+- Improvements:
+    - Updated default value for interruptible instances parameter to None when creating and running tasks
+
 0.17.7 (2019-01-08)
 ==================
 
