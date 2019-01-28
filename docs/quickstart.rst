@@ -1280,7 +1280,7 @@ Task creation hints
 
 Querying tasks
 ~~~~~~~~~~~~~~
-- ``api.files.query`` always return an array of files. For single file inputs, use ``api.files.query(project='my-project', names=["one_file.fa"])[0]``.
+- ``api.tasks.query`` always return an array of tasks. For single task inputs, use ``api.tasks.query(project='my-project')[0]``.
 
 - Queried tasks can be sorted with the ``order_by`` parameter. Supported fields are ``created_time``, ``start_time``, ``name``, ``end_time``, and ``created_by``.
 - Ordering can be specified with the ``order`` parameter. It is set to ``desc`` by default. Ascending order is set with ``asc``.
@@ -1301,10 +1301,10 @@ Single task
     
     # Project in which I want to run a task.
     project = 'my-username/my-project'
-    
+
     # App I want to use to run a task
     app = 'my-username/my-project/my-app'
-    
+
     # Inputs
     inputs = {}
     inputs['FastQC-Reads'] = api.files.query(project='my-project', metadata={'sample': 'some-sample'})
@@ -1354,21 +1354,23 @@ Batch task
     
     # App to use to run the task
     app = 'my-username/my-project/my-app'
-    
+
     # Inputs
     inputs = {}
     inputs['FastQC-Reads'] = api.files.query(project=project, metadata={'sample': 'some-sample'})
     
     # Specify that one task should be created per file (i.e. batch tasks by file).
     batch_by = {'type': 'item'}
-    
-    
+
+
     # Specify that the batch input is FastQC-Reads
     batch_input = 'FastQC-Reads'
-    
+
     try:
-        task = api.tasks.create(name=name, project=project, app=app, 
-                                inputs=inputs, batch_input=batch_input, batch_by=batch_by, run=True)
+        task = api.tasks.create(
+            name=name, project=project, app=app, inputs=inputs,
+            batch_input=batch_input, batch_by=batch_by, run=True
+        )
     except SbError:
         print('I was unable to run a batch task.')
 
