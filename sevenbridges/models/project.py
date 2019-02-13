@@ -375,7 +375,8 @@ class Project(Resource):
 
     def create_task(self, name, app, revision=None, batch_input=None,
                     batch_by=None, inputs=None, description=None, run=False,
-                    disable_batch=False, interruptible=True):
+                    disable_batch=False, interruptible=True,
+                    execution_settings=None):
         """
         Creates a task for this project.
 
@@ -389,11 +390,12 @@ class Project(Resource):
         :param run: True if you want to run a task upon creation.
         :param disable_batch: True if you want to disable batching.
         :param interruptible: True if you want to use interruptible instances.
+        :param execution_settings: Execution settings for the task.
         :return: Task object.
         """
         return self._api.tasks.create(
             name=name, project=self, app=app, revision=revision,
             batch_input=batch_input, batch_by=batch_by, inputs=inputs,
             description=description, run=run, disable_batch=disable_batch,
-            interruptible=interruptible
+            interruptible=interruptible, execution_settings=execution_settings
         )

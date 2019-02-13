@@ -311,10 +311,18 @@ class Task(Resource):
             'max_parallel_instances',
             self.execution_settings.get('max_parallel_instances', 1)
         )
-        return {
+        serialized_es = {
             'instance_type': instance_type,
-            'max_parallel_instances': max_parallel_instances
+            'max_parallel_instances': max_parallel_instances,
         }
+        use_memoization = execution_settings.get(
+            'use_memoization',
+            self.execution_settings.get('use_memoization')
+        )
+        if use_memoization:
+            serialized_es.update({'use_memoization': use_memoization})
+
+        return serialized_es
 
     @staticmethod
     def _serialize_inputs(inputs):
