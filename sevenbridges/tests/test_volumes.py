@@ -55,6 +55,28 @@ def test_create_google_volume(api, given, verifier):
     verifier.volume.created()
 
 
+def test_create_oss_volume(api, given, verifier):
+    # preconditions
+    name = generator.name()
+    bucket = generator.name()
+    endpoint = generator.name()
+    access_key_id = generator.name()
+    secret_access_key = generator.name()
+    access_mode = 'RO'
+    description = generator.text()
+    given.volume.volume_created(name='test')
+
+    # action
+    volume = api.volumes.create_oss_volume(
+        name, bucket, endpoint, access_key_id,
+        secret_access_key, access_mode, description,
+    )
+
+    # verifier
+    assert volume.name == 'test'
+    verifier.volume.created()
+
+
 def test_modify_volume(api, given, verifier):
     # preconditions
     _id = '{}/{}'.format('my', 'volume')

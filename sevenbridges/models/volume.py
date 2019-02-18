@@ -163,6 +163,54 @@ class Volume(Resource):
         response = api.post(url=cls._URL['query'], data=data).json()
         return Volume(api=api, **response)
 
+    @classmethod
+    def create_oss_volume(cls, name, bucket, endpoint, access_key_id,
+                          secret_access_key, access_mode, description=None,
+                          prefix=None, properties=None, api=None):
+        """
+        Create oss volume.
+        :param name: Volume name.
+        :param bucket: Referenced bucket.
+        :param access_key_id: Access key identifier.
+        :param secret_access_key: Secret access key.
+        :param access_mode: Access Mode.
+        :param endpoint: Volume Endpoint.
+        :param description: Volume description.
+        :param prefix: Volume prefix.
+        :param properties: Volume properties.
+        :param api: Api instance.
+        :return: Volume object.
+        """
+        service = {
+            'type': VolumeType.OSS,
+            'bucket': bucket,
+            'endpoint': endpoint,
+            'credentials': {
+                'access_key_id': access_key_id,
+                'secret_access_key': secret_access_key
+            }
+        }
+        if prefix:
+            service['prefix'] = prefix
+        if properties:
+            service['properties'] = properties
+
+        data = {
+            'name': name,
+            'service': service,
+            'access_mode': access_mode
+        }
+        if description:
+            data['description'] = description
+        api = api or cls._API
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        logger.info('Creating oss volume', extra=extra)
+        response = api.post(url=cls._URL['query'], data=data).json()
+        return Volume(api=api, **response)
+
     @inplace_reload
     def save(self, inplace=True):
         """

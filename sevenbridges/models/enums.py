@@ -24,6 +24,7 @@ class TransferState:
 class VolumeType:
     S3 = 'S3'
     GOOGLE = 'GCS'
+    OSS = 'OSS'
 
 
 class VolumeAccessMode:
