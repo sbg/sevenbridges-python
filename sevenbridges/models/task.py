@@ -313,7 +313,7 @@ class Task(Resource):
         )
         serialized_es = {
             'instance_type': instance_type,
-            'max_parallel_instances': max_parallel_instances,
+            'max_parallel_instances': max_parallel_instances
         }
         use_memoization = execution_settings.get(
             'use_memoization',
