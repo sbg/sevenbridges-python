@@ -1,3 +1,9 @@
+0.18.1 (2019-02-18)
+==================
+
+- Improvements:
+    - Added support for creating Aliyun oss volumes
+
 0.18.0 (2019-01-28)
 ==================
 

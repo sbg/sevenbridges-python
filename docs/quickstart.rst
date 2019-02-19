@@ -936,7 +936,8 @@ Volumes have the following methods:
 -  Get imports for a particular volume ``get_imports()``
 -  Get exports for a particular volume ``get_exports()``
 -  Create a new volume based on the AWS S3 service -  ``create_s3_volume()``
--  Create a new volume based on Google Cloud Storage service  - ``create_google_volume()``
+-  Create a new volume based on the Google Cloud Storage service  - ``create_google_volume()``
+-  Create a new volume based on the Aliyun service - ``create_oss_volume()``
 -  Save modifications to the volume to the server ``save()``
 -  Unlink the volume ``delete()``
 -  Get volume members ``get_members()``
