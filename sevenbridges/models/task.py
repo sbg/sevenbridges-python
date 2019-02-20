@@ -319,7 +319,7 @@ class Task(Resource):
             'use_memoization',
             self.execution_settings.get('use_memoization')
         )
-        if use_memoization:
+        if use_memoization is not None:
             serialized_es.update({'use_memoization': use_memoization})
 
         return serialized_es

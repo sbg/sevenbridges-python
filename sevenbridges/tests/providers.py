@@ -98,7 +98,8 @@ class ProjectProvider(object):
             'href': generator.url(),
             'id': '{}/{}'.format('my', 'my-project'),
             'name': generator.user_name(),
-            'billing_group': generator.uuid4()
+            'billing_group': generator.uuid4(),
+            'settings': {}
         }
 
     def exists(self, **kwargs):
