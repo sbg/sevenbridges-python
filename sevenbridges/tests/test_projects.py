@@ -1,6 +1,5 @@
 import faker
 import pytest
-import unittest
 
 from sevenbridges.errors import SbgError, ResourceNotModified
 
