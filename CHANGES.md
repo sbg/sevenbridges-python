@@ -1,3 +1,10 @@
+0.18.2 (2019-02-21)
+==================
+
+- Bugfixes:
+    - Added handling for JSONDecodeError in sevenbridges-python's error decorator
+    - Remove the possibility of an unnecessary lazy fetch when creating tasks by removing the ```name``` parameter from inputs
+
 0.18.1 (2019-02-18)
 ==================
 
