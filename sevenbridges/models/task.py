@@ -345,10 +345,10 @@ class Task(Resource):
 
     @staticmethod
     def _to_api_file_format(_file):
-        api_file = {'class': 'File', 'path': _file.id}
-        if _file.name:
-            api_file['name'] = _file.name
-        return api_file
+        return {
+            'class': 'File',
+            'path': _file.id
+        }
 
     def get_execution_details(self):
         """
