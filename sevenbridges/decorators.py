@@ -1,10 +1,16 @@
-import functools
-import logging
-import threading
 import time
+import logging
+import functools
+import threading
+from six import raise_from
 
-import requests
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
+
 import six
+import requests
 
 from sevenbridges.errors import (
     BadRequest, Unauthorized, Forbidden, NotFound, MethodNotAllowed,
@@ -134,7 +140,17 @@ def check_for_error(func):
             raise e
         except requests.RequestException as e:
             raise SbgError(message=six.text_type(e))
+        except JSONDecodeError:
+            message = (
+                'Service might be unavailable. Can also occur by providing '
+                'too many query parameters.'
+            )
+            raise_from(
+                ServiceUnavailable(message=six.text_type(message)), None
+            )
         except ValueError as e:
+            raise SbgError(message=six.text_type(e))
+        except Exception as e:
             raise SbgError(message=six.text_type(e))
 
     return wrapper
