@@ -151,6 +151,6 @@ def check_for_error(func):
         except ValueError as e:
             raise SbgError(message=six.text_type(e))
         except Exception as e:
-            raise SbgError(message=six.text_type(e))
+            raise_from(e, None)
 
     return wrapper
