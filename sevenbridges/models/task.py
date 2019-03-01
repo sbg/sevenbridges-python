@@ -1,3 +1,4 @@
+import time
 import logging
 
 import six
@@ -7,13 +8,18 @@ from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
     SbgError, TaskValidationError
 )
+
 from sevenbridges.meta.fields import (
-    HrefField, UuidField, StringField, CompoundField, DateTimeField,
+    HrefField, UuidField, StringField,
+    CompoundField, DateTimeField,
     BooleanField, DictField
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
+
 from sevenbridges.models.app import App
+from sevenbridges.models.file import File
+from sevenbridges.models.enums import TaskStatus
 from sevenbridges.models.compound.price import Price
 from sevenbridges.models.compound.tasks.batch_by import BatchBy
 from sevenbridges.models.compound.tasks.batch_group import BatchGroup
@@ -21,7 +27,7 @@ from sevenbridges.models.compound.tasks.execution_status import ExecutionStatus
 from sevenbridges.models.compound.tasks.input import Input
 from sevenbridges.models.compound.tasks.output import Output
 from sevenbridges.models.execution_details import ExecutionDetails
-from sevenbridges.models.file import File
+
 
 logger = logging.getLogger(__name__)
 
@@ -389,6 +395,25 @@ class Task(Resource):
         logger.info('Getting tasks in bulk.')
         response = api.post(url=cls._URL['bulk_get'], data=data)
         return TaskBulkRecord.parse_records(response=response, api=api)
+
+    def wait(self=None, period=10, callback=None, *args, **kwargs):
+        """Wait until task is complete
+        :param period: Time in seconds between reloads
+        :param callback: Function to call after the task has finished,
+            arguments and keyword arguments can be provided for it
+        :return: Return value of provided callback function or None if a
+            callback function was not provided
+        """
+        while self.status not in [
+            TaskStatus.COMPLETED,
+            TaskStatus.FAILED,
+            TaskStatus.ABORTED
+        ]:
+            self.reload()
+            time.sleep(period)
+
+        if callback:
+            return callback(*args, **kwargs)
 
 
 class TaskBulkRecord(BulkRecord):
