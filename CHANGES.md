@@ -1,3 +1,15 @@
+0.18.3 (2019-03-05)
+==================
+
+- Improvements:
+    - [Issue #112](https://github.com/sbg/sevenbridges-python/issues/112)
+        - Limit the url length for all requests with a 414 URI too long error
+    - [Issue #110](https://github.com/sbg/sevenbridges-python/issues/110)
+        - Added a simple wait method to tasks
+- Bugfixes:
+    - [Issue #111](https://github.com/sbg/sevenbridges-python/issues/111)
+        - Added a check to make sure only one of project, parent or dataset are provided when querying files
+
 0.18.2 (2019-02-21)
 ==================
 
