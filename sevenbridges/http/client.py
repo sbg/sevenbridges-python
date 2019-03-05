@@ -7,9 +7,9 @@ from datetime import datetime as dt
 import requests
 
 import sevenbridges
-from sevenbridges.config import Config, format_proxies
 from sevenbridges.decorators import check_for_error
-from sevenbridges.errors import SbgError
+from sevenbridges.errors import SbgError, URITooLong
+from sevenbridges.config import Config, format_proxies
 from sevenbridges.http.error_handlers import maintenance_sleeper
 
 logger = logging.getLogger(__name__)
@@ -27,13 +27,34 @@ class AAHeader:
     value = 'Advance'
 
 
+class RequestSession(requests.Session):
+    """Client session class"""
+
+    MAX_URL_LENGTH = 6000
+
+    def send(self, request, **kwargs):
+        """Send prepared request
+        :param request: Prepared request to be sent
+        :param kwargs: request keyword arguments
+        :return: Request response
+        """
+        if len(request.url) > self.MAX_URL_LENGTH:
+            raise URITooLong(
+                message=(
+                    'Request url too large, '
+                    'likely too many query parameters provided.'
+                )
+            )
+        return super(RequestSession, self).send(request, **kwargs)
+
+
 def generate_session(proxies=None):
     """
     Utility method to generate request sessions.
     :param proxies: Proxies dictionary.
     :return: requests.Session object.
     """
-    session = requests.Session()
+    session = RequestSession()
     session.proxies = proxies
     return session
 
