@@ -120,7 +120,12 @@ class File(Resource):
             query_params['parent'] = Transform.to_file(parent)
 
         if not (project or dataset or parent):
-            raise SbgError('Project, dataset or parent must be provided!')
+            raise SbgError('Project, dataset or parent must be provided.')
+
+        if [project, parent, dataset].count(None) < 2:
+            raise SbgError(
+                'Only one out of project, parent or dataset must be provided.'
+            )
 
         if names is not None and isinstance(names, list):
             if len(names) == 0:

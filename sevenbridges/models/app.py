@@ -46,7 +46,7 @@ class App(Resource):
     @property
     def id(self):
         _id, _rev = self._id.rsplit('/', 1)
-        if re.match('^\d*$', _rev):
+        if re.match(r'^\d*$', _rev):
             return _id
         else:
             return self._id
