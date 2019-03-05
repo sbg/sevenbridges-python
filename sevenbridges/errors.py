@@ -146,3 +146,10 @@ class ExecutionDetailsInvalidTaskType(SbgError):
         super(ExecutionDetailsInvalidTaskType, self).__init__(
             code=code, status=-1, message=message, more_info=more_info
         )
+
+
+class URITooLong(SbgError):
+    def __init__(self, code=None, message=None, more_info=None):
+        super(URITooLong, self).__init__(
+            code=code, status=414, message=message, more_info=more_info
+        )
