@@ -295,3 +295,15 @@ class Transform(object):
             return package
         else:
             raise SbgError('Invalid automation package parameter!')
+
+    @staticmethod
+    def to_async_job(async_job):
+        from sevenbridges.models.async_jobs import AsyncJob
+        if not async_job:
+            raise SbgError('Async job is required!')
+        if isinstance(async_job, AsyncJob):
+            return async_job.id
+        if isinstance(async_job, six.string_types):
+            return async_job
+        else:
+            raise SbgError('Invalid async job parameter!')

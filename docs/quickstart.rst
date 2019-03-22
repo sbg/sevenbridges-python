@@ -503,7 +503,7 @@ The following operations are supported:
 Dataset properties
 ~~~~~~~~~~~~~~~~~~
 
-Each dataset has the following available properties:
+Each dataset has the following properties:
 
 ``href`` - The URL of the dataset on the API server.
 
@@ -1173,7 +1173,7 @@ can also invoke the following class-specific methods:
 App properties
 ~~~~~~~~~~~~~~
 
-Each app has the following available properties:
+Each app has the following properties:
 
 ``href`` - The URL of the app on the API server.
 
@@ -1568,7 +1568,7 @@ The following operations are supported for automation runs:
 Properties
 ~~~~~~~~~~
 
-Each automation has the following available properties:
+Each automation has the following properties:
 
 ``href`` - The URL of the automation on the API server.
 
@@ -1588,7 +1588,7 @@ Each automation has the following available properties:
 
 ``modified_on`` - Date of the last modification of the automation.
 
-Each automation run has the following available properties:
+Each automation run has the following properties:
 
 ``href`` - The URL of the automation run on the API server.
 
@@ -1687,3 +1687,90 @@ Examples
 
     # Get automation run state
     state = run.state()
+
+
+Managing async operations
+-------------------------
+
+The following operations are supported for async operations runs:
+
+    - ``list_file_jobs()`` - Query all async jobs for files.
+    - ``get_copy_files_job()`` - Get the details of an asynchronous bulk file copy job.
+    - ``get_delete_files_job()`` - Get the details of an asynchronous bulk file delete job.
+    - ``get_results()`` - Parse results of a job as a bulk response.
+    - ``file_bulk_copy()`` - Perform a bulk copy operation of files and folders. Any underlying folder structure will be preserved.
+    - ``file_bulk_delete()`` - Perform a bulk delete operation of files and folders. Deleting folders which aren't empty is allowed.
+
+Properties
+~~~~~~~~~~
+
+Each async job has the following properties:
+
+``id`` - Async job identifier.
+
+``type`` - The type of job, which is COPY in the case of copying files, and DELETE in case of deleting files.
+
+``state`` - Current job state (RUNNING, FINISHED, SUBMITTED, RESOLVING)
+
+``result`` - The result of the copy job.
+
+``total_files`` - The total number of files that were processed during the job.
+
+``failed_files`` - The number of files that failed to copy.
+
+``completed_files`` - The number of files that were successfully copied.
+
+``started_on`` - The time and date the copy job started.
+
+``finished_on`` - The time and date the copy job has finished.
+
+
+Examples
+~~~~~~~~
+
+.. code:: python
+
+    # Query all file jobs
+    all_jobs = api.async_jobs.list_file_jobs().all()
+
+    # Get file copy job by id
+    copy_job = api.async_jobs.get_file_copy_job(id='copy_job_id')
+
+    # Get file delete job by id
+    delete_job = api.async_jobs.get_file_delete_job(id='delete_job_id')
+
+    # Parse job results to bulk format
+    copy_job_results = copy_job.get_results()
+
+    # Check validity of each result in bulk format
+    for result in copy_job_results:
+        if result.valid:
+            print(result.resource)
+        else:
+            print(result.error)
+
+    # Start bulk file copy job
+    files = [
+        {
+            'file': 'file_id_1',
+            'parent': 'parent_id',
+            'name': 'new_name_1',
+        },
+        {
+            'file': 'file_id_2',
+            'parent': 'parent_id',
+            'name': 'new_name_2',
+        },
+    ]
+    new_copy_job = api.async_jobs.file_bulk_copy(files=files)
+
+    # Start bulk file delete job
+    files = [
+        {
+            'file': 'file_id_1'
+        },
+        {
+            'file': 'file_id_2'
+        },
+    ]
+    new_delete_job = api.async_jobs.file_bulk_delete(files=files)

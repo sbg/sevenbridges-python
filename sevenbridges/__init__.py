@@ -34,10 +34,12 @@ from sevenbridges.models.division import Division
 from sevenbridges.models.automation import (
     Automation, AutomationRun, AutomationPackage, AutomationMember
 )
+from sevenbridges.models.async_jobs import AsyncJob
 
 from sevenbridges.models.enums import (
-    AppCopyStrategy, AppRawFormat, AutomationRunActions, FileStorageType,
-    ImportExportState, TaskStatus, TransferState, VolumeAccessMode, VolumeType,
+    AppCopyStrategy, AppRawFormat, AsyncFileOperations, AsyncJobStates,
+    AutomationRunActions, FileStorageType, ImportExportState, TaskStatus,
+    TransferState, VolumeAccessMode, VolumeType,
 )
 from sevenbridges.errors import (
     SbgError, ResourceNotModified, ReadOnlyPropertyError, ValidationError,
@@ -50,13 +52,14 @@ from sevenbridges.errors import (
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 __all__ = [
-    'Api', 'Automation', 'AutomationRun', 'AutomationMember',
+    'Api', 'AsyncJob', 'Automation', 'AutomationRun', 'AutomationMember',
     'AutomationPackage',  'Config', 'Invoice', 'BillingGroup',
     'BillingGroupBreakdown', 'User', 'Endpoints', 'Project', 'Task', 'App',
     'Member', 'Permissions', 'File', 'Export', 'Import', 'Volume', 'Marker',
     'Division', 'Team', 'TeamMember', 'Dataset', 'BulkRecord',
     # Enums
-    'AppCopyStrategy', 'AppRawFormat', 'AutomationRunActions',
+    'AppCopyStrategy', 'AppRawFormat', 'AppCopyStrategy',
+    'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
     'FileStorageType', 'ImportExportState', 'TaskStatus', 'TransferState',
     'VolumeAccessMode', 'VolumeType',
     # Errors
