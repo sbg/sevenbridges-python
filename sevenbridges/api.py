@@ -14,6 +14,7 @@ from sevenbridges.models.dataset import Dataset
 from sevenbridges.models.invoice import Invoice
 from sevenbridges.models.project import Project
 from sevenbridges.models.division import Division
+from sevenbridges.models.async_jobs import AsyncJob
 from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.rate_limit import RateLimit
 from sevenbridges.models.storage_export import Export
@@ -27,6 +28,7 @@ class Api(HttpClient):
 
     actions = Actions
     apps = App
+    async_jobs = AsyncJob
     automations = Automation
     automation_runs = AutomationRun
     billing_groups = BillingGroup

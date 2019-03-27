@@ -53,6 +53,7 @@ class Precondition(object):
         self.automation_members = providers.AutomationMemberProvider(
             request_mocker, base_url
         )
+        self.async_jobs = providers.AsyncJobProvider(request_mocker, base_url)
 
 
 class Verifier(object):
@@ -81,6 +82,7 @@ class Verifier(object):
         self.automation_members = verifiers.AutomationMemberVerifier(
             request_mocker
         )
+        self.async_jobs = verifiers.AsyncJobVerifier(request_mocker)
 
 
 @pytest.fixture

@@ -515,3 +515,30 @@ class AutomationRunVerifier(object):
 
     def stopped(self, id):
         self.checker.check_url('/automation/runs/{}/actions/stop'.format(id))
+
+
+class AsyncJobVerifier(object):
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def listed(self, limit=None, offset=None):
+        qs = {}
+        if limit:
+            qs['limit'] = limit
+        if offset:
+            qs['offset'] = offset
+        self.checker.check_url('/async/files')
+        self.checker.check_query(qs)
+
+    def file_copy_job_fetched(self, id):
+        self.checker.check_url('/async/files/copy/{}'.format(id))
+
+    def file_delete_job_fetched(self, id):
+        self.checker.check_url('/async/files/delete/{}'.format(id))
+
+    def async_files_copied(self):
+        self.checker.check_url('/async/files/copy')
+
+    def async_files_deleted(self):
+        self.checker.check_url('/async/files/delete')
