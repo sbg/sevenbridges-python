@@ -1,3 +1,9 @@
+0.19.0 (2019-03-27)
+==================
+
+- Improvements:
+    - Added support for async file operations
+
 0.18.3 (2019-03-05)
 ==================
 
