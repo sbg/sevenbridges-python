@@ -17,7 +17,7 @@ class SbgError(Exception):
         self.more_info = more_info
 
     def __str__(self):
-        return self.message
+        return str(self.message)
 
 
 class ResourceNotModified(SbgError):
