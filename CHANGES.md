@@ -1,3 +1,10 @@
+0.19.1 (2019-04-04)
+==================
+
+- Bugfixes:
+    - Fixed issue with using a configuration file on python 3.7
+    - Fixed issue with error message string representation
+
 0.19.0 (2019-03-27)
 ==================
 
