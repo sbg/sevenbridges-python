@@ -27,21 +27,32 @@ def test_create_project(api, given, verifier, name):
     # preconditions
     project_description = generator.name()
     billing_group = generator.uuid4()
+    settings = {
+        "locked": False,
+        "use_interruptible_instances": False,
+        "use_memoization": True
+    }
+
     given.project.can_be_created(
-        name=name, billing_group=billing_group, description=project_description
+        name=name,
+        billing_group=billing_group,
+        description=project_description,
+        settings=settings
     )
 
     # action
     if name:
         project = api.projects.create(
             name=name, billing_group=billing_group,
-            description=project_description, tags=['test']
+            description=project_description, tags=['test'],
+            settings=settings
         )
 
         # verification
         assert project.name == name
         assert project.description == project_description
         assert project.billing_group == billing_group
+        assert set(project.settings).issubset(set(settings))
 
         verifier.project.created()
     else:
