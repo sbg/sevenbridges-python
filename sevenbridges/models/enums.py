@@ -74,3 +74,15 @@ class AppCopyStrategy:
 
 class AutomationRunActions:
     STOP = 'stop'
+
+
+class AsyncJobStates:
+    RUNNING = 'RUNNING'
+    FINISHED = 'FINISHED'
+    SUBMITTED = 'SUBMITTED'
+    RESOLVING = 'RESOLVING'
+
+
+class AsyncFileOperations:
+    COPY = 'copy'
+    DELETE = 'delete'

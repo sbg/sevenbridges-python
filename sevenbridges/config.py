@@ -52,7 +52,7 @@ class Profile(object):
                 'http_proxy': None,
                 'https_proxy': None,
                 'advance_access': False,
-            })
+            }, allow_no_value=True)
             self.config_parser.read(self.CONFIG)
 
     @property

@@ -1594,3 +1594,64 @@ class AutomationRunProvider(object):
         }
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(total)})
+
+
+class AsyncJobProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default_async_job():
+        return {
+            'id': generator.uuid4(),
+            'type': 'COPY',
+            'state': 'SUBMITTED',
+            'result': [],
+            'total_files': 0,
+            'failed_files': 0,
+            'completed_files': 0,
+            'started_on': generator.time(),
+            'finished_on': generator.time(),
+        }
+
+    # noinspection PyShadowingBuiltins
+    def exists(self, type, **kwargs):
+        async_job = self.default_async_job()
+        async_job.update(kwargs)
+        id = async_job['id']
+        self.request_mocker.get(
+            '/async/files/{}/{}'.format(type, id), json=async_job
+        )
+
+    def list_file_jobs(self, total):
+        items = [self.default_async_job() for _ in range(total)]
+        href = self.base_url + '/async/files'
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def can_copy_files(self, files):
+        async_job = self.default_async_job()
+        async_job['result'] = [
+            {'resource': {'id': file['file']}}
+            for file in files
+        ]
+        self.request_mocker.post(
+            '/async/files/copy', json=async_job
+        )
+
+    def can_delete_files(self, files):
+        async_job = self.default_async_job()
+        async_job['result'] = [
+            {'resource': {'id': file['file']}}
+            for file in files
+        ]
+        self.request_mocker.post(
+            '/async/files/delete', json=async_job
+        )
