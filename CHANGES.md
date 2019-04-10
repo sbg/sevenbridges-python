@@ -1,3 +1,9 @@
+0.19.2 (2019-04-10)
+==================
+
+- Improvements:
+    - Added execution_settings parameter to Project.create_task
+
 0.19.1 (2019-04-04)
 ==================
 
