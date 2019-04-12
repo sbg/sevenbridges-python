@@ -411,6 +411,8 @@ Once you have obtained the :code:`id` of a Project instance, you can see its pro
 
 ``tags`` - list of project tags
 
+``root_folder`` - Id of project's root folder
+
 The property href :code:`href` is a URL on the server that uniquely identifies the
 resource in question. All resources have this attribute. Each project also
 has a name, identifier, description indicating its use, a type, some tags and also a
