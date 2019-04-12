@@ -69,7 +69,7 @@ package, or install it into your site-packages by invoking: :
 
 If you are interested in reviewing this documentation locally, clone
 this repository, position yourself in the docs directory and after
-installing requirements-dev.txt, invoke: :
+installing `requirements.txt` (or `requirements2.txt` if using python 2), invoke:
 
     $ make html
 
@@ -77,10 +77,10 @@ Run Tests
 ---------
 
 In order to run tests clone this repository, position yourself in the
-root of the cloned project and after installing requirements-dev.txt,
-invoke: :
+root of the cloned project and after installing `requirements.txt` (or
+`requirements2.txt` if using python 2), invoke:
 
-    $ py.test
+    $ pytest
 
 Authentication and Configuration
 --------------------------------
