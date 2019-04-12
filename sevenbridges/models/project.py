@@ -40,6 +40,7 @@ class Project(Resource):
     type = StringField(read_only=False, max_length=2)
     tags = BasicListField(read_only=False)
     settings = CompoundField(Settings, read_only=False)
+    root_folder = StringField(read_only=True)
 
     def __str__(self):
         return six.text_type('<Project: id={id}>'.format(id=self.id))
