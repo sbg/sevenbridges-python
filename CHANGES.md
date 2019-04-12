@@ -1,3 +1,10 @@
+0.20.0 (2019-04-12)
+==================
+
+- Improvements:
+    - Added multi-cloud support
+    - Added root_folder parameter to project model
+
 0.19.2 (2019-04-10)
 ==================
 
