@@ -91,13 +91,13 @@ class Project(Resource):
         if name is None:
             raise SbgError('Project name is required!')
 
-        if billing_group:
-            billing_group = Transform.to_billing_group(billing_group)
-
         data = {
             'name': name,
-            'billing_group': billing_group,
         }
+
+        if billing_group:
+            data['billing_group'] = Transform.to_billing_group(billing_group)
+
         if description:
             data['description'] = description
         if tags:
