@@ -51,6 +51,7 @@ class TaskStatus:
     RUNNING = 'RUNNING'
     COMPLETED = 'COMPLETED'
     ABORTED = 'ABORTED'
+    ABORTING = 'ABORTING'
     FAILED = 'FAILED'
 
 
