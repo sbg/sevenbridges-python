@@ -1,3 +1,9 @@
+0.20.1 (2019-05-06)
+==================
+
+- Improvements:
+    - Added ABORTING to TaskStatus enum
+
 0.20.0 (2019-04-12)
 ==================
 
