@@ -413,6 +413,14 @@ Once you have obtained the :code:`id` of a Project instance, you can see its pro
 
 ``root_folder`` - Id of project's root folder
 
+``settings`` - Project settings
+
+``created_by`` - Project creator
+
+``created_on`` - Date of creation
+
+``modified_on`` - Modification date
+
 The property href :code:`href` is a URL on the server that uniquely identifies the
 resource in question. All resources have this attribute. Each project also
 has a name, identifier, description indicating its use, a type, some tags and also a

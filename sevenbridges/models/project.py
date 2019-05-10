@@ -7,7 +7,7 @@ from sevenbridges.errors import SbgError, ResourceNotModified
 from sevenbridges.meta.collection import Collection
 from sevenbridges.meta.fields import (
     HrefField, StringField, UuidField, BasicListField,
-    CompoundField)
+    CompoundField, DateTimeField)
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.projects.settings import Settings
@@ -41,6 +41,9 @@ class Project(Resource):
     tags = BasicListField(read_only=False)
     settings = CompoundField(Settings, read_only=False)
     root_folder = StringField(read_only=True)
+    created_by = StringField(read_only=True)
+    created_on = DateTimeField(read_only=True)
+    modified_on = DateTimeField(read_only=True)
 
     def __str__(self):
         return six.text_type('<Project: id={id}>'.format(id=self.id))
