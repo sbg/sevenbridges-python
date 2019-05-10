@@ -43,7 +43,7 @@ class Project(Resource):
     root_folder = StringField(read_only=True)
     created_by = StringField(read_only=True)
     created_on = DateTimeField(read_only=True)
-    modified_on = DateTimeField(read_only=False)
+    modified_on = DateTimeField(read_only=True)
 
     def __str__(self):
         return six.text_type('<Project: id={id}>'.format(id=self.id))
