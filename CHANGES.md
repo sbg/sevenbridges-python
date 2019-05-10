@@ -1,3 +1,9 @@
+0.20.2 (2019-05-10)
+==================
+
+- Improvements:
+    - Exposed created_on, created_by, modified_on fields on Project entity.
+
 0.20.1 (2019-05-06)
 ==================
 
