@@ -378,15 +378,25 @@ class Task(Resource):
             self._URL['execution_details'].format(id=self.id)).json()
         return ExecutionDetails(api=self._api, **data)
 
-    def get_batch_children(self):
+    def get_batch_children(self, status=None, created_from=None,
+                           created_to=None, started_from=None, started_to=None,
+                           ended_from=None, ended_to=None, order_by=None,
+                           order=None, offset=None, limit=None, api=None):
         """
         Retrieves batch child tasks for this task if its a batch task.
         :return: Collection instance.
         :raises SbError if task is not a batch task.
         """
+        api = api or self._api
         if not self.batch:
             raise SbgError("This task is not a batch task.")
-        return self.query(parent=self.id, api=self._api)
+        return self.query(
+            parent=self.id, status=status, created_from=created_from,
+            created_to=created_to, started_from=started_from,
+            started_to=started_to, ended_from=ended_from, ended_to=ended_to,
+            order_by=order_by, order=order, offset=offset, limit=limit,
+            api=api,
+        )
 
     @classmethod
     def bulk_get(cls, tasks, api=None):
