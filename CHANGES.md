@@ -1,3 +1,9 @@
+0.20.3 (2019-05-28)
+==================
+
+- Improvements:
+    - Added other task query parameters to get_batch_children Task method, including limit and offset (for pagination)
+
 0.20.2 (2019-05-10)
 ==================
 
