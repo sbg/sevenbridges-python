@@ -4,8 +4,8 @@ import logging
 import six
 
 from sevenbridges.errors import SbgError
-from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.fields import Field
+from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.transformer import Transform
 
 logger = logging.getLogger(__name__)
@@ -155,7 +155,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
             resource = api.get(url=cls._URL['get'].format(id=id)).json()
             return cls(api=api, **resource)
         else:
-            raise SbgError('Unable to fetch resource!')
+            raise SbgError('Unable to retrieve resource!')
 
     def delete(self):
         """
@@ -183,14 +183,18 @@ class Resource(six.with_metaclass(ResourceMeta)):
                     self._URL['get'].format(id=self.id)).json()
                 resource = self.__class__(api=self._api, **data)
             else:
-                raise SbgError('Resource can not be refreshed!')
-
+                raise SbgError(
+                    'Resource can not be refreshed, "id" property not set or '
+                    'retrieval for this resource is not available.'
+                )
             query = {'id': self.id} if hasattr(self, 'id') else {}
             extra = {'resource': self.__class__.__name__, 'query': query}
             logger.info('Reloading {} resource.'.format(self), extra=extra)
-
-        except Exception:
-            raise SbgError('Resource can not be refreshed!')
+        except Exception as e:
+            raise SbgError(
+                'Resource can not be refreshed due to an error: {}'
+                .format(six.text_type(e))
+            )
 
         self._data = resource._data
         self._dirty = resource._dirty

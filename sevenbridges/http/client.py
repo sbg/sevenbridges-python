@@ -116,9 +116,10 @@ class HttpClient(object):
             advance_access = advance_access
 
         if not url:
-            raise SbgError('URL is missing!'
-                           ' Configuration may contain errors, '
-                           'or you forgot to pass the url param.')
+            raise SbgError(
+                'URL is missing! Configuration may contain errors, '
+                'or the url parameter is missing.'
+            )
 
         self.url = url.rstrip('/')
         self._session = generate_session(proxies)
@@ -141,15 +142,17 @@ class HttpClient(object):
         elif self.oauth_token:
             self.headers['Authorization'] = 'Bearer {}'.format(oauth_token)
         else:
-            raise SbgError('Required authorization model not selected!. '
-                           'Please provide at least one token value.'
-                           )
+            raise SbgError(
+                'Required authorization model not selected!. '
+                'Please provide at least one token value.'
+            )
 
         self.aa = advance_access
         if self.aa:
-            logger.warning('Advance access features enabled. '
-                           'AA API calls can be subjected to changes'
-                           )
+            logger.warning(
+                'Advance access features enabled. '
+                'AA API calls can be subject to changes.'
+            )
         self.error_handlers = [maintenance_sleeper]
         if error_handlers and isinstance(error_handlers, list):
             for handler in error_handlers:

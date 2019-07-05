@@ -14,5 +14,5 @@ class BatchGroup(Resource):
     fields = DictField(read_only=True)
 
     @staticmethod
-    def __str__():
+    def __str__(**kwargs):
         return six.text_type('<Batch group>')

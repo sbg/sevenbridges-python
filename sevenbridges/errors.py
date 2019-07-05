@@ -23,9 +23,12 @@ class SbgError(Exception):
 class ResourceNotModified(SbgError):
     def __init__(self):
         super(ResourceNotModified, self).__init__(
-            code=-1, status=-1,
-            message='No relevant changes were detected in order to update the '
-                    'resource on the server.'
+            code=-1,
+            status=-1,
+            message=(
+                'No relevant changes were detected in order to update the '
+                'resource on the server.'
+            )
         )
 
 

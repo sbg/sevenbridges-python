@@ -1,9 +1,15 @@
 import re
+import logging
+
+import six
 
 from sevenbridges.errors import SbgError, ReadOnlyPropertyError
 from sevenbridges.meta.comp_mutable_dict import CompoundMutableDict
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.file import File
+
+
+logger = logging.getLogger(__name__)
 
 
 # noinspection PyProtectedMember
@@ -25,7 +31,11 @@ class Logs(CompoundMutableDict, Resource):
                 return File(id=file_id, api=self._api)
             else:
                 raise SbgError('Unable to fetch {} log file!'.format(item))
-        except Exception:
+        except Exception as e:
+            logger.debug(
+                'Failed to retrieve log file due to an error: %s',
+                six.text_type(e)
+            )
             return None
 
     def __setitem__(self, key, value):

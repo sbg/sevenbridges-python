@@ -49,8 +49,10 @@ class Collection(list):
             response = self._api.get(url, append_base=False)
             data = response.json()
             total = response.headers['x-total-matching-query']
-            items = [self.resource(api=self._api, **group) for group in
-                     data['items']]
+            items = [
+                self.resource(api=self._api, **group)
+                for group in data['items']
+            ]
             links = [Link(**link) for link in data['links']]
             href = data['href']
             return Collection(

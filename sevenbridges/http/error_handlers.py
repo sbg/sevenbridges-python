@@ -38,8 +38,10 @@ def maintenance_sleeper(api, response, sleep=300):
     :param sleep: Time to sleep in between the requests.
     """
     while response.status_code == 503:
-        logger.info('Service unavailable: Response=[%s]',
-                    six.text_type(response.__dict__))
+        logger.info(
+            'Service unavailable: Response=[%s]',
+            six.text_type(response.__dict__)
+        )
         response_body = response.json()
         if 'code' in response_body:
             if response_body['code'] == 0:
@@ -64,8 +66,11 @@ def general_error_sleeper(api, response, sleep=300):
 
     """
     while response.status_code >= 500:
-        logger.warning('Caught [%s] status code! Waiting for [%s]s',
-                       response.status_code, sleep)
+        logger.warning(
+            'Caught [%s] status code! Waiting for [%s]s',
+            response.status_code,
+            sleep
+        )
         time.sleep(sleep)
         response = api.session.send(response.request)
     return response
