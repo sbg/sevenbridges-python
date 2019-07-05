@@ -1,17 +1,21 @@
-import hashlib
 import io
 import os
-import threading
 import time
+import logging
+import hashlib
+import threading
 
-import requests
 import six
+import requests
 
-from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
+from sevenbridges.decorators import retry
 from sevenbridges.http.client import generate_session
 from sevenbridges.models.enums import PartSize, TransferState
 from sevenbridges.transfer.utils import Part, Progress, total_parts
+
+
+logger = logging.getLogger(__name__)
 
 
 def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
@@ -356,8 +360,11 @@ class Download(threading.Thread):
         self._status = TransferState.COMPLETED
         try:
             os.rename(self._temp_file, self._file_path)
-        except Exception:
-            raise SbgError("Unable to rename the file.")
+        except Exception as e:
+            raise SbgError(
+                "Unable to rename the file due to an error: {}."
+                .format(six.text_type(e))
+            )
 
         if self._callback:
             return self._callback(self._status)

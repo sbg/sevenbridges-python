@@ -52,5 +52,7 @@ class BatchBy(Resource, dict):
             return False
         if not self.__class__ == other.__class__:
             return False
-        return self is other or \
+        return (
+            self is other or
             self._parent._data[self._name] == other._parent._data[self._name]
+        )

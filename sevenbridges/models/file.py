@@ -353,8 +353,11 @@ class File(Resource):
                 data = self._api.get(
                     self._URL['get'].format(id=self.id)).json()
                 resource = File(api=self._api, **data)
-            except Exception:
-                raise SbgError('Resource can not be refreshed!')
+            except Exception as e:
+                raise SbgError(
+                    'Resource can not be refreshed due to an error: {}'
+                    .format(six.text_type(e))
+                )
 
         self._data = resource._data
         self._dirty = resource._dirty

@@ -13,6 +13,7 @@ class Rate(Resource):
     reset = DateTimeField()
 
     def __str__(self):
-        return six.text_type('<Rate: limit={limit}, remaining={rem}>'
-                             .format(limit=self.limit, rem=self.remaining)
-                             )
+        return six.text_type(
+            '<Rate: limit={limit}, remaining={rem}>'
+            .format(limit=self.limit, rem=self.remaining)
+        )

@@ -75,10 +75,11 @@ def _submit_part(session, url, part, timeout):
         response = session.put(url, data=part, timeout=timeout)
         return response.headers.get('etag').strip('"')
     except Exception as e:
+        logger.debug(
+            'Failed to submit part due to an error: %s', six.text_type(e)
+        )
         raise SbgError(
-            'Failed to submit the part. Reason: {}'.format(
-                six.text_type(e)
-            )
+            'Failed to submit the part. Reason: {}'.format(six.text_type(e))
         )
 
 

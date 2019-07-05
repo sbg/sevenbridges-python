@@ -22,10 +22,17 @@ def format_proxies(proxies):
 
 
 class Profile(object):
-    CREDENTIALS = os.path.join(os.path.expanduser('~'), '.sevenbridges',
-                               'credentials')
-    CONFIG = os.path.join(os.path.expanduser('~'), '.sevenbridges',
-                          'sevenbridges-python', 'config')
+    CREDENTIALS = os.path.join(
+        os.path.expanduser('~'),
+        '.sevenbridges',
+        'credentials'
+    )
+    CONFIG = os.path.join(
+        os.path.expanduser('~'),
+        '.sevenbridges',
+        'sevenbridges-python',
+        'config'
+    )
 
     def __init__(self, profile):
         if not os.path.isfile(self.CREDENTIALS):
@@ -68,9 +75,11 @@ class Profile(object):
         try:
             return {
                 'http_proxy': self.config_parser.get(
-                    'proxies', 'http_proxy') if self.config_parser else None,
+                    'proxies', 'http_proxy'
+                ) if self.config_parser else None,
                 'https_proxy': self.config_parser.get(
-                    'proxies', 'https_proxy') if self.config_parser else None
+                    'proxies', 'https_proxy'
+                ) if self.config_parser else None
             }
         except KeyError:
             return format_proxies({})
@@ -80,8 +89,9 @@ class Profile(object):
     @property
     def advance_access(self):
         try:
-            return bool(self.config_parser.get(
-                'mode', 'advance_access')) if self.config_parser else False
+            return bool(
+                self.config_parser.get('mode', 'advance_access')
+            ) if self.config_parser else False
         except KeyError:
             return False
         except cp.NoSectionError:
@@ -138,6 +148,7 @@ class Config(object):
         logger.info(
             'Client settings: [url={}] [token={}] [proxy={}]'.format(
                 self.api_endpoint,
-                self.auth_token, self.proxies)
-
+                self.auth_token,
+                self.proxies
+            )
         )
