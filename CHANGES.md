@@ -1,3 +1,12 @@
+0.21.0 (2019-07-05)
+==================
+
+- Improvements:
+    - Upload part_size will use a value returned by server, the provided value will be used as a suggestion that may be accepted by the server
+    - Improved and added many debug logs
+- Bugfixes:
+    - Fixed issue with using folders as task inputs
+
 0.20.3 (2019-05-28)
 ==================
 
