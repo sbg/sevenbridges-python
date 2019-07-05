@@ -1,8 +1,8 @@
 import io
-import math
 import os
-import threading
 import time
+import logging
+import threading
 
 import six
 
@@ -11,6 +11,8 @@ from sevenbridges.errors import SbgError
 from sevenbridges.http.client import generate_session
 from sevenbridges.models.enums import PartSize, TransferState
 from sevenbridges.transfer.utils import Progress, total_parts
+
+logger = logging.getLogger(__name__)
 
 
 def _get_part_url(api, url, upload, part):
@@ -210,8 +212,8 @@ class Upload(threading.Thread):
     }
 
     def __init__(self, file_path, project=None, parent=None, file_name=None,
-                 overwrite=False, part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE,
-                 retry_count=5, timeout=60, api=None):
+                 overwrite=False, part_size=None, retry_count=5, timeout=60,
+                 api=None):
         """
         Multipart File uploader.
 
@@ -250,12 +252,7 @@ class Upload(threading.Thread):
         else:
             self._file_name = file_name
 
-        if part_size and part_size < PartSize.UPLOAD_MINIMUM_PART_SIZE:
-            raise SbgError(
-                'Chunk size is too small! Minimum get_parts size is {}'.format(
-                    PartSize.UPLOAD_MINIMUM_PART_SIZE)
-            )
-        self._part_size = part_size
+        self._part_size = part_size  # or PartSize.UPLOAD_MINIMUM_PART_SIZE
         self._project = project
         self._parent = parent
         self._file_path = file_path
@@ -264,8 +261,6 @@ class Upload(threading.Thread):
             raise SbgError('File size must not be 0.')
 
         self._verify_file_size()
-        self._verify_part_size()
-        self._verify_part_number()
 
         self._overwrite = overwrite
         self._retry = retry_count
@@ -291,30 +286,6 @@ class Upload(threading.Thread):
     def result(self):
         return self._result
 
-    def _verify_part_number(self):
-        """
-        Verifies that the total number of parts is smaller then 10^5 which
-        is the maximum number of parts.
-        """
-        total = int(math.ceil(self._file_size / self._part_size))
-        if total > PartSize.MAXIMUM_TOTAL_PARTS:
-            self._status = TransferState.FAILED
-            raise SbgError(
-                'Total parts = {}. Maximum number of parts is {}'.format(
-                    total, PartSize.MAXIMUM_TOTAL_PARTS)
-            )
-
-    def _verify_part_size(self):
-        """
-        Verifies that the part size is smaller then the maximum part size
-        which is 5GB.
-        """
-        if self._part_size > PartSize.MAXIMUM_UPLOAD_SIZE:
-            self._status = TransferState.FAILED
-            raise SbgError('Part size = {}b. Maximum part size is {}b'.format(
-                self._part_size, PartSize.MAXIMUM_UPLOAD_SIZE)
-            )
-
     def _verify_file_size(self):
         """
         Verifies that the file is smaller then 5TB which is the maximum
@@ -327,7 +298,6 @@ class Upload(threading.Thread):
             )
 
     def _initialize_upload(self):
-
         """
         Initialized the upload on the API server by submitting the information
         about the project, the file name, file size and the part size that is
@@ -335,10 +305,10 @@ class Upload(threading.Thread):
         """
         init_data = {
             'name': self._file_name,
-            'part_size': self._part_size,
-            'size': self._file_size
+            'size': self._file_size,
         }
-
+        if self._part_size:
+            init_data['part_size'] = self._part_size
         if self._project:
             init_data['project'] = self._project
         elif self._parent:
@@ -352,7 +322,12 @@ class Upload(threading.Thread):
             response = self._api.post(
                 self._URL['upload_init'], data=init_data, params=init_params
             )
-            self._upload_id = response.json()['upload_id']
+            data = response.json()
+            self._upload_id = data['upload_id']
+            part_size = data.get('part_size')
+            if part_size and part_size != self._part_size:
+                logger.debug('Part size optimized by server to %s', part_size)
+                self._part_size = part_size
         except SbgError as e:
             self._status = TransferState.FAILED
             raise SbgError(
