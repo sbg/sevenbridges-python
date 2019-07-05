@@ -156,8 +156,7 @@ class File(Resource):
 
     @classmethod
     def upload(cls, path, project=None, parent=None, file_name=None,
-               overwrite=False, retry=5, timeout=10,
-               part_size=PartSize.UPLOAD_MINIMUM_PART_SIZE, wait=True,
+               overwrite=False, retry=5, timeout=60, part_size=None, wait=True,
                api=None):
         """
         Uploads a file using multipart upload and returns an upload handle
