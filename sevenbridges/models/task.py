@@ -19,7 +19,7 @@ from sevenbridges.meta.transformer import Transform
 
 from sevenbridges.models.app import App
 from sevenbridges.models.file import File
-from sevenbridges.models.enums import TaskStatus
+from sevenbridges.models.enums import FileApiFormats, TaskStatus
 from sevenbridges.models.compound.price import Price
 from sevenbridges.models.compound.tasks.batch_by import BatchBy
 from sevenbridges.models.compound.tasks.batch_group import BatchGroup
@@ -360,7 +360,10 @@ class Task(Resource):
     @staticmethod
     def _to_api_file_format(_file):
         return {
-            'class': 'File',
+            'class': (
+                FileApiFormats.FOLDER if _file.is_folder()
+                else FileApiFormats.FILE
+            ),
             'path': _file.id
         }
 
