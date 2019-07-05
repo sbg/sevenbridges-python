@@ -37,6 +37,11 @@ class FileStorageType:
     PLATFORM = 'PLATFORM'
 
 
+class FileApiFormats:
+    FILE = 'File'
+    FOLDER = 'Directory'
+
+
 class ImportExportState:
     PENDING = 'PENDING'
     RUNNING = 'RUNNING'

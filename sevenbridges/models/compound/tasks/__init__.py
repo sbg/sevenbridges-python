@@ -12,7 +12,7 @@ def map_input_output(item, api):
         return [map_input_output(it, api) for it in item]
 
     elif isinstance(item, dict) and 'class' in item:
-        if item['class'].lower() == 'file':
+        if item['class'].lower() in ('file', 'directory'):
             return File(id=item['path'], api=api)
 
     else:
