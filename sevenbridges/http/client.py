@@ -204,7 +204,7 @@ class HttpClient(object):
             headers = self.headers
         else:
             headers.update(self.headers)
-        if not self.token and not self.oauth_token:
+        if not (self.token or self.oauth_token):
             raise SbgError(message='Api instance must be authenticated.')
 
         if hasattr(self, '_session_id'):
