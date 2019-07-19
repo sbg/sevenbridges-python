@@ -311,22 +311,25 @@ class Task(Resource):
     def _serialize_execution_settings(self, execution_settings):
         instance_type = execution_settings.get(
             'instance_type',
-            self.execution_settings.get('instance_type', 'AUTO')
+            self.execution_settings.get('instance_type', None)
         )
         max_parallel_instances = execution_settings.get(
             'max_parallel_instances',
-            self.execution_settings.get('max_parallel_instances', 1)
+            self.execution_settings.get('max_parallel_instances', None)
         )
-        serialized_es = {
-            'instance_type': instance_type,
-            'max_parallel_instances': max_parallel_instances
-        }
         use_memoization = execution_settings.get(
             'use_memoization',
-            self.execution_settings.get('use_memoization')
+            self.execution_settings.get('use_memoization', None)
         )
-        if use_memoization is not None:
-            serialized_es.update({'use_memoization': use_memoization})
+        serialized_es_mapping = {
+            'instance_type': instance_type,
+            'max_parallel_instances': max_parallel_instances,
+            'use_memoization': use_memoization
+        }
+        serialized_es = dict()
+        for key, value in serialized_es_mapping.items():
+            if value is not None:
+                serialized_es[key] = value
 
         return serialized_es
 

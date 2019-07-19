@@ -1,3 +1,10 @@
+0.21.1 (2019-07-18)
+==================
+
+- Bugfixes:
+    - Don't send default values for task execution settings
+    - Fixed updating of execution settings during Task save method 
+
 0.21.0 (2019-07-05)
 ==================
 

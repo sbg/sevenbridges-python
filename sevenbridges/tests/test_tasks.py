@@ -82,7 +82,7 @@ def test_create_task(api, given, verifier, run):
     files = api.files.query(project=project)
     inputs = {'FastQC': files, 'reads': False, 'some_file': files[0]}
     execution_settings = {
-        'instance_type': 'AUTO',
+        'instance_type': generator.name(),
         'max_parallel_instances': 1,
         'use_memoization': True
     }

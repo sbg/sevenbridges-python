@@ -51,17 +51,17 @@ class ResourceMeta(type):
 
             def _data_diff(d1, d2):
                 data = {}
-                for key in d1.keys():
-                    if key not in d2.keys():
-                        continue
-                    else:
-                        if type(d1[key]) is dict:
-                            inner_diff = _data_diff(d1[key], d2[key])
-                            if inner_diff:
-                                data[key] = inner_diff
-                        else:
-                            if d1[key] != d2[key]:
-                                data[key] = d2[key]
+                new_keys = d2.keys() if isinstance(d2, dict) else []
+                old_keys = d1.keys() if isinstance(d1, dict) else []
+                for key in new_keys:
+                    if key not in old_keys:
+                        data[key] = d2[key]
+                    elif isinstance(d1[key], dict):
+                        inner_diff = _data_diff(d1[key], d2[key])
+                        if inner_diff:
+                            data[key] = inner_diff
+                    elif d1[key] != d2[key]:
+                        data[key] = d2[key]
                 return data
 
             # get modified data from the instance
