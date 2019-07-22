@@ -10,11 +10,12 @@ logger = logging.getLogger(__name__)
 
 class User(Resource):
     """
-    Central resource for managing tasks.
+    Central resource for managing users.
     """
     _URL = {
         'me': '/user',
-        'get': '/users/{id}'
+        'get': '/users/{id}',
+        'query': '/users'
     }
 
     href = HrefField()
@@ -29,6 +30,7 @@ class User(Resource):
     country = StringField(read_only=True)
     zip_code = StringField(read_only=True)
     city = StringField(read_only=True)
+    role = StringField(read_only=True)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -66,3 +68,28 @@ class User(Resource):
         api = api if api else cls._API
         user = Transform.to_user(user)
         return super(User, cls).get(id=user, api=api)
+
+    @classmethod
+    def query(cls, division, role=None, offset=None, limit=None, api=None):
+        """Query division users
+        :param division: Division slug.
+        :param role: User role in division.
+        :param offset: Pagination offset.
+        :param limit: Pagination limit.
+        :param api: Api instance.
+        :return: Collection object.
+        """
+        api = api or cls._API
+        params = {
+            'division': Transform.to_division(division),
+        }
+        if role:
+            params['role'] = role
+
+        return super(User, cls)._query(
+            url=cls._URL['query'],
+            api=api,
+            offset=offset,
+            limit=limit,
+            **params
+        )

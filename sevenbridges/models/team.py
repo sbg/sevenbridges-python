@@ -43,12 +43,21 @@ class Team(Resource):
         return not self.__eq__(other)
 
     @classmethod
-    def query(cls, division, offset=None, limit=None, api=None):
+    def query(cls, division, list_all=False, offset=None, limit=None,
+              api=None):
+        """
+        :param division: Division slug.
+        :param list_all: List all teams in division.
+        :param offset: Pagination offset.
+        :param limit: Pagination limit.
+        :param api: Api instance.
+        :return: Collection object.
+        """
         division = Transform.to_division(division)
         api = api if api else cls._API
         return super(Team, cls)._query(
-            url=cls._URL['query'], division=division, offset=offset,
-            limit=limit, fields='_all', api=api
+            url=cls._URL['query'], division=division, _all=list_all,
+            offset=offset, limit=limit, fields='_all', api=api
         )
 
     @classmethod
