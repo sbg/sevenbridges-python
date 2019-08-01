@@ -92,3 +92,9 @@ class AsyncJobStates:
 class AsyncFileOperations:
     COPY = 'copy'
     DELETE = 'delete'
+
+
+class DivisionRole:
+    MEMBER = 'member'
+    ADMIN = 'admin'
+    EXTERNAL_COLLABORATOR = 'external_collaborator'

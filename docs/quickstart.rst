@@ -287,12 +287,35 @@ Once you have initialized the library by authenticating yourself, the object :co
     me.state
     me.zip_code
     me.country
+    me.role
 
 For example, to obtain your email address invoke:
 
 .. code:: python
 
     me.email
+
+For user management in divisions and teams, the following are available:
+
+.. code:: python
+
+    # All users in division
+    users = api.users.query(division='<division_slug>')
+
+    # Division members
+    members = api.users.query(division='<division_slug>', role='member')
+
+    # Division admins
+    admins = api.users.query(division='<division_slug>', role='admin')
+
+    # Division external collaborators
+    external = api.users.query(division='<division_slug>', role='external_collaborator')
+
+    # Teams for a division
+    teams = api.teams.query(division='<division_slug>')
+
+    # All teams in division
+    teams_all = api.teams.query(division='<division_slug>', list_all=True)
 
 Managing projects
 -----------------
