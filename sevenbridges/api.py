@@ -1,3 +1,4 @@
+from requests.adapters import DEFAULT_POOLSIZE
 from concurrent.futures import ThreadPoolExecutor
 
 from sevenbridges.http.client import HttpClient
@@ -49,7 +50,9 @@ class Api(HttpClient):
 
     def __init__(self, url=None, token=None, oauth_token=None, config=None,
                  timeout=None, download_max_workers=16, upload_max_workers=16,
-                 proxies=None, error_handlers=None, advance_access=False):
+                 proxies=None, error_handlers=None, advance_access=False,
+                 pool_connections=DEFAULT_POOLSIZE, pool_maxsize=100,
+                 pool_block=True, max_parallel_requests=100):
         """
         Initializes api object.
 
@@ -63,12 +66,22 @@ class Api(HttpClient):
         :param proxies: Proxy settings if any.
         :param error_handlers: List of error handlers - callables.
         :param advance_access: If True advance access features will be enabled.
+        :param pool_connections: The number of urllib3 connection pools to
+            cache.
+        :param pool_maxsize: The maximum number of connections to save in the
+            pool.
+        :param pool_block: Whether the connection pool should block for
+            connections.
+        :param max_parallel_requests: Number which indicates number of parallel
+            requests, only useful for multi thread applications.
         :return: Api object instance.
         """
         super(Api, self).__init__(
             url=url, token=token, oauth_token=oauth_token, config=config,
             timeout=timeout, proxies=proxies, error_handlers=error_handlers,
-            advance_access=advance_access
+            advance_access=advance_access, pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize, pool_block=pool_block,
+            max_parallel_requests=max_parallel_requests
         )
 
         self.download_pool = ThreadPoolExecutor(
