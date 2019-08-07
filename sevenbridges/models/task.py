@@ -416,7 +416,7 @@ class Task(Resource):
         task_ids = [Transform.to_task(task) for task in tasks]
         data = {'task_ids': task_ids}
 
-        logger.info('Getting tasks in bulk.')
+        logger.debug('Getting tasks in bulk.')
         response = api.post(url=cls._URL['bulk_get'], data=data)
         return TaskBulkRecord.parse_records(response=response, api=api)
 

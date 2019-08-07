@@ -356,7 +356,7 @@ class File(Resource):
             except Exception as e:
                 raise SbgError(
                     'Resource can not be refreshed due to an error: {}'
-                    .format(six.text_type(e))
+                        .format(six.text_type(e))
                 )
 
         self._data = resource._data
@@ -406,7 +406,7 @@ class File(Resource):
         file_ids = [Transform.to_file(file_) for file_ in files]
         data = {'file_ids': file_ids}
 
-        logger.info('Getting files in bulk.')
+        logger.debug('Getting files in bulk.')
         response = api.post(url=cls._URL['bulk_get'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
