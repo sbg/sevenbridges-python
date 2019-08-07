@@ -356,7 +356,7 @@ class File(Resource):
             except Exception as e:
                 raise SbgError(
                     'Resource can not be refreshed due to an error: {}'
-                        .format(six.text_type(e))
+                    .format(six.text_type(e))
                 )
 
         self._data = resource._data
