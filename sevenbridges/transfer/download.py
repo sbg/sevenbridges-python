@@ -206,7 +206,10 @@ class Download(threading.Thread):
         self._progress_callback = None
         self._time_started = 0
 
-        self._session = generate_session(self._api.session.proxies)
+        self._session = generate_session(self._api.pool_connections,
+                                         self._api.pool_maxsize,
+                                         self._api.pool_block,
+                                         self._api.session.proxies)
 
         try:
             self._file_size = self._get_file_size()

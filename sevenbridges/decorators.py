@@ -101,6 +101,21 @@ def retry(retry_count):
     return func
 
 
+def throttle(func):
+    """Throttles number of parallel requests made by threads from single
+    HttpClient session."""
+
+    # noinspection PyProtectedMember
+    @functools.wraps(func)
+    def wrapper(http_client, *args, **kwargs):
+        if http_client._throttle_limit:
+            with http_client._throttle_limit:
+                return func(http_client, *args, **kwargs)
+        else:
+            return func(http_client, *args, **kwargs)
+    return wrapper
+
+
 def check_for_error(func):
     """
     Executes the wrapped function and inspects the response object

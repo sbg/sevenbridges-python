@@ -277,7 +277,10 @@ class Upload(threading.Thread):
         self._stop_signal = False
         self._result = None
 
-        self.session = generate_session(self._api.session.proxies)
+        self.session = generate_session(self._api.pool_connections,
+                                        self._api.pool_maxsize,
+                                        self._api.pool_block,
+                                        self._api.session.proxies)
 
     def __repr__(self):
         return six.text_type(
