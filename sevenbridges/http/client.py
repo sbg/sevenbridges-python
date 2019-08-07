@@ -4,7 +4,6 @@ import logging
 import platform
 import threading
 from datetime import datetime as dt
-from requests.adapters import DEFAULT_POOLSIZE
 import requests
 
 import sevenbridges
