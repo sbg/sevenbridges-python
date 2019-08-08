@@ -1,3 +1,10 @@
+0.23.0 (2019-08-08)
+==================
+
+- Improvements:
+    - Added optimization for multi-thread applications
+    - Bulk operations in file and task models are logged in debug level
+
 0.22.0 (2019-08-01)
 ==================
 
