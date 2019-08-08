@@ -4,6 +4,7 @@ import logging
 import platform
 import threading
 from datetime import datetime as dt
+
 import requests
 
 import sevenbridges
@@ -61,9 +62,11 @@ def generate_session(pool_connections, pool_maxsize, pool_block, proxies=None):
     :return: requests.Session object.
     """
     session = RequestSession()
-    adapter = requests.adapters.HTTPAdapter(pool_connections=pool_connections,
-                                            pool_maxsize=pool_maxsize,
-                                            pool_block=pool_block)
+    adapter = requests.adapters.HTTPAdapter(
+        pool_connections=pool_connections,
+        pool_maxsize=pool_maxsize,
+        pool_block=pool_block
+    )
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     session.proxies = proxies
@@ -138,15 +141,18 @@ class HttpClient(object):
         self.pool_connections = pool_connections
         self.pool_maxsize = pool_maxsize
         self.pool_block = pool_block
-        self._session = generate_session(pool_connections, pool_maxsize,
-                                         pool_block, proxies=proxies)
+        self._session = generate_session(
+            pool_connections,
+            pool_maxsize,
+            pool_block,
+            proxies=proxies
+        )
         self.timeout = timeout
-        if max_parallel_requests:
-            self._throttle_limit = threading.Semaphore(
-                max_parallel_requests
-            )
-        else:
-            self._throttle_limit = None
+        self._throttle_limit = (
+            threading.Semaphore(max_parallel_requests)
+            if max_parallel_requests
+            else None
+        )
         self._limit = None
         self._remaining = None
         self._reset = None

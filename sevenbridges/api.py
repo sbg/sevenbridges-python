@@ -1,8 +1,8 @@
-from requests.adapters import DEFAULT_POOLSIZE
 from concurrent.futures import ThreadPoolExecutor
 
-from sevenbridges.http.client import HttpClient
+from requests.adapters import DEFAULT_POOLSIZE
 
+from sevenbridges.http.client import HttpClient
 from sevenbridges.models.app import App
 from sevenbridges.models.file import File
 from sevenbridges.models.task import Task
