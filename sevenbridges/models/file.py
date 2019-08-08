@@ -406,7 +406,7 @@ class File(Resource):
         file_ids = [Transform.to_file(file_) for file_ in files]
         data = {'file_ids': file_ids}
 
-        logger.info('Getting files in bulk.')
+        logger.debug('Getting files in bulk.')
         response = api.post(url=cls._URL['bulk_get'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
@@ -422,7 +422,7 @@ class File(Resource):
         file_ids = [Transform.to_file(file_) for file_ in files]
         data = {'file_ids': file_ids}
 
-        logger.info('Deleting files in bulk.')
+        logger.debug('Deleting files in bulk.')
         response = api.post(url=cls._URL['bulk_delete'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
@@ -454,7 +454,7 @@ class File(Resource):
             ]
         }
 
-        logger.info('Updating files in bulk.')
+        logger.debug('Updating files in bulk.')
         response = api.post(url=cls._URL['bulk_update'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
@@ -486,7 +486,7 @@ class File(Resource):
             ]
         }
 
-        logger.info('Editing files in bulk.')
+        logger.debug('Editing files in bulk.')
         response = api.post(url=cls._URL['bulk_edit'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 

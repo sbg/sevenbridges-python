@@ -192,6 +192,33 @@ Proxy configuration can be supplied in three different ways.
 .. note:: Once you set the proxy, all calls including upload and download will use the proxy settings.
 
 
+Low level configuration
+---------------------------------
+For low level library tweaking such as: number of cached connections and number of parallel requests (useful only for multi-thread applications)
+there are few useful arguments when instantiating Api.
+
+    - Three arguments are directly exposed from requests library. Argument `pool_connections` is the number of urllib3 connection pools to cache.
+      Argument `pool_maxsize` gives ability to constraint maximum number of parallel requests to save in the pool while `pool_block` flag tells
+      whether the connection pool should block for connections. More detailed explanation of those arguments can be found
+      `here <http://2.python-requests.org/en/master/api/?highlight=pool#requests.adapters.HTTPAdapter>`_.
+
+    .. code:: python
+
+        api = sb.Api(
+            pool_connections=<CONN_NUMBER>,
+            pool_maxsize=<POOL_SIZE>,
+            pool_block=<BLOCK_FLAG>
+        )
+
+    - There is a way to throttle number of parallel requests over all connection pools. That is done using `max_parallel_requests` argument.
+
+    .. code:: python
+
+        api = sb.Api(max_parallel_requests=<MAX_PARALLEL>)
+
+.. note::  Changing those values from default could affect performance.
+
+
 Rate limit
 ----------
 
