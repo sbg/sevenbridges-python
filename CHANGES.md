@@ -1,3 +1,9 @@
+0.22.0 (2019-08-01)
+==================
+
+- Improvements:
+    - Implemented several user management methods to user and team models
+
 0.21.2 (2019-07-22)
 ==================
 
