@@ -1,3 +1,10 @@
+0.23.1 (2019-08-27)
+==================
+
+- Improvements:
+    - Exposed secondary files as a property on input/output files
+    - Enabled copying apps from specified revision, using the use_revision parameter
+
 0.23.0 (2019-08-08)
 ==================
 
