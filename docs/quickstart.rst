@@ -1436,6 +1436,19 @@ Batch task
         print('I was unable to run a batch task.')
 
 
+Secondary files
+^^^^^^^^^^^^^^^
+
+Accessing task input/output secondary files is possible using the secondary_files property on the input/output itself.
+
+Example for outputs:
+
+.. code:: python
+
+    task = api.tasks.get('<task_id>')
+    secondary_files = task.outputs['<output_name>'].secondary_files
+
+
 Managing bulk operations
 ------------------------
 
