@@ -1,3 +1,9 @@
+0.23.2 (2019-08-28)
+==================
+
+- Improvements:
+    - Added parent parameter to bulk imports
+
 0.23.1 (2019-08-27)
 ==================
 
