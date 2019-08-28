@@ -208,3 +208,11 @@ class Resource(six.with_metaclass(ResourceMeta)):
         :return: Field value or None
         """
         return self._data.data.get(name, None)
+
+    def _set(self, key, value):
+        """
+        Set property value in internal storage
+        :param key: Property name
+        :param value: Property value
+        """
+        self._data.data[key] = value
