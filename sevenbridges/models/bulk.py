@@ -24,8 +24,8 @@ class BulkRecord(Resource):
         for item in data.get('items', []):
             record = cls(api=api)
             if 'error' in item:
-                record.error = item['error']
+                record._set('error', item['error'])
             if 'resource' in item:
-                record.resource = item['resource']
+                record._set('resource', item['resource'])
             records.append(record)
         return records
