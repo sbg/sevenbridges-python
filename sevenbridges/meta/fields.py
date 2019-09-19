@@ -22,10 +22,10 @@ class Field(object):
                 'Property {} is marked as read only!'.format(self.name)
             )
 
-        # handle metadata. If metadata is set use _method to signal
+        # handle metadata. If metadata is set use _overwrite_metadata to signal
         # that the resource should be overwritten.
         if self.name == 'metadata':
-            instance._method = 'PUT'
+            instance._overwrite_metadata = True
             if value is None:
                 raise ValidationError('Not a valid dictionary!')
 
