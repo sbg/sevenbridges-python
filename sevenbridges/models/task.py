@@ -28,7 +28,6 @@ from sevenbridges.models.compound.tasks.input import Input
 from sevenbridges.models.compound.tasks.output import Output
 from sevenbridges.models.execution_details import ExecutionDetails
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -334,31 +333,27 @@ class Task(Resource):
         return serialized_es
 
     @staticmethod
-    def _serialize_inputs(inputs):
-        """Serialize task input dictionary"""
-        serialized_inputs = {}
-        for input_id, input_value in inputs.items():
-            if isinstance(input_value, list):
-                serialized_list = Task._serialize_input_list(input_value)
-                serialized_inputs[input_id] = serialized_list
-            else:
-                if isinstance(input_value, File):
-                    input_value = Task._to_api_file_format(input_value)
-                serialized_inputs[input_id] = input_value
-        return serialized_inputs
-
-    @staticmethod
-    def _serialize_input_list(input_value):
-        """Recursively serialize task input list"""
-        input_list = []
-        for item in input_value:
-            if isinstance(item, list):
-                input_list.append(Task._serialize_input_list(item))
-            else:
-                if isinstance(item, File):
-                    item = Task._to_api_file_format(item)
-                input_list.append(item)
-        return input_list
+    def _serialize_inputs(input_value):
+        """
+        Recursively serialises input dictionary.
+        :param input_value: input dictionary to serialize
+        :return: serialized input dictionary
+        """
+        if isinstance(input_value, list):
+            return_value = []
+            for elem in input_value:
+                return_value.append(Task._serialize_inputs(elem))
+        elif isinstance(input_value, dict):
+            return_value = {}
+            for key in input_value:
+                return_value[key] = Task._serialize_inputs(
+                    input_value[key]
+                )
+        elif isinstance(input_value, File):
+            return_value = Task._to_api_file_format(input_value)
+        else:
+            return_value = input_value
+        return return_value
 
     @staticmethod
     def _to_api_file_format(_file):
