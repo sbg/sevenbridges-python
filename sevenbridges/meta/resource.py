@@ -66,8 +66,14 @@ class ResourceMeta(type):
 
             # get modified data from the instance
             def modified_data(self):
+                metadata = copy.deepcopy(self._dirty.get('metadata'))
                 difference = _data_diff(self._old, self._data.data)
                 self._dirty.update(difference)
+                if metadata:
+                    # File metadata specific patch, otherwise the diff will
+                    # only return changed parameters even when metadata needs
+                    # to be replaced
+                    self._dirty['metadata'] = metadata
                 return self._dirty
 
             def equals(self, other):

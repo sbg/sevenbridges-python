@@ -309,11 +309,12 @@ class File(Resource):
         if silent or bool(modified_data):
             # If metadata is to be set
             if 'metadata' in modified_data:
-                if hasattr(self, '_method'):
+                if hasattr(self, '_overwrite_metadata'):
                     self._api.put(
                         url=self._URL['metadata'].format(id=self.id),
                         data=modified_data['metadata']
                     )
+                    delattr(self, '_overwrite_metadata')
                 else:
                     self._api.patch(
                         url=self._URL['metadata'].format(id=self.id),
@@ -373,12 +374,12 @@ class File(Resource):
         self._old = copy.deepcopy(self._data.data)
 
         # If file.metadata = value was executed
-        # file object will have attribute _method='PUT', which tells us
-        # to force overwrite of metadata on the server. This is metadata
-        # specific. Once we reload the resource we delete the attribute
-        # _method from the instance.
+        # file object will have attribute _overwrite_metadata=True,
+        # which tells us to force overwrite of metadata on the server.
+        # This is metadata specific. Once we reload the resource we delete the
+        # attribute _overwrite_metadata from the instance.
         try:
-            delattr(self, '_method')
+            delattr(self, '_overwrite_metadata')
         except AttributeError:
             pass
 
