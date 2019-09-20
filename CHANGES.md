@@ -1,3 +1,10 @@
+0.23.3 (2019-09-20)
+==================
+
+- Bugfixes:
+    - Fixed metadata update when saving file
+    - Fixed input file serialization for record type inputs
+
 0.23.2 (2019-08-28)
 ==================
 
