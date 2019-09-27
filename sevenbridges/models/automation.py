@@ -7,14 +7,16 @@ from sevenbridges.meta.transformer import Transform
 from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.models.member import Permissions
-from sevenbridges.errors import ResourceNotModified
+from sevenbridges.errors import SbgError, ResourceNotModified
 from sevenbridges.models.enums import AutomationRunActions
 from sevenbridges.meta.fields import (
     DictField,
     HrefField,
+    UuidField,
     StringField,
     CompoundField,
     DateTimeField,
+    BooleanField
 )
 
 
@@ -27,14 +29,20 @@ class AutomationPackage(Resource):
     """
     _URL = {
         'query': '/automation/automations/{automation_id}/packages',
+        'get': '/automation/packages/{package_id}',
+        'archive': "/automation/automations/{automation_id}"
+                   "/packages/{package_id}/actions/archive",
+        'restore': "/automation/automations/{automation_id}"
+                   "/packages/{package_id}/actions/restore",
     }
 
     id = StringField(read_only=True)
-    automation = StringField(read_only=True)
+    automation = UuidField(read_only=True)
     version = StringField(read_only=True)
     location = StringField(read_only=True)
     created_by = StringField(read_only=True)
     created_on = StringField(read_only=True)
+    archived = BooleanField(read_only=True)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -69,6 +77,106 @@ class AutomationPackage(Resource):
             limit=limit,
             api=api,
         )
+
+    @classmethod
+    def create(cls, automation, version, location, api=None):
+        """
+        Create a code package.
+        :param automation: Automation id.
+        :param version: File ID of the uploaded code package.
+        :param location: The code package version.
+        :param api: Api instance.
+        :return:
+        """
+        automation_id = Transform.to_automation(automation)
+
+        api = api if api else cls._API
+
+        if version is None:
+            raise SbgError('Code package location is required!')
+
+        if location is None:
+            raise SbgError('Code package version is required!')
+
+        data = {
+            'version': version,
+            'location': location
+        }
+
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+
+        package_data = api.post(
+            cls._URL['query'].format(automation_id=automation_id), data=data
+        ).json()
+        logger.info(
+            'Add code package to automation with id %s',
+            automation_id, extra=extra
+        )
+        return AutomationPackage(api=api, **package_data)
+
+    # noinspection PyMethodOverriding
+    @classmethod
+    def get(cls, packaege_id, api=None):
+        """
+        Fetches the resource from the server.
+        :param packaege_id: Automation package id
+        :param api: sevenbridges Api instance.
+        :return: AutomationPackage object.
+        """
+
+        api = api or cls._API
+        code_package = api.get(url=cls._URL['get'].format(
+            packege_id=packaege_id,
+        )).json()
+        return AutomationPackage(api=api, **code_package)
+
+    @inplace_reload
+    def archive(self):
+        """
+        Archive package
+        :return: AutomationPackage object.
+        """
+        automation_id = Transform.to_automation(self.automation)
+
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+            }
+        }
+        logger.info('Archive automation package', extra=extra)
+
+        package_data = self._api.post(
+            url=self._URL['archive'].format(
+                automation_id=automation_id, package_id=self.id
+            )
+        ).json()
+        return AutomationPackage(api=self._api, **package_data)
+
+    @inplace_reload
+    def restore(self):
+        """
+        Restore archived package
+        :return: AutomationPackage object.
+        """
+        automation_id = Transform.to_automation(self.automation)
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+            }
+        }
+        logger.info('Restore archived automation package', extra=extra)
+
+        package_data = self._api.post(
+            url=self._URL['restore'].format(
+                automation_id=automation_id, package_id=self.id
+            )
+        ).json()
+        return AutomationPackage(api=self._api, **package_data)
 
 
 class AutomationMember(Resource):
@@ -213,17 +321,21 @@ class Automation(Resource):
         'member': AutomationMember._URL['get'],
         'members': AutomationMember._URL['query'],
         'packages': AutomationPackage._URL['query'],
+        'archive': '/automation/automations/{automation_id}/actions/archive',
+        'restore': '/automation/automations/{automation_id}/actions/restore'
     }
 
     href = HrefField()
-    id = StringField(read_only=True)
-    name = StringField(read_only=True)
-    description = StringField(read_only=True)
+    id = UuidField(read_only=True)
+    name = StringField(read_only=False)
+    description = StringField(read_only=False)
+    billing_group = UuidField(read_only=False)
     owner = StringField(read_only=True)
     created_by = StringField(read_only=True)
     created_on = StringField(read_only=True)
     modified_by = StringField(read_only=True)
-    modified_on = StringField(read_only=True)
+    modified_on = StringField(read_only=False)
+    archived = BooleanField(read_only=True)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -242,10 +354,14 @@ class Automation(Resource):
         )
 
     @classmethod
-    def query(cls, name=None, offset=None, limit=None, api=None):
+    def query(
+            cls, name=None, include_archived=False,
+            offset=None, limit=None, api=None
+    ):
         """
         Query (List) automations.
         :param name: Automation name.
+        :param include_archived: Include archived automations also
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :param api: Api instance.
@@ -256,10 +372,110 @@ class Automation(Resource):
         return super(Automation, cls)._query(
             url=cls._URL['query'],
             name=name,
+            include_archived=include_archived,
             offset=offset,
             limit=limit,
             api=api,
         )
+
+    @classmethod
+    def create(cls, name, description=None, billing_group=None,
+               secret_settings=None, api=None):
+        """
+        Create a automation template.
+        :param name:  Automation name.
+        :param billing_group: Automation billing group.
+        :param description:  Automation description.
+        :param secret_settings: Automation settings.
+        :param api: Api instance.
+        :return:
+        """
+        api = api if api else cls._API
+
+        if name is None:
+            raise SbgError('Automation name is required!')
+
+        data = {
+            'name': name,
+        }
+
+        if billing_group:
+            data['billing_group'] = Transform.to_billing_group(billing_group)
+
+        if description:
+            data['description'] = description
+        if secret_settings:
+            data['secret_settings'] = secret_settings
+
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        logger.info('Creating automation template', extra=extra)
+        automation_data = api.post(url=cls._URL['query'], data=data).json()
+        return Automation(api=api, **automation_data)
+
+    @inplace_reload
+    def save(self, inplace=True):
+        """
+        Saves all modification to the automation template on the server.
+        :param inplace Apply edits on the current instance or get a new one.
+        :return: Automation instance.
+        """
+        modified_data = self._modified_data()
+        if bool(modified_data):
+            extra = {
+                'resource': self.__class__.__name__,
+                'query': {
+                    'id': self.id,
+                    'modified_data': modified_data
+                }
+            }
+            logger.info('Saving automation template', extra=extra)
+            data = self._api.patch(url=self._URL['get'].format(id=self.id),
+                                   data=modified_data).json()
+            return Automation(api=self._api, **data)
+
+        else:
+            raise ResourceNotModified()
+
+    @inplace_reload
+    def archive(self):
+        """
+        Archive automation
+        :return: Automation instance.
+        """
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+            }
+        }
+        logger.info('Archive automation', extra=extra)
+
+        automation_data = self._api.post(
+            url=self._URL['archive'].format(automation_id=self.id)
+        ).json()
+        return Automation(api=self._api, **automation_data)
+
+    @inplace_reload
+    def restore(self):
+        """
+        Restore archived automation
+        :return: Automation instance.
+        """
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': self.id,
+            }
+        }
+        logger.info('Restore archived automation', extra=extra)
+
+        automation_data = self._api.post(
+            url=self._URL['restore'].format(automation_id=self.id)
+        ).json()
+        return Automation(api=self._api, **automation_data)
 
     def get_packages(self, offset=None, limit=None, api=None):
         """
@@ -272,6 +488,19 @@ class Automation(Resource):
         api = api or self._API
         return AutomationPackage.query(
             automation=self.id, offset=offset, limit=limit, api=api
+        )
+
+    def add_package(self, version, location, api=None):
+        """
+        Add a code package to automation template.
+        :param version: File ID of the uploaded code package.
+        :param location: The code package version.
+        :param api: sevenbridges Api instance.
+        :return: AutomationPackage
+        """
+        api = api or self._API
+        return AutomationPackage.create(
+            self.id, version=version, location=location, api=api
         )
 
     def get_member(self, username, api=None):
