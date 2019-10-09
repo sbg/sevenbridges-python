@@ -1664,6 +1664,16 @@ class AutomationRunProvider(object):
             '/automation/runs/{}'.format(id), json=automation_run
         )
 
+    def has_rerun(self, **kwargs):
+        automation_run = self.default_automation_run()
+        automation_run.update(**kwargs)
+        self.request_mocker.request(
+            'POST', '/automation/runs/{}/actions/rerun'.format(
+                kwargs['id']
+            ),
+            json=automation_run
+        )
+
     def has_state(self, id, state):
         state = state or self.default_state()
         href = self.base_url + '/automation/runs/{}/state'.format(id)

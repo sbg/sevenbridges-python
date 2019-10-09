@@ -462,3 +462,30 @@ def test_get_run_state(api, given, verifier):
     # verification
     assert expected_state == state
     verifier.automation_runs.state_fetched(id=id)
+
+
+def test_rerun(api, given, verifier):
+    # precondition
+    api.aa = True
+
+    inputs = {}
+    name = generator.name()
+    id = generator.uuid4()
+    secret_settings = {generator.name(): generator.name()}
+
+    given.automation_runs.has_rerun(
+        id=id,
+        secret_settings=secret_settings,
+        inputs=inputs,
+        name=name,
+        merge=True
+    )
+
+    # action
+    api.automation_runs.rerun(
+        id=id, inputs=inputs, secret_settings=secret_settings, name=name,
+        merge=True
+    )
+
+    # verification
+    verifier.automation_runs.reran(id=id)

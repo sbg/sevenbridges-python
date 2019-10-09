@@ -2,13 +2,8 @@ import logging
 
 import six
 
-from sevenbridges.models.file import File
-from sevenbridges.meta.transformer import Transform
-from sevenbridges.meta.resource import Resource
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.models.member import Permissions
-from sevenbridges.errors import SbgError, ResourceNotModified
-from sevenbridges.models.enums import AutomationRunActions
+from sevenbridges.errors import ResourceNotModified, SbgError
 from sevenbridges.meta.fields import (
     DictField,
     HrefField,
@@ -18,7 +13,11 @@ from sevenbridges.meta.fields import (
     DateTimeField,
     BooleanField
 )
-
+from sevenbridges.meta.resource import Resource
+from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.enums import AutomationRunActions
+from sevenbridges.models.file import File
+from sevenbridges.models.member import Permissions
 
 logger = logging.getLogger(__name__)
 
@@ -711,6 +710,47 @@ class AutomationRun(Resource):
         automation_run = api.post(
             url=cls._URL['query'],
             data=data,
+        ).json()
+        return AutomationRun(api=api, **automation_run)
+
+    @classmethod
+    def rerun(
+        cls, id, package=None, inputs=None, settings=None, resume_from=None,
+        name=None, secret_settings=None, merge=True, api=None
+    ):
+        """
+        Create and start rerun of existing automation.
+        :param id: Automation id to rerun
+        :param package: Automation package id
+        :param inputs: Input dictionary
+        :param settings: Settings override dictionary
+        :param resume_from: Run to resume from
+        :param name: Automation run name
+        :param secret_settings: dict to override secret_settings from
+        automation template
+        :param merge: merge settings and inputs of run
+        :param api: sevenbridges Api instance
+        :return: AutomationRun object
+        """
+        data = {'merge': merge}
+        if package:
+            data['package'] = package
+        if inputs:
+            data['inputs'] = inputs
+        if settings:
+            data['settings'] = settings
+        if resume_from:
+            data['resume_from'] = resume_from
+        if name:
+            data['name'] = name
+        if secret_settings:
+            data['secret_settings'] = secret_settings
+
+        api = api or cls._API
+        automation_run = api.post(
+            url=cls._URL['actions'].format(
+                id=id, action=AutomationRunActions.RERUN
+            )
         ).json()
         return AutomationRun(api=api, **automation_run)
 
