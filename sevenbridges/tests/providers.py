@@ -1349,11 +1349,13 @@ class AutomationProvider(object):
             'id': generator.uuid4(),
             'name': generator.slug(),
             'description': generator.slug(),
+            'billing_group': generator.uuid4(),
             'owner': generator.user_name(),
             'created_by': generator.user_name(),
             'created_on': generator.date(),
             'modified_by': generator.user_name(),
             'modified_on': generator.date(),
+            'archived': False,
         }
 
     def exists(self, **kwargs):
@@ -1362,6 +1364,41 @@ class AutomationProvider(object):
         id = automation['id']
         self.request_mocker.get(
             '/automation/automations/{}'.format(id), json=automation
+        )
+
+    def can_be_created(self, **kwargs):
+        automation = self.default_automation()
+        automation.update(**kwargs)
+        self.request_mocker.post(
+            '/automation/automations', json=automation
+        )
+
+    def can_be_saved(self, **kwargs):
+        automation = self.default_automation()
+        automation.update(**kwargs)
+        id = automation['id']
+        self.request_mocker.patch(
+            '/automation/automations/{id}'.format(id=id), json=automation
+        )
+
+    def can_be_archived(self, **kwargs):
+        automation = self.default_automation()
+        automation['archived'] = True
+        automation.update(**kwargs)
+        id = automation['id']
+        self.request_mocker.post(
+            '/automation/automations/{id}/actions/archive'.format(id=id), 
+            json=automation
+        )
+
+    def can_be_restored(self, **kwargs):
+        automation = self.default_automation()
+        automation['archived'] = False
+        automation.update(**kwargs)
+        id = automation['id']
+        self.request_mocker.post(
+            '/automation/automations/{id}/actions/restore'.format(id=id),
+            json=automation
         )
 
     def query(self, total):
@@ -1417,6 +1454,24 @@ class AutomationProvider(object):
         )
         self.request_mocker.delete(href)
 
+    def has_package(self, package_id):
+        package = self.package_provider.default_automation_package(
+            package_id=package_id
+        )
+        href = (
+                self.base_url + '/automation/packages/{}'.format(package_id)
+        )
+        self.request_mocker.get(href, json=package)
+
+    def can_add_package(self, automation_id, package_id, location, version):
+        package = self.package_provider.default_automation_package(
+            package_id=package_id, location=location, version=version
+        )
+        href = self.base_url + '/automation/automations/{}/packages'.format(
+            automation_id
+        )
+        self.request_mocker.post(href, json=package)
+
     def has_packages(self, id, total):
         items = [
             self.package_provider.default_automation_package()
@@ -1455,15 +1510,59 @@ class AutomationPackageProvider(object):
         self.base_url = base_url
 
     @staticmethod
-    def default_automation_package():
+    def default_automation_package(
+            package_id=None, version=None, location=None
+    ):
+        package_id = package_id or generator.uuid4()
+        version = version or generator.slug()
+        location = location or generator.slug()
+
         return {
-            'id': generator.uuid4(),
+            'id': package_id,
             'automation': generator.uuid4(),
-            'version': generator.slug(),
-            'location': generator.slug(),
+            'version': version,
+            'location': location,
             'created_by': generator.user_name(),
             'created_on': generator.date(),
+            'archived': False
         }
+
+    def exists(self, **kwargs):
+        package = self.default_automation_package()
+        package.update(**kwargs)
+        package_id = package['id']
+        self.request_mocker.get(
+            '/automation/packages/{}'.format(package_id),
+            json=package
+        )
+
+    def can_be_archived(self, **kwargs):
+        package = self.default_automation_package()
+        package['archived'] = True
+        package.update(**kwargs)
+        package_id = package['id']
+        automation_id = package['automation']
+        self.request_mocker.post(
+            "/automation/automations/{}"
+            "/packages/{}/actions/archive".format(
+                automation_id, package_id
+            ),
+            json=package
+        )
+
+    def can_be_restored(self, **kwargs):
+        package = self.default_automation_package()
+        package['archived'] = False
+        package.update(**kwargs)
+        package_id = package['id']
+        automation_id = package['automation']
+        self.request_mocker.post(
+            "/automation/automations/{}"
+            "/packages/{}/actions/restore".format(
+                automation_id, package_id
+            ),
+            json=package
+        )
 
 
 class AutomationMemberProvider(object):

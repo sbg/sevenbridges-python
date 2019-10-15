@@ -119,17 +119,17 @@ class AutomationPackage(Resource):
 
     # noinspection PyMethodOverriding
     @classmethod
-    def get(cls, packaege_id, api=None):
+    def get(cls, package_id, api=None):
         """
         Fetches the resource from the server.
-        :param packaege_id: Automation package id
+        :param package_id: Automation package id
         :param api: sevenbridges Api instance.
         :return: AutomationPackage object.
         """
 
         api = api or cls._API
         code_package = api.get(url=cls._URL['get'].format(
-            packege_id=packaege_id,
+            package_id=package_id,
         )).json()
         return AutomationPackage(api=api, **code_package)
 
@@ -336,6 +336,7 @@ class Automation(Resource):
     modified_by = StringField(read_only=True)
     modified_on = StringField(read_only=False)
     archived = BooleanField(read_only=True)
+    secret_settings = DictField(read_only=False)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -488,6 +489,20 @@ class Automation(Resource):
         api = api or self._API
         return AutomationPackage.query(
             automation=self.id, offset=offset, limit=limit, api=api
+        )
+
+    @classmethod
+    def get_package(cls, package, api=None):
+        """
+        Return specified automation member
+        :param package: Automation Package Id
+        :param api: sevenbridges Api instance.
+        :return: AutomationMember object
+        """
+        package_id = Transform.to_automation_package(package)
+        api = api or cls._API
+        return AutomationPackage.get(
+            package_id=package_id, api=api
         )
 
     def add_package(self, version, location, api=None):

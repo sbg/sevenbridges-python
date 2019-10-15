@@ -442,13 +442,31 @@ class AutomationVerifier(object):
     def fetched(self, id):
         self.checker.check_url('/automation/automations/{}'.format(id))
 
-    def queried(self, name=None):
+    def queried(self, name=None, include_archived=False):
         qs = {}
         if name:
             qs['name'] = [name]
 
+        qs['include_archived'] = [str(include_archived)]
+
         self.checker.check_url('/automation/automations')
         self.checker.check_query(qs)
+
+    def created(self):
+        self.checker.check_url('/automation/automations')
+
+    def saved(self, id):
+        self.checker.check_url('/automation/automations/{id}'.format(id=id))
+
+    def action_archive_performed(self, id):
+        self.checker.check_url(
+            '/automation/automations/{}/actions/archive'.format(id)
+        )
+
+    def action_restore_performed(self, id):
+        self.checker.check_url(
+            '/automation/automations/{}/actions/restore'.format(id)
+        )
 
     def members_retrieved(self, id):
         self.checker.check_url(
@@ -463,6 +481,11 @@ class AutomationVerifier(object):
     def packages_retrieved(self, id):
         self.checker.check_url(
             '/automation/automations/{}/packages'.format(id)
+        )
+
+    def package_retrieved(self, package_id):
+        self.checker.check_url(
+            '/automation/packages/{}'.format(package_id)
         )
 
     def runs_retrieved(self, id):
@@ -487,6 +510,34 @@ class AutomationMemberVerifier(object):
         self.checker.check_url('/automation/automations/{}/members/{}'.format(
             automation, username
         ))
+
+
+class AutomationPackageVerifier(object):
+
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def created(self, automation_id):
+        self.checker.check_url(
+            '/automation/automations/{}/packages'.format(automation_id)
+        )
+
+    def action_archive_performed(self, automation_id, package_id):
+        self.checker.check_url(
+            "/automation/automations/{}"
+            "/packages/{}/actions/archive".format(
+                automation_id, package_id
+            )
+        )
+
+    def action_restore_performed(self, automation_id, package_id):
+        self.checker.check_url(
+            "/automation/automations/{}"
+            "/packages/{}/actions/restore".format(
+                automation_id, package_id
+            )
+        )
 
 
 class AutomationRunVerifier(object):
