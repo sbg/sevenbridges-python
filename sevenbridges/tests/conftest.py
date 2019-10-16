@@ -90,6 +90,7 @@ class Verifier(object):
             request_mocker
         )
 
+
 @pytest.fixture
 def given(request_mocker, base_url):
     """

@@ -1387,7 +1387,7 @@ class AutomationProvider(object):
         automation.update(**kwargs)
         id = automation['id']
         self.request_mocker.post(
-            '/automation/automations/{id}/actions/archive'.format(id=id), 
+            '/automation/automations/{}/actions/archive'.format(id),
             json=automation
         )
 
