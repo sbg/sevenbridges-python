@@ -1619,17 +1619,26 @@ The following operations are supported for automations:
     - ``query()`` - Query all automations
     - ``get()`` - Get automation with the provided id
     - ``get_packages()`` - Get all packages of an automation
+    - ``get_package()`` - Get package with provided id
+    - ``add_package()`` - Add a package to an automation
+    - ``archive()`` - Archive an automation
+    - ``restore()`` - Restore an archived automation
     - ``get_members()`` - Get all members of an automation
     - ``get_member()`` - Get details on a member of an automation
     - ``add_member()`` - Add a member to an automation
     - ``remove_member()`` - Remove member from an automation
     - ``get_runs()`` - Get automation runs
 
+The following operations are supported for automation package:
+    - ``archive()`` - Archive an package
+    - ``restore()`` - Restore an archived package
+
 The following operations are supported for automation runs:
 
     - ``query()`` - Query all automation runs
     - ``get()`` - Get automation run with the provided id
     - ``create()`` - Create and start new automation run
+    - ``rerun()`` - Reruns an existing automation run
     - ``stop()`` - Stop an automation run
     - ``get_log()`` - Get log file contents for an automation run
     - ``get_state()`` - Get state file contents for an automation run
