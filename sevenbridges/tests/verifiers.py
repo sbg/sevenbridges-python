@@ -564,6 +564,9 @@ class AutomationRunVerifier(object):
     def created(self):
         self.checker.check_url('/automation/runs')
 
+    def reran(self, id):
+        self.checker.check_url('/automation/runs/{}/actions/rerun'.format(id))
+
     def stopped(self, id):
         self.checker.check_url('/automation/runs/{}/actions/stop'.format(id))
 

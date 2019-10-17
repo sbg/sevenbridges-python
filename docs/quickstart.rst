@@ -1638,6 +1638,7 @@ The following operations are supported for automation runs:
     - ``query()`` - Query all automation runs
     - ``get()`` - Get automation run with the provided id
     - ``create()`` - Create and start new automation run
+    - ``rerun()`` - Reruns an existing automation run
     - ``stop()`` - Stop an automation run
     - ``get_log()`` - Get log file contents for an automation run
     - ``get_state()`` - Get state file contents for an automation run

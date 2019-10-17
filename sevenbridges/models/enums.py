@@ -80,6 +80,7 @@ class AppCopyStrategy:
 
 class AutomationRunActions:
     STOP = 'stop'
+    RERUN = 'rerun'
 
 
 class AsyncJobStates:
