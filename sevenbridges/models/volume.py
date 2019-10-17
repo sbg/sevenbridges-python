@@ -326,7 +326,7 @@ class Volume(Resource):
         :return: Member object.
         """
         user = Transform.to_user(user)
-        data = {'id': user, 'type': 'USER'}
+        data = {'username': user, 'type': 'USER'}
 
         if 'execute' in permissions:
             permissions.pop('execute')
