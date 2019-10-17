@@ -1,3 +1,11 @@
+0.24.0 (2019-09-20)
+==================
+- Improvements:
+    - Added additional support for automations
+
+- Bugfixes:
+    - Fixed members adding to volume 
+
 0.23.3 (2019-09-20)
 ==================
 
