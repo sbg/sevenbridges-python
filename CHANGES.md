@@ -1,4 +1,4 @@
-0.24.0 (2019-09-20)
+0.24.0 (2019-10-17)
 ==================
 - Improvements:
     - Added additional support for automations
