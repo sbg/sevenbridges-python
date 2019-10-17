@@ -188,30 +188,42 @@ class Import(Resource):
 
         items = []
         for import_ in imports:
+            project = import_.get('project')
+            parent = import_.get('parent')
+
+            if project and parent:
+                raise SbgError(
+                    'Project and parent identifiers are mutually exclusive'
+                )
+            elif project:
+                destination = {
+                    'project': Transform.to_project(project)
+                }
+            elif parent:
+                destination = {
+                    'parent': Transform.to_file(parent)
+                }
+            else:
+                raise SbgError('Project or parent identifier is required.')
+
             volume = Transform.to_volume(import_.get('volume'))
             location = Transform.to_location(import_.get('location'))
-            project = Transform.to_project(import_.get('project'))
             name = import_.get('name', None)
             overwrite = import_.get('overwrite', False)
 
-            item = {
+            if name:
+                destination['name'] = name
+
+            items.append({
                 'source': {
                     'volume': volume,
                     'location': location
                 },
-                'destination': {
-                    'project': project
-                },
+                'destination': destination,
                 'overwrite': overwrite
-            }
-
-            if name:
-                item['destination']['name'] = name
-
-            items.append(item)
+            })
 
         data = {'items': items}
-
         response = api.post(url=cls._URL['bulk_create'], data=data)
         return ImportBulkRecord.parse_records(response=response, api=api)
 

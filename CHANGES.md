@@ -1,3 +1,23 @@
+0.23.3 (2019-09-20)
+==================
+
+- Bugfixes:
+    - Fixed metadata update when saving file
+    - Fixed input file serialization for record type inputs
+
+0.23.2 (2019-08-28)
+==================
+
+- Improvements:
+    - Added parent parameter to bulk imports
+
+0.23.1 (2019-08-27)
+==================
+
+- Improvements:
+    - Exposed secondary files as a property on input/output files
+    - Enabled copying apps from specified revision, using the use_revision parameter
+
 0.23.0 (2019-08-08)
 ==================
 

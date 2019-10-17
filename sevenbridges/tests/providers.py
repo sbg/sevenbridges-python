@@ -634,6 +634,13 @@ class TaskProvider(object):
         task['outputs'] = task['inputs']
         return task
 
+    def exists(self, **kwargs):
+        task = TaskProvider.default_task()
+        task.update(**kwargs)
+        url = self.base_url + '/tasks/{}'.format(task['id'])
+        self.request_mocker.get(url, json=task)
+        return task
+
     def exist(self, tasks):
         all_tasks = []
         for task_data in tasks:

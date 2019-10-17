@@ -166,12 +166,15 @@ class App(Resource):
             url=cls._URL['get'].format(id=app['sbg:id'])).json()
         return App(api=api, **app_wrapper)
 
-    def copy(self, project, name=None, strategy=None):
+    def copy(self, project, name=None, strategy=None, use_revision=False,
+             api=None):
         """
         Copies the current app.
         :param project: Destination project.
         :param name: Destination app name.
         :param strategy: App copy strategy.
+        :param use_revision: Copy from set app revision.
+        :param api: Api instance.
         :return: Copied App object.
 
         :Copy strategies:
@@ -187,6 +190,8 @@ class App(Resource):
         transient     copy only the latest revision and continue getting
                       updates from the original app
         """
+        api = api or self._API
+        app_id = self._id if use_revision else self.id
         strategy = strategy or AppCopyStrategy.CLONE
 
         project = Transform.to_project(project)
@@ -196,14 +201,18 @@ class App(Resource):
         }
         if name:
             data['name'] = name
-        extra = {'resource': self.__class__.__name__, 'query': {
-            'id': self.id,
-            'data': data
-        }}
+        extra = {
+            'resource': self.__class__.__name__,
+            'query': {
+                'id': app_id,
+                'data': data
+            }
+        }
         logger.info('Copying app', extra=extra)
-        app = self._api.post(url=self._URL['copy'].format(id=self.id),
-                             data=data).json()
-        return App(api=self._api, **app)
+        app = api.post(
+            url=self._URL['copy'].format(id=app_id), data=data
+        ).json()
+        return App(api=api, **app)
 
     def sync(self):
         """

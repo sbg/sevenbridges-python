@@ -1436,6 +1436,19 @@ Batch task
         print('I was unable to run a batch task.')
 
 
+Secondary files
+^^^^^^^^^^^^^^^
+
+Accessing task input/output secondary files is possible using the secondary_files property on the input/output itself.
+
+Example for outputs:
+
+.. code:: python
+
+    task = api.tasks.get('<task_id>')
+    secondary_files = task.outputs['<output_name>'].secondary_files
+
+
 Managing bulk operations
 ------------------------
 
@@ -1578,27 +1591,23 @@ data for each job, for example:
 
     volume = api.volumes.get('user/volume')
 
-    # Submit export jobs
-    exports = [
-        {
-            'file': 'example_file.txt',
-            'volume': volume,
-            'location': '/data/example_file.txt',
-            'properties': {
-                'some_property': 'value'
-            }
-            'overwrite': True
-        },
-        {
-            'file': 'example_file_2.txt',
-            'volume': volume,
-            'location': '/data/example_file_2.txt',
-            'properties': {
-                'some_property_2': 'value_2'
-            },
-            'overwrite': False
-        },
-    ]
+    # Find some files to export 
+    files_to_export = list(api.files.query(project='user/my-project').all())
+
+    # Create exports list
+    # We will be exporting all the files in a project (root folder only) to
+    # the volume, with a location same as the name of the file
+
+    exports = []
+    
+    for file in files_to_export:
+          export = {
+                'file':file,
+                'volume': volume,
+                'location':file.name
+          }
+          exports.append(export)
+
     response = api.exports.bulk_submit(exports=exports, copy_only=False)
 
 
