@@ -732,7 +732,7 @@ class AutomationRun(Resource):
             logger.info('Saving automation run', extra=extra)
             data = self._api.patch(url=self._URL['get'].format(id=self.id),
                                    data=modified_data).json()
-            return Automation(api=self._api, **data)
+            return AutomationRun(api=self._api, **data)a
         else:
             raise ResourceNotModified()
 
