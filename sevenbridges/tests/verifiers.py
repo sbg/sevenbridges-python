@@ -570,6 +570,9 @@ class AutomationRunVerifier(object):
     def stopped(self, id):
         self.checker.check_url('/automation/runs/{}/actions/stop'.format(id))
 
+    def updated(self, id):
+        self.checker.check_url('/automation/runs/{}'.format(id))
+
 
 class AsyncJobVerifier(object):
     def __init__(self, request_mocker):
