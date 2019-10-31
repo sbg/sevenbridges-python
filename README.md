@@ -6,7 +6,7 @@ sevenbridges-python
 [![Documentation](https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest)](http://sevenbridges-python.readthedocs.org/en/latest/)
 [![Licence](https://img.shields.io/badge/licence-Apache-orange.svg)](https://github.com/sbg/sevenbridges-python/blob/develop/LICENCE)
 
-[CHANGESETS](https://github.com/sbg/sevenbridges-python/blob/develop/CHANGES.md)
+[CHANGELOG](https://github.com/sbg/sevenbridges-python/releases)
 
 sevenbridges-python is a [Python](http://www.python.org/) library that
 provides an interface for the [Seven Bridges Platform](https://www.sbgenomics.com/) the
