@@ -1,8 +1,13 @@
 import io
+import os
 import sys
 
 from setuptools import setup, find_packages
-from sevenbridges.version import __version__
+
+version = '0.0.1+local-build'
+if os.path.isfile('VERSION'):
+    with io.open('VERSION', 'r', encoding='utf-8') as f:
+        version = f.read()
 
 install_requires = ["requests>=2.20.0", "six>=1.10.0"]
 if sys.version_info < (3,):
@@ -10,7 +15,7 @@ if sys.version_info < (3,):
 
 setup(
     name='sevenbridges-python',
-    version=__version__,
+    version=version,
     description='SBG API python client bindings',
     install_requires=install_requires,
     long_description=io.open('README.md', 'r', encoding='utf-8').read(),
