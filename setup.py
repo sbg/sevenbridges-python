@@ -4,10 +4,13 @@ import sys
 
 from setuptools import setup, find_packages
 
+package_dir, _ = os.path.split(__file__)
+version_path = os.path.join(package_dir, "VERSION")
+
 version = '0.0.1+local-build'
-if os.path.isfile('VERSION'):
-    with io.open('VERSION', 'r', encoding='utf-8') as f:
-        version = f.read()
+if os.path.isfile(version_path):
+    with io.open(version_path, 'r', encoding='utf-8') as f:
+        __version__ = f.read()
 
 install_requires = ["requests>=2.20.0", "six>=1.10.0"]
 if sys.version_info < (3,):

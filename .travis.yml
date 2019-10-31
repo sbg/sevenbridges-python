@@ -16,7 +16,7 @@ script:
   - flake8 sevenbridges
   - py.test -v --cov=sevenbridges
 
-before_deploy: echo $TRAVIS_TAG > VERSION
+before_deploy: echo $TRAVIS_TAG > sevenbridges/VERSION
 
 deploy:
   provider: pypi
