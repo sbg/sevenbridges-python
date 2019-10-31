@@ -15,7 +15,7 @@ version_path = os.path.join(package_dir, 'VERSION')
 __version__ = '0.0.1+local-build'
 if os.path.isfile(version_path):
     with io.open(version_path, 'r', encoding='utf-8') as f:
-        __version__ = f.read()
+        __version__ = f.read().strip()
 
 
 from sevenbridges.api import Api

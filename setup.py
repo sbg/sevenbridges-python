@@ -10,7 +10,7 @@ version_path = os.path.join(package_dir, 'sevenbridges', 'VERSION')
 version = '0.0.1+local-build'
 if os.path.isfile(version_path):
     with io.open(version_path, 'r', encoding='utf-8') as f:
-        version = f.read()
+        version = f.read().strip()
 
 install_requires = ["requests>=2.20.0", "six>=1.10.0"]
 if sys.version_info < (3,):
