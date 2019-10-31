@@ -7,7 +7,7 @@ sevenbridges-python
 import ssl
 import logging
 
-__version__ = "0.24.0"
+from sevenbridges.version import __version__  # noqa
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config
