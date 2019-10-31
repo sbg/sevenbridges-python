@@ -9,8 +9,8 @@ import os
 import ssl
 import logging
 
-package_dir, _ = os.path.split(__file__)
-version_path = os.path.join(package_dir, "VERSION")
+package_dir, _ = os.path.split(os.path.abspath(__file__))
+version_path = os.path.join(package_dir, 'VERSION')
 
 __version__ = '0.0.1+local-build'
 if os.path.isfile(version_path):

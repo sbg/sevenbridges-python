@@ -1,1 +1,1 @@
-include VERSION LICENCE CHANGES.md README.md requirements*.txt setup.cfg
+include sevenbridges/VERSION LICENCE README.md requirements*.txt setup.cfg
