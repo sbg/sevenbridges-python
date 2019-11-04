@@ -4,10 +4,19 @@ sevenbridges-python
 :copyright: 2018 Seven Bridges Genomics Inc.
 :license: Apache 2.0
 """
+import io
+import os
 import ssl
 import logging
 
-__version__ = "0.24.0"
+package_dir, _ = os.path.split(os.path.abspath(__file__))
+version_path = os.path.join(package_dir, 'VERSION')
+
+__version__ = '0.0.1+local-build'
+if os.path.isfile(version_path):
+    with io.open(version_path, 'r', encoding='utf-8') as f:
+        __version__ = f.read().strip()
+
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config

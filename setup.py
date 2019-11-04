@@ -4,18 +4,13 @@ import sys
 
 from setuptools import setup, find_packages
 
-# If version file exists, this happens during the installation phase,
-# read the version from the version file.
-# If the version file does not exist, this is during the build phase,
-# read the version from TRAVIS_TAG and create a version file for packaging.
-VERSION_FILE = 'VERSION'
-if os.path.isfile(VERSION_FILE):
-    with io.open(VERSION_FILE, 'r', encoding='utf-8') as f:
-        version = f.read()
-else:
-    version = os.environ.get('TRAVIS_TAG', '0.0.0')
-    with io.open(VERSION_FILE, 'w', encoding='utf-8') as f:
-        f.write(version)
+package_dir, _ = os.path.split(os.path.abspath(__file__))
+version_path = os.path.join(package_dir, 'sevenbridges', 'VERSION')
+
+version = '0.0.1+local-build'
+if os.path.isfile(version_path):
+    with io.open(version_path, 'r', encoding='utf-8') as f:
+        version = f.read().strip()
 
 install_requires = ["requests>=2.20.0", "six>=1.10.0"]
 if sys.version_info < (3,):
