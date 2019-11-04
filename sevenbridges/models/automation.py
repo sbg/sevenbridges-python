@@ -607,7 +607,7 @@ class AutomationRun(Resource):
 
     href = HrefField()
     id = StringField(read_only=True)
-    name = StringField(read_only=True)
+    name = StringField(read_only=False)
     automation = CompoundField(Automation, read_only=True)
     package = CompoundField(AutomationPackage, read_only=True)
     inputs = DictField()
@@ -712,6 +712,29 @@ class AutomationRun(Resource):
             data=data,
         ).json()
         return AutomationRun(api=api, **automation_run)
+
+    @inplace_reload
+    def save(self, inplace=True):
+        """
+        Saves all modification to the automation run on the server.
+        :param inplace Apply edits on the current instance or get a new one.
+        :return: Automation run instance.
+        """
+        modified_data = self._modified_data()
+        if bool(modified_data):
+            extra = {
+                'resource': self.__class__.__name__,
+                'query': {
+                    'id': self.id,
+                    'modified_data': modified_data
+                }
+            }
+            logger.info('Saving automation run', extra=extra)
+            data = self._api.patch(url=self._URL['get'].format(id=self.id),
+                                   data=modified_data).json()
+            return AutomationRun(api=self._api, **data)
+        else:
+            raise ResourceNotModified()
 
     @classmethod
     def rerun(

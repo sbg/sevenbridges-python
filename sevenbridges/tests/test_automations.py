@@ -489,3 +489,18 @@ def test_rerun(api, given, verifier):
 
     # verification
     verifier.automation_runs.reran(id=id)
+
+
+def test_update(api, given, verifier):
+    # precondition
+    api.aa = True
+    id = generator.uuid4()
+    new_name = generator.name()
+    given.automation_runs.exists(id=id)
+    run = api.automation_runs.get(id=id)
+
+    # action
+    run.name = new_name
+
+    # verification
+    verifier.automation_runs.updated(id=id)
