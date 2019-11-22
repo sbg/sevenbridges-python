@@ -343,7 +343,7 @@ class Volume(Resource):
                 'data': data,
             }
         }
-        logger.info('Adding volume member using username', extra=extra)
+        logger.info('Adding volume member', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -357,7 +357,7 @@ class Volume(Resource):
         :return: Member object.
         """
         team = Transform.to_team(team)
-        data = {'id': team, 'type': 'TEAM'}
+        data = {'username': team, 'type': 'TEAM'}
 
         if 'execute' in permissions:
             permissions.pop('execute')
@@ -374,7 +374,7 @@ class Volume(Resource):
                 'data': data,
             }
         }
-        logger.info('Adding volume team member using team id', extra=extra)
+        logger.info('Adding volume team member', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -392,7 +392,7 @@ class Volume(Resource):
         if 'execute' in permissions:
             permissions.pop('execute')
 
-        data = {'id': division, 'type': 'DIVISION'}
+        data = {'username': division, 'type': 'DIVISION'}
         if isinstance(permissions, dict):
             data.update({
                 'permissions': permissions
@@ -405,7 +405,7 @@ class Volume(Resource):
                 'data': data,
             }
         }
-        logger.info('Adding volume team member using division id', extra=extra)
+        logger.info('Adding volume division member', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -431,7 +431,7 @@ class Volume(Resource):
         Remove member from the volume.
         :param user: User to be removed.
         """
-        member = Transform.to_user(user)
+        username = Transform.to_user(user)
         extra = {
             'resource': self.__class__.__name__,
             'query': {
@@ -441,5 +441,5 @@ class Volume(Resource):
         }
         logger.info('Removing volume member', extra=extra)
         self._api.delete(
-            url=self._URL['member'].format(id=self.id, member=member)
+            url=self._URL['member'].format(id=self.id, username=username)
         )
