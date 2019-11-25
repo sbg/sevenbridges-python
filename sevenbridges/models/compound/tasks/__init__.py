@@ -19,6 +19,7 @@ def map_input_output(item, api):
             data = {
                 'id': item['path']
             }
+            data.update({k: item[k] for k in item if k != 'path'})
             if _secondary_files:
                 data.update({
                     '_secondary_files': _secondary_files,

@@ -191,7 +191,7 @@ class Project(Resource):
                 'data': data,
             }
         }
-        logger.info('Adding member using username', extra=extra)
+        logger.info('Adding member', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -205,7 +205,7 @@ class Project(Resource):
         :return: Member object.
         """
         team = Transform.to_team(team)
-        data = {'id': team, 'type': 'TEAM'}
+        data = {'username': team, 'type': 'TEAM'}
         if isinstance(permissions, dict):
             data.update({
                 'permissions': permissions
@@ -218,7 +218,7 @@ class Project(Resource):
                 'data': data,
             }
         }
-        logger.info('Adding team member using team id', extra=extra)
+        logger.info('Adding team member', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
@@ -232,7 +232,7 @@ class Project(Resource):
         :return: Member object.
         """
         division = Transform.to_division(division)
-        data = {'id': division, 'type': 'DIVISION'}
+        data = {'username': division, 'type': 'DIVISION'}
         if isinstance(permissions, dict):
             data.update({
                 'permissions': permissions
@@ -245,7 +245,7 @@ class Project(Resource):
                 'data': data,
             }
         }
-        logger.info('Adding team member using division id', extra=extra)
+        logger.info('Adding division member', extra=extra)
         response = self._api.post(
             url=self._URL['members_query'].format(id=self.id), data=data)
         member_data = response.json()
