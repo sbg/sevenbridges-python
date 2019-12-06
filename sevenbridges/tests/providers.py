@@ -1531,7 +1531,8 @@ class AutomationPackageProvider(object):
             'location': location,
             'created_by': generator.user_name(),
             'created_on': generator.date(),
-            'archived': False
+            'archived': False,
+            'custom_url': generator.url()
         }
 
     def exists(self, **kwargs):
@@ -1569,6 +1570,14 @@ class AutomationPackageProvider(object):
                 automation_id, package_id
             ),
             json=package
+        )
+
+    def can_be_saved(self, **kwargs):
+        package = self.default_automation_package()
+        package.update(**kwargs)
+        id = package['id']
+        self.request_mocker.patch(
+            '/automation/packages/{id}'.format(id=id), json=package
         )
 
 

@@ -1629,7 +1629,10 @@ The following operations are supported for automations:
     - ``remove_member()`` - Remove member from an automation
     - ``get_runs()`` - Get automation runs
 
-The following operations are supported for automation package:
+The following operations are supported for automation packages:
+    - ``query()`` - Query all automation packages
+    - ``get()`` - Get automation package with the provided id
+    - ``create()`` - Create automation package
     - ``archive()`` - Archive an package
     - ``restore()`` - Restore an archived package
 
@@ -1665,6 +1668,24 @@ Each automation has the following properties:
 ``modified_by`` - Username of the user that last modified the automation.
 
 ``modified_on`` - Date of the last modification of the automation.
+
+Each automation package has the following properties:
+
+``id`` - Automation package identifier.
+
+``automation`` - Identifier of the automation the package belongs to.
+
+``version`` - Automation package version.
+
+``location`` - Location identifier of uploaded automation package.
+
+``created_by`` - Username of the user that created the automation.
+
+``created_on`` - Date of the automation package creation.
+
+``archived`` - Flag indicating wheather automation package is arhived or not.
+
+``custom_url`` - Link to custom frontend page.
 
 Each automation run has the following properties:
 
@@ -1709,6 +1730,12 @@ Examples
 
     # Get details of an automation
     automation = api.automations.get('automation_id')
+
+    # Create automation package from uploaded code package
+    automation_package = api.automation_packages.create('automation_id', 'version', 'location_id'):
+
+    # Get automation package details
+    automation_package = api.automation_packages.get('package_id')
 
     # Get automation runs with name parameter for existing automation
     automation.get_runs(name='automation_run_name')

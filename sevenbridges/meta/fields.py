@@ -42,10 +42,7 @@ class Field(object):
     def __get__(self, instance, cls):
         try:
             data = instance._data[self.name]
-            if data and isinstance(self, DateTimeField):
-                return datetime.strptime(data, '%Y-%m-%dT%H:%M:%SZ')
-            else:
-                return data
+            return data
         except (KeyError, AttributeError):
             return None
 
@@ -152,6 +149,16 @@ class StringField(Field):
 class DateTimeField(Field):
     def __init__(self, name=None, read_only=True):
         super(DateTimeField, self).__init__(name=name, read_only=read_only)
+
+    def __get__(self, instance, cls):
+        data = super(DateTimeField, self).__get__(instance, cls)
+        if data:
+            format = "%Y-%m-%dT%H:%M:%S"
+            if '.' in data:
+                format += ".%f"
+            if 'Z' in data:
+                format += "Z"
+            return datetime.strptime(data, format)
 
 
 class BooleanField(Field):

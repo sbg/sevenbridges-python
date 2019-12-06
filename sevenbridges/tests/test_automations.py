@@ -219,6 +219,29 @@ def test_archive_package(api, given, verifier):
     )
 
 
+def test_modify_package(api, given, verifier):
+    # preconditions
+    automation_id = generator.uuid4()
+    package_id = generator.uuid4()
+    new_custom_url = generator.url()
+    given.automation_packages.exists(
+        id=package_id, automation=automation_id
+    )
+    given.automation_packages.can_be_saved(
+        id=package_id, automation=automation_id, custom_url=new_custom_url
+    )
+
+    # action
+    package = api.automation_packages.get(package_id)
+    package.custom_url = new_custom_url
+    package.save()
+
+    assert package.custom_url == new_custom_url
+
+    # verification
+    verifier.automation_packages.saved(id=package_id)
+
+
 def test_restore_package(api, given, verifier):
     # preconditions
     automation_id = generator.uuid4()
