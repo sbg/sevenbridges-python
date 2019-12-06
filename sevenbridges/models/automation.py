@@ -28,11 +28,11 @@ class AutomationPackage(Resource):
     """
     _URL = {
         'query': '/automation/automations/{automation_id}/packages',
-        'get': '/automation/packages/{package_id}',
+        'get': '/automation/packages/{id}',
         'archive': "/automation/automations/{automation_id}"
-                   "/packages/{package_id}/actions/archive",
+                   "/packages/{id}/actions/archive",
         'restore': "/automation/automations/{automation_id}"
-                   "/packages/{package_id}/actions/restore",
+                   "/packages/{id}/actions/restore",
     }
 
     id = StringField(read_only=True)
@@ -40,8 +40,9 @@ class AutomationPackage(Resource):
     version = StringField(read_only=True)
     location = StringField(read_only=True)
     created_by = StringField(read_only=True)
-    created_on = StringField(read_only=True)
+    created_on = DateTimeField(read_only=True)
     archived = BooleanField(read_only=True)
+    custom_url = StringField()
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -116,22 +117,6 @@ class AutomationPackage(Resource):
         )
         return AutomationPackage(api=api, **package_data)
 
-    # noinspection PyMethodOverriding
-    @classmethod
-    def get(cls, package_id, api=None):
-        """
-        Fetches the resource from the server.
-        :param package_id: Automation package id
-        :param api: sevenbridges Api instance.
-        :return: AutomationPackage object.
-        """
-
-        api = api or cls._API
-        code_package = api.get(url=cls._URL['get'].format(
-            package_id=package_id,
-        )).json()
-        return AutomationPackage(api=api, **code_package)
-
     @inplace_reload
     def archive(self):
         """
@@ -150,7 +135,7 @@ class AutomationPackage(Resource):
 
         package_data = self._api.post(
             url=self._URL['archive'].format(
-                automation_id=automation_id, package_id=self.id
+                automation_id=automation_id, id=self.id
             )
         ).json()
         return AutomationPackage(api=self._api, **package_data)
@@ -172,10 +157,34 @@ class AutomationPackage(Resource):
 
         package_data = self._api.post(
             url=self._URL['restore'].format(
-                automation_id=automation_id, package_id=self.id
+                automation_id=automation_id, id=self.id
             )
         ).json()
         return AutomationPackage(api=self._api, **package_data)
+
+    @inplace_reload
+    def save(self, inplace=True):
+        """
+        Saves all modification to the automation package on the server.
+        :param inplace Apply edits on the current instance or get a new one.
+        :return: AutomationPackage instance.
+        """
+        modified_data = self._modified_data()
+        if bool(modified_data):
+            extra = {
+                'resource': self.__class__.__name__,
+                'query': {
+                    'id': self.id,
+                    'modified_data': modified_data
+                }
+            }
+            logger.info('Saving automation package', extra=extra)
+            data = self._api.patch(url=self._URL['get'].format(id=self.id),
+                                   data=modified_data).json()
+            return AutomationPackage(api=self._api, **data)
+
+        else:
+            raise ResourceNotModified()
 
 
 class AutomationMember(Resource):
@@ -331,9 +340,9 @@ class Automation(Resource):
     billing_group = UuidField(read_only=False)
     owner = StringField(read_only=True)
     created_by = StringField(read_only=True)
-    created_on = StringField(read_only=True)
+    created_on = DateTimeField(read_only=True)
     modified_by = StringField(read_only=True)
-    modified_on = StringField(read_only=False)
+    modified_on = DateTimeField(read_only=False)
     archived = BooleanField(read_only=True)
     secret_settings = DictField(read_only=False)
 
@@ -501,7 +510,7 @@ class Automation(Resource):
         package_id = Transform.to_automation_package(package)
         api = api or cls._API
         return AutomationPackage.get(
-            package_id=package_id, api=api
+            id=package_id, api=api
         )
 
     def add_package(self, version, location, api=None):

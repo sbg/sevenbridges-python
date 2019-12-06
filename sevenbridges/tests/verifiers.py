@@ -539,6 +539,9 @@ class AutomationPackageVerifier(object):
             )
         )
 
+    def saved(self, id):
+        self.checker.check_url('/automation/packages/{id}'.format(id=id))
+
 
 class AutomationRunVerifier(object):
     def __init__(self, request_mocker):
