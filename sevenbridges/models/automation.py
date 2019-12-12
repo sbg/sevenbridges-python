@@ -197,7 +197,11 @@ class AutomationMember(Resource):
     }
 
     href = HrefField()
+    id = StringField(read_only=True)
     username = StringField(read_only=True)
+    email = StringField(read_only=True)
+    type = StringField(read_only=True)
+    name = StringField(read_only=True)
     permissions = CompoundField(Permissions)
 
     def __eq__(self, other):

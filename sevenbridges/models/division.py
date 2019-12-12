@@ -57,3 +57,7 @@ class Division(Resource):
         return self._api.teams.query(
             division=self.id, offset=offset, limit=limit
         )
+
+    def get_members(self, role=None, offset=None, limit=None):
+        return self._api.users.query(self, role=role, offset=offset,
+                                     limit=limit)

@@ -45,3 +45,18 @@ def test_get_teams(api, given, verifier):
     teams = division.get_teams()
 
     assert len(teams) == total
+
+
+def test_get_members(api, given, verifier):
+    # preconditions
+    api.aa = True
+    total = 10
+    id = generator.uuid4()
+
+    given.division.exists(id=id)
+    given.division.members_exist(id, total)
+
+    division = api.divisions.get(id=id)
+    members = division.get_members()
+
+    assert len(members) == total

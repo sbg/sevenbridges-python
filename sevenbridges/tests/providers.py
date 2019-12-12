@@ -1001,6 +1001,7 @@ class DivisionProvider(object):
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
+        self.member_provider = MemberProvider(request_mocker, base_url)
 
     @staticmethod
     def default_division():
@@ -1032,6 +1033,19 @@ class DivisionProvider(object):
     def teams_exist(self, id, total):
         items = [TeamProvider.default_team() for _ in range(total)]
         url = '/teams?division={}'.format(id)
+        href = self.base_url + url
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(href, json=response, headers={
+            'x-total-matching-query': str(total)})
+
+    def members_exist(self, id, total):
+        items = [self.member_provider.default_member() for _ in range(total)]
+        url = '/users?division={}'.format(id)
         href = self.base_url + url
         links = []
         response = {
