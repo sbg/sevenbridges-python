@@ -1780,3 +1780,13 @@ class AsyncJobProvider(object):
         self.request_mocker.post(
             '/async/files/delete', json=async_job
         )
+
+    def can_move_files(self, files):
+        async_job = self.default_async_job()
+        async_job['result'] = [
+            {'resource': {'id': file['file']}}
+            for file in files
+        ]
+        self.request_mocker.post(
+            '/async/files/move', json=async_job
+        )

@@ -39,7 +39,9 @@ class AsyncJob(Resource):
         'get_file_copy_job': '/async/files/copy/{id}',
         'get_file_delete_job': '/async/files/delete/{id}',
         'bulk_copy_files': '/async/files/copy',
-        'bulk_delete_files': '/async/files/delete'
+        'bulk_delete_files': '/async/files/delete',
+        'get_file_move_job': '/async/files/move/{id}',
+        'bulk_move_files': '/async/files/move',
     }
 
     id = StringField(read_only=True)
@@ -81,6 +83,22 @@ class AsyncJob(Resource):
         api = api if api else cls._API
         async_job = api.get(
             url=cls._URL['get_file_copy_job'].format(id=id)
+        ).json()
+        return AsyncJob(api=api, **async_job)
+
+    @classmethod
+    def get_file_move_job(cls, id, api=None):
+        """
+        Retrieve file move async job
+        :param id: Async job identifier
+        :param api: Api instance
+        :return:
+        """
+        id = Transform.to_async_job(id)
+
+        api = api if api else cls._API
+        async_job = api.get(
+            url=cls._URL['get_file_move_job'].format(id=id)
         ).json()
         return AsyncJob(api=api, **async_job)
 
@@ -135,6 +153,16 @@ class AsyncJob(Resource):
         logger.info('Submitting async job for copying files in bulk')
         response = api.post(
             url=cls._URL['bulk_copy_files'], data=data
+        ).json()
+        return AsyncJob(api=api, **response)
+
+    @classmethod
+    def file_bulk_move(cls, files, api=None):
+        api = api or cls._API
+        data = {'items': files}
+        logger.info('Submitting async job for moving files in bulk')
+        response = api.post(
+            url=cls._URL['bulk_move_files'], data=data
         ).json()
         return AsyncJob(api=api, **response)
 

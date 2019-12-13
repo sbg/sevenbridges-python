@@ -602,3 +602,9 @@ class AsyncJobVerifier(object):
 
     def async_files_deleted(self):
         self.checker.check_url('/async/files/delete')
+
+    def file_move_job_fetched(self, id):
+        self.checker.check_url('/async/files/move/{}'.format(id))
+
+    def async_files_moved(self):
+        self.checker.check_url('/async/files/move')
