@@ -93,6 +93,7 @@ class AsyncJobStates:
 class AsyncFileOperations:
     COPY = 'copy'
     DELETE = 'delete'
+    MOVE = 'move'
 
 
 class DivisionRole:
