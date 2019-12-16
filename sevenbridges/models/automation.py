@@ -58,7 +58,7 @@ class AutomationPackage(Resource):
         return six.text_type('<AutomationPackage: id={id}>'.format(id=self.id))
 
     @classmethod
-    def query(cls, automation=None, offset=None, limit=None, api=None):
+    def query(cls, automation, offset=None, limit=None, api=None):
         """
         Query (List) automation packages.
         :param automation: Automation id.
@@ -72,7 +72,6 @@ class AutomationPackage(Resource):
         api = api or cls._API
         return super(AutomationPackage, cls)._query(
             url=cls._URL['query'].format(automation_id=automation_id),
-            automation_id=automation_id,
             offset=offset,
             limit=limit,
             api=api,
@@ -677,8 +676,8 @@ class AutomationRun(Resource):
         return super(AutomationRun, cls)._query(
             url=cls._URL['query'],
             name=name,
-            automation=automation,
-            package=package,
+            automation_id=automation,
+            package_id=package,
             status=status,
             created_by=created_by,
             created_from=created_from,
