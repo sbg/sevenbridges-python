@@ -947,7 +947,7 @@ The available methods for listing volumes, imports and exports are ``query`` and
 
 .. code:: python
 
-    # Query all volumes 
+    # Query all volumes
     volume_list = api.volumes.query()
     # Query all imports
     all_imports = api.imports.query()
@@ -1209,6 +1209,52 @@ Examples
                  time.sleep(10)
           if done_len == num_exports:
                  done = True
+
+
+Managing divisions
+------------------
+
+Enterprise access to the Platform is available on demand and allows companies or organizations to mimic their internal
+structure and hierarchy on the Seven Bridges Platform, thus facilitating simpler and more efficient collaboration.
+
+Enterprise accounts are granted to users through their organizations. The organization associated with the
+Enterprise account may create user groups (Divisions and Teams) composed of Enterprise account holders,
+which are used to enable collaboration between members of the organization.
+
+A Division on the Platform is a subgroup of users within an Enterprise. Use the Division entity to replicate
+the structure and hierarchy of an organization, such as departmental groups on the Platform.
+Divisions are created by Enterprise account administrators, but may be assigned Division administrator to manage the
+Division.
+
+A Team on the Platform is a subgroup of a Division. Teams may be created by the Division administrator to simplify
+adding multiple members to a project simultaneously. One Division member can belong to multiple Teams.
+
+The available methods for listing division are ``query`` and ``get``, as for other objects:
+
+.. code:: python
+
+    # Query all divisions user belongs to (division authentication token required)
+    division_collection = api.divisions.query()
+    # Get a single division's information
+    division = api.divisions.get(id='division-id')
+
+
+Division properties
+~~~~~~~~~~~~~~~~~~~
+
+``id`` - Division ID.
+
+``name`` - Division name. Learn more about this in our `Knowledge Center <https://docs.sevenbridges.com/docs/manage-a-division>`_.
+
+Division methods
+~~~~~~~~~~~~~~~~
+
+Divisions have the following methods:
+
+-  Refresh the division with data from the server: ``reload()``
+-  Get teams belonging to particular division ``get_teams()``
+-  Get user members belonging to particular division ``get_members()``
+
 
 Managing apps
 -------------
