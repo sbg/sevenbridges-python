@@ -1848,8 +1848,10 @@ The following operations are supported for async operations runs:
     - ``list_file_jobs()`` - Query all async jobs for files.
     - ``get_copy_files_job()`` - Get the details of an asynchronous bulk file copy job.
     - ``get_delete_files_job()`` - Get the details of an asynchronous bulk file delete job.
+    - ``get_file_move_job()`` - Get the details of an asynchronous bulk file move job.
     - ``get_results()`` - Parse results of a job as a bulk response.
     - ``file_bulk_copy()`` - Perform a bulk copy operation of files and folders. Any underlying folder structure will be preserved.
+    - ``file_bulk_move()`` - Perform a bulk move operation of files and folders. Any underlying folder structure will be preserved.
     - ``file_bulk_delete()`` - Perform a bulk delete operation of files and folders. Deleting folders which aren't empty is allowed.
 
 Properties
@@ -1859,7 +1861,7 @@ Each async job has the following properties:
 
 ``id`` - Async job identifier.
 
-``type`` - The type of job, which is COPY in the case of copying files, and DELETE in case of deleting files.
+``type`` - The type of job, which is COPY in the case of copying files, MOVE in case of moving files and DELETE in case of deleting files.
 
 ``state`` - Current job state (RUNNING, FINISHED, SUBMITTED, RESOLVING)
 
@@ -1925,3 +1927,23 @@ Examples
         },
     ]
     new_delete_job = api.async_jobs.file_bulk_delete(files=files)
+
+    # Start bulk file move job
+        files = [
+            {
+                'file': 'file_id_1',
+                'project': project_id,
+                'name': 'name_1',
+            },
+            {
+                'file': 'file_id_2',
+                'project': project_id,
+                'name': 'name_2',
+            },
+            {
+                'file': 'file_id_3',
+                'project': project_id,
+                'name': 'name_2',
+            }
+        ]
+        new_move_job = api.async_jobs.file_bulk_move(files=files)

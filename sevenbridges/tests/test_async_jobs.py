@@ -34,6 +34,19 @@ def test_get_copy_files_job(api, given, verifier):
     verifier.async_jobs.file_copy_job_fetched(id=id)
 
 
+def test_get_move_files_job(api, given, verifier):
+    # preconditions
+    id = generator.uuid4()
+    given.async_jobs.exists(id=id, type=AsyncFileOperations.MOVE)
+
+    # action
+    job = api.async_jobs.get_file_move_job(id=id)
+
+    # verification
+    assert job.id == id
+    verifier.async_jobs.file_move_job_fetched(id=id)
+
+
 def test_get_delete_files_job(api, given, verifier):
     # preconditions
     id = generator.uuid4()
@@ -93,6 +106,28 @@ def test_async_copy_files(api, given, verifier, location):
     assert job.state == AsyncJobStates.SUBMITTED
     assert len(job.result) == total
     verifier.async_jobs.async_files_copied()
+
+
+@pytest.mark.parametrize("location", ['parent', 'project'])
+def test_async_move_files(api, given, verifier, location):
+    # preconditions
+    total = 10
+    files = [
+        {
+            'file': generator.uuid4(),
+            'location': generator.uuid4(),
+            'name': generator.slug()
+        } for _ in range(total)
+    ]
+    given.async_jobs.can_move_files(files=files)
+
+    # action
+    job = api.async_jobs.file_bulk_move(files=files)
+
+    # verification
+    assert job.state == AsyncJobStates.SUBMITTED
+    assert len(job.result) == total
+    verifier.async_jobs.async_files_moved()
 
 
 def test_async_delete_files(api, given, verifier):
