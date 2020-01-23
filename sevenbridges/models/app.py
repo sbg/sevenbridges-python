@@ -62,9 +62,12 @@ class App(Resource):
         return not self.__eq__(other)
 
     def __str__(self):
-        return six.text_type('<App: id={id} rev={rev}>'.format(
-            id=self.id, rev=self.revision)
-        )
+        revision = self.field('revision')
+        if revision:
+            return six.text_type('<App: id={id} rev={rev}>'.format(
+                id=self.id, rev=revision)
+            )
+        return six.text_type('<App: id={id}'.format(id=self.id))
 
     @classmethod
     def query(cls, project=None, visibility=None, q=None, id=None, offset=None,

@@ -11,6 +11,9 @@ from sevenbridges.meta.transformer import Transform
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_LIMIT = 100
+
+
 # noinspection PyProtectedMember
 class ResourceMeta(type):
     """
@@ -131,6 +134,11 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         api = kwargs.pop('api', cls._API)
         url = kwargs.pop('url')
+
+        # Check for valid limit value
+        if kwargs.get('limit') is not None and kwargs['limit'] <= 0:
+            kwargs['limit'] = DEFAULT_LIMIT
+
         extra = {'resource': cls.__name__, 'query': kwargs}
         logger.info('Querying {} resource'.format(cls), extra=extra)
         response = api.get(url=url, params=kwargs)
