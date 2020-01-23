@@ -148,7 +148,7 @@ class Config(object):
         logger.info(
             'Client settings: [url={}] [token={}] [proxy={}]'.format(
                 self.api_endpoint,
-                self.auth_token,
+                '*****',
                 self.proxies
             )
         )
