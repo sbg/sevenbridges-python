@@ -1518,6 +1518,8 @@ populated. Example:
         else:
             print(record.error)
 
+The maximum number of resources that can be processed in a single bulk call is 100.
+
 Files
 ~~~~~
 
