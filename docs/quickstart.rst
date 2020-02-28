@@ -1851,7 +1851,7 @@ The following operations are supported for async operations runs:
     - ``get_copy_files_job()`` - Get the details of an asynchronous bulk file copy job.
     - ``get_delete_files_job()`` - Get the details of an asynchronous bulk file delete job.
     - ``get_file_move_job()`` - Get the details of an asynchronous bulk file move job.
-    - ``get_results()`` - Parse results of a job as a bulk response.
+    - ``get_result()`` - Parse results of a job as a bulk response.
     - ``file_bulk_copy()`` - Perform a bulk copy operation of files and folders. Any underlying folder structure will be preserved.
     - ``file_bulk_move()`` - Perform a bulk move operation of files and folders. Any underlying folder structure will be preserved.
     - ``file_bulk_delete()`` - Perform a bulk delete operation of files and folders. Deleting folders which aren't empty is allowed.
@@ -1895,7 +1895,7 @@ Examples
     delete_job = api.async_jobs.get_file_delete_job(id='delete_job_id')
 
     # Parse job results to bulk format
-    copy_job_results = copy_job.get_results()
+    copy_job_results = copy_job.get_result()
 
     # Check validity of each result in bulk format
     for result in copy_job_results:
