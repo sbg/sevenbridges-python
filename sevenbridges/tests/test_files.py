@@ -26,6 +26,37 @@ def test_files_query(api, given, verifier):
     verifier.file.queried(project=project.id)
 
 
+def test_files_query_with_token(api, given, verifier):
+    # preconditions
+    total = 20
+    owner = generator.user_name()
+    project_short_name = generator.slug()
+    id = '{}/{}'.format(owner, project_short_name)
+    given.file.files_exist_for_project(id, 20, scroll=True)
+    given.project.exists(id=id)
+
+    # action
+    project = api.projects.get(id)
+    projects = api.files.query(project=project, limit=10, cont_token='init')
+
+    # verification
+    assert projects.total == total
+    assert len(projects) == total
+
+    verifier.file.queried_with_token(project=project.id)
+
+
+def test_files_query_with_token_and_offset(api, given, verifier):
+    # action
+    with pytest.raises(SbgError):
+        api.files.query(
+            project='some project',
+            limit=10,
+            cont_token='some token',
+            offset=10
+        )
+
+
 def test_files_query_folder(api, given, verifier):
     # preconditions
     total = 10
@@ -85,6 +116,17 @@ def test_files_query_file_metadata(api, given, verifier):
     assert len(projects) == total
 
     verifier.file.queried_with_file_metadata(id, key, value)
+
+
+def test_files_query_file_metadata_with_token(api, given, verifier):
+    # action
+    with pytest.raises(SbgError):
+        api.files.query(
+            project='some project',
+            metadata={'key': 'value'},
+            limit=10,
+            cont_token='some token'
+        )
 
 
 def test_files_query_file_origin(api, given, verifier):
@@ -301,6 +343,7 @@ def test_create_folder(api, given, verifier):
 
 
 def test_list_files(api, given, verifier):
+    # precondition
     total = 10
     folder_id = generator.uuid4()
     given.file.exists(id=folder_id, type='folder')
@@ -314,6 +357,38 @@ def test_list_files(api, given, verifier):
     # verification
     assert len(response) == total
     verifier.file.folder_files_listed(id=folder_id)
+
+
+def test_list_files_with_token(api, given, verifier):
+    # precondition
+    total = 10
+    folder_id = generator.uuid4()
+    given.file.exists(id=folder_id, type='folder')
+
+    given.file.files_in_folder(
+        num_of_files=total,
+        folder_id=folder_id,
+        scroll=True
+    )
+
+    # action
+    folder = api.files.get(folder_id)
+    response = folder.list_files(cont_token='init')
+
+    # verification
+    assert len(response) == total
+    verifier.file.folder_files_listed_scroll(id=folder_id)
+
+
+def test_list_files_with_token_and_offset(api, given, verifier):
+    # precondition
+    folder_id = generator.uuid4()
+    given.file.exists(id=folder_id, type='folder')
+
+    # action
+    folder = api.files.get(folder_id)
+    with pytest.raises(SbgError):
+        folder.list_files(cont_token='init', offset=10)
 
 
 def test_copy_to_folder(api, given, verifier):

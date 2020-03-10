@@ -380,9 +380,11 @@ class FileProvider(object):
             'PUT', '/files/{id}/tags'.format(id=id), json=file_['tags']
         )
 
-    def files_exist_for_project(self, project, num_of_files):
+    def files_exist_for_project(self, project, num_of_files, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        href = self.base_url + '/files?project={project}'.format(
+        suffix = 'files/scroll' if scroll else 'files'
+        href = self.base_url + '/{suffix}?project={project}'.format(
+            suffix=suffix,
             project=project
         )
         links = []
@@ -466,9 +468,13 @@ class FileProvider(object):
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(num_of_files)})
 
-    def files_in_folder(self, num_of_files, folder_id):
+    def files_in_folder(self, num_of_files, folder_id, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        url = '/files/{folder_id}/list'.format(folder_id=folder_id)
+        suffix = 'scroll' if scroll else 'list'
+        url = '/files/{folder_id}/{suffix}'.format(
+            folder_id=folder_id,
+            suffix=suffix
+        )
         href = self.base_url + url
 
         response = {
