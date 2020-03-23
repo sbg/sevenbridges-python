@@ -38,6 +38,7 @@ class File(Resource):
 
     _URL = {
         'query': '/files',
+        'scroll': '/files/scroll',
         'get': '/files/{id}',
         'delete': '/files/{id}',
         'copy': '/files/{id}/actions/copy',
@@ -52,6 +53,7 @@ class File(Resource):
 
         'create_folder': '/files',
         'list_folder': '/files/{id}/list',
+        'scroll_folder': '/files/{id}/scroll',
         'copy_to_folder': '/files/{file_id}/actions/copy',
         'move_to_folder': '/files/{file_id}/actions/move',
     }
@@ -97,8 +99,8 @@ class File(Resource):
 
     @classmethod
     def query(cls, project=None, names=None, metadata=None, origin=None,
-              tags=None, offset=None, limit=None, dataset=None, api=None,
-              parent=None):
+              tags=None, offset=None, limit=None, dataset=None,
+              api=None, parent=None, cont_token=None):
         """
         Query ( List ) files, requires project or dataset
         :param project: Project id
@@ -111,8 +113,22 @@ class File(Resource):
         :param dataset: Dataset id
         :param api: Api instance.
         :param parent: Folder id or File object with type folder
+        :param cont_token: Pagination continuation token
         :return: Collection object.
         """
+
+        if cont_token and offset:
+            raise SbgError(
+                'Offset and continuation token parameters'
+                'are mutually exclusive.'
+            )
+
+        if cont_token and metadata:
+            raise SbgError(
+                'Metadata filtering cannot be combined '
+                'with continuation token pagination.'
+            )
+
         api = api or cls._API
 
         query_params = {}
@@ -159,7 +175,8 @@ class File(Resource):
         query_params.update(origin_params)
 
         return super(File, cls)._query(
-            api=api, url=cls._URL['query'], offset=offset,
+            api=api, url=cls._URL['scroll' if cont_token else 'query'],
+            token=cont_token, offset=offset,
             limit=limit, fields='_all', **query_params
         )
 
@@ -500,22 +517,33 @@ class File(Resource):
         response = api.post(url=cls._URL['bulk_edit'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
-    def list_files(self, offset=None, limit=None, api=None):
+    def list_files(self, offset=None, limit=None, api=None, cont_token=None):
         """List files in a folder
         :param api: Api instance
         :param offset: Pagination offset
         :param limit: Pagination limit
+        :param cont_token: Pagination continuation token
         :return: List of files
         """
+
+        if cont_token and offset:
+            raise SbgError(
+                'Offset and continuation token parameters'
+                'are mutually exclusive.'
+            )
+
         api = api or self._API
 
         if not self.is_folder():
             raise SbgError('{name} is not a folder'.format(name=self.name))
 
-        url = self._URL['list_folder'].format(id=self.id)
+        url = self._URL[
+            'scroll_folder' if cont_token else 'list_folder'
+        ].format(id=self.id)
 
         return super(File, self.__class__)._query(
-            api=api, url=url, offset=offset, limit=limit, fields='_all'
+            api=api, url=url, token=cont_token, offset=offset,
+            limit=limit, fields='_all'
         )
 
     @classmethod
