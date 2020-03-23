@@ -99,8 +99,8 @@ class File(Resource):
 
     @classmethod
     def query(cls, project=None, names=None, metadata=None, origin=None,
-              tags=None, cont_token=None, offset=None, limit=None,
-              dataset=None, api=None, parent=None):
+              tags=None, offset=None, limit=None, dataset=None,
+              api=None, parent=None, cont_token=None):
         """
         Query ( List ) files, requires project or dataset
         :param project: Project id
@@ -108,12 +108,12 @@ class File(Resource):
         :param metadata: Metadata query dict
         :param origin: Origin query dict
         :param tags: List of tags to filter on
-        :param cont_token: Pagination continuation token
         :param offset: Pagination offset
         :param limit: Pagination limit
         :param dataset: Dataset id
         :param api: Api instance.
         :param parent: Folder id or File object with type folder
+        :param cont_token: Pagination continuation token
         :return: Collection object.
         """
 
@@ -517,12 +517,12 @@ class File(Resource):
         response = api.post(url=cls._URL['bulk_edit'], data=data)
         return FileBulkRecord.parse_records(response=response, api=api)
 
-    def list_files(self, cont_token=None, offset=None, limit=None, api=None):
+    def list_files(self, offset=None, limit=None, api=None, cont_token=None):
         """List files in a folder
         :param api: Api instance
-        :param cont_token: Pagination continuation token
         :param offset: Pagination offset
         :param limit: Pagination limit
+        :param cont_token: Pagination continuation token
         :return: List of files
         """
 
