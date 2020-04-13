@@ -17,7 +17,6 @@ if os.path.isfile(version_path):
     with io.open(version_path, 'r', encoding='utf-8') as f:
         __version__ = f.read().strip()
 
-
 from sevenbridges.api import Api
 from sevenbridges.config import Config
 
@@ -44,6 +43,7 @@ from sevenbridges.models.automation import (
     Automation, AutomationRun, AutomationPackage, AutomationMember
 )
 from sevenbridges.models.async_jobs import AsyncJob
+from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 
 from sevenbridges.models.enums import (
     AppCopyStrategy, AppRawFormat, AsyncFileOperations, AsyncJobStates,
@@ -64,8 +64,9 @@ __all__ = [
     'Api', 'AsyncJob', 'Automation', 'AutomationRun', 'AutomationMember',
     'AutomationPackage',  'Config', 'Invoice', 'BillingGroup',
     'BillingGroupBreakdown', 'User', 'Endpoints', 'Project', 'Task', 'App',
-    'Member', 'Permissions', 'File', 'Export', 'Import', 'Volume', 'Marker',
-    'Division', 'Team', 'TeamMember', 'Dataset', 'BulkRecord',
+    'Member', 'Permissions', 'File', 'Export', 'Import', 'Volume', 
+    'VolumeObject', 'Marker', 'Division', 'Team', 'TeamMember', 'Dataset', 
+    'BulkRecord',
     # Enums
     'AppCopyStrategy', 'AppRawFormat', 'AppCopyStrategy',
     'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
