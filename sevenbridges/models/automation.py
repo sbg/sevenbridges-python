@@ -348,6 +348,7 @@ class Automation(Resource):
     modified_on = DateTimeField(read_only=False)
     archived = BooleanField(read_only=True)
     secret_settings = DictField(read_only=False)
+    project_based = BooleanField(read_only=False)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -367,13 +368,14 @@ class Automation(Resource):
 
     @classmethod
     def query(
-            cls, name=None, include_archived=False,
+            cls, name=None, include_archived=False, project_based=None,
             offset=None, limit=None, api=None
     ):
         """
         Query (List) automations.
         :param name: Automation name.
         :param include_archived: Include archived automations also
+        :param project_based: Search project based automations
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :param api: Api instance.
@@ -385,6 +387,7 @@ class Automation(Resource):
             url=cls._URL['query'],
             name=name,
             include_archived=include_archived,
+            project_based=project_based,
             offset=offset,
             limit=limit,
             api=api,
@@ -392,13 +395,14 @@ class Automation(Resource):
 
     @classmethod
     def create(cls, name, description=None, billing_group=None,
-               secret_settings=None, api=None):
+               secret_settings=None, project_based=None, api=None):
         """
         Create a automation template.
         :param name:  Automation name.
         :param billing_group: Automation billing group.
         :param description:  Automation description.
         :param secret_settings: Automation settings.
+        :param project_based: create project based automation template
         :param api: Api instance.
         :return:
         """
@@ -418,6 +422,8 @@ class Automation(Resource):
             data['description'] = description
         if secret_settings:
             data['secret_settings'] = secret_settings
+        if project_based is True:
+            data['project_based'] = project_based
 
         extra = {
             'resource': cls.__name__,
@@ -580,7 +586,8 @@ class Automation(Resource):
 
     def get_runs(self, package=None, status=None, name=None,
                  created_by=None, created_from=None, created_to=None,
-                 order_by=None, order=None, offset=None, limit=None, api=None):
+                 project_id=None, order_by=None, order=None, offset=None,
+                 limit=None, api=None):
         """
         Query automation runs that belong to this automation
         :param package: Package id
@@ -589,6 +596,7 @@ class Automation(Resource):
         :param created_by: Username of member that created the run
         :param created_from: Date the run was created after
         :param created_to: Date the run was created before
+        :param project_id: Search runs by project id, if run is project based
         :param order_by: Property by which to order results
         :param order: Ascending or Descending ("asc" or "desc")
         :param offset: Pagination offset.
@@ -600,8 +608,8 @@ class Automation(Resource):
         return AutomationRun.query(
             automation=self.id, package=package, status=status, name=name,
             created_by=created_by, created_from=created_from,
-            created_to=created_to, order_by=order_by, order=order,
-            offset=offset, limit=limit, api=api
+            created_to=created_to, project_id=project_id, order_by=order_by,
+            order=order, offset=offset, limit=limit, api=api
         )
 
 
@@ -632,6 +640,7 @@ class AutomationRun(Resource):
     status = StringField(read_only=True)
     message = StringField(read_only=True)
     execution_details = DictField(read_only=True)
+    project_id = StringField(read_only=True)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -649,7 +658,8 @@ class AutomationRun(Resource):
     @classmethod
     def query(cls, automation=None, package=None, status=None, name=None,
               created_by=None, created_from=None, created_to=None,
-              order_by=None, order=None, offset=None, limit=None, api=None):
+              project_id=None, order_by=None, order=None, offset=None,
+              limit=None, api=None):
         """
         Query (List) automation runs.
         :param name: Automation run name
@@ -661,6 +671,7 @@ class AutomationRun(Resource):
         :param order: Ascending or descending ("asc" or "desc")
         :param created_from: Date the run is created after
         :param created_to: Date the run is created before
+        :param project_id: Id of project if Automation run is project based
         :param offset: Pagination offset.
         :param limit: Pagination limit.
         :param api: Api instance.
@@ -682,6 +693,7 @@ class AutomationRun(Resource):
             created_by=created_by,
             created_from=created_from,
             created_to=created_to,
+            project_id=project_id,
             order_by=order_by,
             order=order,
             offset=offset,
