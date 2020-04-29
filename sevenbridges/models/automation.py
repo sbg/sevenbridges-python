@@ -92,10 +92,10 @@ class AutomationPackage(Resource):
         api = api if api else cls._API
 
         if version is None:
-            raise SbgError('Code package location is required!')
+            raise SbgError('Code package version is required!')
 
         if location is None:
-            raise SbgError('Code package version is required!')
+            raise SbgError('Code package location is required!')
 
         data = {
             'version': version,
