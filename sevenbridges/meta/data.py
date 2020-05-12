@@ -10,10 +10,11 @@ class DataContainer(object):
     resource identifier or href.
     """
 
-    def __init__(self, urls, api):
+    def __init__(self, urls, api, parent):
         self.data = {}
         self._URL = urls
         self.api = api
+        self.parent = parent
         self.fetched = False
 
     def fetch(self, item=None):
@@ -47,6 +48,7 @@ class DataContainer(object):
                 headers=headers,
                 append_base=True
             ).json()
+
             logger.debug('Resource fetched using the id property.')
         else:
             logger.debug(
@@ -54,6 +56,7 @@ class DataContainer(object):
                 'not available.'
             )
             return
+        self.parent.update_old()
         self.fetched = True
 
     def __getitem__(self, item):
