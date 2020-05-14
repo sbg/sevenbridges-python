@@ -57,6 +57,10 @@ class Precondition(object):
             request_mocker, base_url
         )
         self.async_jobs = providers.AsyncJobProvider(request_mocker, base_url)
+        self.cp_uploads = providers.CodePackageUploadProvider(
+            request_mocker, base_url
+        )
+        self.uploads = providers.FileUploadProvider(request_mocker, base_url)
 
 
 class Verifier(object):
