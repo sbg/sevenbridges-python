@@ -4,7 +4,6 @@ import pytest
 from sevenbridges.errors import SbgError
 
 generator = faker.Factory.create()
-pytestmark = pytest.mark.automations
 
 
 def test_get_automation(api, given, verifier):
@@ -380,7 +379,7 @@ def test_get_runs(api, given, verifier):
 
     # verification
     assert len(runs) == total
-    verifier.automations.runs_retrieved(id)
+    verifier.automations.runs_retrieved()
 
 
 def test_get_run(api, given, verifier):

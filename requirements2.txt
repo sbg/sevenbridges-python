@@ -1,3 +1,12 @@
--r requirements.txt
-
 futures>=3.0.4
+
+six>=1.10.0
+requests>=2.20.0
+
+flake8==3.8.3
+pytest==4.6.11
+pytest-cov==2.10.0
+requests-mock==1.8.0
+faker==3.0.1
+sphinx==1.8.5
+sphinx_rtd_theme==0.1.9

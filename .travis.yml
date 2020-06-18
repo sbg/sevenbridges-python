@@ -14,7 +14,7 @@ install:
 
 script:
   - flake8 sevenbridges
-  - py.test -v --cov=sevenbridges
+  - pytest -v --cov-config setup.cfg
 
 before_deploy: echo $TRAVIS_TAG > sevenbridges/VERSION
 

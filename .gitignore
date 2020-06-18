@@ -21,6 +21,7 @@ pip-delete-this-directory.txt
 .tox/
 .coverage
 .coverage.*
+coverage_report/
 .cache
 .pytest_cache
 nosetests.xml
@@ -64,4 +65,3 @@ Thumbs.db
 .pydevproject
 .python-version
 .settings
-

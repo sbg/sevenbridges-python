@@ -1,8 +1,6 @@
 import faker
-import pytest
 
 generator = faker.Factory.create()
-pytestmark = pytest.mark.volumes
 
 
 def test_imports_query(api, given, verifier):
