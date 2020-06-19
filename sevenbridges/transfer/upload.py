@@ -258,8 +258,6 @@ class Upload(threading.Thread):
         self._parent = parent
         self._file_path = file_path
         self._file_size = os.path.getsize(self._file_path)
-        if self._file_size == 0:
-            raise SbgError('File size must not be 0.')
 
         self._verify_file_size()
 
@@ -375,7 +373,7 @@ class Upload(threading.Thread):
 
     @property
     def progress(self):
-        return (self._bytes_done / float(self._file_size)) * 100
+        return self._bytes_done / (float(self._file_size) * 100) or 1
 
     @property
     def status(self):
