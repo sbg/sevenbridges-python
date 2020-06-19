@@ -5,31 +5,34 @@ variables:
   REQUIREMENTS2: "requirements2.txt"
 
 stages:
-- test
+  - test
+  - sonar
 
 .test: &test
   stage: test
   before_script:
-  - infinity config build-info
-  - python --version
-  - pip install -U -r $REQUIREMENTS
-  - export PYTHONPATH=$(pwd):$PYTHONPATH
+    - infinity config build-info
+    - python --version
+    - pip install -U -r $REQUIREMENTS
+    - export PYTHONPATH=$(pwd):$PYTHONPATH
   script:
-  - flake8
-  - pytest -v --cov-config setup.cfg
-
+    - flake8
+    - pytest -v --cov-config setup.cfg
+  artifacts:
+    paths:
+      - coverage_report/*
 
 # Test with python 2.7
 test:2.7:
   stage: test
   before_script:
-  - infinity config build-info
-  - python --version
-  - pip install -U -r $REQUIREMENTS2
-  - export PYTHONPATH=$(pwd):$PYTHONPATH
+    - infinity config build-info
+    - python --version
+    - pip install -U -r $REQUIREMENTS2
+    - export PYTHONPATH=$(pwd):$PYTHONPATH
   script:
-  - flake8
-  - pytest -v --cov-config setup.cfg
+    - flake8
+    - pytest -v --cov-config setup.cfg
   image: python:2.7
 
 # Test with python 3.5
@@ -51,3 +54,11 @@ test:3.7:
 test:3.8:
   <<: *test
   image: python:3.8-buster
+
+sonar:
+  stage: sonar
+  image: emeraldsquad/sonar-scanner:1.0.0
+  script: infinity sonar scanner
+  allow_failure: true
+  dependencies:
+    - test:3.8

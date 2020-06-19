@@ -230,13 +230,7 @@ class Upload(threading.Thread):
         threading.Thread.__init__(self)
         self.daemon = True
 
-        if not project and not parent:
-            raise SbgError('Project or parent identifier is required.')
-
-        if project and parent:
-            raise SbgError(
-                'Project and parent identifiers are mutually exclusive.'
-            )
+        self._validate_project_parent(parent, project)
 
         if not file_path:
             raise SbgError('File path is not valid.')
@@ -253,7 +247,7 @@ class Upload(threading.Thread):
         else:
             self._file_name = file_name
 
-        self._part_size = part_size  # or PartSize.UPLOAD_MINIMUM_PART_SIZE
+        self._part_size = part_size
         self._project = project
         self._parent = parent
         self._file_path = file_path
@@ -290,6 +284,14 @@ class Upload(threading.Thread):
     def result(self):
         return self._result
 
+    def _validate_project_parent(self, parent, project):
+        if not project and not parent:
+            raise SbgError('Project or parent identifier is required.')
+        if project and parent:
+            raise SbgError(
+                'Project and parent identifiers are mutually exclusive.'
+            )
+
     def _verify_file_size(self):
         """
         Verifies that the file is smaller then 5TB which is the maximum
@@ -307,16 +309,7 @@ class Upload(threading.Thread):
         about the project, the file name, file size and the part size that is
         going to be used during multipart upload.
         """
-        init_data = {
-            'name': self._file_name,
-            'size': self._file_size,
-        }
-        if self._part_size:
-            init_data['part_size'] = self._part_size
-        if self._project:
-            init_data['project'] = self._project
-        elif self._parent:
-            init_data['parent'] = self._parent
+        init_data = self._create_init_data()
 
         init_params = {}
         if self._overwrite:
@@ -339,6 +332,19 @@ class Upload(threading.Thread):
                 'Reason: {}'.format(e.message)
             )
 
+    def _create_init_data(self):
+        init_data = {
+            'name': self._file_name,
+            'size': self._file_size,
+        }
+        if self._part_size:
+            init_data['part_size'] = self._part_size
+        if self._project:
+            init_data['project'] = self._project
+        elif self._parent:
+            init_data['parent'] = self._parent
+        return init_data
+
     def _finalize_upload(self):
         """
         Finalizes the upload on the API server.
@@ -348,6 +354,7 @@ class Upload(threading.Thread):
             response = self._api.post(
                 self._URL['upload_complete'].format(upload_id=self._upload_id)
             ).json()
+            # noinspection PyArgumentList
             self._result = File(api=self._api, **response)
             self._status = TransferState.COMPLETED
 
@@ -483,10 +490,7 @@ class Upload(threading.Thread):
         try:
             with io.open(self._file_path, mode='rb') as fp:
                 # Creates a partitioned file
-                parted_file = UPartedFile(
-                    fp, self._file_size, self._part_size, self._upload_id,
-                    self._retry, self._timeout, self.session, self._api
-                )
+                parted_file = self.partition_file(fp)
 
                 # Iterates over parts and submits them for upload.
                 for _ in parted_file:
@@ -518,3 +522,76 @@ class Upload(threading.Thread):
         # If the callback is set call it.
         if self._callback:
             self._callback(self._status)
+
+    def partition_file(self, fp):
+        return UPartedFile(
+            fp, self._file_size, self._part_size, self._upload_id,
+            self._retry, self._timeout, self.session, self._api
+        )
+
+
+class CodePackageUPartedFile(UPartedFile):
+
+    _URL = {
+        'upload_part': '/automation/upload/{upload_id}/part/{part_number}'
+    }
+
+
+class CodePackageUpload(Upload):
+    _URL = {
+        'upload_init': '/automation/upload',
+        'upload_info': '/automation/upload/{upload_id}',
+        'upload_complete': '/automation/upload/{upload_id}/complete'
+    }
+
+    def __init__(self, file_path, automation_id, file_name=None,
+                 part_size=None, retry_count=5, timeout=60, api=None):
+        """
+            Multipart File uploader for automation code packages.
+
+            "overwrite" input is disabled as we don't allow overwriting
+            code packages.
+
+            :param file_path: File path on the disc.
+            :param automation_id: ID of the automation to which
+            the package is uploaded.
+            :param file_name: Optional file name.
+            :param part_size: Size of part in bytes.
+            :param retry_count: Retry count.
+            :param timeout: Timeout for s3/google session.
+            :param api: Api instance.
+        """
+        super(CodePackageUpload, self).__init__(
+            file_path=file_path,
+            project=None,
+            parent=None,
+            file_name=file_name,
+            overwrite=False,
+            part_size=part_size,
+            retry_count=retry_count,
+            timeout=timeout,
+            api=api
+        )
+        if self._file_size == 0:
+            raise SbgError('File size must not be 0.')
+
+        self._automation_id = automation_id
+
+    def _validate_project_parent(self, parent, project):
+        pass
+
+    def partition_file(self, fp):
+        return CodePackageUPartedFile(
+            fp, self._file_size, self._part_size, self._upload_id, self._retry,
+            self._timeout, self.session, self._api
+        )
+
+    def _create_init_data(self):
+        init_data = {
+            'name': self._file_name,
+            'size': self._file_size,
+            'automation_id': self._automation_id
+        }
+        if self._part_size:
+            init_data['part_size'] = self._part_size
+        return init_data

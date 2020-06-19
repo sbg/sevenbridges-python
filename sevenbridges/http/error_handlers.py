@@ -22,9 +22,11 @@ def rate_limit_sleeper(api, response):
     while response.status_code == 429:
         headers = response.headers
         remaining_time = headers.get('X-RateLimit-Reset')
-        sleep = int(remaining_time) - int(time.time())
+        sleep = max(int(remaining_time) - int(time.time()), 0)
+
         logger.warning('Rate limit reached! Waiting for [%s]s', sleep)
-        time.sleep(sleep + 5)
+        time.sleep(sleep)
+
         response = api.session.send(response.request)
     return response
 

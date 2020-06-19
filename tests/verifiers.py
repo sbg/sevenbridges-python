@@ -122,6 +122,16 @@ class FileVerifier(object):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10']}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
+    def queried_with_token(self, project):
+        qs = {'project': [project],
+              'fields': ['_all'],
+              'limit': ['10'],
+              'token': ['init']
+              }
+        self.checker.check_url(
+            '/files/scroll'
+        ) and self.checker.check_query(qs)
+
     def queried_with_parent(self, parent):
         qs = {'parent': [parent], 'fields': ['_all'], 'limit': ['10']}
         self.checker.check_url('/files') and self.checker.check_query(qs)
@@ -181,6 +191,14 @@ class FileVerifier(object):
 
     def folder_files_listed(self, id):
         self.checker.check_url('/files/{}/list'.format(id))
+
+    def folder_files_listed_scroll(self, id):
+        qs = {'token': ['init'],
+              'fields': ['_all']
+              }
+        self.checker.check_url(
+            '/files/{}/scroll'.format(id)
+        ) and self.checker.check_query(qs)
 
     def copied_to_folder(self, id):
         self.checker.check_url('/files/{}/actions/copy'.format(id))

@@ -43,7 +43,9 @@ class ResourceMeta(type):
             def init(self, **kwargs):
                 self._api = kwargs.pop('api', None)
                 urls = getattr(self, '_URL', None)
-                self._data = DataContainer(urls=urls, api=self._api)
+                self._data = DataContainer(
+                    urls=urls, api=self._api, parent=self
+                )
                 self._dirty = {}
                 for k, v in kwargs.items():
                     if k in fields:
@@ -212,8 +214,11 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         self._data = resource._data
         self._dirty = resource._dirty
-        self._old = copy.deepcopy(self._data.data)
+        self.update_old()
         return self
+
+    def update_old(self):
+        self._old = copy.deepcopy(self._data.data)
 
     def field(self, name):
         """

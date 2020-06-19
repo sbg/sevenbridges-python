@@ -1,3 +1,4 @@
+import re
 import time
 
 import faker
@@ -380,9 +381,11 @@ class FileProvider(object):
             'PUT', '/files/{id}/tags'.format(id=id), json=file_['tags']
         )
 
-    def files_exist_for_project(self, project, num_of_files):
+    def files_exist_for_project(self, project, num_of_files, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        href = self.base_url + '/files?project={project}'.format(
+        suffix = 'files/scroll' if scroll else 'files'
+        href = self.base_url + '/{suffix}?project={project}'.format(
+            suffix=suffix,
             project=project
         )
         links = []
@@ -466,9 +469,13 @@ class FileProvider(object):
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(num_of_files)})
 
-    def files_in_folder(self, num_of_files, folder_id):
+    def files_in_folder(self, num_of_files, folder_id, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        url = '/files/{folder_id}/list'.format(folder_id=folder_id)
+        suffix = 'scroll' if scroll else 'list'
+        url = '/files/{folder_id}/{suffix}'.format(
+            folder_id=folder_id,
+            suffix=suffix
+        )
         href = self.base_url + url
 
         response = {
@@ -1482,9 +1489,11 @@ class AutomationProvider(object):
         )
         self.request_mocker.get(href, json=package)
 
-    def can_add_package(self, automation_id, package_id, location, version):
+    def can_add_package(self, automation_id, package_id,
+                        location, version, schema):
         package = self.package_provider.default_automation_package(
-            package_id=package_id, location=location, version=version
+            package_id=package_id, location=location, version=version,
+            schema=schema
         )
         href = self.base_url + '/automation/automations/{}/packages'.format(
             automation_id
@@ -1530,17 +1539,19 @@ class AutomationPackageProvider(object):
 
     @staticmethod
     def default_automation_package(
-            package_id=None, version=None, location=None
+            package_id=None, version=None, location=None, schema=None
     ):
         package_id = package_id or generator.uuid4()
         version = version or generator.slug()
         location = location or generator.slug()
+        schema = schema or {}
 
         return {
             'id': package_id,
             'automation': generator.uuid4(),
             'version': version,
             'location': location,
+            'schema': schema,
             'created_by': generator.user_name(),
             'created_on': generator.date(),
             'archived': False,
@@ -1657,6 +1668,7 @@ class AutomationRunProvider(object):
             'automation': automation,
             'package': generator.uuid4(),
             'inputs': {},
+            'outputs': None,
             'settings': {},
             'created_on': generator.date(),
             'start_time': generator.date(),
@@ -1802,3 +1814,127 @@ class AsyncJobProvider(object):
         self.request_mocker.post(
             '/async/files/move', json=async_job
         )
+
+
+class CodePackageUploadProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+        self.file_provider = FileProvider(request_mocker, base_url)
+
+    def initialized_upload(self, upload_id, part_size):
+        response = {
+            "upload_id": upload_id,
+            "part_size": part_size
+        }
+        self.request_mocker.post(
+            '/automation/upload', json=response
+        )
+
+    def got_file_part(self, url):
+        regx = '^{}/automation/upload/.*/part/.*$'.format(self.base_url)
+        matcher = re.compile(regx)
+        self.request_mocker.get(
+            matcher, json={"url": url}
+        )
+
+    def got_etag(self, url):
+        self.request_mocker.put(
+            url,
+            json={},
+            headers={'etag': generator.uuid4()}
+        )
+
+    def reported_part(self):
+        regx = '^{}/automation/upload/.*/part/'.format(
+            self.base_url
+        )
+        matcher = re.compile(regx)
+        self.request_mocker.post(
+            matcher, json={}
+        )
+
+    def finalized_upload(self, package_file_id):
+        regx = '^{}/automation/upload/.*/complete'.format(
+            self.base_url
+        )
+        matcher = re.compile(regx)
+        self.request_mocker.post(
+            matcher, json={"name": "dummy_file_name", "id": package_file_id}
+        )
+
+    def deleted(self):
+        regx = '^{}/automation/upload/.*'.format(
+            self.base_url
+        )
+        matcher = re.compile(regx)
+        self.request_mocker.delete(matcher)
+
+
+class FileUploadProvider(object):
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+        self.file_provider = FileProvider(request_mocker, base_url)
+
+    def initialized_upload(self, upload_id, part_size, failed=False):
+        status_code = 500 if failed else 200
+        response = {
+            "upload_id": upload_id,
+            "part_size": part_size
+        }
+        self.request_mocker.post(
+            '/upload/multipart', json=response, status_code=status_code
+        )
+
+    def got_file_part(self, url, failed=False):
+        status_code = 500 if failed else 200
+        regx = '^{}/upload/multipart/.*/part/.*$'.format(self.base_url)
+        matcher = re.compile(regx)
+        self.request_mocker.get(
+            matcher, json={"url": url},
+            status_code=status_code
+        )
+
+    def got_etag(self, url, failed=False):
+        status_code = 500 if failed else 200
+        headers = {} if failed else {'etag': generator.uuid4()}
+
+        self.request_mocker.put(
+            url,
+            json={},
+            headers=headers,
+            status_code=status_code
+        )
+
+    def reported_part(self, failed=False):
+        status_code = 500 if failed else 200
+        regx = '^{}/upload/multipart/.*/part/'.format(
+            self.base_url
+        )
+        matcher = re.compile(regx)
+        self.request_mocker.post(
+            matcher, json={}, status_code=status_code
+        )
+
+    def finalized_upload(self, package_file_id, failed=False):
+        status_code = 500 if failed else 200
+
+        regx = '^{}/upload/multipart/.*/complete'.format(
+            self.base_url
+        )
+        matcher = re.compile(regx)
+        self.request_mocker.post(
+            matcher,
+            json={"name": "dummy_file_name", "id": package_file_id},
+            status_code=status_code
+        )
+
+    def deleted(self, failed=False):
+        status_code = 500 if failed else 200
+
+        regx = '^{}/upload/multipart/.*'.format(
+            self.base_url
+        )
+        matcher = re.compile(regx)
+        self.request_mocker.delete(matcher, status_code=status_code)

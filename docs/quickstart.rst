@@ -858,6 +858,37 @@ Examples
         parent=new_folder, name='new-file-name'
     )
 
+List Files - introduction to pagination
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The results of files queries - :code:`api.files.query()` and :code:`api.files.list_files()`, can be paginated
+in two ways: using offset or continuation token parameter.
+
+Working with offset pagination is equivalent to that explained in 'List Projects - introduction to pagination and iteration' section,
+so one can get informed there about using :code:`offset` and :code:`limit` parameters.
+
+The continuation token pagination can be achieved by using :code:`cont_token` parameter (in combination with :code:`limit`)
+in query methods (:code:`query()`/:code:`list_files()`). This parameter is a base64 encoded value, telling server
+where to start next page. If one wants to use continuation token pagination, :code:`query()`/:code:`list_files()` method
+should be called with :code:`cont_token` parameter, as in example below:
+
+.. code:: python
+
+    files_list = api.files.query(cont_token='init', limit=10)
+
+The :code:`'init'` value is special initial value that should be passed at first call of :code:`query()`/:code:`list_files()`
+method if continuation token pagination is desired.
+
+There are certain restrictions on using this parameter:
+
+1. The continuation token pagination is advance access feature, so :code:`cont_token` parameter can be used only if
+   :code:`advance_access` is set to :code:`True`, otherwise :code:`SbgError` will be returned.
+2. The continuation token pagination cannot be used together with metadata filtering, so if :code:`cont_token` and
+   :code:`metadata` parameters are both provided to :code:`query()`/:code:`list_files()`, :code:`SbgError` will be returned.
+3. The continuation token pagination and offset pagination are mutually exclusive, so if there are passed both
+   :code:`cont_token` and :code:`offset` parameters to :code:`query()`/:code:`list_files()`, :code:`SbgError` will be returned.
+
+
 Managing file upload and download
 ---------------------------------
 
@@ -1781,6 +1812,9 @@ Examples
 
     # Create automation package from uploaded code package
     automation_package = api.automation_packages.create('automation_id', 'version', 'location_id'):
+
+    # Add a code package to automation from local file
+    automation.add_package('version', 'file_path', schema={})
 
     # Get automation package details
     automation_package = api.automation_packages.get('package_id')
