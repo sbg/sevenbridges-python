@@ -139,7 +139,7 @@ class UPartedFile(object):
         self.pool = api.upload_pool
         self.submitted = 0
         self.total_submitted = 0
-        self.total = total_parts(self.file_size, self.part_size)
+        self.total = total_parts(self.file_size, self.part_size) or 1
         self.parts = self.get_parts()
 
     def submit(self):
