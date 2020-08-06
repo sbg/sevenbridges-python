@@ -18,6 +18,7 @@ from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.enums import AutomationRunActions
 from sevenbridges.models.file import File
 from sevenbridges.models.member import Permissions
+from sevenbridges.transfer.upload import CodePackageUpload
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ class AutomationPackage(Resource):
     automation = UuidField(read_only=True)
     version = StringField(read_only=True)
     location = StringField(read_only=True)
+    schema = DictField(read_only=True)
     created_by = StringField(read_only=True)
     created_on = DateTimeField(read_only=True)
     archived = BooleanField(read_only=True)
@@ -78,12 +80,13 @@ class AutomationPackage(Resource):
         )
 
     @classmethod
-    def create(cls, automation, version, location, api=None):
+    def create(cls, automation, version, location, schema, api=None):
         """
         Create a code package.
         :param automation: Automation id.
         :param version: File ID of the uploaded code package.
         :param location: The code package version.
+        :param schema: IO schema for main step of execution.
         :param api: Api instance.
         :return:
         """
@@ -92,14 +95,18 @@ class AutomationPackage(Resource):
         api = api if api else cls._API
 
         if version is None:
-            raise SbgError('Code package location is required!')
+            raise SbgError('Code package version is required!')
 
         if location is None:
-            raise SbgError('Code package version is required!')
+            raise SbgError('Code package location is required!')
+
+        if schema is None:
+            raise SbgError('Schema is required!')
 
         data = {
             'version': version,
-            'location': location
+            'location': location,
+            'schema': schema
         }
 
         extra = {
@@ -522,17 +529,48 @@ class Automation(Resource):
             id=package_id, api=api
         )
 
-    def add_package(self, version, location, api=None):
+    def add_package(self, version, file_path, schema, file_name=None,
+                    retry_count=5, timeout=60, part_size=None, api=None):
         """
         Add a code package to automation template.
-        :param version: File ID of the uploaded code package.
-        :param location: The code package version.
+        :param version: The code package version.
+        :param file_path: Path to the code package file to be uploaded.
+        :param schema: IO schema for main step of execution.
+        :param part_size: Size of upload part in bytes.
+        :param file_name: Optional file name.
+        :param retry_count: Upload retry count.
+        :param timeout: Timeout for s3/google session.
         :param api: sevenbridges Api instance.
         :return: AutomationPackage
         """
         api = api or self._API
+        if version is None:
+            raise SbgError('Code package version is required!')
+
+        if file_path is None:
+            raise SbgError('Code package file path is required!')
+
+        # Multipart upload the code package:
+        upload = CodePackageUpload(
+            file_path,
+            self.id,
+            api=api,
+            part_size=part_size,
+            file_name=file_name,
+            retry_count=retry_count,
+            timeout=timeout
+        )
+        upload.start()
+        upload.wait()
+        package_file = upload.result()
+
+        # Create the automation package:
         return AutomationPackage.create(
-            self.id, version=version, location=location, api=api
+            self.id,
+            version=version,
+            location=package_file.id,
+            schema=schema,
+            api=api
         )
 
     def get_member(self, username, api=None):
@@ -631,6 +669,7 @@ class AutomationRun(Resource):
     automation = CompoundField(Automation, read_only=True)
     package = CompoundField(AutomationPackage, read_only=True)
     inputs = DictField()
+    outputs = DictField(read_only=True)
     settings = DictField()
     created_on = DateTimeField(read_only=True)
     start_time = DateTimeField(read_only=True)
@@ -721,6 +760,8 @@ class AutomationRun(Resource):
         data = {'package': package}
         if inputs:
             data['inputs'] = inputs
+        else:
+            data['inputs'] = dict()
         if settings:
             data['settings'] = settings
         if resume_from:

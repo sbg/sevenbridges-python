@@ -1,7 +1,10 @@
 import faker
 import pytest
+import tempfile
+import os
 
 from sevenbridges.errors import SbgError
+from sevenbridges.transfer.upload import CodePackageUpload
 
 generator = faker.Factory.create()
 pytestmark = pytest.mark.automations
@@ -164,36 +167,124 @@ def test_get_package(api, given, verifier):
     verifier.automations.package_retrieved(package_id)
 
 
-@pytest.mark.parametrize("location", [generator.slug(), None])
+@pytest.mark.parametrize("file", [True, False])
 @pytest.mark.parametrize("version", [generator.slug(), None])
-def test_add_package(api, given, verifier, location, version):
+@pytest.mark.parametrize("schema", [{"test": "test"}, None])
+def test_add_package(api, given, verifier, file, version, schema):
     # preconditions
     automation_id = generator.uuid4()
     package_id = generator.uuid4()
+    package_file_id = generator.uuid4()
+    upload_id = generator.uuid4()
+    file_part_url = generator.url()
     given.automations.exists(id=automation_id)
     given.automations.can_add_package(
         package_id=package_id, automation_id=automation_id,
-        location=location, version=version
+        location=package_file_id, version=version, schema=schema
     )
+    given.cp_uploads.initialized_upload(part_size=1, upload_id=upload_id)
+    given.cp_uploads.got_file_part(file_part_url)
+    given.cp_uploads.got_etag(file_part_url)
+    given.cp_uploads.reported_part()
+    given.cp_uploads.finalized_upload(package_file_id)
 
     automation = api.automations.get(automation_id)
 
     # action
-    if location and version:
-        package = automation.add_package(
-            location=location, version=version
-        )
+    if file and version and schema:
+        temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+        temp_file.write('dummy content')
+        temp_file.close()
 
+        package = automation.add_package(
+            file_path=temp_file.name, version=version, schema=schema
+        )
+        os.remove(temp_file.name)
         # verification
-        assert package.location == location
+        assert package.location == package_file_id
         assert package.version == version
 
         verifier.automation_packages.created(automation_id=automation_id)
     else:
         with pytest.raises(SbgError):
             automation.add_package(
-                location=location, version=version
+                file_path=None, version=version,
+                schema=schema
             )
+
+
+@pytest.mark.parametrize("empty_file", [True, False])
+def test_code_package_upload(api, given, empty_file):
+    upload_id = generator.uuid4()
+    automation_id = generator.uuid4()
+    file_id = generator.uuid4()
+    file_part_url = generator.url()
+    file_name = generator.uuid4()
+    given.cp_uploads.initialized_upload(part_size=1, upload_id=upload_id)
+    given.cp_uploads.got_file_part(file_part_url)
+    given.cp_uploads.got_etag(file_part_url)
+    given.cp_uploads.reported_part()
+    given.cp_uploads.finalized_upload(file_id)
+
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    if not empty_file:
+        temp_file.write('dummy content')
+    temp_file.close()
+
+    if empty_file:
+        with pytest.raises(SbgError):
+            CodePackageUpload(
+                temp_file.name,
+                automation_id,
+                api=api,
+                part_size=1,
+                file_name=file_name
+            )
+    else:
+        upload = CodePackageUpload(
+            temp_file.name,
+            automation_id,
+            api=api,
+            part_size=1,
+            file_name=file_name
+        )
+        upload.start()
+        upload.wait()
+        result = upload.result()
+
+        assert upload.status == 'COMPLETED'
+        assert result.id == file_id
+    os.remove(temp_file.name)
+
+
+def test_code_package_upload_stop(api, given):
+    upload_id = generator.uuid4()
+    automation_id = generator.uuid4()
+    file_part_url = generator.url()
+    file_name = generator.uuid4()
+    given.cp_uploads.initialized_upload(part_size=1, upload_id=upload_id)
+    given.cp_uploads.got_file_part(file_part_url)
+    given.cp_uploads.got_etag(file_part_url)
+    given.cp_uploads.reported_part()
+    given.cp_uploads.deleted()
+
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file.write('dummy content')
+    temp_file.close()
+
+    upload = CodePackageUpload(
+        temp_file.name,
+        automation_id,
+        api=api,
+        part_size=1,
+        file_name=file_name
+    )
+    upload.start()
+    upload._status = 'RUNNING'
+    upload.stop()
+    os.remove(temp_file.name)
+
+    assert upload.status == 'STOPPED'
 
 
 def test_archive_package(api, given, verifier):

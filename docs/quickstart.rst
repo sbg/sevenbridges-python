@@ -732,9 +732,6 @@ same manner as for projects and billing, presented above.
 
 Folders are represented as files with the type "folder".
 
-.. note:: Folder operations are currently under `Advance Access Features`_.
-
-
 The available methods for fetching specific files are ``query`` and ``get``:
 
 .. code:: python
@@ -1812,6 +1809,9 @@ Examples
 
     # Create automation package from uploaded code package
     automation_package = api.automation_packages.create('automation_id', 'version', 'location_id'):
+
+    # Add a code package to automation from local file
+    automation.add_package('version', 'file_path', schema={})
 
     # Get automation package details
     automation_package = api.automation_packages.get('package_id')
