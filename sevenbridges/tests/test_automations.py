@@ -69,7 +69,7 @@ def test_create_project_based_automation(api, given, project_based):
     # preconditions
     name = generator.name()
     given.automations.can_be_created(name=name, project_based=project_based)
-    
+
     # action
     automation = api.automations.create(name, project_based=project_based)
 
