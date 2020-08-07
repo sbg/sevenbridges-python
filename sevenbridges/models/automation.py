@@ -429,7 +429,7 @@ class Automation(Resource):
             data['description'] = description
         if secret_settings:
             data['secret_settings'] = secret_settings
-        if project_based is True:
+        if project_based:
             data['project_based'] = project_based
 
         extra = {
