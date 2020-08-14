@@ -1382,6 +1382,7 @@ class AutomationProvider(object):
             'modified_by': generator.user_name(),
             'modified_on': generator.date(),
             'archived': False,
+            'project_based': False,
         }
 
     def exists(self, **kwargs):
@@ -1680,7 +1681,8 @@ class AutomationRunProvider(object):
             'execution_details': {
                 'log_file': self.file_provider.default_file(),
                 'state_file': self.file_provider.default_file(),
-            }
+            },
+            'project_id': None
         }
 
     @staticmethod

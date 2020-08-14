@@ -732,9 +732,6 @@ same manner as for projects and billing, presented above.
 
 Folders are represented as files with the type "folder".
 
-.. note:: Folder operations are currently under `Advance Access Features`_.
-
-
 The available methods for fetching specific files are ``query`` and ``get``:
 
 .. code:: python
