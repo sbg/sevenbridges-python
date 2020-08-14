@@ -64,6 +64,19 @@ def test_create_automation(api, given, verifier, name):
             )
 
 
+@pytest.mark.parametrize("project_based", [True, False])
+def test_create_project_based_automation(api, given, project_based):
+    # preconditions
+    name = generator.name()
+    given.automations.can_be_created(name=name, project_based=project_based)
+
+    # action
+    automation = api.automations.create(name, project_based=project_based)
+
+    # verification
+    assert automation.project_based == project_based
+
+
 def test_modify_automation(api, given, verifier):
     # preconditions
     automation_id = generator.uuid4()
