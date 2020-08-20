@@ -11,7 +11,8 @@ from sevenbridges.meta.fields import (
     StringField,
     CompoundField,
     DateTimeField,
-    BooleanField
+    BooleanField,
+    IntegerField,
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
@@ -45,6 +46,7 @@ class AutomationPackage(Resource):
     created_on = DateTimeField(read_only=True)
     archived = BooleanField(read_only=True)
     custom_url = StringField()
+    memory_limit = IntegerField(read_only=False)
 
     def __eq__(self, other):
         if not hasattr(other, '__class__'):
@@ -80,13 +82,15 @@ class AutomationPackage(Resource):
         )
 
     @classmethod
-    def create(cls, automation, version, location, schema, api=None):
+    def create(cls, automation, version, location, schema, memory_limit=None,
+               api=None):
         """
         Create a code package.
         :param automation: Automation id.
         :param version: File ID of the uploaded code package.
         :param location: The code package version.
         :param schema: IO schema for main step of execution.
+        :param memory_limit: Memory limit in MB.
         :param api: Api instance.
         :return:
         """
@@ -106,7 +110,8 @@ class AutomationPackage(Resource):
         data = {
             'version': version,
             'location': location,
-            'schema': schema
+            'schema': schema,
+            'memory_limit': memory_limit,
         }
 
         extra = {
@@ -355,6 +360,7 @@ class Automation(Resource):
     modified_on = DateTimeField(read_only=False)
     archived = BooleanField(read_only=True)
     secret_settings = DictField(read_only=False)
+    memory_limit = IntegerField(read_only=False)
     project_based = BooleanField(read_only=False)
 
     def __eq__(self, other):
@@ -402,14 +408,16 @@ class Automation(Resource):
 
     @classmethod
     def create(cls, name, description=None, billing_group=None,
-               secret_settings=None, project_based=None, api=None):
+               secret_settings=None, project_based=None, memory_limit=None,
+               api=None):
         """
         Create a automation template.
         :param name:  Automation name.
         :param billing_group: Automation billing group.
         :param description:  Automation description.
         :param secret_settings: Automation settings.
-        :param project_based: create project based automation template
+        :param project_based: Create project based automation template.
+        :param memory_limit: Memory limit in MB.
         :param api: Api instance.
         :return:
         """
@@ -431,6 +439,8 @@ class Automation(Resource):
             data['secret_settings'] = secret_settings
         if project_based:
             data['project_based'] = project_based
+        if memory_limit:
+            data['memory_limit'] = memory_limit
 
         extra = {
             'resource': cls.__name__,
@@ -679,6 +689,7 @@ class AutomationRun(Resource):
     status = StringField(read_only=True)
     message = StringField(read_only=True)
     execution_details = DictField(read_only=True)
+    memory_limit = IntegerField(read_only=False)
     project_id = StringField(read_only=True)
 
     def __eq__(self, other):
@@ -742,7 +753,7 @@ class AutomationRun(Resource):
 
     @classmethod
     def create(cls, package, inputs=None, settings=None, resume_from=None,
-               name=None, secret_settings=None, api=None):
+               name=None, secret_settings=None, memory_limit=None, api=None):
         """
         Create and start a new run.
         :param package: Automation package id
@@ -752,6 +763,7 @@ class AutomationRun(Resource):
         :param name: Automation run name
         :param secret_settings: dict to override secret_settings from
         automation template
+        :param memory_limit: Memory limit in MB.
         :param api: sevenbridges Api instance
         :return: AutomationRun object
         """
@@ -770,6 +782,8 @@ class AutomationRun(Resource):
             data['name'] = name
         if secret_settings:
             data['secret_settings'] = secret_settings
+        if memory_limit:
+            data['memory_limit'] = memory_limit
 
         api = api or cls._API
         automation_run = api.post(
