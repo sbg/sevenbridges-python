@@ -3,7 +3,7 @@ import pytest
 import requests_mock
 
 from sevenbridges import Api
-from sevenbridges.tests import providers, verifiers
+from tests import providers, verifiers
 
 generator = faker.Factory.create()
 

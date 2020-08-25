@@ -1,18 +1,17 @@
+import os
 import faker
 import pytest
 import tempfile
-import os
 
 from sevenbridges.errors import SbgError
-from sevenbridges.transfer.upload import Upload
 from sevenbridges.models.enums import PartSize
+from sevenbridges.transfer.upload import Upload
 
 generator = faker.Factory.create()
-pytestmark = pytest.mark.automations
 
 
 @pytest.mark.parametrize("path", [generator.uuid4(), None])
-def test_file_upload_wrong_path(api, given, path):
+def test_file_upload_wrong_path(api, path):
     project_id = generator.uuid4()
     file_name = generator.uuid4()
 
@@ -42,7 +41,7 @@ def test_file_upload(api, given, empty_file, project_id, parent_id, no_api):
     given.uploads.reported_part()
     given.uploads.finalized_upload(file_id)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     if not empty_file:
         temp_file.write(file_content)
     temp_file.close()
@@ -51,7 +50,7 @@ def test_file_upload(api, given, empty_file, project_id, parent_id, no_api):
     no_project_or_parent = project_id is None and parent_id is None
     if no_api:
         api_instance = None
-    if empty_file or project_and_parent or no_project_or_parent or no_api:
+    if project_and_parent or no_project_or_parent or no_api:
         with pytest.raises(SbgError):
             Upload(
                 temp_file.name,
@@ -89,7 +88,7 @@ def test_file_upload_init_failed(api, given):
         part_size=1, upload_id=upload_id, failed=True
     )
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
 
     temp_file.write('dummy content')
     temp_file.close()
@@ -114,7 +113,7 @@ def test_file_upload_start_failed(api, given):
     given.uploads.initialized_upload(
         part_size=1, upload_id=upload_id, failed=True
     )
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
 
     temp_file.write('dummy content')
     temp_file.close()
@@ -144,7 +143,7 @@ def test_file_upload_finalize_failed(api, given):
     given.uploads.reported_part()
     given.uploads.finalized_upload(file_id, failed=True)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
 
     temp_file.write('dummy content')
     temp_file.close()
@@ -170,7 +169,7 @@ def test_file_upload_part_failed(api, given):
     given.uploads.initialized_upload(part_size=1, upload_id=upload_id)
     given.uploads.got_file_part(file_part_url, failed=True)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
 
     temp_file.write('dummy content')
     temp_file.close()
@@ -197,7 +196,7 @@ def test_file_upload_etag_failed(api, given):
     given.uploads.got_file_part(file_part_url)
     given.uploads.got_etag(file_part_url, failed=True)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
 
     temp_file.write('dummy content')
     temp_file.close()
@@ -225,7 +224,7 @@ def test_file_upload_report_part_failed(api, given):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part(failed=True)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
 
     temp_file.write('dummy content')
     temp_file.close()
@@ -254,7 +253,7 @@ def test_file_upload_stop(api, given):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -283,7 +282,7 @@ def test_file_upload_stop_failed(api, given, ):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -312,7 +311,7 @@ def test_file_upload_abort_failed(api, given):
     given.uploads.reported_part()
     given.uploads.deleted(failed=True)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -339,7 +338,7 @@ def test_file_upload_pause(api, given):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -368,7 +367,7 @@ def test_file_upload_pause_failed(api, given):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -396,7 +395,7 @@ def test_file_upload_resume(api, given):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -425,7 +424,7 @@ def test_file_upload_resume_failed(api, given):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -443,10 +442,10 @@ def test_file_upload_resume_failed(api, given):
     os.remove(temp_file.name)
 
 
-def test_file_size_too_large(api, given, monkeypatch):
+def test_file_size_too_large(api, monkeypatch):
     project_id = generator.uuid4()
     file_name = generator.uuid4()
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
     with monkeypatch.context() as m:

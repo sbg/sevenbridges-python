@@ -62,7 +62,7 @@ def retry_on_excs(excs, retry_count=3, delay=5):
                 except excs:
                     if logger:
                         logger.warning(
-                            'HTTPError caught.Retrying ...'.format(f.__name__),
+                            'HTTPError caught.Retrying ...',
                             exc_info=True
                         )
                     time.sleep(delay)

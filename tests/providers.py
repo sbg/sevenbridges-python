@@ -26,7 +26,7 @@ class EndpointProvider(object):
         }
 
     def defined(self):
-        self.request_mocker.get('/'.format(id), json=self.endpoints())
+        self.request_mocker.get('/', json=self.endpoints())
 
 
 class RateLimitProvider(object):
@@ -491,7 +491,7 @@ class FileProvider(object):
         file_ = self.default_file()
         file_['id'] = id
         file_['type'] = 'folder'
-        self.request_mocker.post('/files'.format(id=id), json=file_)
+        self.request_mocker.post('/files', json=file_)
 
     def can_copy_to_folder(self, id=None, parent=None, name=None, new_id=None):
         file_ = self.default_file()
@@ -596,9 +596,7 @@ class AppProvider(object):
         app = self.default_app()
         app.update(kwargs)
         app['raw']['sbg:id'] = app['id']
-        href = '/apps/{}/{}/raw'.format(
-            app['id'], app['revision'], app['revision']
-        )
+        href = '/apps/{}/{}/raw'.format(app['id'], app['revision'])
         self.request_mocker.request('POST', url=href, json=app['raw'])
 
 

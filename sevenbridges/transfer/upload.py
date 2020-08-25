@@ -139,7 +139,7 @@ class UPartedFile(object):
         self.pool = api.upload_pool
         self.submitted = 0
         self.total_submitted = 0
-        self.total = total_parts(self.file_size, self.part_size)
+        self.total = total_parts(self.file_size, self.part_size) or 1
         self.parts = self.get_parts()
 
     def submit(self):
@@ -247,13 +247,11 @@ class Upload(threading.Thread):
         else:
             self._file_name = file_name
 
-        self._part_size = part_size  # or PartSize.UPLOAD_MINIMUM_PART_SIZE
+        self._part_size = part_size
         self._project = project
         self._parent = parent
         self._file_path = file_path
         self._file_size = os.path.getsize(self._file_path)
-        if self._file_size == 0:
-            raise SbgError('File size must not be 0.')
 
         self._verify_file_size()
 
@@ -356,6 +354,7 @@ class Upload(threading.Thread):
             response = self._api.post(
                 self._URL['upload_complete'].format(upload_id=self._upload_id)
             ).json()
+            # noinspection PyArgumentList
             self._result = File(api=self._api, **response)
             self._status = TransferState.COMPLETED
 
@@ -381,7 +380,7 @@ class Upload(threading.Thread):
 
     @property
     def progress(self):
-        return (self._bytes_done / float(self._file_size)) * 100
+        return self._bytes_done / (float(self._file_size) * 100) or 1
 
     @property
     def status(self):
@@ -573,6 +572,9 @@ class CodePackageUpload(Upload):
             timeout=timeout,
             api=api
         )
+        if self._file_size == 0:
+            raise SbgError('File size must not be 0.')
+
         self._automation_id = automation_id
 
     def _validate_project_parent(self, parent, project):

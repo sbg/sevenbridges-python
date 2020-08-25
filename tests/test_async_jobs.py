@@ -5,7 +5,6 @@ from sevenbridges.models.async_jobs import AsyncFileBulkRecord
 from sevenbridges.models.enums import AsyncFileOperations, AsyncJobStates
 
 generator = faker.Factory.create()
-pytestmark = pytest.mark.async_jobs
 
 
 def test_list_file_jobs(api, given, verifier):

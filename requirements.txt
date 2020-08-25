@@ -1,11 +1,10 @@
 six>=1.10.0
 requests>=2.20.0
 
-flake8==3.7.7
-pytest==4.3.0
-pytest-cov==2.6.1
-requests-mock==1.5.2
-faker==1.0.2
-sphinx==1.5.1
+flake8==3.8.3
+pytest==6.0.1
+pytest-cov==2.10.0
+requests-mock==1.8.0
+faker==4.1.1
+sphinx==3.1.2
 sphinx_rtd_theme==0.1.9
-tox==3.7.0

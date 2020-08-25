@@ -135,6 +135,6 @@ class VolumeCollection(Collection):
     def __repr__(self):
         return six.text_type(
             '<VolumeCollection: items={items}>'.format(
-                total=self.total, items=len(self._items)
+                items=len(self._items)
             )
         )

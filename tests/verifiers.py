@@ -506,9 +506,9 @@ class AutomationVerifier(object):
             '/automation/packages/{}'.format(package_id)
         )
 
-    def runs_retrieved(self, id):
+    def runs_retrieved(self):
         self.checker.check_url(
-            '/automation/runs'.format(id)
+            '/automation/runs'
         )
 
     def member_added(self, id):

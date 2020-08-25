@@ -30,8 +30,10 @@ setup(
     license='Apache Software License 2.0',
     include_package_data=True,
     packages=find_packages(exclude=["*.tests"]),
-    keywords=['sevenbridges', 'sbg', 'api', 'cgc', 'cancer', 'genomics',
-              'cloud'],
+    keywords=[
+        'sevenbridges', 'sbg', 'api', 'cgc',
+        'cancer', 'genomics', 'cloud',
+    ],
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',

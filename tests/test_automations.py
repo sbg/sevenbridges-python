@@ -7,7 +7,6 @@ from sevenbridges.errors import SbgError
 from sevenbridges.transfer.upload import CodePackageUpload
 
 generator = faker.Factory.create()
-pytestmark = pytest.mark.automations
 
 
 def test_get_automation(api, given, verifier):
@@ -205,7 +204,7 @@ def test_add_package(api, given, verifier, file, version, schema):
 
     # action
     if file and version and schema:
-        temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+        temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
         temp_file.write('dummy content')
         temp_file.close()
 
@@ -239,7 +238,7 @@ def test_code_package_upload(api, given, empty_file):
     given.cp_uploads.reported_part()
     given.cp_uploads.finalized_upload(file_id)
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     if not empty_file:
         temp_file.write('dummy content')
     temp_file.close()
@@ -281,7 +280,7 @@ def test_code_package_upload_stop(api, given):
     given.cp_uploads.reported_part()
     given.cp_uploads.deleted()
 
-    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='.')
+    temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
     temp_file.write('dummy content')
     temp_file.close()
 
@@ -484,7 +483,7 @@ def test_get_runs(api, given, verifier):
 
     # verification
     assert len(runs) == total
-    verifier.automations.runs_retrieved(id)
+    verifier.automations.runs_retrieved()
 
 
 def test_get_run(api, given, verifier):
