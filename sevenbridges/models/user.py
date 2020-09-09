@@ -95,11 +95,13 @@ class User(Resource):
             **params
         )
 
-    def disable(self):
+    def disable(self, api=None):
         """
         Disable user
-        :return: User object
+        :param api: Api instance.
+        :return:
         """
-        return self._api.delete(
+        api = api or self._API
+        api.delete(
             url=self._URL['delete'].format(username=self.username)
         )
