@@ -15,7 +15,8 @@ class User(Resource):
     _URL = {
         'me': '/user',
         'get': '/users/{id}',
-        'query': '/users'
+        'query': '/users',
+        'delete': '/users/{username}'
     }
 
     href = HrefField()
@@ -92,4 +93,13 @@ class User(Resource):
             offset=offset,
             limit=limit,
             **params
+        )
+
+    def disable(self):
+        """
+        Disable user
+        :return: User object
+        """
+        return self._api.delete(
+            url=self._URL['delete'].format(username=self.username)
         )

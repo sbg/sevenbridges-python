@@ -344,6 +344,13 @@ For user management in divisions and teams, the following are available:
     # All teams in division
     teams_all = api.teams.query(division='<division_slug>', list_all=True)
 
+For disabling users
+
+.. code:: python
+    user = api.users.get('<username>')
+    user.disable()
+
+
 Managing projects
 -----------------
 
