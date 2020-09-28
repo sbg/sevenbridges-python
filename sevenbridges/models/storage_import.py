@@ -69,7 +69,8 @@ class Import(Resource):
     @classmethod
     def submit_import(cls, volume, location, project=None, name=None,
                       overwrite=False, properties=None, parent=None,
-                      preserve_folder_structure=True, autorename=False, api=None):
+                      preserve_folder_structure=True, autorename=False,
+                      api=None):
         """
         Submits new import job.
         :param volume: Volume identifier.
