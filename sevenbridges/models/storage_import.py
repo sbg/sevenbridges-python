@@ -218,30 +218,29 @@ class Import(Resource):
             location = Transform.to_location(import_.get('location'))
             name = import_.get('name', None)
             overwrite = import_.get('overwrite', False)
+            autorename = import_.get('autorename', None)
+            preserve_folder_structure = import_.get(
+                'preserve_folder_structure', None
+            )
 
             if name:
                 destination['name'] = name
 
-            import_options = {
-                'overwrite': overwrite,
-                'autorename': import_.get('autorename', None),
-                'preserve_folder_structure': (
-                    import_.get('preserve_folder_structure', None)
-                )
-            }
-
-            items.append({
+            import_config = {
                 'source': {
                     'volume': volume,
                     'location': location
                 },
                 'destination': destination,
-                **{
-                    option_name: import_options[option_name]
-                    for option_name in import_options.keys()
-                    if import_options[option_name] is not None
-                }
-            })
+                'overwrite': overwrite,
+            }
+            if autorename is not None:
+                import_config['autorename'] = autorename
+            if preserve_folder_structure is not None:
+                import_config['preserve_folder_structure'] = (
+                    preserve_folder_structure
+                )
+            items.append(import_config)
 
         data = {'items': items}
         response = api.post(url=cls._URL['bulk_create'], data=data)
