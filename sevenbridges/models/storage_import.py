@@ -37,6 +37,7 @@ class Import(Resource):
     id = StringField(read_only=True)
     state = StringField(read_only=True)
     preserve_folder_structure = BooleanField(read_only=True)
+    autorename = BooleanField(read_only=True)
     source = CompoundField(VolumeFile, read_only=True)
     destination = CompoundField(ImportDestination, read_only=True)
     started_on = DateTimeField(read_only=True)
@@ -68,7 +69,7 @@ class Import(Resource):
     @classmethod
     def submit_import(cls, volume, location, project=None, name=None,
                       overwrite=False, properties=None, parent=None,
-                      preserve_folder_structure=True, api=None):
+                      preserve_folder_structure=True, autorename=False, api=None):
         """
         Submits new import job.
         :param volume: Volume identifier.
@@ -83,6 +84,9 @@ class Import(Resource):
             folder structure. The default value is true if the item being
             imported is a folder. Should not be used if you are importing
             a file.
+        :param autorename: Whether to automatically rename the item
+            (by prefixing its name with an underscore and number) if
+            another one with the same name already exists at the destination.
         :param api: Api instance.
         :return: Import object.
         """
@@ -120,6 +124,9 @@ class Import(Resource):
 
         if not preserve_folder_structure:
             data['preserve_folder_structure'] = preserve_folder_structure
+
+        if autorename:
+            data['autorename'] = autorename
 
         if properties:
             data['properties'] = properties
@@ -177,7 +184,7 @@ class Import(Resource):
     def bulk_submit(cls, imports, api=None):
         """
         Submit imports in bulk
-        :param imports: Imports to be retrieved.
+        :param imports: List of Import objects to be be submitted.
         :param api: Api instance.
         :return: List of ImportBulkRecord objects.
         """
@@ -214,13 +221,25 @@ class Import(Resource):
             if name:
                 destination['name'] = name
 
+            import_options = {
+                'overwrite': overwrite,
+                'autorename': import_.get('autorename', None),
+                'preserve_folder_structure': (
+                    import_.get('preserve_folder_structure', None)
+                )
+            }
+
             items.append({
                 'source': {
                     'volume': volume,
                     'location': location
                 },
                 'destination': destination,
-                'overwrite': overwrite
+                **{
+                    option_name: import_options[option_name]
+                    for option_name in import_options.keys()
+                    if import_options[option_name] is not None
+                }
             })
 
         data = {'items': items}
