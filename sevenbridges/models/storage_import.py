@@ -184,7 +184,7 @@ class Import(Resource):
     def bulk_submit(cls, imports, api=None):
         """
         Submit imports in bulk
-        :param imports: List of Import objects to be be submitted.
+        :param imports: List of dicts describing a wanted import.
         :param api: Api instance.
         :return: List of ImportBulkRecord objects.
         """

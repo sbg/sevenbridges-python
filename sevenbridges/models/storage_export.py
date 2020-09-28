@@ -161,7 +161,7 @@ class Export(Resource):
     def bulk_submit(cls, exports, copy_only=False, api=None):
         """
         Create exports in bulk.
-        :param exports: Exports to be submitted in bulk.
+        :param exports: List of dicts describing a wanted export.
         :param copy_only: If true files are kept on SevenBridges bucket.
         :param api: Api instance.
         :return: list of ExportBulkRecord objects.
