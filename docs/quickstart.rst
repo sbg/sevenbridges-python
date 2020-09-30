@@ -344,9 +344,9 @@ For user management in divisions and teams, the following are available:
     # All teams in division
     teams_all = api.teams.query(division='<division_slug>', list_all=True)
 
-For disabling users
+For disabling users:
 
-.. code:: python
+.. code-block:: python
     user = api.users.get('<username>')
     user.disable()
 
@@ -1116,6 +1116,8 @@ Each import has the following properties:
 ``finished_on`` - Contains the date and time when the import was finished.
 
 ``preserve_folder_structure`` - Whether to keep the exact source folder structure. The default value is true if the item being imported is a folder. Should not be used if you are importing a file.
+
+``autorename`` - Whether to automatically rename the item (by prefixing its name with an underscore and number) if another one with the same name already exists at the destination.
 
 
 VolumeFile properties
