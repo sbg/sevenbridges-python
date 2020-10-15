@@ -6,6 +6,7 @@ import threading
 from datetime import datetime as dt
 
 import requests
+from urllib3 import Retry
 
 import sevenbridges
 from sevenbridges.decorators import check_for_error, throttle
@@ -62,10 +63,16 @@ def generate_session(pool_connections, pool_maxsize, pool_block, proxies=None):
     :return: requests.Session object.
     """
     session = RequestSession()
+
+    # Retry if no response from server (failed DNS lookups, socket connections
+    # and connection timeouts.
+    retries = Retry(total=4, backoff_factor=1)
+
     adapter = requests.adapters.HTTPAdapter(
         pool_connections=pool_connections,
         pool_maxsize=pool_maxsize,
-        pool_block=pool_block
+        pool_block=pool_block,
+        max_retries=retries
     )
     session.mount('http://', adapter)
     session.mount('https://', adapter)
