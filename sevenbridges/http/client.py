@@ -6,7 +6,7 @@ import threading
 from datetime import datetime as dt
 
 import requests
-from urllib3 import Retry
+from requests.packages.urllib3.util import Retry as UrlLibRetry
 
 import sevenbridges
 from sevenbridges.decorators import check_for_error, throttle
@@ -66,7 +66,7 @@ def generate_session(pool_connections, pool_maxsize, pool_block, proxies=None):
 
     # Retry if no response from server (failed DNS lookups, socket connections
     # and connection timeouts.
-    retries = Retry(total=4, backoff_factor=1)
+    retries = UrlLibRetry(total=6, backoff_factor=1)
 
     adapter = requests.adapters.HTTPAdapter(
         pool_connections=pool_connections,
