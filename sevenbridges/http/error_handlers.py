@@ -1,3 +1,4 @@
+import functools
 import logging
 import time
 
@@ -11,6 +12,16 @@ from sevenbridges.decorators import retry_on_excs
 logger = logging.getLogger(__name__)
 
 
+def repeatable_handler(f):
+    """
+    Marks 'repeatable' error handlers. Error handler is repeatable if propagate
+    input response in case of no error handling occurred.
+    """
+    f.is_repeatable = True
+    return f
+
+
+@repeatable_handler
 @retry_on_excs(excs=(HTTPError, UrlLibHTTPError))
 def rate_limit_sleeper(api, response):
     """
@@ -31,6 +42,7 @@ def rate_limit_sleeper(api, response):
     return response
 
 
+@repeatable_handler
 @retry_on_excs(excs=(HTTPError, UrlLibHTTPError, JSONDecodeError))
 def maintenance_sleeper(api, response, sleep=300):
     """
@@ -58,6 +70,7 @@ def maintenance_sleeper(api, response, sleep=300):
     return response
 
 
+@repeatable_handler
 @retry_on_excs(excs=(HTTPError, UrlLibHTTPError))
 def general_error_sleeper(api, response, sleep=300):
     """
