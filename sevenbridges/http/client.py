@@ -281,8 +281,20 @@ class HttpClient(object):
                 verb, url, params=params, stream=stream, allow_redirects=True,
             )
         if self.error_handlers:
-            for error_handler in self.error_handlers:
-                response = error_handler(self, response)
+            while True:
+                for error_handler in self.error_handlers:
+                    handled_response = error_handler(self, response)
+                    # if error handler 'is_repeatable', and error handling
+                    # occurred, iterate again
+                    if hasattr(error_handler, 'is_repeatable'):
+                        if response != handled_response:
+                            response = handled_response
+                            break
+                    else:
+                        response = handled_response
+                else:
+                    break
+
         headers = response.headers
         self._limit = headers.get('X-RateLimit-Limit', self._limit)
         self._remaining = headers.get('X-RateLimit-Remaining', self._remaining)
