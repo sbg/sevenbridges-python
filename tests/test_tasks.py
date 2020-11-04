@@ -3,7 +3,6 @@ from datetime import datetime
 import faker
 import pytest
 
-from sevenbridges import File
 from sevenbridges.errors import SbgError
 
 generator = faker.Factory.create()
@@ -287,8 +286,11 @@ def test_secondary_files(api, given, verifier):
     output_id = generator.uuid4()
 
     file_ids = [generator.uuid4() for _ in range(total)]
-    files = [{'id': _id} for _id in file_ids]
-    output = {'id': output_id, '_secondary_files': files}
+    files = [{'path': _id} for _id in file_ids]
+    output = {'id': output_id,
+              'secondaryFiles': files,
+              'class': 'File',
+              'path': output_id}
     task = {
         'id': task_id,
         'outputs': {'output': output}
@@ -298,7 +300,7 @@ def test_secondary_files(api, given, verifier):
 
     # action
     response = api.tasks.get(id=task_id)
-    secondary_files = File(**response.outputs['output']).secondary_files
+    secondary_files = response.outputs['output'].secondary_files
 
     # verification
     assert len(secondary_files) == total

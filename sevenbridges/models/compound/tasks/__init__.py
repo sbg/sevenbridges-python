@@ -37,11 +37,10 @@ def map_input_output(item, api):
             data.update(
                 {k: item[k] for k in item if k not in ['path', 'basename']}
             )
-            if _secondary_files:
-                data.update({
-                    '_secondary_files': _secondary_files,
-                    'fetched': True
-                })
+            data.update({
+                '_secondary_files': _secondary_files or None,
+                'fetched': True
+            })
             return File(api=api, **data)
     else:
         return item
