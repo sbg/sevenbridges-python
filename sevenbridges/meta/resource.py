@@ -7,11 +7,10 @@ from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import Field
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.enums import RequestParameters
+
 
 logger = logging.getLogger(__name__)
-
-
-DEFAULT_LIMIT = 100
 
 
 # noinspection PyProtectedMember
@@ -139,7 +138,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         # Check for valid limit value
         if kwargs.get('limit') is not None and kwargs['limit'] <= 0:
-            kwargs['limit'] = DEFAULT_LIMIT
+            kwargs['limit'] = RequestParameters.DEFAULT_BULK_LIMIT
 
         extra = {'resource': cls.__name__, 'query': kwargs}
         logger.info('Querying {} resource'.format(cls), extra=extra)

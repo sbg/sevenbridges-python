@@ -1,3 +1,11 @@
+class RequestParameters:
+    MAX_URL_LENGTH = 6000
+    DEFAULT_TIMEOUT = 300
+    DEFAULT_RETRY_COUNT = 6
+    DEFAULT_BACKOFF_FACTOR = 1
+    DEFAULT_BULK_LIMIT = 100
+
+
 class PartSize:
     KB = 1024
     MB = 1024 * KB
@@ -9,6 +17,7 @@ class PartSize:
 
     DOWNLOAD_MINIMUM_PART_SIZE = 5 * MB
     UPLOAD_MINIMUM_PART_SIZE = 5 * MB
+    UPLOAD_RECOMMENDED_SIZE = 32 * MB
 
 
 class TransferState:

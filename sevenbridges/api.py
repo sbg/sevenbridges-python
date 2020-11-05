@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from requests.adapters import DEFAULT_POOLSIZE
 
 from sevenbridges.http.client import HttpClient
+
 from sevenbridges.models.app import App
 from sevenbridges.models.file import File
 from sevenbridges.models.task import Task
@@ -20,9 +21,11 @@ from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.rate_limit import RateLimit
 from sevenbridges.models.storage_export import Export
 from sevenbridges.models.storage_import import Import
+from sevenbridges.models.enums import RequestParameters
 from sevenbridges.models.billing_group import BillingGroup
-from sevenbridges.models.automation import Automation, AutomationRun, \
-    AutomationPackage
+from sevenbridges.models.automation import (
+    Automation, AutomationRun, AutomationPackage
+)
 
 
 class Api(HttpClient):
@@ -50,11 +53,15 @@ class Api(HttpClient):
     users = User
     volumes = Volume
 
-    def __init__(self, url=None, token=None, oauth_token=None, config=None,
-                 timeout=None, download_max_workers=16, upload_max_workers=16,
-                 proxies=None, error_handlers=None, advance_access=False,
-                 pool_connections=DEFAULT_POOLSIZE, pool_maxsize=100,
-                 pool_block=True, max_parallel_requests=100):
+    def __init__(
+            self, url=None, token=None, oauth_token=None, config=None,
+            timeout=None, download_max_workers=16, upload_max_workers=16,
+            proxies=None, error_handlers=None, advance_access=False,
+            pool_connections=DEFAULT_POOLSIZE, pool_maxsize=100,
+            pool_block=True, max_parallel_requests=100,
+            retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
+            backoff_factor=RequestParameters.DEFAULT_BACKOFF_FACTOR,
+    ):
         """
         Initializes api object.
 
@@ -83,7 +90,8 @@ class Api(HttpClient):
             timeout=timeout, proxies=proxies, error_handlers=error_handlers,
             advance_access=advance_access, pool_connections=pool_connections,
             pool_maxsize=pool_maxsize, pool_block=pool_block,
-            max_parallel_requests=max_parallel_requests
+            max_parallel_requests=max_parallel_requests,
+            retry_count=retry_count, backoff_factor=backoff_factor,
         )
 
         self.download_pool = ThreadPoolExecutor(

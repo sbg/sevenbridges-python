@@ -9,22 +9,22 @@ import six
 import requests
 
 from sevenbridges.errors import SbgError
-from sevenbridges.decorators import retry
 from sevenbridges.http.client import generate_session
-from sevenbridges.models.enums import PartSize, TransferState
+from sevenbridges.models.enums import (
+    PartSize, TransferState, RequestParameters
+)
 from sevenbridges.transfer.utils import Part, Progress, total_parts
 
 
 logger = logging.getLogger(__name__)
 
 
-def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
+def _download_part(path, session, url, timeout, start_byte, end_byte):
     """
     Downloads a single part.
     :param path: File path.
     :param session: Requests session.
     :param url: Url of the resource.
-    :param retry: Number of times to retry on error.
     :param timeout: Session timeout.
     :param start_byte: Start byte of the part.
     :param end_byte: End byte of the part.
@@ -40,35 +40,21 @@ def _download_part(path, session, url, retry, timeout, start_byte, end_byte):
     if end_byte is not None:
         headers['Range'] = 'bytes=%d-%d' % (int(start_byte), int(end_byte))
 
-    cause = None
-
-    # Retry
-    for retry in range(retry):
-        try:
-            response = session.get(
-                url, headers=headers, timeout=timeout, stream=True
-            )
-            response.raise_for_status()
-            part_size = response.headers.get('Content-Length')
-            os.lseek(fp, start_byte, os.SEEK_SET)
-            for part in response.iter_content(32 * PartSize.KB):
-                os.write(fp, part)
-            os.close(fp)
-        except requests.HTTPError as e:
-            cause = e
-            time.sleep(2 ** retry)
-            continue
-        except requests.RequestException as e:
-            cause = e
-            time.sleep(2 ** retry)
-            continue
-        else:
-            return Part(start=start_byte, size=float(part_size))
-
-    else:
+    try:
+        response = session.get(
+            url=url, headers=headers, timeout=timeout, stream=True
+        )
+        response.raise_for_status()
+        part_size = response.headers.get('Content-Length')
+        os.lseek(fp, start_byte, os.SEEK_SET)
+        for part in response.iter_content(32 * PartSize.KB):
+            os.write(fp, part)
         os.close(fp)
-        raise SbgError('Failed to download file after {} attempts.'
-                       ' Response: {}'.format(retry, six.text_type(cause)))
+        return Part(start=start_byte, size=float(part_size))
+    except (requests.HTTPError, requests.RequestException) as e:
+        raise SbgError(
+            'Failed to download file. Response: {}'.format(six.text_type(e))
+        )
 
 
 def _get_content_length(session, url, timeout):
@@ -85,9 +71,9 @@ def _get_content_length(session, url, timeout):
 
 
 class DPartedFile(object):
-    def __init__(self, file_path, session, url, file_size, part_size, retry,
-                 timeout,
-                 pool):
+    def __init__(
+            self, file_path, session, url, file_size, part_size, timeout, pool
+    ):
         """
         Emulates the partitioned file. Uses the download pool attached to the
         api session to download file parts.
@@ -96,7 +82,6 @@ class DPartedFile(object):
         :param url: Resource url.
         :param file_size: Resource file size.
         :param part_size: Part size.
-        :param retry: Number of times to retry on error.
         :param timeout: Session timeout.
         :param pool: Download pool.
         """
@@ -105,7 +90,6 @@ class DPartedFile(object):
         self.session = session
         self.file_size = file_size
         self.part_size = part_size
-        self.retry = retry
         self.timeout = timeout
         self.submitted = 0
         self.total_submitted = 0
@@ -124,7 +108,8 @@ class DPartedFile(object):
             futures.append(
                 self.pool.submit(
                     _download_part, self.file_path, self.session, self.url,
-                    self.retry, self.timeout, *part)
+                    self.timeout, *part
+                )
             )
             self.submitted += 1
             self.total_submitted += 1
@@ -149,19 +134,20 @@ class DPartedFile(object):
         """
         parts = []
         start_b = 0
-        end_byte = start_b + PartSize.DOWNLOAD_MINIMUM_PART_SIZE - 1
+        end_byte = start_b + self.part_size - 1
         for i in range(self.total):
             parts.append([start_b, end_byte])
             start_b = end_byte + 1
-            end_byte = start_b + PartSize.DOWNLOAD_MINIMUM_PART_SIZE - 1
+            end_byte = start_b + self.part_size - 1
         return parts
 
 
 # noinspection PyCallingNonCallable,PyTypeChecker,PyProtectedMember
 class Download(threading.Thread):
-    def __init__(self, url, file_path,
-                 part_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, retry_count=5,
-                 timeout=60, api=None):
+    def __init__(
+            self, url, file_path, part_size=None, retry_count=None,
+            timeout=None, api=None
+     ):
         """
         File multipart downloader.
         :param url: URL of the file.
@@ -184,20 +170,17 @@ class Download(threading.Thread):
                     PartSize.DOWNLOAD_MINIMUM_PART_SIZE)
             )
 
-        # initializes the session
-
         self.url = url
         self._file_path = file_path
 
         # append unique suffix to the file
         self._temp_file = self._file_path + '.' + hashlib.sha1(
             self._file_path.encode('utf-8')).hexdigest()[:10]
-        self._retry_count = retry_count
-        self._timeout = timeout
-        if part_size:
-            self._part_size = part_size
-        else:
-            self._part_size = PartSize.DOWNLOAD_MINIMUM_PART_SIZE
+        self._retry_count = (
+            retry_count or RequestParameters.DEFAULT_RETRY_COUNT
+        )
+        self._timeout = timeout or RequestParameters.DEFAULT_TIMEOUT
+        self._part_size = part_size or PartSize.DOWNLOAD_MINIMUM_PART_SIZE
         self._api = api
         self._bytes_done = 0
         self._running = threading.Event()
@@ -207,10 +190,11 @@ class Download(threading.Thread):
         self._time_started = 0
 
         self._session = generate_session(
-            self._api.pool_connections,
-            self._api.pool_maxsize,
-            self._api.pool_block,
-            self._api.session.proxies
+            pool_connections=self._api.pool_connections,
+            pool_maxsize=self._api.pool_maxsize,
+            pool_block=self._api.pool_block,
+            proxies=self._api.session.proxies,
+            retry_count=self._retry_count,
         )
 
         try:
@@ -334,14 +318,15 @@ class Download(threading.Thread):
         self._status = TransferState.RUNNING
         self._time_started = time.time()
 
-        parted_file = DPartedFile(self._temp_file,
-                                  self._session,
-                                  self.url,
-                                  self._file_size,
-                                  self._part_size,
-                                  self._retry_count,
-                                  self._timeout,
-                                  self._api.download_pool)
+        parted_file = DPartedFile(
+            file_path=self._temp_file,
+            session=self._session,
+            url=self.url,
+            file_size=self._file_size,
+            part_size=self._part_size,
+            timeout=self._timeout,
+            pool=self._api.download_pool,
+        )
 
         try:
             for part in parted_file:
@@ -380,10 +365,9 @@ class Download(threading.Thread):
         for the resource.
         :return: File size.
         """
-        file_size = retry(self._retry_count)(_get_content_length)(
-            self._session, self.url, self._timeout
+        file_size = int(
+            _get_content_length(self._session, self.url, self._timeout)
         )
-        file_size = int(file_size)
         if file_size == 0:
             with io.open(self._temp_file, 'a', encoding='utf-8'):
                 pass

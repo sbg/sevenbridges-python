@@ -1,7 +1,6 @@
 import time
 import logging
 import functools
-import threading
 from six import raise_from
 
 try:
@@ -76,29 +75,6 @@ def retry_on_excs(excs, retry_count=3, delay=5):
         return deco
 
     return wrapper
-
-
-def retry(retry_count):
-    """
-    Retry decorator used during file upload and download.
-    """
-
-    def func(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            for backoff in range(retry_count):
-                try:
-                    return f(*args, **kwargs)
-                except Exception:
-                    time.sleep(2 ** backoff)
-            else:
-                raise SbgError('{}: failed to complete: {}'.format(
-                    threading.current_thread().getName(), f.__name__)
-                )
-
-        return wrapper
-
-    return func
 
 
 def throttle(func):

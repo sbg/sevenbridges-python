@@ -6,11 +6,12 @@ import threading
 
 import six
 
-from sevenbridges.decorators import retry
 from sevenbridges.errors import SbgError
 from sevenbridges.http.client import generate_session
-from sevenbridges.models.enums import PartSize, TransferState
 from sevenbridges.transfer.utils import Progress, total_parts
+from sevenbridges.models.enums import (
+    PartSize, TransferState, RequestParameters
+)
 
 logger = logging.getLogger(__name__)
 
@@ -75,16 +76,12 @@ def _submit_part(session, url, part, timeout):
         response = session.put(url, data=part, timeout=timeout)
         return response.headers.get('etag').strip('"')
     except Exception as e:
-        logger.debug(
-            'Failed to submit part due to an error: %s', six.text_type(e)
-        )
         raise SbgError(
             'Failed to submit the part. Reason: {}'.format(six.text_type(e))
         )
 
 
-def _upload_part(api, session, url, upload, part_number, part, retry_count,
-                 timeout):
+def _upload_part(api, session, url, upload, part_number, part, timeout):
     """
     Used by the worker to upload a part to the storage service.
     :param api: Api instance.
@@ -93,18 +90,11 @@ def _upload_part(api, session, url, upload, part_number, part, retry_count,
     :param upload: Upload identifier.
     :param part_number: Part number.
     :param part: Part data.
-    :param retry_count: Number of times to retry.
     :param timeout: Timeout for storage session.
     """
-    part_url = retry(retry_count)(_get_part_url)(
-        api, url, upload, part_number
-    )
-
-    e_tag = retry(retry_count)(_submit_part)(
-        session, part_url, part, timeout
-    )
-
-    retry(retry_count)(_report_part)(api, url, upload, part_number, e_tag)
+    part_url = _get_part_url(api, url, upload, part_number)
+    e_tag = _submit_part(session, part_url, part, timeout)
+    _report_part(api, url, upload, part_number, e_tag)
 
 
 class UPartedFile(object):
@@ -112,8 +102,9 @@ class UPartedFile(object):
         'upload_part': '/upload/multipart/{upload_id}/part/{part_number}'
     }
 
-    def __init__(self, fp, file_size, part_size, upload, retry_count,
-                 timeout, storage_session, api):
+    def __init__(
+        self, fp, file_size, part_size, upload, timeout, storage_session, api
+    ):
 
         """
         Emulates the partitioned file. Uses the upload pool attached to the
@@ -123,7 +114,6 @@ class UPartedFile(object):
         :param file_size: File size.
         :param part_size: Part size.
         :param upload: Upload identifier.
-        :param retry_count: Number of times to retry if error happens.
         :param timeout: Timeout for storage session service.
         :param storage_session: Storage session.
         :param api: Api instance.
@@ -132,7 +122,6 @@ class UPartedFile(object):
         self.file_size = file_size
         self.part_size = part_size
         self.upload_id = upload
-        self.retry = retry_count
         self.timeout = timeout
         self.session = storage_session
         self.api = api
@@ -163,7 +152,7 @@ class UPartedFile(object):
                 self.pool.submit(
                     _upload_part, self.api, self.session,
                     self._URL['upload_part'], self.upload_id,
-                    part_number, part_data, self.retry, self.timeout
+                    part_number, part_data, self.timeout
                 )
             )
 
@@ -212,9 +201,11 @@ class Upload(threading.Thread):
         'upload_complete': '/upload/multipart/{upload_id}/complete'
     }
 
-    def __init__(self, file_path, project=None, parent=None, file_name=None,
-                 overwrite=False, part_size=None, retry_count=5, timeout=60,
-                 api=None):
+    def __init__(
+        self, file_path, project=None, parent=None, file_name=None,
+        overwrite=False, part_size=None, retry_count=None, timeout=None,
+        api=None
+    ):
         """
         Multipart File uploader.
 
@@ -247,7 +238,7 @@ class Upload(threading.Thread):
         else:
             self._file_name = file_name
 
-        self._part_size = part_size
+        self._part_size = part_size or PartSize.UPLOAD_RECOMMENDED_SIZE
         self._project = project
         self._parent = parent
         self._file_path = file_path
@@ -256,8 +247,8 @@ class Upload(threading.Thread):
         self._verify_file_size()
 
         self._overwrite = overwrite
-        self._retry = retry_count
-        self._timeout = timeout
+        self._retry = retry_count or RequestParameters.DEFAULT_RETRY_COUNT
+        self._timeout = timeout or RequestParameters.DEFAULT_TIMEOUT
         self._api = api
         self._bytes_done = 0
         self._time_started = 0
@@ -270,10 +261,11 @@ class Upload(threading.Thread):
         self._result = None
 
         self.session = generate_session(
-            self._api.pool_connections,
-            self._api.pool_maxsize,
-            self._api.pool_block,
-            self._api.session.proxies
+            pool_connections=self._api.pool_connections,
+            pool_maxsize=self._api.pool_maxsize,
+            pool_block=self._api.pool_block,
+            proxies=self._api.session.proxies,
+            retry_count=self._retry,
         )
 
     def __repr__(self):
@@ -526,7 +518,7 @@ class Upload(threading.Thread):
     def partition_file(self, fp):
         return UPartedFile(
             fp, self._file_size, self._part_size, self._upload_id,
-            self._retry, self._timeout, self.session, self._api
+            self._timeout, self.session, self._api
         )
 
 
@@ -544,8 +536,11 @@ class CodePackageUpload(Upload):
         'upload_complete': '/automation/upload/{upload_id}/complete'
     }
 
-    def __init__(self, file_path, automation_id, file_name=None,
-                 part_size=None, retry_count=5, timeout=60, api=None):
+    def __init__(
+        self, file_path, automation_id, file_name=None, part_size=None,
+        retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
+        timeout=RequestParameters.DEFAULT_TIMEOUT, api=None
+    ):
         """
             Multipart File uploader for automation code packages.
 
@@ -582,7 +577,7 @@ class CodePackageUpload(Upload):
 
     def partition_file(self, fp):
         return CodePackageUPartedFile(
-            fp, self._file_size, self._part_size, self._upload_id, self._retry,
+            fp, self._file_size, self._part_size, self._upload_id,
             self._timeout, self.session, self._api
         )
 
