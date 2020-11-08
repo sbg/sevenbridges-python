@@ -15,6 +15,7 @@ class VolumeService(CompoundMutableDict, Resource):
 
     def __getitem__(self, item):
         try:
+            # noinspection PyProtectedMember
             return self._parent._data[self._name][item]
         except KeyError:
             return None

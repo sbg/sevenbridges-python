@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 package_dir, _ = os.path.split(os.path.abspath(__file__))
 version_path = os.path.join(package_dir, 'sevenbridges', 'VERSION')
 
-version = '0.0.1+local-build'
+version = '0.0.1.dev0+local'
 if os.path.isfile(version_path):
     with io.open(version_path, 'r', encoding='utf-8') as f:
         version = f.read().strip()

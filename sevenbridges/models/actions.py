@@ -19,6 +19,7 @@ class Actions(Resource):
     def __str__(self):
         return six.text_type('<Actions>')
 
+    # noinspection PyShadowingBuiltins
     @classmethod
     def send_feedback(cls, type=FeedbackType.IDEA, referrer=None, text=None,
                       api=None):

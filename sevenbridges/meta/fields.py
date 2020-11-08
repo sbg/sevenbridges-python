@@ -153,12 +153,12 @@ class DateTimeField(Field):
     def __get__(self, instance, cls):
         data = super(DateTimeField, self).__get__(instance, cls)
         if data:
-            format = "%Y-%m-%dT%H:%M:%S"
+            datetime_format = "%Y-%m-%dT%H:%M:%S"
             if '.' in data:
-                format += ".%f"
+                datetime_format += ".%f"
             if 'Z' in data:
-                format += "Z"
-            return datetime.strptime(data, format)
+                datetime_format += "Z"
+            return datetime.strptime(data, datetime_format)
 
 
 class BooleanField(Field):

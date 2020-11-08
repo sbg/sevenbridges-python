@@ -46,8 +46,7 @@ def test_file_upload(api, given, empty_file, project_id, parent_id, no_api,
     given.uploads.reported_part()
     given.uploads.finalized_upload(file_id)
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         if not empty_file:
             temp_file.write(str(file_content))
 
@@ -92,8 +91,7 @@ def test_file_upload_init_failed(api, given, tmpdir):
         failed=True
     )
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -117,8 +115,7 @@ def test_file_upload_start_failed(api, given, tmpdir):
         failed=True
     )
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -147,8 +144,7 @@ def test_file_upload_finalize_failed(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.finalized_upload(file_id, failed=True)
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -173,8 +169,7 @@ def test_file_upload_part_failed(api, given, tmpdir):
     )
     given.uploads.got_file_part(file_part_url, failed=True)
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -200,8 +195,7 @@ def test_file_upload_etag_failed(api, given, tmpdir):
     given.uploads.got_file_part(file_part_url, failed=True)
     given.uploads.got_etag(file_part_url, failed=True)
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -229,8 +223,7 @@ def test_file_upload_stop(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -259,8 +252,7 @@ def test_file_upload_stop_failed(api, given, tmpdir):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -270,8 +262,6 @@ def test_file_upload_stop_failed(api, given, tmpdir):
         part_size=PartSize.UPLOAD_RECOMMENDED_SIZE,
         file_name=file_name
     )
-    upload.start()
-    upload._status = TransferState.STOPPED
     with pytest.raises(SbgError):
         upload.stop()
 
@@ -289,8 +279,7 @@ def test_file_upload_abort_failed(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted(failed=True)
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -303,7 +292,6 @@ def test_file_upload_abort_failed(api, given, tmpdir):
     upload.start()
     with pytest.raises(SbgError):
         upload.stop()
-    upload.wait()
 
 
 def test_file_upload_pause(api, given, tmpdir):
@@ -311,15 +299,16 @@ def test_file_upload_pause(api, given, tmpdir):
     project_id = generator.uuid4()
     file_part_url = generator.url()
     file_name = generator.uuid4()
+
     given.uploads.initialized_upload(
         part_size=PartSize.UPLOAD_RECOMMENDED_SIZE, upload_id=upload_id
     )
     given.uploads.got_file_part(file_part_url)
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
+    given.uploads.deleted()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -334,6 +323,7 @@ def test_file_upload_pause(api, given, tmpdir):
     upload.pause()
 
     assert upload.status == TransferState.PAUSED
+    upload.stop()
 
 
 def test_file_upload_pause_failed(api, given, tmpdir):
@@ -349,8 +339,7 @@ def test_file_upload_pause_failed(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -376,9 +365,9 @@ def test_file_upload_resume(api, given, tmpdir):
     given.uploads.got_file_part(file_part_url)
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
+    given.uploads.deleted()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -395,6 +384,7 @@ def test_file_upload_resume(api, given, tmpdir):
     upload.resume()
 
     assert upload.status == TransferState.RUNNING
+    upload.stop()
 
 
 def test_file_upload_resume_failed(api, given, tmpdir):
@@ -409,8 +399,7 @@ def test_file_upload_resume_failed(api, given, tmpdir):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -429,8 +418,7 @@ def test_file_size_too_large(api, monkeypatch, tmpdir):
     project_id = generator.uuid4()
     file_name = generator.uuid4()
 
-    path = six.text_type(tmpdir / file_name)
-    with open(path, 'w') as temp_file:
+    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     with monkeypatch.context() as m:

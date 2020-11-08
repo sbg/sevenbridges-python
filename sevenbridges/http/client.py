@@ -141,11 +141,7 @@ class HttpClient(object):
             advance_access = advance_access or config.advance_access
 
         else:
-            url = url
-            token = token
-            oauth_token = oauth_token
             proxies = format_proxies(proxies)
-            advance_access = advance_access
 
         if not url:
             raise SbgError(
