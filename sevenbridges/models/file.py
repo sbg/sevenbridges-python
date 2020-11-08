@@ -90,7 +90,7 @@ class File(Resource):
 
     @property
     def secondary_files(self):
-        if self._secondary_files:
+        if self.field('_secondary_files'):
             return [
                 File(api=self._api, **data)
                 for data in self._secondary_files
