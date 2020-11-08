@@ -1939,4 +1939,4 @@ class FileUploadProvider(object):
             self.base_url
         )
         matcher = re.compile(regx)
-        self.request_mocker.delete(matcher, status_code=status_code)
+        self.request_mocker.delete(matcher, status_code=status_code, json={})
