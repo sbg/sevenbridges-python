@@ -1,7 +1,5 @@
-import time
 import logging
 import functools
-import threading
 from six import raise_from
 
 try:
@@ -42,63 +40,6 @@ def inplace_reload(method):
             return obj
 
     return wrapped
-
-
-def retry_on_excs(excs, retry_count=3, delay=5):
-    """Retry decorator used to retry callables on for specific exceptions.
-
-    :param excs: Exceptions tuple.
-    :param retry_count: Retry count.
-    :param delay: Delay in seconds between retries.
-    :return: Wrapped function object.
-    """
-
-    def wrapper(f):
-        @functools.wraps(f)
-        def deco(*args, **kwargs):
-            for i in range(0, retry_count):
-                try:
-                    return f(*args, **kwargs)
-                except excs:
-                    if logger:
-                        logger.warning(
-                            'HTTPError caught.Retrying ...',
-                            exc_info=True
-                        )
-                    time.sleep(delay)
-            else:
-                logger.error(
-                    '{} failed after {} retries'.format(
-                        f.__name__, retry_count)
-                )
-            return f(*args, **kwargs)
-
-        return deco
-
-    return wrapper
-
-
-def retry(retry_count):
-    """
-    Retry decorator used during file upload and download.
-    """
-
-    def func(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            for backoff in range(retry_count):
-                try:
-                    return f(*args, **kwargs)
-                except Exception:
-                    time.sleep(2 ** backoff)
-            else:
-                raise SbgError('{}: failed to complete: {}'.format(
-                    threading.current_thread().getName(), f.__name__)
-                )
-
-        return wrapper
-
-    return func
 
 
 def throttle(func):
@@ -156,12 +97,11 @@ def check_for_error(func):
         except requests.RequestException as e:
             raise SbgError(message=six.text_type(e))
         except JSONDecodeError:
-            message = (
-                'Service might be unavailable. Can also occur by providing '
-                'too many query parameters.'
-            )
             raise_from(
-                ServiceUnavailable(message=six.text_type(message)), None
+                ServiceUnavailable(message=six.text_type(
+                    'Server response format is not JSON, '
+                    'service might be unavailable.'
+                )), None
             )
         except ValueError as e:
             raise SbgError(message=six.text_type(e))

@@ -14,7 +14,6 @@ from sevenbridges.meta.fields import (
     HrefField, StringField, IntegerField, CompoundField, DateTimeField,
     BasicListField
 )
-from sevenbridges.models.enums import PartSize
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.transfer.upload import Upload
@@ -22,6 +21,7 @@ from sevenbridges.decorators import inplace_reload
 from sevenbridges.transfer.download import Download
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.files.metadata import Metadata
+from sevenbridges.models.enums import PartSize, RequestParameters
 from sevenbridges.models.compound.files.file_storage import FileStorage
 from sevenbridges.models.compound.files.file_origin import FileOrigin
 from sevenbridges.models.compound.files.download_info import DownloadInfo
@@ -181,8 +181,9 @@ class File(Resource):
 
     @classmethod
     def upload(cls, path, project=None, parent=None, file_name=None,
-               overwrite=False, retry=5, timeout=60, part_size=None, wait=True,
-               api=None):
+               overwrite=False, retry=RequestParameters.DEFAULT_RETRY_COUNT,
+               timeout=RequestParameters.DEFAULT_TIMEOUT, part_size=None,
+               wait=True, api=None):
         """
         Uploads a file using multipart upload and returns an upload handle
         if the wait parameter is set to False. If wait is set to True it
@@ -270,9 +271,9 @@ class File(Resource):
         info = self._api.get(url=self._URL['download_info'].format(id=self.id))
         return DownloadInfo(api=self._api, **info.json())
 
-    def download(self, path, retry=5, timeout=10,
-                 chunk_size=PartSize.DOWNLOAD_MINIMUM_PART_SIZE, wait=True,
-                 overwrite=False):
+    def download(self, path, retry=RequestParameters.DEFAULT_RETRY_COUNT,
+                 timeout=RequestParameters.DEFAULT_TIMEOUT, chunk_size=None,
+                 wait=True, overwrite=False):
         """
         Downloads the file and returns a download handle.
         Download will not start until .start() method is invoked.

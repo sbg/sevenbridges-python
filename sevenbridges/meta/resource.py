@@ -7,11 +7,10 @@ from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import Field
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.enums import RequestParameters
+
 
 logger = logging.getLogger(__name__)
-
-
-DEFAULT_LIMIT = 100
 
 
 # noinspection PyProtectedMember
@@ -47,10 +46,10 @@ class ResourceMeta(type):
                     urls=urls, api=self._api, parent=self
                 )
                 self._dirty = {}
-                for k, v in kwargs.items():
-                    if k in fields:
-                        value = fields[k].validate(v)
-                        self._data[k] = value
+                for key, value in kwargs.items():
+                    if key in fields:
+                        validated_value = fields[key].validate(value)
+                        self._data[key] = validated_value
 
                 self._old = copy.deepcopy(self._data.data)
 
@@ -121,8 +120,9 @@ class Resource(six.with_metaclass(ResourceMeta)):
     query).
     """
     _API = None
+    _URL = {}
 
-    def __init__(self, api):
+    def __init__(self, api, *args, **kwargs):
         self.api = api
 
     @classmethod
@@ -139,7 +139,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
 
         # Check for valid limit value
         if kwargs.get('limit') is not None and kwargs['limit'] <= 0:
-            kwargs['limit'] = DEFAULT_LIMIT
+            kwargs['limit'] = RequestParameters.DEFAULT_BULK_LIMIT
 
         extra = {'resource': cls.__name__, 'query': kwargs}
         logger.info('Querying {} resource'.format(cls), extra=extra)
@@ -177,7 +177,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         """
         Deletes the resource on the server.
         """
-        if 'delete' in self._URL:
+        if 'delete' in self._URL and hasattr(self, 'id'):
             extra = {'resource': self.__class__.__name__, 'query': {
                 'id': self.id}}
             logger.info("Deleting {} resource.".format(self), extra=extra)

@@ -48,7 +48,7 @@ from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 from sevenbridges.models.enums import (
     AppCopyStrategy, AppRawFormat, AsyncFileOperations, AsyncJobStates,
     AutomationRunActions, DivisionRole, FileStorageType, ImportExportState,
-    TaskStatus, TransferState, VolumeAccessMode, VolumeType,
+    TaskStatus, TransferState, VolumeAccessMode, VolumeType, PartSize,
 )
 from sevenbridges.errors import (
     SbgError, ResourceNotModified, ReadOnlyPropertyError, ValidationError,
@@ -71,7 +71,7 @@ __all__ = [
     'AppCopyStrategy', 'AppRawFormat', 'AppCopyStrategy',
     'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
     'DivisionRole', 'FileStorageType', 'ImportExportState', 'TaskStatus',
-    'TransferState', 'VolumeAccessMode', 'VolumeType',
+    'TransferState', 'VolumeAccessMode', 'VolumeType', 'PartSize',
     # Errors
     'SbgError', 'ResourceNotModified', 'ReadOnlyPropertyError',
     'ValidationError', 'TaskValidationError', 'PaginationError', 'BadRequest',

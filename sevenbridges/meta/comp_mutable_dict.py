@@ -7,6 +7,7 @@ class CompoundMutableDict(dict):
     Resource used for mutable compound dictionaries.
     """
 
+    # noinspection PyMissingConstructor
     def __init__(self, **kwargs):
         self._parent = kwargs.pop('_parent')
         self._api = kwargs.pop('api')
@@ -33,12 +34,12 @@ class CompoundMutableDict(dict):
 
     __str__ = __repr__
 
-    def update(self, E=None, **F):
+    def update(self, e=None, **f):
         other = {}
-        if E:
-            other.update(E, **F)
+        if e:
+            other.update(e, **f)
         else:
-            other.update(**F)
+            other.update(**f)
         for k, v in other.items():
             if other[k] != self[k]:
                 self[k] = other[k]

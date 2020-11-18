@@ -40,10 +40,12 @@ class Profile(object):
 
         self.profile = profile
 
+        # noinspection PyTypeChecker
         self.credentials_parser = cp.ConfigParser({
             'auth_token': None,
             'api_endpoint': None,
         }, allow_no_value=True)
+        # noinspection PyTypeChecker
         self.config_parser = cp.ConfigParser({
             'http_proxy': None,
             'https_proxy': None,
@@ -55,6 +57,7 @@ class Profile(object):
             self.config_parser = None
             logging.info('No custom configuration present. Skipping...')
         else:
+            # noinspection PyTypeChecker
             self.config_parser = cp.ConfigParser({
                 'http_proxy': None,
                 'https_proxy': None,

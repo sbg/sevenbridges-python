@@ -16,6 +16,7 @@ class Input(CompoundMutableDict, Resource):
         super(Input, self).__init__(**kwargs)
 
     def __getitem__(self, item):
+        # noinspection PyBroadException
         try:
             inputs = self._parent._data[self._name][item]
             return map_input_output(inputs, self._api)

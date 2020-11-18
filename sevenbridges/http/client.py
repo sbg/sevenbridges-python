@@ -9,9 +9,10 @@ import requests
 from requests.packages.urllib3.util import Retry as UrlLibRetry
 
 import sevenbridges
-from sevenbridges.decorators import check_for_error, throttle
 from sevenbridges.errors import SbgError, URITooLong
 from sevenbridges.config import Config, format_proxies
+from sevenbridges.models.enums import RequestParameters
+from sevenbridges.decorators import check_for_error, throttle
 from sevenbridges.http.error_handlers import maintenance_sleeper
 
 logger = logging.getLogger(__name__)
@@ -32,15 +33,13 @@ class AAHeader:
 class RequestSession(requests.Session):
     """Client session class"""
 
-    MAX_URL_LENGTH = 6000
-
     def send(self, request, **kwargs):
         """Send prepared request
         :param request: Prepared request to be sent
         :param kwargs: request keyword arguments
         :return: Request response
         """
-        if len(request.url) > self.MAX_URL_LENGTH:
+        if len(request.url) > RequestParameters.MAX_URL_LENGTH:
             raise URITooLong(
                 message=(
                     'Request url too large, '
@@ -50,7 +49,10 @@ class RequestSession(requests.Session):
         return super(RequestSession, self).send(request, **kwargs)
 
 
-def generate_session(pool_connections, pool_maxsize, pool_block, proxies=None):
+def generate_session(
+        pool_connections, pool_maxsize, pool_block, proxies=None,
+        retry_count=None, backoff_factor=None,
+):
     """
     Utility method to generate request sessions.
     :param pool_connections: The number of urllib3 connection pools to
@@ -60,14 +62,19 @@ def generate_session(pool_connections, pool_maxsize, pool_block, proxies=None):
     :param pool_block: Whether the connection pool should block for
         connections.
     :param proxies: Proxies dictionary.
+    :param retry_count: Number of retries to attempt
+    :param backoff_factor: Backoff factor for retries
     :return: requests.Session object.
     """
     session = RequestSession()
 
-    # Retry if no response from server (failed DNS lookups, socket connections
-    # and connection timeouts.
-    retries = UrlLibRetry(total=6, backoff_factor=1)
+    # Retry if no response from server, this applies to failed DNS lookups,
+    # socket connections and connection timeouts
+    retry_count = retry_count or RequestParameters.DEFAULT_RETRY_COUNT
+    backoff_factor = backoff_factor or RequestParameters.DEFAULT_BACKOFF_FACTOR
+    retries = UrlLibRetry(total=retry_count, backoff_factor=backoff_factor)
 
+    # noinspection PyUnresolvedReferences
     adapter = requests.adapters.HTTPAdapter(
         pool_connections=pool_connections,
         pool_maxsize=pool_maxsize,
@@ -114,11 +121,13 @@ class HttpClient(object):
     returning raw responses, authorization, etc.
     """
 
-    def __init__(self, url=None, token=None, oauth_token=None, config=None,
-                 timeout=None, proxies=None, error_handlers=None,
-                 advance_access=False, pool_connections=None,
-                 pool_maxsize=None, pool_block=True,
-                 max_parallel_requests=None):
+    def __init__(
+            self, url=None, token=None, oauth_token=None, config=None,
+            timeout=None, proxies=None, error_handlers=None,
+            advance_access=False, pool_connections=None,
+            pool_maxsize=None, pool_block=True, max_parallel_requests=None,
+            retry_count=None, backoff_factor=None
+    ):
 
         if (url, token, config) == (None, None, None):
             url, token, proxies, advance_access = config_vars(
@@ -132,11 +141,7 @@ class HttpClient(object):
             advance_access = advance_access or config.advance_access
 
         else:
-            url = url
-            token = token
-            oauth_token = oauth_token
             proxies = format_proxies(proxies)
-            advance_access = advance_access
 
         if not url:
             raise SbgError(
@@ -149,10 +154,12 @@ class HttpClient(object):
         self.pool_maxsize = pool_maxsize
         self.pool_block = pool_block
         self._session = generate_session(
-            pool_connections,
-            pool_maxsize,
-            pool_block,
-            proxies=proxies
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
+            pool_block=pool_block,
+            proxies=proxies,
+            retry_count=retry_count,
+            backoff_factor=backoff_factor,
         )
         self.timeout = timeout
         self._throttle_limit = (

@@ -16,7 +16,7 @@ from sevenbridges.meta.fields import (
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
-from sevenbridges.models.enums import AutomationRunActions
+from sevenbridges.models.enums import AutomationRunActions, RequestParameters
 from sevenbridges.models.file import File
 from sevenbridges.models.member import Permissions
 from sevenbridges.transfer.upload import CodePackageUpload
@@ -539,8 +539,12 @@ class Automation(Resource):
             id=package_id, api=api
         )
 
-    def add_package(self, version, file_path, schema, file_name=None,
-                    retry_count=5, timeout=60, part_size=None, api=None):
+    def add_package(
+            self, version, file_path, schema, file_name=None,
+            retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
+            timeout=RequestParameters.DEFAULT_TIMEOUT, part_size=None,
+            api=None
+    ):
         """
         Add a code package to automation template.
         :param version: The code package version.

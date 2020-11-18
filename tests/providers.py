@@ -155,12 +155,12 @@ class ProjectProvider(object):
                 next_url = url.format(
                     offset=str(i + limit), limit=str(limit)
                 )
-                next = {
+                next_page_link = {
                     'method': 'GET',
                     'rel': 'next',
                     'href': self.base_url + next_url
                 }
-                links.append(next)
+                links.append(next_page_link)
 
             if i > limit:
                 url = '/projects/?offset={offset}&limit={limit}&fields=_all'
@@ -1612,7 +1612,7 @@ class AutomationMemberProvider(object):
         self.base_url = base_url
 
     def default_automation_member(self, automation=None, username=None,
-                                  permissions=None, **kwargs):
+                                  permissions=None):
         username = username or generator.user_name()
         automation = automation or generator.uuid4()
         permissions = permissions or {
@@ -1919,7 +1919,7 @@ class FileUploadProvider(object):
             matcher, json={}, status_code=status_code
         )
 
-    def finalized_upload(self, package_file_id, failed=False):
+    def finalized_upload(self, file_id, failed=False):
         status_code = 500 if failed else 200
 
         regx = '^{}/upload/multipart/.*/complete'.format(
@@ -1928,7 +1928,7 @@ class FileUploadProvider(object):
         matcher = re.compile(regx)
         self.request_mocker.post(
             matcher,
-            json={"name": "dummy_file_name", "id": package_file_id},
+            json={"name": "dummy_file_name", "id": file_id},
             status_code=status_code
         )
 
