@@ -13,7 +13,7 @@ import requests
 from sevenbridges.errors import (
     BadRequest, Unauthorized, Forbidden, NotFound, MethodNotAllowed,
     RequestTimeout, Conflict, TooManyRequests, SbgError, ServerError,
-    ServiceUnavailable
+    ServiceUnavailable, NonJSONResponseError
 )
 
 logger = logging.getLogger(__name__)
@@ -67,12 +67,15 @@ def check_for_error(func):
     def wrapper(*args, **kwargs):
         try:
             response = func(*args, **kwargs)
+        except requests.RequestException as e:
+            raise SbgError(message=six.text_type(e))
+        try:
             status_code = response.status_code
+            data = response.json()
             if status_code in range(200, 204):
                 return response
             if status_code == 204:
                 return
-            data = response.json()
             e = {
                 400: BadRequest,
                 401: Unauthorized,
@@ -94,14 +97,12 @@ def check_for_error(func):
             if 'more_info' in data:
                 e.more_info = data['more_info']
             raise e
-        except requests.RequestException as e:
-            raise SbgError(message=six.text_type(e))
         except JSONDecodeError:
             raise_from(
-                ServiceUnavailable(message=six.text_type(
-                    'Server response format is not JSON, '
-                    'service might be unavailable.'
-                )), None
+                NonJSONResponseError(
+                    status=response.status_code,
+                    message=six.text_type(response.text)
+                ), None
             )
         except ValueError as e:
             raise SbgError(message=six.text_type(e))
