@@ -1,6 +1,9 @@
 import copy
 import logging
-from json import JSONDecodeError
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 import six
 
