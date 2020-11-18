@@ -71,7 +71,6 @@ def check_for_error(func):
             raise SbgError(message=six.text_type(e))
         try:
             status_code = response.status_code
-            data = response.json()
             if status_code in range(200, 204):
                 return response
             if status_code == 204:
@@ -88,6 +87,7 @@ def check_for_error(func):
                 500: ServerError,
                 503: ServiceUnavailable,
             }.get(status_code, SbgError)()
+            data = response.json()
             if 'message' in data:
                 e.message = data['message']
             if 'code' in data:
