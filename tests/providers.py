@@ -551,6 +551,17 @@ class AppProvider(object):
         self.request_mocker.get(href, json=response, headers={
             'x-total-matching-query': str(num_of_apps)})
 
+    def app_exist_non_json(self, status_code):
+        url = '/apps'
+        href = self.base_url + url
+
+        response = generator.user_name()
+        self.request_mocker.get(
+            href,
+            status_code=status_code,
+            text=response
+        )
+
     def app_with_revision_exists(self, **kwargs):
         app = self.default_app()
         app.update(kwargs)

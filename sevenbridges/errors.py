@@ -32,6 +32,13 @@ class ResourceNotModified(SbgError):
         )
 
 
+class NonJSONResponseError(SbgError):
+    def __init__(self, status, code=None, message=None, more_info=None):
+        super(NonJSONResponseError, self).__init__(
+            code=code, status=status, message=message, more_info=more_info
+        )
+
+
 class ReadOnlyPropertyError(SbgError):
     def __init__(self, message):
         super(ReadOnlyPropertyError, self).__init__(

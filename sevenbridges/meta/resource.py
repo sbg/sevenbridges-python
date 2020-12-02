@@ -1,9 +1,13 @@
 import copy
 import logging
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 import six
 
-from sevenbridges.errors import SbgError
+from sevenbridges.errors import SbgError, NonJSONResponseError
 from sevenbridges.meta.fields import Field
 from sevenbridges.meta.data import DataContainer
 from sevenbridges.meta.transformer import Transform
@@ -144,7 +148,15 @@ class Resource(six.with_metaclass(ResourceMeta)):
         extra = {'resource': cls.__name__, 'query': kwargs}
         logger.info('Querying {} resource'.format(cls), extra=extra)
         response = api.get(url=url, params=kwargs)
-        data = response.json()
+        try:
+            data = response.json()
+        except JSONDecodeError:
+            six.raise_from(
+                NonJSONResponseError(
+                    status=response.status_code,
+                    message=six.text_type(response.text)
+                ), None
+            )
         total = response.headers['x-total-matching-query']
 
         items = [cls(api=api, **item) for item in data['items']]
