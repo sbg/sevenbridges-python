@@ -68,13 +68,7 @@ class TaskStatus:
     ABORTING = 'ABORTING'
     FAILED = 'FAILED'
 
-    @property
-    def terminal_states(self):
-        return [
-            self.COMPLETED,
-            self.FAILED,
-            self.ABORTED,
-        ]
+    terminal_states = [COMPLETED, FAILED, ABORTED]
 
 
 class FeedbackType:
@@ -129,10 +123,4 @@ class AutomationStatus:
     QUEUED_FOR_EXECUTION = 'QUEUED_FOR_EXECUTION'
     QUEUED_FOR_TERMINATION = 'QUEUED_FOR_TERMINATION'
 
-    @property
-    def terminal_states(self):
-        return [
-            self.FINISHED,
-            self.FAILED,
-            self.ABORTED,
-        ]
+    terminal_states = [FINISHED, FAILED, ABORTED]
