@@ -1,10 +1,7 @@
-import io
 import os
 import time
 import logging
 import threading
-
-import six
 
 from sevenbridges.errors import SbgError
 from sevenbridges.http.client import generate_session
@@ -29,9 +26,7 @@ def _get_part_url(api, url, upload, part):
         response = api.get(url.format(upload_id=upload, part_number=part))
         return response.json()['url']
     except Exception:
-        raise SbgError(
-            'Unable to get upload url for part number {}'.format(part)
-        )
+        raise SbgError(f'Unable to get upload url for part number {part}')
 
 
 def _report_part(api, url, upload, part, e_tag):
@@ -52,15 +47,9 @@ def _report_part(api, url, upload, part, e_tag):
         }
     }
     try:
-        api.post(
-            url.format(upload_id=upload, part_number=''), data=part_data
-        )
+        api.post(url.format(upload_id=upload, part_number=''), data=part_data)
     except Exception as e:
-        raise SbgError(
-            'Unable to report part number {}. Reason: {}'.format(
-                part, six.text_type(e)
-            )
-        )
+        raise SbgError(f'Unable to report part number {part}. Reason: {e}')
 
 
 def _submit_part(session, url, part, timeout):
@@ -76,9 +65,7 @@ def _submit_part(session, url, part, timeout):
         response = session.put(url, data=part, timeout=timeout)
         return response.headers.get('etag').strip('"')
     except Exception as e:
-        raise SbgError(
-            'Failed to submit the part. Reason: {}'.format(six.text_type(e))
-        )
+        raise SbgError(f'Failed to submit the part. Reason: {e}')
 
 
 def _upload_part(api, session, url, upload, part_number, part, timeout):
@@ -97,7 +84,7 @@ def _upload_part(api, session, url, upload, part_number, part, timeout):
     _report_part(api, url, upload, part_number, e_tag)
 
 
-class UPartedFile(object):
+class UPartedFile:
     _URL = {
         'upload_part': '/upload/multipart/{upload_id}/part/{part_number}'
     }
@@ -228,7 +215,7 @@ class Upload(threading.Thread):
 
         if not os.path.isfile(file_path):
             raise SbgError(
-                'File path {} is not a path to a valid file.'.format(file_path)
+                f'File path {file_path} is not a path to a valid file.'
             )
         if not api:
             raise SbgError('Api instance not provided!')
@@ -269,9 +256,7 @@ class Upload(threading.Thread):
         )
 
     def __repr__(self):
-        return six.text_type(
-            '<Upload: status={status}>'.format(status=self.status)
-        )
+        return f'<Upload: status={self.status}>'
 
     def result(self):
         return self._result
@@ -291,8 +276,9 @@ class Upload(threading.Thread):
         """
         if self._file_size > PartSize.MAXIMUM_OBJECT_SIZE:
             self._status = TransferState.FAILED
-            raise SbgError('File size = {}b. Maximum file size is {}b'.format(
-                self._file_size, PartSize.MAXIMUM_OBJECT_SIZE)
+            raise SbgError(
+                f'File size = {self._file_size}b. '
+                f'Maximum file size is {PartSize.MAXIMUM_OBJECT_SIZE}b'
             )
 
     def _initialize_upload(self):
@@ -321,7 +307,7 @@ class Upload(threading.Thread):
             self._status = TransferState.FAILED
             raise SbgError(
                 'Unable to initialize upload! Failed to get upload id! '
-                'Reason: {}'.format(e.message)
+                f'Reason: {e.message}'
             )
 
     def _create_init_data(self):
@@ -353,7 +339,7 @@ class Upload(threading.Thread):
         except SbgError as e:
             self._status = TransferState.FAILED
             raise SbgError(
-                'Failed to complete upload! Reason: {}'.format(e.message)
+                f'Failed to complete upload! Reason: {e.message}'
             )
 
     def _abort_upload(self):
@@ -367,7 +353,7 @@ class Upload(threading.Thread):
         except SbgError as e:
             self._status = TransferState.FAILED
             raise SbgError(
-                'Failed to abort upload! Reason: {}'.format(e.message)
+                f'Failed to abort upload! Reason: {e.message}'
             )
 
     @property
@@ -461,7 +447,7 @@ class Upload(threading.Thread):
         :raises SbgError: If upload is not in PREPARING state.
         """
         if self._status == TransferState.PREPARING:
-            super(Upload, self).start()
+            super().start()
         else:
             raise SbgError(
                 'Unable to start. Upload not in PREPARING state.'
@@ -480,7 +466,7 @@ class Upload(threading.Thread):
 
         # Opens the file for reading in binary mode.
         try:
-            with io.open(self._file_path, mode='rb') as fp:
+            with open(self._file_path, mode='rb') as fp:
                 # Creates a partitioned file
                 parted_file = self.partition_file(fp)
 
@@ -499,14 +485,14 @@ class Upload(threading.Thread):
                         )
                         self._progress_callback(progress)
         except IOError:
-            raise SbgError('Unable to open file {}'.format(self._file_path))
+            raise SbgError(f'Unable to open file {self._file_path}')
         except Exception as e:
             # If the errorback callback is set call it with status
             self._status = TransferState.FAILED
             if self._errorback:
                 self._errorback(self._status)
             else:
-                raise SbgError(six.text_type(e))
+                raise SbgError(str(e))
 
         # Finalizes the upload.
         self._finalize_upload()
@@ -556,7 +542,7 @@ class CodePackageUpload(Upload):
             :param timeout: Timeout for s3/google session.
             :param api: Api instance.
         """
-        super(CodePackageUpload, self).__init__(
+        super().__init__(
             file_path=file_path,
             project=None,
             parent=None,
@@ -573,6 +559,7 @@ class CodePackageUpload(Upload):
         self._automation_id = automation_id
 
     def _validate_project_parent(self, parent, project):
+        # Skip for code packages
         pass
 
     def partition_file(self, fp):

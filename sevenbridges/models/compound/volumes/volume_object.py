@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.fields import StringField, DictField
 from sevenbridges.meta.resource import Resource
 
@@ -16,8 +14,4 @@ class VolumeObject(Resource):
     metadata = DictField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<VolumeObject: location={location}>'.format(
-                location=self.location
-            )
-        )
+        return f'<VolumeObject: location={self.location}>'

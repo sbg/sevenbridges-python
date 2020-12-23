@@ -1,5 +1,5 @@
 # noinspection PyProtectedMember
-class Assert(object):
+class Assert:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
 
@@ -7,15 +7,13 @@ class Assert(object):
         for hist in self.request_mocker._adapter.request_history:
             if hist.path == url:
                 return True
-        assert False, 'Path not matched {} != \n{}'.format(url, hist.path)
+        assert False, f'Path not matched {url} != \n{hist.path}'
 
     def check_query(self, qs):
         for hist in self.request_mocker._adapter.request_history:
             if qs == hist.qs:
                 return True
-        assert False, 'Query string not matched \n{} != \n{}'.format(
-            qs, hist.qs
-        )
+        assert False, f'Query string not matched \n{qs} != \n{hist.qs}'
 
     def check_header_present(self, header):
         for hist in self.request_mocker._adapter.request_history:
@@ -28,17 +26,20 @@ class Assert(object):
             print(hist)
 
 
-class ProjectVerifier(object):
+class ProjectVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def fetched(self, id):
-        self.checker.check_url('/projects/{}'.format(id))
+        self.checker.check_url(f'/projects/{id}')
 
     def queried(self, offset, limit):
-        qs = {'offset': ['{}'.format(offset)], 'limit': ['{}'.format(limit)],
-              'fields': ['_all']}
+        qs = {
+            'offset': [str(offset)],
+            'limit': [str(limit)],
+            'fields': ['_all']
+        }
         self.checker.check_url('/projects/') and self.checker.check_query(qs)
 
     def created(self):
@@ -55,52 +56,49 @@ class ProjectVerifier(object):
         if name:
             qs.update({'name': [name]})
         self.checker.check_url(
-            '/projects/{}'.format(owner)
+            f'/projects/{owner}'
         ) and self.checker.check_query(qs)
 
     def saved(self, id):
-        self.checker.check_url('/projects/{}'.format(id))
+        self.checker.check_url(f'/projects/{id}')
 
     def member_retrieved(self, id, member_username):
-        self.checker.check_url(
-            '/projects/{}/members/{}'.format(id, member_username)
-        )
+        self.checker.check_url(f'/projects/{id}/members/{member_username}')
 
 
-class MemberVerifier(object):
+class MemberVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def members_fetched(self, project):
-        self.checker.check_url('/projects/{}/members'.format(project))
+        self.checker.check_url(f'/projects/{project}/members')
 
     def member_added(self, project):
-        self.checker.check_url('/projects/{}'.format(project))
+        self.checker.check_url(f'/projects/{project}')
 
     def member_removed(self, project, username):
-        self.checker.check_url(
-            '/projects/{}/members/{}'.format(project, username))
+        self.checker.check_url(f'/projects/{project}/members/{username}')
 
     def member_permissions_modified(self, project, username):
-        self.checker.check_url('/projects/{}/members/{}/permissions'.format(
-            project, username)
+        self.checker.check_url(
+            f'/projects/{project}/members/{username}/permissions'
         )
 
 
-class UserVerifier(object):
+class UserVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def fetched(self, username):
-        self.checker.check_url('/users/{}'.format(username))
+        self.checker.check_url(f'/users/{username}')
 
     def authenticated_user_fetched(self):
         self.checker.check_url('/user')
 
 
-class EndpointVerifier(object):
+class EndpointVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -109,7 +107,7 @@ class EndpointVerifier(object):
         self.checker.check_url('/')
 
 
-class FileVerifier(object):
+class FileVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -143,12 +141,12 @@ class FileVerifier(object):
 
     def queried_with_file_metadata(self, project, key, value):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
-              'metadata.{}'.format(key): [value]}
+              f'metadata.{key}': [value]}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def queried_with_file_origin(self, project, key, value):
         qs = {'project': [project], 'fields': ['_all'], 'limit': ['10'],
-              'origin.{}'.format(key): [value]}
+              f'origin.{key}': [value]}
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def queried_with_file_tags(self, project, tags):
@@ -157,22 +155,18 @@ class FileVerifier(object):
         self.checker.check_url('/files') and self.checker.check_query(qs)
 
     def file_copied(self, id):
-        self.checker.check_url('/files/{}/actions/copy'.format(id))
+        self.checker.check_url(f'/files/{id}/actions/copy')
 
     def file_saved(self, id):
-        self.checker.check_url(
-            '/files/{}'.format(id)) and self.checker.check_url(
-            '/files/{}/metadata'.format(id)
-        )
+        self.checker.check_url(f'/files/{id}')
+        self.checker.check_url(f'/files/{id}/metadata')
 
     def file_saved_tags(self, id):
-        self.checker.check_url(
-            '/files/{}'.format(id)) and self.checker.check_url(
-            '/files/{}/tags'.format(id)
-        )
+        self.checker.check_url(f'/files/{id}')
+        self.checker.check_url(f'/files/{id}/tags')
 
     def download_info_fetched(self, id):
-        self.checker.check_url('/files/{}/download_info'.format(id))
+        self.checker.check_url(f'/files/{id}/download_info')
 
     def bulk_retrieved(self):
         self.checker.check_url('/bulk/files/get')
@@ -190,24 +184,21 @@ class FileVerifier(object):
         self.checker.check_url('/files')
 
     def folder_files_listed(self, id):
-        self.checker.check_url('/files/{}/list'.format(id))
+        self.checker.check_url(f'/files/{id}/list')
 
     def folder_files_listed_scroll(self, id):
-        qs = {'token': ['init'],
-              'fields': ['_all']
-              }
-        self.checker.check_url(
-            '/files/{}/scroll'.format(id)
-        ) and self.checker.check_query(qs)
+        qs = {'token': ['init'], 'fields': ['_all']}
+        self.checker.check_url(f'/files/{id}/scroll')
+        self.checker.check_query(qs)
 
     def copied_to_folder(self, id):
-        self.checker.check_url('/files/{}/actions/copy'.format(id))
+        self.checker.check_url(f'/files/{id}/actions/copy')
 
     def moved_to_folder(self, id):
-        self.checker.check_url('/files/{}/actions/move'.format(id))
+        self.checker.check_url(f'/files/{id}/actions/move')
 
 
-class AppVerifier(object):
+class AppVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -223,23 +214,23 @@ class AppVerifier(object):
         self.checker.check_url('/apps')
 
     def app_fetched(self, id, revision):
-        url = '/apps/{}/{}'.format(id, revision)
+        url = f'/apps/{id}/{revision}'
         self.checker.check_url(url)
 
     def app_copied(self, id):
-        url = '/apps/{}/actions/copy'.format(id)
+        url = f'/apps/{id}/actions/copy'
         self.checker.check_url(url)
 
     def app_installed(self, id):
-        url = '/apps/{}/raw'.format(id)
+        url = f'/apps/{id}/raw'
         self.checker.check_url(url)
 
     def revision_created(self, id, revision):
-        url = '/apps/{}/{}/raw'.format(id, revision)
+        url = f'/apps/{id}/{revision}/raw'
         self.checker.check_url(url)
 
 
-class TaskVerifier(object):
+class TaskVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -259,33 +250,34 @@ class TaskVerifier(object):
             'ended_to': [testdate],
             'fields': ['_all']
         }
-        self.checker.check_url('/tasks') and self.checker.check_query(qs)
+        self.checker.check_url('/tasks')
+        self.checker.check_query(qs)
 
     def task_fetched(self, id):
-        self.checker.check_url('/tasks/{}'.format(id))
+        self.checker.check_url(f'/tasks/{id}')
 
     def task_children_fetched(self, id):
         qs = {'parent': [id], 'fields': ['_all']}
-        self.checker.check_url(
-            '/tasks/{}'.format(id)) and self.checker.check_query(qs)
+        self.checker.check_url(f'/tasks/{id}')
+        self.checker.check_query(qs)
 
     def task_created(self):
         self.checker.check_url('/tasks')
 
     def task_saved(self, id):
-        self.checker.check_url('/tasks/{id}'.format(id=id))
+        self.checker.check_url(f'/tasks/{id}')
 
     def action_performed(self, id, action):
-        self.checker.check_url('/tasks/{}/actions/{}'.format(id, action))
+        self.checker.check_url(f'/tasks/{id}/actions/{action}')
 
     def execution_details_fetched(self, id):
-        self.checker.check_url('/tasks/{id}/execution_details'.format(id=id))
+        self.checker.check_url(f'/tasks/{id}/execution_details')
 
     def bulk_retrieved(self):
         self.checker.check_url('/bulk/tasks/get')
 
 
-class VolumeVerifier(object):
+class VolumeVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -297,15 +289,15 @@ class VolumeVerifier(object):
         self.checker.check_url('/storage/volumes')
 
     def modified(self, id):
-        self.checker.check_url('/storage/volumes/{}'.format(id))
+        self.checker.check_url(f'/storage/volumes/{id}')
 
     def member_retrieved(self, id, member_username):
         self.checker.check_url(
-            '/storage/volumes/{}/members/{}'.format(id, member_username)
+            f'/storage/volumes/{id}/members/{member_username}'
         )
 
 
-class MarkerVerifier(object):
+class MarkerVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -317,10 +309,10 @@ class MarkerVerifier(object):
         self.checker.check_url('/genome/markers')
 
     def modified(self, _id):
-        self.checker.check_url('/genome/markers/{}'.format(_id))
+        self.checker.check_url(f'/genome/markers/{_id}')
 
 
-class ActionVerifier(object):
+class ActionVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -332,28 +324,28 @@ class ActionVerifier(object):
         self.checker.check_url('/action/files/copy')
 
 
-class DivisionVerifier(object):
+class DivisionVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def division_fetched(self, id):
-        self.checker.check_url('/divisions/{}'.format(id))
+        self.checker.check_url(f'/divisions/{id}')
 
     def divisions_fetched(self):
         self.checker.check_url('/divisions')
 
     def teams_fetched(self, id):
-        self.checker.check_url("/teams?division={}".format(id))
+        self.checker.check_url(f'/teams?division={id}')
 
 
-class TeamVerifier(object):
+class TeamVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def team_fetched(self, id):
-        self.checker.check_url('/teams/{}'.format(id))
+        self.checker.check_url(f'/teams/{id}')
 
     def teams_fetched(self):
         self.checker.check_url('/teams')
@@ -362,13 +354,13 @@ class TeamVerifier(object):
         self.checker.check_url('/teams')
 
     def modified(self, id):
-        self.checker.check_url('/teams/{}'.format(id))
+        self.checker.check_url(f'/teams/{id}')
 
     def members_fetched(self, id):
-        self.checker.check_url('/teams/{}/members'.format(id))
+        self.checker.check_url(f'/teams/{id}/members')
 
 
-class ImportsVerifier(object):
+class ImportsVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -386,7 +378,7 @@ class ImportsVerifier(object):
         self.checker.check_url('/bulk/storage/imports/create')
 
 
-class ExportsVerifier(object):
+class ExportsVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -406,13 +398,13 @@ class ExportsVerifier(object):
         self.checker.check_query(qs)
 
 
-class DatasetVerifier(object):
+class DatasetVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def fetched(self, id):
-        self.checker.check_url('/datasets/{}'.format(id))
+        self.checker.check_url(f'/datasets/{id}')
 
     def queried(self, visibility=None):
         qs = {
@@ -429,36 +421,32 @@ class DatasetVerifier(object):
             'fields': ['_all']
         }
 
-        self.checker.check_url(
-            '/datasets/{}'.format(username)) and self.checker.check_query(qs)
+        self.checker.check_url(f'/datasets/{username}')
+        self.checker.check_query(qs)
 
     def saved(self, id):
-        self.checker.check_url('/datasets/{}'.format(id))
+        self.checker.check_url(f'/datasets/{id}')
 
     def members_retrieved(self, id):
-        self.checker.check_url('/datasets/{}/members'.format(id))
+        self.checker.check_url(f'/datasets/{id}/members')
 
     def member_retrieved(self, id, member_username):
-        self.checker.check_url(
-            '/datasets/{}/members/{}'.format(id, member_username)
-        )
+        self.checker.check_url(f'/datasets/{id}/members/{member_username}')
 
     def member_removed(self, id, member_username):
-        self.checker.check_url(
-            '/datasets/{}/members/{}'.format(id, member_username)
-        )
+        self.checker.check_url(f'/datasets/{id}/members/{member_username}')
 
     def member_added(self, id):
-        self.checker.check_url('/datasets/{}/members'.format(id))
+        self.checker.check_url(f'/datasets/{id}/members')
 
 
-class AutomationVerifier(object):
+class AutomationVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def fetched(self, id):
-        self.checker.check_url('/automation/automations/{}'.format(id))
+        self.checker.check_url(f'/automation/automations/{id}')
 
     def queried(self, name=None, include_archived=False):
         qs = {}
@@ -474,63 +462,52 @@ class AutomationVerifier(object):
         self.checker.check_url('/automation/automations')
 
     def saved(self, id):
-        self.checker.check_url('/automation/automations/{id}'.format(id=id))
+        self.checker.check_url(f'/automation/automations/{id}')
 
     def action_archive_performed(self, id):
-        self.checker.check_url(
-            '/automation/automations/{}/actions/archive'.format(id)
-        )
+        self.checker.check_url(f'/automation/automations/{id}/actions/archive')
 
     def action_restore_performed(self, id):
-        self.checker.check_url(
-            '/automation/automations/{}/actions/restore'.format(id)
-        )
+        self.checker.check_url(f'/automation/automations/{id}/actions/restore')
 
     def members_retrieved(self, id):
-        self.checker.check_url(
-            '/automation/automations/{}/members'.format(id)
-        )
+        self.checker.check_url(f'/automation/automations/{id}/members')
 
     def member_retrieved(self, id, member_username):
         self.checker.check_url(
-            '/automation/automations/{}/members/{}'.format(id, member_username)
+            f'/automation/automations/{id}/members/{member_username}'
         )
 
     def packages_retrieved(self, id):
-        self.checker.check_url(
-            '/automation/automations/{}/packages'.format(id)
-        )
+        self.checker.check_url(f'/automation/automations/{id}/packages')
 
     def package_retrieved(self, package_id):
-        self.checker.check_url(
-            '/automation/packages/{}'.format(package_id)
-        )
+        self.checker.check_url(f'/automation/packages/{package_id}')
 
     def runs_retrieved(self):
-        self.checker.check_url(
-            '/automation/runs'
-        )
+        self.checker.check_url('/automation/runs')
 
     def member_added(self, id):
-        self.checker.check_url('/automation/automations/{}/members'.format(id))
+        self.checker.check_url(f'/automation/automations/{id}/members')
 
     def member_removed(self, id, username):
         self.checker.check_url(
-            '/automation/automations/{}/members/{}'.format(id, username))
+            f'/automation/automations/{id}/members/{username}'
+        )
 
 
-class AutomationMemberVerifier(object):
+class AutomationMemberVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def saved(self, automation, username):
-        self.checker.check_url('/automation/automations/{}/members/{}'.format(
-            automation, username
-        ))
+        self.checker.check_url(
+            f'/automation/automations/{automation}/members/{username}'
+        )
 
 
-class AutomationPackageVerifier(object):
+class AutomationPackageVerifier:
 
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
@@ -538,36 +515,32 @@ class AutomationPackageVerifier(object):
 
     def created(self, automation_id):
         self.checker.check_url(
-            '/automation/automations/{}/packages'.format(automation_id)
+            f'/automation/automations/{automation_id}/packages'
         )
 
     def action_archive_performed(self, automation_id, package_id):
         self.checker.check_url(
-            "/automation/automations/{}"
-            "/packages/{}/actions/archive".format(
-                automation_id, package_id
-            )
+            f'/automation/automations/{automation_id}'
+            f'/packages/{package_id}/actions/archive'
         )
 
     def action_restore_performed(self, automation_id, package_id):
         self.checker.check_url(
-            "/automation/automations/{}"
-            "/packages/{}/actions/restore".format(
-                automation_id, package_id
-            )
+            f'/automation/automations/{automation_id}'
+            f'/packages/{package_id}/actions/restore'
         )
 
     def saved(self, id):
-        self.checker.check_url('/automation/packages/{id}'.format(id=id))
+        self.checker.check_url(f'/automation/packages/{id}')
 
 
-class AutomationRunVerifier(object):
+class AutomationRunVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
 
     def fetched(self, id):
-        self.checker.check_url('/automation/runs/{}'.format(id))
+        self.checker.check_url(f'/automation/runs/{id}')
 
     def queried(self, name=None):
         qs = {}
@@ -577,25 +550,25 @@ class AutomationRunVerifier(object):
         self.checker.check_query(qs)
 
     def log_fetched(self, id):
-        self.checker.check_url('/automation/runs/{}/log'.format(id))
+        self.checker.check_url(f'/automation/runs/{id}/log')
 
     def state_fetched(self, id):
-        self.checker.check_url('/automation/runs/{}/state'.format(id))
+        self.checker.check_url(f'/automation/runs/{id}/state')
 
     def created(self):
         self.checker.check_url('/automation/runs')
 
     def reran(self, id):
-        self.checker.check_url('/automation/runs/{}/actions/rerun'.format(id))
+        self.checker.check_url(f'/automation/runs/{id}/actions/rerun')
 
     def stopped(self, id):
-        self.checker.check_url('/automation/runs/{}/actions/stop'.format(id))
+        self.checker.check_url(f'/automation/runs/{id}/actions/stop')
 
     def updated(self, id):
-        self.checker.check_url('/automation/runs/{}'.format(id))
+        self.checker.check_url(f'/automation/runs/{id}')
 
 
-class AsyncJobVerifier(object):
+class AsyncJobVerifier:
     def __init__(self, request_mocker):
         self.request_mocker = request_mocker
         self.checker = Assert(self.request_mocker)
@@ -610,10 +583,10 @@ class AsyncJobVerifier(object):
         self.checker.check_query(qs)
 
     def file_copy_job_fetched(self, id):
-        self.checker.check_url('/async/files/copy/{}'.format(id))
+        self.checker.check_url(f'/async/files/copy/{id}')
 
     def file_delete_job_fetched(self, id):
-        self.checker.check_url('/async/files/delete/{}'.format(id))
+        self.checker.check_url(f'/async/files/delete/{id}')
 
     def async_files_copied(self):
         self.checker.check_url('/async/files/copy')
@@ -622,7 +595,7 @@ class AsyncJobVerifier(object):
         self.checker.check_url('/async/files/delete')
 
     def file_move_job_fetched(self, id):
-        self.checker.check_url('/async/files/move/{}'.format(id))
+        self.checker.check_url(f'/async/files/move/{id}')
 
     def async_files_moved(self):
         self.checker.check_url('/async/files/move')

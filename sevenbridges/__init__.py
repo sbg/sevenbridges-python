@@ -1,21 +1,15 @@
 """
 sevenbridges-python
 ~~~~~~~~~~~~~~~~~~~
-:copyright: 2018 Seven Bridges Genomics Inc.
+:copyright: 2020 Seven Bridges Genomics Inc.
 :license: Apache 2.0
 """
-import io
-import os
 import ssl
 import logging
 
-package_dir, _ = os.path.split(os.path.abspath(__file__))
-version_path = os.path.join(package_dir, 'VERSION')
-
-__version__ = '0.0.1+local-build'
-if os.path.isfile(version_path):
-    with io.open(version_path, 'r', encoding='utf-8') as f:
-        __version__ = f.read().strip()
+# Read and set version globally
+# needs to be imported before other modules
+from sevenbridges.version import __version__
 
 from sevenbridges.api import Api
 from sevenbridges.config import Config
@@ -61,6 +55,7 @@ from sevenbridges.errors import (
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 __all__ = [
+    # Models
     'Api', 'AsyncJob', 'Automation', 'AutomationRun', 'AutomationMember',
     'AutomationPackage',  'Config', 'Invoice', 'BillingGroup',
     'BillingGroupBreakdown', 'User', 'Endpoints', 'Project', 'Task', 'App',
@@ -77,7 +72,9 @@ __all__ = [
     'ValidationError', 'TaskValidationError', 'PaginationError', 'BadRequest',
     'Unauthorized', 'Forbidden', 'NotFound', 'Conflict', 'TooManyRequests',
     'ServerError', 'ServiceUnavailable', 'MethodNotAllowed', 'RequestTimeout',
-    'LocalFileAlreadyExists', 'ExecutionDetailsInvalidTaskType'
+    'LocalFileAlreadyExists', 'ExecutionDetailsInvalidTaskType',
+    # Version
+    '__version__',
 ]
 
 required_ssl_version = (1, 0, 1)

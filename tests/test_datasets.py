@@ -8,7 +8,7 @@ def test_get(api, given, verifier):
     api.aa = True
     username = generator.user_name()
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
 
     # action
@@ -40,7 +40,7 @@ def test_query_by_owner(api, given, verifier):
     total = 10
     username = generator.user_name()
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
     given.datasets.owned_by(total, username)
 
@@ -58,7 +58,7 @@ def test_save(api, given, verifier):
     api.aa = True
     username = generator.user_name()
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
     given.datasets.can_be_saved(id=id)
 
@@ -78,7 +78,7 @@ def test_get_members(api, given, verifier):
     total = 10
     username = generator.user_name()
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
     given.datasets.has_members(id, dataset_name, total)
 
@@ -97,7 +97,7 @@ def test_get_member(api, given, verifier):
     username = generator.user_name()
     member_username = generator.user_name()
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
     given.datasets.has_member(id, dataset_name, member_username)
 
@@ -123,7 +123,7 @@ def test_add_member(api, given, verifier):
         "admin": True
     }
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
     given.datasets.can_add_member(id, member_username)
 
@@ -141,7 +141,7 @@ def test_remove_member(api, given, verifier):
     username = generator.user_name()
     member_username = generator.user_name()
     dataset_name = generator.slug()
-    id = '{}/{}'.format(username, dataset_name)
+    id = f'{username}/{dataset_name}'
     given.datasets.exists(id=id)
     given.datasets.has_member(id, dataset_name, member_username)
     given.datasets.can_remove_member(id, member_username)

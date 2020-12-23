@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.http.client import client_info
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
@@ -17,7 +15,7 @@ class Actions(Resource):
     }
 
     def __str__(self):
-        return six.text_type('<Actions>')
+        return '<Actions>'
 
     # noinspection PyShadowingBuiltins
     @classmethod
@@ -31,11 +29,11 @@ class Actions(Resource):
         :param api: Api instance.
         """
         api = api if api else cls._API
-        data = {'type': type,
-                'text': text,
-                'referrer': referrer if referrer else six.text_type(
-                    client_info
-                )}
+        data = {
+            'type': type,
+            'text': text,
+            'referrer': referrer if referrer else str(client_info)
+        }
 
         extra = {
             'resource': cls.__name__,

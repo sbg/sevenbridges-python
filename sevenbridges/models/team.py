@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
 from sevenbridges.meta.collection import Collection
@@ -30,17 +28,12 @@ class Team(Resource):
     name = StringField(read_only=False)
 
     def __str__(self):
-        return six.text_type('<Team: id={id}>'.format(id=self.id))
+        return f'<Team: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @classmethod
     def query(cls, division, list_all=False, offset=None, limit=None,
@@ -55,7 +48,7 @@ class Team(Resource):
         """
         division = Transform.to_division(division)
         api = api if api else cls._API
-        return super(Team, cls)._query(
+        return super()._query(
             url=cls._URL['query'], division=division, _all=list_all,
             offset=offset, limit=limit, fields='_all', api=api
         )
@@ -93,9 +86,9 @@ class Team(Resource):
         :return: Team instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data
@@ -117,7 +110,7 @@ class Team(Resource):
         :return: Collection object.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id}
         }
         logger.info('Get team members', extra=extra)
@@ -145,7 +138,7 @@ class Team(Resource):
             'id': user
         }
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -164,7 +157,7 @@ class Team(Resource):
         """
         member = Transform.to_user(user)
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'user': user,
@@ -174,13 +167,3 @@ class Team(Resource):
         self._api.delete(
             url=self._URL['members_get'].format(id=self.id, member=member)
         )
-
-    @classmethod
-    def get(cls, id, api=None):
-        return super(Team, cls).get(id)
-
-    def delete(self):
-        return super(Team, self).delete()
-
-    def reload(self):
-        super(Team, self).reload()

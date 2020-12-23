@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import IntegerField, StringField
 
@@ -16,8 +14,4 @@ class Error(Resource):
     more_info = StringField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<Error: status={status}, code={code}>'.format(
-                status=self.status, code=self.code
-            )
-        )
+        return f'<Error: status={self.status}, code={self.code}>'

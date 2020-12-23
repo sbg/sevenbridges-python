@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
@@ -44,17 +42,12 @@ class Export(Resource):
     properties = CompoundField(VolumeProperties, read_only=True)
 
     def __str__(self):
-        return six.text_type('<Export: id={id}>'.format(id=self.id))
+        return f'<Export: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @property
     def source(self):
@@ -137,7 +130,7 @@ class Export(Resource):
         if volume:
             volume = Transform.to_volume(volume)
 
-        return super(Export, cls)._query(
+        return super()._query(
             url=cls._URL['query'], volume=volume, state=state, offset=offset,
             limit=limit, fields='_all', api=api
         )
@@ -206,4 +199,4 @@ class ExportBulkRecord(BulkRecord):
     resource = CompoundField(cls=Export)
 
     def __str__(self):
-        return six.text_type('<ExportBulkRecord>')
+        return f'<ExportBulkRecord valid={self.valid}>'

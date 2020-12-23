@@ -1,5 +1,4 @@
 import logging
-import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import HrefField, StringField
@@ -34,19 +33,12 @@ class User(Resource):
     role = StringField(read_only=True)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.username == other.username
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type(
-            '<User: username={username}>'.format(username=self.username)
-        )
+        return f'<User: username={self.username}>'
 
     @classmethod
     def me(cls, api=None):
@@ -68,7 +60,7 @@ class User(Resource):
     def get(cls, user, api=None):
         api = api if api else cls._API
         user = Transform.to_user(user)
-        return super(User, cls).get(id=user, api=api)
+        return super().get(id=user, api=api)
 
     @classmethod
     def query(cls, division, role=None, offset=None, limit=None, api=None):
@@ -87,7 +79,7 @@ class User(Resource):
         if role:
             params['role'] = role
 
-        return super(User, cls)._query(
+        return super()._query(
             url=cls._URL['query'],
             api=api,
             offset=offset,

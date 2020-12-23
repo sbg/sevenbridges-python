@@ -1,11 +1,9 @@
 from datetime import datetime
 
-import six
-
 from sevenbridges.errors import SbgError
 
 
-class Transform(object):
+class Transform:
     @staticmethod
     def to_resource(resource):
         from sevenbridges.meta.resource import Resource
@@ -13,7 +11,7 @@ class Transform(object):
             raise SbgError('Invalid id value!')
         elif isinstance(resource, Resource) and hasattr(resource, 'id'):
             return resource.id
-        elif isinstance(resource, six.string_types):
+        elif isinstance(resource, str):
             return resource
         else:
             raise SbgError('Invalid id value!')
@@ -29,7 +27,7 @@ class Transform(object):
             raise SbgError('Project is required!')
         elif isinstance(project, Project):
             return project.id
-        elif isinstance(project, six.string_types):
+        elif isinstance(project, str):
             return project
         else:
             raise SbgError('Invalid project parameter!')
@@ -45,7 +43,7 @@ class Transform(object):
             raise SbgError('Task is required!')
         elif isinstance(task, Task):
             return task.id
-        elif isinstance(task, six.string_types):
+        elif isinstance(task, str):
             return task
         else:
             raise SbgError('Invalid task parameter!')
@@ -61,7 +59,7 @@ class Transform(object):
             raise SbgError('App is required!')
         elif isinstance(app, App):
             return app.id
-        elif isinstance(app, six.string_types):
+        elif isinstance(app, str):
             return app
         else:
             raise SbgError('Invalid app parameter!')
@@ -77,7 +75,7 @@ class Transform(object):
             raise SbgError('File is required!')
         elif isinstance(file_, File):
             return file_.id
-        elif isinstance(file_, six.string_types):
+        elif isinstance(file_, str):
             return file_
         else:
             raise SbgError('Invalid file parameter!')
@@ -93,7 +91,7 @@ class Transform(object):
             raise SbgError('User is required!')
         elif isinstance(user, User):
             return user.username
-        elif isinstance(user, six.string_types):
+        elif isinstance(user, str):
             return user
         else:
             raise SbgError('Invalid user parameter!')
@@ -109,7 +107,7 @@ class Transform(object):
             raise SbgError('Billing group is required!')
         elif isinstance(billing_group, BillingGroup):
             return billing_group.id
-        elif isinstance(billing_group, six.string_types):
+        elif isinstance(billing_group, str):
             return billing_group
         else:
             raise SbgError('Invalid billing group parameter!')
@@ -125,7 +123,7 @@ class Transform(object):
             raise SbgError('Volume is required!')
         elif isinstance(volume, Volume):
             return volume.id
-        elif isinstance(volume, six.string_types):
+        elif isinstance(volume, str):
             return volume
         else:
             raise SbgError('Invalid volume parameter!')
@@ -141,7 +139,7 @@ class Transform(object):
             raise SbgError('Marker is required!')
         elif isinstance(marker, Marker):
             return marker.id
-        elif isinstance(marker, six.string_types):
+        elif isinstance(marker, str):
             return marker
         else:
             raise SbgError('Invalid marker parameter!')
@@ -154,7 +152,7 @@ class Transform(object):
         """
         if not d:
             raise SbgError('Date is required!')
-        elif isinstance(d, six.string_types):
+        elif isinstance(d, str):
             return d
         elif isinstance(d, datetime):
             return d.isoformat().split('.', 1)[0]
@@ -170,7 +168,7 @@ class Transform(object):
             raise SbgError('Division is required!')
         elif isinstance(division, Division):
             return division.id
-        elif isinstance(division, six.string_types):
+        elif isinstance(division, str):
             return division
         else:
             raise SbgError('Invalid division parameter!')
@@ -186,7 +184,7 @@ class Transform(object):
             raise SbgError('Team is required!')
         elif isinstance(team, Team):
             return team.id
-        elif isinstance(team, six.string_types):
+        elif isinstance(team, str):
             return team
         else:
             raise SbgError('Invalid team parameter!')
@@ -202,7 +200,7 @@ class Transform(object):
             raise SbgError('Import is required!')
         elif isinstance(import_, Import):
             return import_.id
-        elif isinstance(import_, six.string_types):
+        elif isinstance(import_, str):
             return import_
         else:
             raise SbgError('Invalid import parameter!')
@@ -218,7 +216,7 @@ class Transform(object):
             raise SbgError('Export is required!')
         elif isinstance(export, Export):
             return export.id
-        elif isinstance(export, six.string_types):
+        elif isinstance(export, str):
             return export
         else:
             raise SbgError('Invalid export parameter!')
@@ -231,7 +229,7 @@ class Transform(object):
         """
         if not location:
             raise SbgError('Location is required!')
-        if isinstance(location, six.string_types):
+        if isinstance(location, str):
             return location
         else:
             raise SbgError('Invalid location parameter!')
@@ -243,7 +241,7 @@ class Transform(object):
             raise SbgError('Dataset is required!')
         if isinstance(dataset, Dataset):
             return dataset.id
-        if isinstance(dataset, six.string_types):
+        if isinstance(dataset, str):
             return dataset
         else:
             raise SbgError('Invalid dataset parameter!')
@@ -255,7 +253,7 @@ class Transform(object):
             raise SbgError('Member is required!')
         if isinstance(member, Member):
             return member.username
-        if isinstance(member, six.string_types):
+        if isinstance(member, str):
             return member
         else:
             raise SbgError('Invalid member parameter!')
@@ -267,7 +265,7 @@ class Transform(object):
             raise SbgError('Automation is required!')
         if isinstance(automation, Automation):
             return automation.id
-        if isinstance(automation, six.string_types):
+        if isinstance(automation, str):
             return automation
         else:
             raise SbgError('Invalid automation parameter!')
@@ -279,7 +277,7 @@ class Transform(object):
             raise SbgError('Automation member is required!')
         if isinstance(member, AutomationMember):
             return member.username
-        if isinstance(member, six.string_types):
+        if isinstance(member, str):
             return member
         else:
             raise SbgError('Invalid automation member parameter!')
@@ -291,7 +289,7 @@ class Transform(object):
             raise SbgError('Automation package is required!')
         if isinstance(package, AutomationPackage):
             return package.id
-        if isinstance(package, six.string_types):
+        if isinstance(package, str):
             return package
         else:
             raise SbgError('Invalid automation package parameter!')
@@ -303,7 +301,7 @@ class Transform(object):
             raise SbgError('Async job is required!')
         if isinstance(async_job, AsyncJob):
             return async_job.id
-        if isinstance(async_job, six.string_types):
+        if isinstance(async_job, str):
             return async_job
         else:
             raise SbgError('Invalid async job parameter!')

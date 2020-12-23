@@ -24,7 +24,7 @@ def test_exports_submit(api, given, verifier):
     id = generator.uuid4()
     file = generator.name()
     volume = generator.name()
-    location = generator.name() + "/" + generator.name()
+    location = f'{generator.name()}/{generator.name()}'
     given.exports.can_be_submitted(id=id)
 
     # action

@@ -10,7 +10,7 @@ class Settings(CompoundMutableDict, Resource):
     _name = 'settings'
 
     def __init__(self, **kwargs):
-        super(Settings, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         try:

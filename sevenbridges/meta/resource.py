@@ -1,11 +1,6 @@
 import copy
 import logging
-try:
-    from json.decoder import JSONDecodeError
-except ImportError:
-    JSONDecodeError = ValueError
-
-import six
+from json import JSONDecodeError
 
 from sevenbridges.errors import SbgError, NonJSONResponseError
 from sevenbridges.meta.fields import Field
@@ -85,22 +80,17 @@ class ResourceMeta(type):
                 return self._dirty
 
             def equals(self, other):
-                if not hasattr(other, '__class__'):
-                    return False
-                if not self.__class__ == other.__class__:
+                if not type(other) == type(self):
                     return False
                 return self is other or self._data == other._data
 
             def deepcopy(self):
-                return self.__class__(api=self._api, **self._data.data)
+                return type(self)(api=self._api, **self._data.data)
 
             if '__str__' not in dct:
-                dct['__str__'] = lambda self: self.__class__.__name__
+                dct['__str__'] = lambda self: type(self).__name__
             if '__repr__' not in dct:
-                if six.PY2:
-                    dct['__repr__'] = lambda self: str(self).encode('utf-8')
-                else:
-                    dct['__repr__'] = lambda self: str(self)
+                dct['__repr__'] = lambda self: str(self)
 
             dct['__init__'] = init
             dct['equals'] = equals
@@ -117,7 +107,7 @@ class ResourceMeta(type):
 
 
 # noinspection PyProtectedMember,PyAttributeOutsideInit
-class Resource(six.with_metaclass(ResourceMeta)):
+class Resource(metaclass=ResourceMeta):
     """
     Resource is base class for all resources, hiding implementation details
     of magic of injecting instance of API and common operations (like generic
@@ -146,17 +136,16 @@ class Resource(six.with_metaclass(ResourceMeta)):
             kwargs['limit'] = RequestParameters.DEFAULT_BULK_LIMIT
 
         extra = {'resource': cls.__name__, 'query': kwargs}
-        logger.info('Querying {} resource'.format(cls), extra=extra)
+        logger.info('Querying %s resource', cls, extra=extra)
         response = api.get(url=url, params=kwargs)
         try:
             data = response.json()
         except JSONDecodeError:
-            six.raise_from(
-                NonJSONResponseError(
-                    status=response.status_code,
-                    message=six.text_type(response.text)
-                ), None
-            )
+            raise NonJSONResponseError(
+                status=response.status_code,
+                message=str(response.text)
+            ) from None
+
         total = response.headers['x-total-matching-query']
 
         items = [cls(api=api, **item) for item in data['items']]
@@ -179,7 +168,7 @@ class Resource(six.with_metaclass(ResourceMeta)):
         api = api if api else cls._API
         if 'get' in cls._URL:
             extra = {'resource': cls.__name__, 'query': {'id': id}}
-            logger.info('Fetching {} resource'.format(cls), extra=extra)
+            logger.info('Fetching %s resource', cls, extra=extra)
             resource = api.get(url=cls._URL['get'].format(id=id)).json()
             return cls(api=api, **resource)
         else:
@@ -190,9 +179,9 @@ class Resource(six.with_metaclass(ResourceMeta)):
         Deletes the resource on the server.
         """
         if 'delete' in self._URL and hasattr(self, 'id'):
-            extra = {'resource': self.__class__.__name__, 'query': {
+            extra = {'resource': type(self).__name__, 'query': {
                 'id': self.id}}
-            logger.info("Deleting {} resource.".format(self), extra=extra)
+            logger.info("Deleting %s resource.", self, extra=extra)
             self._api.delete(url=self._URL['delete'].format(id=self.id))
         else:
             raise SbgError('Resource can not be deleted!')
@@ -204,24 +193,23 @@ class Resource(six.with_metaclass(ResourceMeta)):
         try:
             if hasattr(self, 'href'):
                 data = self._api.get(self.href, append_base=False).json()
-                resource = self.__class__(api=self._api, **data)
+                resource = type(self)(api=self._api, **data)
             elif hasattr(self, 'id') and hasattr(self, '_URL') and \
                     'get' in self._URL:
                 data = self._api.get(
                     self._URL['get'].format(id=self.id)).json()
-                resource = self.__class__(api=self._api, **data)
+                resource = type(self)(api=self._api, **data)
             else:
                 raise SbgError(
                     'Resource can not be refreshed, "id" property not set or '
                     'retrieval for this resource is not available.'
                 )
             query = {'id': self.id} if hasattr(self, 'id') else {}
-            extra = {'resource': self.__class__.__name__, 'query': query}
-            logger.info('Reloading {} resource.'.format(self), extra=extra)
+            extra = {'resource': type(self).__name__, 'query': query}
+            logger.info('Reloading %s resource.', self, extra=extra)
         except Exception as e:
             raise SbgError(
-                'Resource can not be refreshed due to an error: {}'
-                .format(six.text_type(e))
+                f'Resource can not be refreshed due to an error: {e}'
             )
 
         self._data = resource._data

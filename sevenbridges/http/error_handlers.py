@@ -1,8 +1,6 @@
 import time
 import logging
 
-import six
-
 
 logger = logging.getLogger(__name__)
 
@@ -47,13 +45,15 @@ def maintenance_sleeper(api, response, sleep=300):
     while response.status_code == 503:
         logger.info(
             'Service unavailable: Response=[%s]',
-            six.text_type(response.__dict__)
+            response.__dict__
         )
         response_body = response.json()
         if 'code' in response_body:
             if response_body['code'] == 0:
-                logger.warning('API Maintenance in progress!'
-                               ' Waiting for [%s]s', sleep)
+                logger.warning(
+                    'API Maintenance in progress! Waiting for [%s]s',
+                    sleep
+                )
                 time.sleep(sleep)
                 response = api.session.send(response.request)
             else:

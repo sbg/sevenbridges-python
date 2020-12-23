@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.errors import PaginationError, SbgError
 from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 from sevenbridges.models.compound.volumes.volume_prefix import VolumePrefix
@@ -16,7 +14,7 @@ class Collection(list):
     resource = None
 
     def __init__(self, resource, href, total, items, links, api):
-        super(Collection, self).__init__(items)
+        super().__init__(items)
         self.resource = resource
         self.href = href
         self.links = links
@@ -81,16 +79,14 @@ class Collection(list):
         raise PaginationError('No more entries.')
 
     def __repr__(self):
-        return six.text_type(
-            '<Collection: total={total}, available={items}>'.format(
-                total=self.total, items=len(self._items)
-            )
+        return (
+            f'<Collection: total={self.total}, available={len(self._items)}>'
         )
 
 
 class VolumeCollection(Collection):
     def __init__(self, href, items, links, prefixes, api):
-        super(VolumeCollection, self).__init__(
+        super().__init__(
             VolumeObject, href, 0, items, links, api)
         self.prefixes = prefixes
 
@@ -133,8 +129,4 @@ class VolumeCollection(Collection):
             )
 
     def __repr__(self):
-        return six.text_type(
-            '<VolumeCollection: items={items}>'.format(
-                items=len(self._items)
-            )
-        )
+        return f'<VolumeCollection: items={len(self._items)}>'

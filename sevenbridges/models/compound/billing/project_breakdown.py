@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.price import Price
 from sevenbridges.models.compound.billing.task_breakdown import TaskBreakdown
@@ -18,5 +16,4 @@ class ProjectBreakdown(Resource):
     task_breakdown = CompoundListField(TaskBreakdown, read_only=True)
 
     def __str__(self):
-        return six.text_type('<ProjectBreakdown:'
-                             ' href={href}>'.format(href=self.href))
+        return f'<ProjectBreakdown: href={self.href}>'

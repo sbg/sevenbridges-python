@@ -1,10 +1,10 @@
 import os
 
 import faker
-from six.moves import configparser
+import configparser
 
 from sevenbridges import Config, Api
-from sevenbridges.config import Profile
+from sevenbridges.config import UserProfile
 
 generator = faker.Factory.create()
 
@@ -78,7 +78,7 @@ def test_config_profile(base_url, monkeypatch, config_parser):
 
 def test_config_profile_no_proxy(base_url, monkeypatch, config_parser):
     def is_file(f):
-        if f == Profile.CREDENTIALS:
+        if f == UserProfile.CREDENTIALS:
             return True
         else:
             return False
@@ -100,7 +100,7 @@ def test_config_profile_no_proxy(base_url, monkeypatch, config_parser):
 
 def test_config_profile_explicit_proxy(base_url, monkeypatch, config_parser):
     def is_file(f):
-        if f == Profile.CREDENTIALS:
+        if f == UserProfile.CREDENTIALS:
             return True
         else:
             return False
@@ -129,7 +129,7 @@ def test_config_profile_explicit_proxy(base_url, monkeypatch, config_parser):
 
 def test_config_advance_access(base_url, monkeypatch, config_parser):
     def is_file(f):
-        if f == Profile.CREDENTIALS or f == Profile.CONFIG:
+        if f in [UserProfile.CREDENTIALS, UserProfile.CONFIG]:
             return True
         else:
             return False
@@ -153,7 +153,7 @@ def test_config_advance_access(base_url, monkeypatch, config_parser):
 
 def test_config_explicit_advance_access(base_url, monkeypatch, config_parser):
     def is_file(f):
-        if f == Profile.CREDENTIALS or f == Profile.CONFIG:
+        if f in [UserProfile.CREDENTIALS, UserProfile.CONFIG]:
             return True
         else:
             return False

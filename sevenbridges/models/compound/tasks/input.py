@@ -13,7 +13,7 @@ class Input(CompoundMutableDict, Resource):
     _name = 'inputs'
 
     def __init__(self, **kwargs):
-        super(Input, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         # noinspection PyBroadException

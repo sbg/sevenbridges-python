@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import StringField
 
@@ -14,15 +12,12 @@ class Breakdown(Resource):
 
     def __str__(self):
         if self.data_transfer:
-            return six.text_type(
-                '<Breakdown: storage={storage}, computation={computation}, '
-                'data_transfer={data_transfer}>'.format(
-                    storage=self.storage, computation=self.computation,
-                    data_transfer=self.data_transfer
-                )
+            return (
+                f'<Breakdown: storage={self.storage}, '
+                f'computation={self.computation}, '
+                f'data_transfer={self.data_transfer}>'
             )
-        return six.text_type(
-            '<Breakdown: storage={storage}, computation={computation}>'.format(
-                storage=self.storage, computation=self.computation
-            )
+        return (
+            f'<Breakdown: storage={self.storage}, '
+            f'computation={self.computation}>'
         )

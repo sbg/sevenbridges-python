@@ -10,7 +10,7 @@ class Metadata(CompoundMutableDict, Resource):
     _name = 'metadata'
 
     def __init__(self, **kwargs):
-        super(Metadata, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         try:
@@ -19,11 +19,6 @@ class Metadata(CompoundMutableDict, Resource):
             return None
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or dict(self) == dict(other)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)

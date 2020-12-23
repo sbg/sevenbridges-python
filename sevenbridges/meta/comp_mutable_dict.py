@@ -1,6 +1,3 @@
-import six
-
-
 # noinspection PyProtectedMember,PyUnresolvedReferences
 class CompoundMutableDict(dict):
     """
@@ -12,10 +9,10 @@ class CompoundMutableDict(dict):
         self._parent = kwargs.pop('_parent')
         self._api = kwargs.pop('api')
         for k, v in kwargs.items():
-            super(CompoundMutableDict, self).__setitem__(k, v)
+            super().__setitem__(k, v)
 
     def __setitem__(self, key, value):
-        super(CompoundMutableDict, self).__setitem__(key, value)
+        super().__setitem__(key, value)
         if self._name not in self._parent._dirty:
             self._parent._dirty.update({self._name: {}})
         if key in self._parent._data[self._name]:
@@ -30,7 +27,7 @@ class CompoundMutableDict(dict):
         values = {}
         for k, _ in self.items():
             values[k] = self[k]
-        return six.text_type(values)
+        return str(values)
 
     __str__ = __repr__
 
@@ -50,16 +47,8 @@ class CompoundMutableDict(dict):
             values.append((k, self[k]))
         return values
 
-    def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def equals(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if not type(other) == type(self):
             return False
         return (
             self is other or

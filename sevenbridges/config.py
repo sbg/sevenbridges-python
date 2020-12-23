@@ -1,6 +1,6 @@
-import logging
 import os
-from six.moves import configparser as cp
+import logging
+import configparser
 
 from sevenbridges.errors import SbgError
 
@@ -21,7 +21,7 @@ def format_proxies(proxies):
     return {}
 
 
-class Profile(object):
+class UserProfile:
     CREDENTIALS = os.path.join(
         os.path.expanduser('~'),
         '.sevenbridges',
@@ -41,12 +41,12 @@ class Profile(object):
         self.profile = profile
 
         # noinspection PyTypeChecker
-        self.credentials_parser = cp.ConfigParser({
+        self.credentials_parser = configparser.ConfigParser({
             'auth_token': None,
             'api_endpoint': None,
         }, allow_no_value=True)
         # noinspection PyTypeChecker
-        self.config_parser = cp.ConfigParser({
+        self.config_parser = configparser.ConfigParser({
             'http_proxy': None,
             'https_proxy': None,
             'advance_access': False,
@@ -58,7 +58,7 @@ class Profile(object):
             logging.info('No custom configuration present. Skipping...')
         else:
             # noinspection PyTypeChecker
-            self.config_parser = cp.ConfigParser({
+            self.config_parser = configparser.ConfigParser({
                 'http_proxy': None,
                 'https_proxy': None,
                 'advance_access': False,
@@ -86,22 +86,24 @@ class Profile(object):
             }
         except KeyError:
             return format_proxies({})
-        except cp.NoSectionError:
+        except configparser.NoSectionError:
             return format_proxies({})
 
     @property
     def advance_access(self):
         try:
-            return bool(
+            return (
                 self.config_parser.get('mode', 'advance_access')
-            ) if self.config_parser else False
+                if self.config_parser
+                else False
+            )
         except KeyError:
             return False
-        except cp.NoSectionError:
+        except configparser.NoSectionError:
             return False
 
 
-class Config(object):
+class Config:
     """
     Utility configuration class.
     """
@@ -133,7 +135,7 @@ class Config(object):
                 raise SbgError('Missing SB_API_ENDPOINT')
             self.advance_access = advance_access if advance_access else False
         else:
-            cfg_profile = Profile(profile)
+            cfg_profile = UserProfile(profile)
             self.auth_token = cfg_profile.auth_token
             self.api_endpoint = cfg_profile.api_endpoint
             self.advance_access = cfg_profile.advance_access
@@ -149,9 +151,8 @@ class Config(object):
             self.advance_access = cfg_profile.advance_access
 
         logger.info(
-            'Client settings: [url={}] [token={}] [proxy={}]'.format(
-                self.api_endpoint,
-                '*****',
-                self.proxies
-            )
+            'Client settings: [url=%s] [token=%s] [proxy=%s]',
+            self.api_endpoint,
+            '*****',
+            self.proxies
         )

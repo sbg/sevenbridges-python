@@ -23,7 +23,7 @@ def test_import_submit(api, given, verifier):
     id = generator.uuid4()
     volume = generator.name()
     location = generator.name()
-    project = generator.name() + "/" + generator.name()
+    project = f'{generator.name()}/{generator.name()}'
     given.imports.can_be_submitted(id=id)
 
     # action
@@ -42,7 +42,7 @@ def test_import_to_folder_submit(api, given, verifier):
     id = generator.uuid4()
     volume = generator.name()
     location = generator.name()
-    parent = generator.name() + "/"
+    parent = f'{generator.name()}/'
     given.imports.can_be_submitted(id=id)
     preserve_folder_structure = False
 

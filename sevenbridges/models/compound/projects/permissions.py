@@ -10,7 +10,7 @@ class Permissions(CompoundMutableDict, Resource):
     _name = 'permissions'
 
     def __init__(self, **kwargs):
-        super(Permissions, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         try:

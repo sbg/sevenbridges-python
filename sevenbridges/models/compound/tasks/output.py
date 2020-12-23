@@ -12,7 +12,7 @@ class Output(CompoundMutableDict, Resource):
     _name = 'outputs'
 
     def __init__(self, **kwargs):
-        super(Output, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         # noinspection PyBroadException

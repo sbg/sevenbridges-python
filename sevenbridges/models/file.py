@@ -1,9 +1,6 @@
-import io
 import os
 import logging
 import tempfile
-
-import six
 
 from sevenbridges.errors import (
     SbgError,
@@ -73,17 +70,12 @@ class File(Resource):
     _secondary_files = BasicListField(name='_secondary_files')
 
     def __str__(self):
-        return six.text_type('<File: id={id}>'.format(id=self.id))
+        return f'<File: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def is_folder(self):
         return self.type.lower() == self.FOLDER_TYPE
@@ -159,7 +151,7 @@ class File(Resource):
         metadata_params = {}
         if metadata and isinstance(metadata, dict):
             for k, v in metadata.items():
-                metadata_params['metadata.' + k] = metadata[k]
+                metadata_params[f'metadata.{k}'] = metadata[k]
 
         if tags:
             query_params['tag'] = tags
@@ -169,11 +161,11 @@ class File(Resource):
         origin_params = {}
         if origin and isinstance(origin, dict):
             for k, v in origin.items():
-                origin_params['origin.' + k] = origin[k]
+                origin_params[f'origin.{k}'] = origin[k]
 
         query_params.update(origin_params)
 
-        return super(File, cls)._query(
+        return super()._query(
             api=api, url=cls._URL['scroll' if cont_token else 'query'],
             token=cont_token, offset=offset,
             limit=limit, fields='_all', **query_params
@@ -253,7 +245,7 @@ class File(Resource):
         }
         if name:
             data['name'] = name
-        extra = {'resource': self.__class__.__name__, 'query': {
+        extra = {'resource': type(self).__name__, 'query': {
             'id': self.id,
             'data': data
         }}
@@ -289,7 +281,7 @@ class File(Resource):
         if not overwrite and os.path.exists(path):
             raise LocalFileAlreadyExists(message=path)
 
-        extra = {'resource': self.__class__.__name__, 'query': {
+        extra = {'resource': type(self).__name__, 'query': {
             'id': self.id,
             'path': path,
             'overwrite': overwrite,
@@ -323,7 +315,7 @@ class File(Resource):
         :return: File instance.
         """
         modified_data = self._modified_data()
-        if silent or bool(modified_data):
+        if silent or modified_data:
             # If metadata is to be set
             if 'metadata' in modified_data:
                 if hasattr(self, '_overwrite_metadata'):
@@ -345,7 +337,7 @@ class File(Resource):
                 )
                 modified_data.pop('tags')
             # Change everything else
-            if bool(modified_data):
+            if modified_data:
                 self._api.patch(
                     url=self._URL['get'].format(id=self.id), data=modified_data
                 )
@@ -367,38 +359,22 @@ class File(Resource):
         for part in response.iter_content(part_size):
             yield part
 
-    # noinspection PyAttributeOutsideInit
     def reload(self):
         """
         Refreshes the file with the data from the server.
         """
-        try:
-            data = self._api.get(self.href, append_base=False).json()
-            resource = File(api=self._api, **data)
-        except Exception:
-            try:
-                data = self._api.get(
-                    self._URL['get'].format(id=self.id)).json()
-                resource = File(api=self._api, **data)
-            except Exception as e:
-                raise SbgError(
-                    'Resource can not be refreshed due to an error: {}'
-                    .format(six.text_type(e))
-                )
-
-        self._data = resource._data
-        self._dirty = resource._dirty
-        self.update_old()
+        # Use standard resource reload
+        super().reload()
 
         # If file.metadata = value was executed
         # file object will have attribute _overwrite_metadata=True,
         # which tells us to force overwrite of metadata on the server.
         # This is metadata specific. Once we reload the resource we delete the
         # attribute _overwrite_metadata from the instance.
-        try:
+        if hasattr(self, '_overwrite_metadata'):
             delattr(self, '_overwrite_metadata')
-        except AttributeError:
-            pass
+
+        return self
 
     def content(self, path=None, overwrite=True, encoding='utf-8'):
         """
@@ -413,12 +389,12 @@ class File(Resource):
         """
         if path:
             self.download(wait=True, path=path, overwrite=overwrite)
-            with io.open(path, 'r', encoding=encoding) as fp:
+            with open(path, 'r', encoding=encoding) as fp:
                 return fp.read()
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             self.download(wait=True, path=tmpfile.name, overwrite=overwrite)
-            with io.open(tmpfile.name, 'r', encoding=encoding) as fp:
+            with open(tmpfile.name, 'r', encoding=encoding) as fp:
                 return fp.read()
 
     @classmethod
@@ -535,13 +511,13 @@ class File(Resource):
         api = api or self._API
 
         if not self.is_folder():
-            raise SbgError('{name} is not a folder'.format(name=self.name))
+            raise SbgError(f'{self.name} is not a folder')
 
         url = self._URL[
             'scroll_folder' if cont_token else 'list_folder'
         ].format(id=self.id)
 
-        return super(File, self.__class__)._query(
+        return super(File, type(self))._query(
             api=api, url=url, token=cont_token, offset=offset,
             limit=limit, fields='_all'
         )
@@ -635,4 +611,4 @@ class FileBulkRecord(BulkRecord):
     resource = CompoundField(cls=File)
 
     def __str__(self):
-        return six.text_type('<FileBulkRecord>')
+        return f'<FileBulkRecord valid={self.valid}>'

@@ -22,7 +22,7 @@ def request_mocker(request):
     return m
 
 
-class Precondition(object):
+class Precondition:
     """
     Aggregated data provided for all server side data mocking.
     """
@@ -63,7 +63,7 @@ class Precondition(object):
         self.uploads = providers.FileUploadProvider(request_mocker, base_url)
 
 
-class Verifier(object):
+class Verifier:
     """
     Aggregated action verificator.
     """
@@ -127,7 +127,7 @@ def base_url():
 
 @pytest.fixture
 def config_parser():
-    class ConfigParser(object):
+    class ConfigParser:
         def __init__(self, data):
             self.data = data
 
@@ -137,7 +137,7 @@ def config_parser():
         def read(self, stream):
             pass
 
-    class Mock(object):
+    class Mock:
         def __init__(self, data):
             self.data = data
 

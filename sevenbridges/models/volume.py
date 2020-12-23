@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
 from sevenbridges.meta.collection import Collection, VolumeCollection
@@ -46,17 +44,12 @@ class Volume(Resource):
     active = BooleanField(read_only=True)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type('<Volume: id={id}>'.format(id=self.id))
+        return f'<Volume: id={self.id}>'
 
     @classmethod
     def query(cls, offset=None, limit=None, api=None):
@@ -69,7 +62,7 @@ class Volume(Resource):
         :return: Collection object.
         """
         api = api or cls._API
-        return super(Volume, cls)._query(
+        return super()._query(
             url=cls._URL['query'], offset=offset, limit=limit,
             fields='_all', api=api
         )
@@ -217,9 +210,9 @@ class Volume(Resource):
         Saves all modification to the volume on the server.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data
@@ -233,13 +226,12 @@ class Volume(Resource):
         else:
             raise ResourceNotModified()
 
-    def list(self, prefix=None, limit=50):
-
-        params = {
-            'limit': limit
-        }
+    def list(self, prefix=None, limit=None):
+        params = {}
         if prefix:
             params['prefix'] = prefix
+        if limit:
+            params['limit'] = limit
 
         data = self._api.get(
             url=self._URL['list'].format(id=self.id), params=params).json()
@@ -249,7 +241,6 @@ class Volume(Resource):
 
         objects = [
             VolumeObject(api=self._api, **item) for item in data['items']
-            # noqa: F812
         ]
         prefixes = [
             VolumePrefix(api=self._api, **prefix) for prefix in  # noqa: F812
@@ -303,7 +294,7 @@ class Volume(Resource):
         :return: Collection object.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id}
         }
         logger.info('Get volume members', extra=extra)
@@ -337,7 +328,7 @@ class Volume(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -368,7 +359,7 @@ class Volume(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -399,7 +390,7 @@ class Volume(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -433,7 +424,7 @@ class Volume(Resource):
         """
         username = Transform.to_user(user)
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'user': user,

@@ -1,11 +1,9 @@
-import io
 import os
 import time
 import logging
 import hashlib
 import threading
 
-import six
 import requests
 
 from sevenbridges.errors import SbgError
@@ -52,9 +50,7 @@ def _download_part(path, session, url, timeout, start_byte, end_byte):
         os.close(fp)
         return Part(start=start_byte, size=float(part_size))
     except (requests.HTTPError, requests.RequestException) as e:
-        raise SbgError(
-            'Failed to download file. Response: {}'.format(six.text_type(e))
-        )
+        raise SbgError(f'Failed to download file. Response: {e}')
 
 
 def _get_content_length(session, url, timeout):
@@ -70,7 +66,7 @@ def _get_content_length(session, url, timeout):
     return file_size
 
 
-class DPartedFile(object):
+class DPartedFile:
     def __init__(
             self, file_path, session, url, file_size, part_size, timeout, pool
     ):
@@ -135,7 +131,7 @@ class DPartedFile(object):
         parts = []
         start_b = 0
         end_byte = start_b + self.part_size - 1
-        for i in range(self.total):
+        for _ in range(self.total):
             parts.append([start_b, end_byte])
             start_b = end_byte + 1
             end_byte = start_b + self.part_size - 1
@@ -166,16 +162,16 @@ class Download(threading.Thread):
         if part_size and part_size < PartSize.DOWNLOAD_MINIMUM_PART_SIZE:
             self._status = TransferState.FAILED
             raise SbgError(
-                'Part size is too small! Minimum get_parts size is {}'.format(
-                    PartSize.DOWNLOAD_MINIMUM_PART_SIZE)
+                f'Part size is too small! Minimum get_parts size '
+                f'is {PartSize.DOWNLOAD_MINIMUM_PART_SIZE}'
             )
 
         self.url = url
         self._file_path = file_path
 
         # append unique suffix to the file
-        self._temp_file = self._file_path + '.' + hashlib.sha1(
-            self._file_path.encode('utf-8')).hexdigest()[:10]
+        suffix = hashlib.sha1(self._file_path.encode('utf-8')).hexdigest()[:10]
+        self._temp_file = f'{self._file_path}.{suffix}'
         self._retry_count = (
             retry_count or RequestParameters.DEFAULT_RETRY_COUNT
         )
@@ -208,9 +204,7 @@ class Download(threading.Thread):
         self._stop_signal = False
 
     def __repr__(self):
-        return six.text_type(
-            '<Download: status={status}>'.format(status=self.status)
-        )
+        return f'<Download: status={self.status}>'
 
     @property
     def progress(self):
@@ -302,7 +296,7 @@ class Download(threading.Thread):
         """
         if self._status == TransferState.PREPARING:
             self._running.set()
-            super(Download, self).start()
+            super().start()
             self._status = TransferState.RUNNING
             self._time_started = time.time()
         else:
@@ -351,10 +345,7 @@ class Download(threading.Thread):
         try:
             os.rename(self._temp_file, self._file_path)
         except Exception as e:
-            raise SbgError(
-                "Unable to rename the file due to an error: {}."
-                .format(six.text_type(e))
-            )
+            raise SbgError(f'Unable to rename the file due to an error: {e}.')
 
         if self._callback:
             return self._callback(self._status)
@@ -369,6 +360,7 @@ class Download(threading.Thread):
             _get_content_length(self._session, self.url, self._timeout)
         )
         if file_size == 0:
-            with io.open(self._temp_file, 'a', encoding='utf-8'):
+            with open(self._temp_file, 'a', encoding='utf-8'):
+                # Create file if empty
                 pass
         return file_size

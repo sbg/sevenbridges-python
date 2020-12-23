@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.compound.price import Price
 from sevenbridges.models.compound.billing.project_breakdown import (
@@ -22,6 +20,5 @@ class BillingGroupBreakdown(Resource):
     project_breakdown = CompoundListField(ProjectBreakdown, read_only=True)
     total_spending = CompoundField(Price, read_only=True)
 
-    @staticmethod
-    def __str__():
-        return six.text_type('<BillingGroupBreakdown>')
+    def __str__(self):
+        return '<BillingGroupBreakdown>'

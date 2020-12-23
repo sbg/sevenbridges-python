@@ -2,7 +2,6 @@ import os
 
 import faker
 import pytest
-import six
 
 from sevenbridges.errors import SbgError
 from sevenbridges.models.enums import PartSize, TransferState
@@ -46,7 +45,7 @@ def test_file_upload(api, given, empty_file, project_id, parent_id, no_api,
     given.uploads.reported_part()
     given.uploads.finalized_upload(file_id)
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         if not empty_file:
             temp_file.write(str(file_content))
 
@@ -91,7 +90,7 @@ def test_file_upload_init_failed(api, given, tmpdir):
         failed=True
     )
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(str(tmpdir / file_name), 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -115,7 +114,7 @@ def test_file_upload_start_failed(api, given, tmpdir):
         failed=True
     )
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -144,7 +143,7 @@ def test_file_upload_finalize_failed(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.finalized_upload(file_id, failed=True)
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -169,7 +168,7 @@ def test_file_upload_part_failed(api, given, tmpdir):
     )
     given.uploads.got_file_part(file_part_url, failed=True)
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -195,7 +194,7 @@ def test_file_upload_etag_failed(api, given, tmpdir):
     given.uploads.got_file_part(file_part_url, failed=True)
     given.uploads.got_etag(file_part_url, failed=True)
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -223,7 +222,7 @@ def test_file_upload_stop(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -252,7 +251,7 @@ def test_file_upload_stop_failed(api, given, tmpdir):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -279,7 +278,7 @@ def test_file_upload_abort_failed(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted(failed=True)
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -308,7 +307,7 @@ def test_file_upload_pause(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -339,7 +338,7 @@ def test_file_upload_pause_failed(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -367,7 +366,7 @@ def test_file_upload_resume(api, given, tmpdir):
     given.uploads.reported_part()
     given.uploads.deleted()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -399,7 +398,7 @@ def test_file_upload_resume_failed(api, given, tmpdir):
     given.uploads.got_etag(file_part_url)
     given.uploads.reported_part()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     upload = Upload(
@@ -418,7 +417,7 @@ def test_file_size_too_large(api, monkeypatch, tmpdir):
     project_id = generator.uuid4()
     file_name = generator.uuid4()
 
-    with open(six.text_type(tmpdir / file_name), 'w') as temp_file:
+    with open(tmpdir / file_name, 'w') as temp_file:
         temp_file.write('dummy content')
 
     with monkeypatch.context() as m:

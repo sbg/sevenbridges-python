@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import SbgError, ResourceNotModified
 from sevenbridges.meta.collection import Collection
@@ -46,17 +44,12 @@ class Project(Resource):
     modified_on = DateTimeField(read_only=True)
 
     def __str__(self):
-        return six.text_type('<Project: id={id}>'.format(id=self.id))
+        return f'<Project: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @classmethod
     def query(cls, owner=None, name=None, offset=None, limit=None, api=None):
@@ -77,7 +70,7 @@ class Project(Resource):
             url = cls._URL['query'].format(owner='')
         if name:
             query_params['name'] = name
-        return super(Project, cls)._query(
+        return super()._query(
             url=url, offset=offset, limit=limit, fields='_all',
             api=api, **query_params
         )
@@ -131,9 +124,9 @@ class Project(Resource):
         :return: Project instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data
@@ -155,7 +148,7 @@ class Project(Resource):
         :return: Collection object.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id}
         }
         logger.info('Get members', extra=extra)
@@ -185,7 +178,7 @@ class Project(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -212,7 +205,7 @@ class Project(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -239,7 +232,7 @@ class Project(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -266,7 +259,7 @@ class Project(Resource):
             })
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'data': data,
@@ -300,7 +293,7 @@ class Project(Resource):
         """
         username = Transform.to_user(user)
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
                 'user': user,

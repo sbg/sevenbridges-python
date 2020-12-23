@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
 from sevenbridges.meta.fields import (
@@ -31,17 +29,12 @@ class Marker(Resource):
     created_by = StringField(read_only=True)
 
     def __str__(self):
-        return six.text_type('<Marker: id={id}>'.format(id=self.id))
+        return f'<Marker: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @classmethod
     def query(cls, file, offset=None, limit=None, api=None):
@@ -56,7 +49,7 @@ class Marker(Resource):
         api = api if api else cls._API
 
         file = Transform.to_file(file)
-        return super(Marker, cls)._query(
+        return super()._query(
             url=cls._URL['query'], offset=offset, limit=limit,
             file=file, fields='_all', api=api
         )
@@ -100,9 +93,9 @@ class Marker(Resource):
         :return: Marker instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data
@@ -115,9 +108,3 @@ class Marker(Resource):
             return marker
         else:
             raise ResourceNotModified()
-
-    def delete(self):
-        super(Marker, self).delete()
-
-    def reload(self):
-        super(Marker, self).reload()

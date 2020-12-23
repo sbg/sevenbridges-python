@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.fields import StringField, IntegerField
 from sevenbridges.meta.resource import Resource
 
@@ -13,7 +11,4 @@ class Disk(Resource):
     type = StringField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<Disk size={size}, unit={unit}, type={type_}>'.format(
-                size=self.size, unit=self.unit, type_=self.type)
-        )
+        return f'<Disk size={self.size}, unit={self.unit}, type={self.type_}>'

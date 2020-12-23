@@ -1,8 +1,6 @@
 import time
 import logging
 
-import six
-
 from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
@@ -74,17 +72,12 @@ class Task(Resource):
     use_interruptible_instances = BooleanField()
 
     def __str__(self):
-        return six.text_type('<Task: id={id}>'.format(id=self.id))
+        return f'<Task: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @classmethod
     def query(cls, project=None, status=None, batch=None,
@@ -130,7 +123,7 @@ class Task(Resource):
         if ended_to:
             ended_to = Transform.to_datestring(ended_to)
 
-        return super(Task, cls)._query(
+        return super()._query(
             url=cls._URL['query'], project=project, status=status, batch=batch,
             parent=parent, created_from=created_from, created_to=created_to,
             started_from=started_from, started_to=started_to,
@@ -170,10 +163,10 @@ class Task(Resource):
         app_id = Transform.to_app(app)
 
         if revision:
-            app_id = app_id + "/" + six.text_type(revision)
+            app_id = f'{app_id}/{revision}'
         else:
             if isinstance(app, App):
-                app_id = app_id + "/" + six.text_type(app.revision)
+                app_id = f'{app_id}/{app.revision}'
 
         task_inputs = {
             'inputs': Task._serialize_inputs(inputs) if inputs else {}
@@ -206,12 +199,11 @@ class Task(Resource):
         api = api if api else cls._API
         created_task = api.post(cls._URL['query'], data=task_data,
                                 params=params).json()
-        if run and 'errors' in created_task:
-            if bool(created_task['errors']):
-                raise TaskValidationError(
-                    'Unable to run task! Task contains errors.',
-                    task=Task(api=api, **created_task)
-                )
+        if run and 'errors' in created_task and created_task['errors']:
+            raise TaskValidationError(
+                'Unable to run task! Task contains errors.',
+                task=Task(api=api, **created_task)
+            )
 
         return Task(api=api, **created_task)
 
@@ -223,7 +215,7 @@ class Task(Resource):
         :return: Task object.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id}
         }
         logger.info('Aborting task', extra=extra)
@@ -247,7 +239,7 @@ class Task(Resource):
         if interruptible is not None:
             params['use_interruptible_instances'] = interruptible
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id, 'batch': batch}
         }
         logger.info('Running task', extra=extra)
@@ -266,7 +258,7 @@ class Task(Resource):
             params.update({'action': 'run'})
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id, 'run': run}
         }
         logger.info('Cloning task', extra=extra)
@@ -283,7 +275,7 @@ class Task(Resource):
         :return: Task instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             task_request_data = {}
             inputs = modified_data.pop('inputs', None)
             execution_settings = modified_data.pop('execution_settings', None)
@@ -298,7 +290,7 @@ class Task(Resource):
                 )
 
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {'id': self.id, 'data': task_request_data}
             }
             logger.info('Saving task', extra=extra)
@@ -371,7 +363,7 @@ class Task(Resource):
         :return: Execution details instance.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {'id': self.id}
         }
         logger.info('Get execution details', extra=extra)
@@ -423,11 +415,7 @@ class Task(Resource):
         :return: Return value of provided callback function or None if a
             callback function was not provided
         """
-        while self.status not in [
-            TaskStatus.COMPLETED,
-            TaskStatus.FAILED,
-            TaskStatus.ABORTED
-        ]:
+        while self.status not in TaskStatus.terminal_states:
             self.reload()
             time.sleep(period)
 
@@ -439,4 +427,4 @@ class TaskBulkRecord(BulkRecord):
     resource = CompoundField(cls=Task)
 
     def __str__(self):
-        return six.text_type('<TaskBulkRecord>')
+        return f'<TaskBulkRecord valid={self.valid}>'

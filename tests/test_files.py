@@ -11,7 +11,7 @@ def test_files_query(api, given, verifier):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.file.files_exist_for_project(id, 10)
     given.project.exists(id=id)
 
@@ -31,7 +31,7 @@ def test_files_query_with_token(api, given, verifier):
     total = 20
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.file.files_exist_for_project(id, 20, scroll=True)
     given.project.exists(id=id)
 
@@ -80,7 +80,7 @@ def test_files_query_file_name(api, given, verifier):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     file_name = ''.join(generator.name().split())
     given.file.files_exist_for_file_name(id, file_name, 10)
     given.project.exists(id=id)
@@ -101,7 +101,7 @@ def test_files_query_file_metadata(api, given, verifier):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     key = 'key'
     value = 'value'
     given.file.files_exist_for_file_metadata(id, key, value, 10)
@@ -134,7 +134,7 @@ def test_files_query_file_origin(api, given, verifier):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     key = 'key'
     value = 'value'
     given.file.files_exist_for_file_origin(id, key, value, 10)
@@ -156,7 +156,7 @@ def test_files_query_tags(api, given, verifier):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     tags = ['test1', 'test2']
     given.file.files_exist_for_file_tag(id, tags, 10)
     given.project.exists(id=id)

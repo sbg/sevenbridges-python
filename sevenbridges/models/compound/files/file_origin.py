@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import StringField
 
@@ -13,6 +11,4 @@ class FileOrigin(Resource):
     task = StringField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<FileOrigin: task={task}>'.format(task=self.task)
-        )
+        return f'<FileOrigin: task={self.task}>'

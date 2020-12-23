@@ -39,7 +39,7 @@ def test_marker_create(api, given, verifier):
 
 def test_modify_marker(api, given, verifier):
     # preconditions
-    _id = '{}/{}'.format('my', 'marker')
+    _id = 'my/marker'
     name = generator.name()
     given.marker.exists(id=_id)
     given.marker.modified(id=_id, name=name)

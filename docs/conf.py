@@ -14,7 +14,7 @@
 
 import os
 import sys
-
+from datetime import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -22,7 +22,7 @@ import sys
 extra_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ['SPHINX_DOC'] = 'True'
 sys.path.append(extra_path)
-from sevenbridges import __version__ as version_pkg
+from sevenbridges import __version__ as version_pkg  # noqa
 
 # -- General configuration ------------------------------------------------
 
@@ -54,9 +54,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'sevenbridges-python'
-copyright = u'2018, Seven Bridges Genomics Inc.'
-author = u'Seven Bridges Genomics'
+project = 'sevenbridges-python'
+copyright = f'{datetime.utcnow().year}, Seven Bridges Genomics Inc.'
+author = 'Seven Bridges Genomics'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -227,8 +227,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'sbg.tex', u'sbg Documentation',
-     u'Seven Bridges Genomics', 'manual'),
+    (master_doc, 'sbg.tex', 'sbg Documentation',
+     'Seven Bridges Genomics', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -257,7 +257,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'sbg', u'sbg Documentation',
+    (master_doc, 'sbg', 'sbg Documentation',
      [author], 1)
 ]
 
@@ -271,7 +271,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'sbg', u'sbg Documentation',
+    (master_doc, 'sbg', 'sbg Documentation',
      author, 'sbg', 'One line description of project.',
      'Miscellaneous'),
 ]

@@ -1,4 +1,3 @@
-import six
 import logging
 
 from sevenbridges.models.link import Link
@@ -32,17 +31,12 @@ class Dataset(Resource):
     description = StringField()
 
     def __str__(self):
-        return six.text_type('<Dataset: id={id}>'.format(id=self.id))
+        return f'<Dataset: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @classmethod
     def query(cls, visibility=None, api=None):
@@ -53,7 +47,7 @@ class Dataset(Resource):
         """
         api = api if api else cls._API
 
-        return super(Dataset, cls)._query(
+        return super()._query(
             url=cls._URL['query'],
             visibility=visibility,
             fields='_all', api=api
@@ -68,7 +62,7 @@ class Dataset(Resource):
         """
         api = api if api else cls._API
 
-        return super(Dataset, cls)._query(
+        return super()._query(
             url=cls._URL['owned_by'].format(username=username),
             fields='_all',
             api=api
@@ -81,7 +75,7 @@ class Dataset(Resource):
         :return: Dataset instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             dataset_request_data = {}
 
             name = modified_data.pop('name', None)

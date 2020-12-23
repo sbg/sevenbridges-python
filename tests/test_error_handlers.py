@@ -1,18 +1,17 @@
 import time
+from json import JSONDecodeError
 
 import faker
 import pytest
 import requests
-import six
 
-from sevenbridges.compat import JSONDecodeError
 from sevenbridges.http.error_handlers import (
     rate_limit_sleeper, maintenance_sleeper, general_error_sleeper)
 
 generator = faker.Factory.create()
 
 
-class MockSession(object):
+class MockSession:
     def __init__(self, mock):
         self.mock = mock
 
@@ -47,7 +46,7 @@ def test_maintenance_sleeper_invalid_json(api):
 def test_maintenance_sleeper(api):
     resp503 = requests.Response()
     resp503.status_code = 503
-    resp503._content = six.b('{"code": 0}')
+    resp503._content = b'{"code": 0}'
     resp200 = requests.Response()
     resp200.status_code = 200
 

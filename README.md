@@ -1,7 +1,6 @@
 sevenbridges-python
 ===================
 
-[![Travis](https://travis-ci.org/sbg/sevenbridges-python.svg)](https://travis-ci.org/sbg/sevenbridges-python)
 [![PyPI version](https://badge.fury.io/py/sevenbridges-python.svg)](https://pypi.python.org/pypi/sevenbridges-python)
 [![Documentation](https://readthedocs.org/projects/sevenbridges-python/badge/?version=latest)](http://sevenbridges-python.readthedocs.org/en/latest/)
 [![Licence](https://img.shields.io/badge/licence-Apache-orange.svg)](https://github.com/sbg/sevenbridges-python/blob/develop/LICENCE)
@@ -12,7 +11,7 @@ sevenbridges-python is a [Python](http://www.python.org/) library that
 provides an interface for the [Seven Bridges Platform](https://www.sbgenomics.com/) the
 [Cancer Genomics Cloud](http://www.cancergenomicscloud.org/) and
 [Cavatica](http://www.cavatica.org) public APIs. It works with Python
-versions 2.6+ and supports Python 3.
+versions 3.6+.
 
 The [Seven Bridges Platform](https://www.sbgenomics.com/) is a
 cloud-based environment for conducting bioinformatic analyses. It is a
@@ -32,7 +31,7 @@ than a petabyte of multi-dimensional data available immediately to
 authorized researchers. You can add your own data to analyze alongside
 TCGA using predefined analytical workflows or your own tools.
 
-[Cavatica](http://www.cavatica.org/),
+The [Cavatica](http://www.cavatica.org/),
 powered by [Seven Bridges](https://www.sbgenomics.com/), is a data analysis and sharing
 platform designed to accelerate discovery in a scalable, cloud-based
 compute environment where data, results, and workflows are shared among
@@ -48,7 +47,7 @@ The latest documentation can be found on [readthedocs](http://sevenbridges-pytho
 Installation
 ------------
 
-The easiest way to install sevenbridges-python is using pip. :
+The easiest way to install sevenbridges-python is using pip:
 
     $ pip install sevenbridges-python
 
@@ -69,7 +68,7 @@ package, or install it into your site-packages by invoking: :
 
 If you are interested in reviewing this documentation locally, clone
 this repository, position yourself in the docs directory and after
-installing `requirements.txt` (or `requirements2.txt` if using python 2), invoke:
+installing `requirements-dev.txt`, invoke:
 
     $ make html
 
@@ -77,8 +76,7 @@ Run Tests
 ---------
 
 In order to run tests clone this repository, position yourself in the
-root of the cloned project and after installing `requirements.txt` (or
-`requirements2.txt` if using python 2), invoke:
+root of the cloned project and after installing `requirements-dev.txt`, invoke:
 
     $ pytest
 
@@ -116,8 +114,8 @@ before using this library:
 Initialize configuration using the configuration file
 -----------------------------------------------------
 
-Once you obtain your authentication token you can pass it to the Config
-object. You can instantiate your API object by passing the appropriate
+Once you obtain your authentication token, you can pass it to the Config
+object. You can instantiate the API object by passing the appropriate
 configuration. There are three ways you can pass configure the library:
 
 1.  Pass parameters `url` and `token` explicitly when initializing the
@@ -137,9 +135,8 @@ api = sbg.Api(url='https://api.sbgenomics.com/v2', token='<TOKEN_HERE>')
 ### Initialization via environment variables
 
 ```python
-import sevenbridges as sbg
-
 import os
+import sevenbridges as sbg
 
 # Usually these would be set in the shell beforehand
 os.environ['SB_API_ENDPOINT'] = 'https://api.sbgenomics.com/v2'
@@ -222,7 +219,7 @@ before submitting a pull request.
 Copyright
 ---------
 
-Copyright (c) 2016-2018 Seven Bridges Genomics, Inc. All rights
+Copyright (c) 2020 Seven Bridges Genomics, Inc. All rights
 reserved.
 
 This project is open-source via the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).

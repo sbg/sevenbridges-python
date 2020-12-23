@@ -1,8 +1,4 @@
-image: python:3.8-buster
-
-variables:
-  REQUIREMENTS: "requirements.txt"
-  REQUIREMENTS2: "requirements2.txt"
+image: python:3.9-slim-buster
 
 stages:
   - test
@@ -11,49 +7,35 @@ stages:
 .test: &test
   stage: test
   before_script:
-    - infinity config build-info
     - python --version
-    - pip install -U -r $REQUIREMENTS
+    - pip install -r requirements-dev.txt
     - export PYTHONPATH=$(pwd):$PYTHONPATH
   script:
     - flake8
-    - pytest -v --cov-config setup.cfg
+    - pytest --verbose --cov-config setup.cfg
   artifacts:
     paths:
       - coverage_report/*
 
-# Test with python 2.7
-test:2.7:
-  stage: test
-  before_script:
-    - infinity config build-info
-    - python --version
-    - pip install -U -r $REQUIREMENTS2
-    - export PYTHONPATH=$(pwd):$PYTHONPATH
-  script:
-    - flake8
-    - pytest -v --cov-config setup.cfg
-  image: python:2.7
-
-# Test with python 3.5
-test:3.5:
-  <<: *test
-  image: python:3.5
-
 # Test with python 3.6
 test:3.6:
   <<: *test
-  image: python:3.6
+  image: python:3.6-slim-buster
 
 # Test with python 3.7
 test:3.7:
   <<: *test
-  image: python:3.7-stretch
+  image: python:3.7-slim-buster
 
 # Test with python 3.8
 test:3.8:
   <<: *test
-  image: python:3.8-buster
+  image: python:3.8-slim-buster
+
+# Test with python 3.9
+test:3.9:
+  <<: *test
+  image: python:3.9-slim-buster
 
 sonar:
   stage: sonar
@@ -61,4 +43,4 @@ sonar:
   script: infinity sonar scanner
   allow_failure: true
   dependencies:
-    - test:3.8
+    - test:3.9

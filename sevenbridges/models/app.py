@@ -1,8 +1,6 @@
 import logging
 import re
 
-import six
-
 from sevenbridges.meta.fields import (
     DictField,
     HrefField,
@@ -52,22 +50,15 @@ class App(Resource):
             return self._id
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __str__(self):
         revision = self.field('revision')
         if revision:
-            return six.text_type('<App: id={id} rev={rev}>'.format(
-                id=self.id, rev=revision)
-            )
-        return six.text_type('<App: id={id}'.format(id=self.id))
+            return f'<App: id={self.id} rev={self.revision}>'
+        return f'<App: id={self.id}'
 
     @classmethod
     def query(cls, project=None, visibility=None, q=None, id=None, offset=None,
@@ -86,9 +77,9 @@ class App(Resource):
         if project:
             project = Transform.to_project(project)
         api = api or cls._API
-        return super(App, cls)._query(url=cls._URL['query'], project=project,
-                                      visibility=visibility, q=q, id=id,
-                                      offset=offset, limit=limit, api=api)
+        return super()._query(url=cls._URL['query'], project=project,
+                              visibility=visibility, q=q, id=id,
+                              offset=offset, limit=limit, api=api)
 
     @classmethod
     def get_revision(cls, id, revision, api=None):
@@ -132,9 +123,7 @@ class App(Resource):
 
         # Set content type for raw app data
         if raw_format not in cls._CONTENT_TYPE.keys():
-            raise SbgError(
-                'Unsupported raw data format: "{}".'
-                .format(raw_format))
+            raise SbgError(f'Unsupported raw data format: "{raw_format}".')
         headers = {'Content-Type': cls._CONTENT_TYPE[raw_format]}
 
         app = api.post(
@@ -205,7 +194,7 @@ class App(Resource):
         if name:
             data['name'] = name
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': app_id,
                 'data': data

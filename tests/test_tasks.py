@@ -14,7 +14,7 @@ def test_tasks_query(api, given, verifier, parent):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.task.tasks_in_project_for_parent(id, parent, total)
 
     # action
@@ -34,7 +34,7 @@ def test_tasks_query_dates(api, given, verifier):
     total = 10
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.task.tasks_in_project(id, total)
 
     # action
@@ -72,10 +72,10 @@ def test_create_task(api, given, verifier, run):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    project_id = '{}/{}'.format(owner, project_short_name)
+    project_id = f'{owner}/{project_short_name}'
     given.project.exists(id=project_id)
     given.file.files_exist_for_project(project_id, 10)
-    app_id = '{}/{}/{}'.format(owner, project_short_name, 'app-name')
+    app_id = f'{owner}/{project_short_name}/app-name'
     batch_by = {'type': 'item'}
 
     project = api.projects.get(id=project_id)
@@ -111,10 +111,10 @@ def test_create_task_with_errors(api, given, verifier, run):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    project_id = '{}/{}'.format(owner, project_short_name)
+    project_id = f'{owner}/{project_short_name}'
     given.project.exists(id=project_id)
     given.file.files_exist_for_project(project_id, 10)
-    app_id = '{}/{}/{}'.format(owner, project_short_name, 'app-name')
+    app_id = f'{owner}/{project_short_name}/app-name'
     batch_by = {'type': 'item'}
 
     project = api.projects.get(id=project_id)
@@ -196,7 +196,7 @@ def test_modify_inputs(api, given, verifier):
     # precondition
     owner = generator.user_name()
     project_short_name = generator.slug()
-    project_id = '{}/{}'.format(owner, project_short_name)
+    project_id = f'{owner}/{project_short_name}'
     given.project.exists(id=project_id)
     given.file.files_exist_for_project(project_id, 1)
     id = generator.uuid4()
@@ -223,7 +223,7 @@ def test_save_task(api, given, verifier):
     # precondition
     owner = generator.user_name()
     project_short_name = generator.slug()
-    project_id = '{}/{}'.format(owner, project_short_name)
+    project_id = f'{owner}/{project_short_name}'
     given.project.exists(id=project_id)
     given.file.files_exist_for_project(project_id, 10)
     id = generator.uuid4()

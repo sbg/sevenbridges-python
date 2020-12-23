@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField,
@@ -47,17 +45,12 @@ class Import(Resource):
     _result = DictField(name='result', read_only=True)
 
     def __str__(self):
-        return six.text_type('<Import: id={id}>'.format(id=self.id))
+        return f'<Import: id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @property
     def result(self):
@@ -161,7 +154,7 @@ class Import(Resource):
         if volume:
             volume = Transform.to_volume(volume)
 
-        return super(Import, cls)._query(
+        return super()._query(
             url=cls._URL['query'], project=project, volume=volume, state=state,
             fields='_all', offset=offset, limit=limit, api=api
         )
@@ -251,4 +244,4 @@ class ImportBulkRecord(BulkRecord):
     resource = CompoundField(cls=Import)
 
     def __str__(self):
-        return six.text_type('<ImportBulkRecord>')
+        return f'<ImportBulkRecord valid={self.valid}>'

@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.fields import IntegerField, DateTimeField
 from sevenbridges.meta.resource import Resource
 
@@ -13,7 +11,4 @@ class Rate(Resource):
     reset = DateTimeField()
 
     def __str__(self):
-        return six.text_type(
-            '<Rate: limit={limit}, remaining={rem}>'
-            .format(limit=self.limit, rem=self.remaining)
-        )
+        return f'<Rate: limit={self.limit}, remaining={self.remaining}>'
