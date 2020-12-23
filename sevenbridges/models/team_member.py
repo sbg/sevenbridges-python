@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.meta.fields import HrefField, StringField
 from sevenbridges.meta.resource import Resource
 
@@ -18,15 +16,9 @@ class TeamMember(Resource):
     role = StringField(read_only=True)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type('<Team member: username={username}>'
-                             .format(username=self.username))
+        return f'<Team member: username={self.username}>'

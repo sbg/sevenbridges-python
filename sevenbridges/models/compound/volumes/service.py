@@ -11,7 +11,7 @@ class VolumeService(CompoundMutableDict, Resource):
     _name = 'service'
 
     def __init__(self, **kwargs):
-        super(VolumeService, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         try:

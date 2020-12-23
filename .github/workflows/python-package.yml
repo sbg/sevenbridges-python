@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+  release:
+    types:
+      - published
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        pip install -r requirements-dev.txt
+    - name: Test with pytest
+      run: |
+        flake8
+        pytest --verbose --cov-config setup.cfg
+
+  release:
+    needs: tests
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Build and publish
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          pip install wheel twine
+          export PACKAGE_VERSION=${GITHUB_REF:10}
+          echo "__version__ = '$PACKAGE_VERSION'" > sevenbridges/version.py
+          python setup.py sdist bdist_wheel
+          twine upload dist/*

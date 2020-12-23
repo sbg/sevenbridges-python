@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class DataContainer(object):
+class DataContainer:
     """
     Utility for fetching data from the API server using,
     resource identifier or href.

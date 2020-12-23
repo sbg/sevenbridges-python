@@ -10,7 +10,7 @@ def test_get_project(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
 
     # action
@@ -67,7 +67,7 @@ def test_modify_project(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     new_name = generator.name()
     given.project.can_be_saved(id=id, name=new_name)
@@ -86,7 +86,7 @@ def test_project_get_members(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     given.member.members_exist(project=id, num_of_members=2)
 
@@ -103,7 +103,7 @@ def test_project_get_member(api, given, verifier):
     username = generator.user_name()
     member_username = generator.user_name()
     project_name = generator.slug()
-    id = '{}/{}'.format(username, project_name)
+    id = f'{username}/{project_name}'
     given.project.exists(id=id)
     given.project.has_member(id, project_name, member_username)
 
@@ -120,7 +120,7 @@ def test_project_add_member(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     username = generator.user_name()
     given.project.exists(id=id)
     mocked_member = given.member.member_exist(project=id, username=username)
@@ -145,7 +145,7 @@ def test_project_add_member_email(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     email = generator.email()
     given.project.exists(id=id)
     mocked_member = given.member.member_exist(project=id, email=email)
@@ -170,7 +170,7 @@ def test_project_remove_member(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     username = generator.user_name()
     given.project.exists(id=id)
     given.member.can_be_removed(id, username)
@@ -186,7 +186,7 @@ def test_project_get_files(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     given.file.files_exist_for_project(id, 2)
 
@@ -201,7 +201,7 @@ def test_project_get_files(api, given, verifier):
 def test_projects_get_apps(api, given, verifier):
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     given.app.apps_exist_for_project(id, 2)
 
@@ -216,7 +216,7 @@ def test_projects_get_apps(api, given, verifier):
 def test_projects_get_tasks(api, given, verifier):
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     given.task.tasks_exists_for_project(id, 2)
 
@@ -232,7 +232,7 @@ def test_member_permissions_save(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     username = generator.user_name()
     given.project.exists(id=id)
     mocked_member = given.member.member_exist(project=id, username=username)
@@ -255,7 +255,7 @@ def test_member_permissions_save_no_changes(api, given, verifier):
     # preconditions
     owner = generator.user_name()
     project_short_name = generator.slug()
-    id = '{}/{}'.format(owner, project_short_name)
+    id = f'{owner}/{project_short_name}'
     username = generator.user_name()
     given.project.exists(id=id)
     mocked_member = given.member.member_exist(project=id, username=username)

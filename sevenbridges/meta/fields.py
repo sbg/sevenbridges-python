@@ -1,15 +1,13 @@
 from uuid import UUID
 from datetime import datetime
 
-import six
-
 from sevenbridges.errors import ReadOnlyPropertyError, ValidationError
 
 empty = object()
 
 
 # noinspection PyProtectedMember
-class Field(object):
+class Field:
     def __init__(self, name=None, read_only=True, validator=None):
         self.name = name
         self.read_only = read_only
@@ -19,7 +17,7 @@ class Field(object):
         # using empty as sentinel, value can be only set once - first time
         if self.read_only and instance._data[self.name] is not empty:
             raise ReadOnlyPropertyError(
-                'Property {} is marked as read only!'.format(self.name)
+                f'Property {self.name} is marked as read only!'
             )
 
         # handle metadata. If metadata is set use _overwrite_metadata to signal
@@ -55,7 +53,7 @@ class Field(object):
 # noinspection PyProtectedMember
 class CompoundField(Field):
     def __init__(self, cls, name=None, read_only=False, validator=None):
-        super(CompoundField, self).__init__(
+        super().__init__(
             name=name, read_only=read_only, validator=validator
         )
         self.cls = cls
@@ -72,7 +70,7 @@ class CompoundField(Field):
 # noinspection PyProtectedMember
 class CompoundListField(Field):
     def __init__(self, cls, name=None, read_only=True):
-        super(CompoundListField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
         self.cls = cls
 
     def __get__(self, instance, owner):
@@ -86,72 +84,66 @@ class CompoundListField(Field):
 
 class DictField(Field, dict):
     def __init__(self, name=None, read_only=False):
-        super(DictField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
 
 class HrefField(Field):
     def __init__(self, name=None):
-        super(HrefField, self).__init__(name=name)
+        super().__init__(name=name)
 
 
 class ObjectIdField(Field):
     def __init__(self, name=None, read_only=True):
-        super(ObjectIdField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
 
 class IntegerField(Field):
     def __init__(self, name=None, read_only=False):
-        super(IntegerField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
-        if value and not isinstance(value, six.integer_types):
+        if value and not isinstance(value, int):
             raise ValidationError(
-                '{} is not a valid value for {}'.format(
-                    value, self.__class__.__name__
-                )
+                f'{value} is not a valid value for {type(self).__name__}'
             )
         return value
 
 
 class FloatField(Field):
     def __init__(self, name=None, read_only=False):
-        super(FloatField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
         try:
             return float(value)
         except ValueError:
             raise ValidationError(
-                '{} is not a valid value for {}'.format(
-                    value, self.__class__.__name__
-                )
+                f'{value} is not a valid value for {type(self).__name__}'
             )
 
 
 class StringField(Field):
     def __init__(self, name=None, read_only=False, max_length=None):
-        super(StringField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
         self.max_length = max_length
 
     def validate(self, value):
-        value = super(StringField, self).validate(value)
-        if value and not isinstance(value, six.string_types):
+        value = super().validate(value)
+        if value and not isinstance(value, str):
             raise ValidationError(
-                '{} is not a valid value for {}'.format(
-                    value, self.__class__.__name__)
+                f'{value} is not a valid value for {type(self).__name__}'
             )
         if self.max_length is not None and len(value) > self.max_length:
-            raise ValidationError(
-                '{}: max length exceeded.'.format(self.name))
+            raise ValidationError(f'{self.name}: max length exceeded.')
         return value
 
 
 class DateTimeField(Field):
     def __init__(self, name=None, read_only=True):
-        super(DateTimeField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
     def __get__(self, instance, cls):
-        data = super(DateTimeField, self).__get__(instance, cls)
+        data = super().__get__(instance, cls)
         if data:
             datetime_format = "%Y-%m-%dT%H:%M:%S"
             if '.' in data:
@@ -163,46 +155,42 @@ class DateTimeField(Field):
 
 class BooleanField(Field):
     def __init__(self, name=None, read_only=False):
-        super(BooleanField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
         if value and not isinstance(value, bool):
             raise ValidationError(
-                '{} is not a valid value for {}'.format(
-                    value, self.__class__.__name__
-                )
+                '{value} is not a valid value for {type(self).__name__}'
             )
         return value
 
 
 class UuidField(Field):
     def __init__(self, name=None, read_only=True):
-        super(UuidField, self).__init__(name=name, read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
-        value = super(UuidField, self).validate(value)
+        value = super().validate(value)
         try:
             UUID(value, version=4)
             return value
         except ValueError:
             raise ValidationError(
-                '{} is not a valid value for {}'.format(
-                    value, self.__class__.__name__)
+                f'{value} is not a valid value for {type(self).__name__}'
             )
 
 
 class BasicListField(Field):
     def __init__(self, name=None, read_only=False, max_length=None):
-        super(BasicListField, self).__init__(name=name,
-                                             read_only=read_only)
+        super().__init__(name=name, read_only=read_only)
         self.max_length = max_length
 
     def validate(self, value):
-        value = super(BasicListField, self).validate(value)
+        value = super().validate(value)
         if value and not isinstance(value, list):
             raise ValidationError('Validation failed, not a list.')
         if self.max_length is not None and len(value) > self.max_length:
             raise ValidationError(
-                'Exceeded {} allowed elements.'.format(self.max_length)
+                f'Exceeded {self.max_length} allowed elements.'
             )
         return value

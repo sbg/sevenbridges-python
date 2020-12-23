@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.fields import StringField
 from sevenbridges.meta.resource import Resource
 
@@ -13,8 +11,4 @@ class VolumePrefix(Resource):
     volume = StringField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<VolumePrefix: prefix={prefix}>'.format(
-                prefix=self.prefix
-            )
-        )
+        return f'<VolumePrefix: prefix={self.prefix}>'

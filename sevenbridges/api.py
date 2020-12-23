@@ -85,7 +85,7 @@ class Api(HttpClient):
             requests, only useful for multi thread applications.
         :return: Api object instance.
         """
-        super(Api, self).__init__(
+        super().__init__(
             url=url, token=token, oauth_token=oauth_token, config=config,
             timeout=timeout, proxies=proxies, error_handlers=error_handlers,
             advance_access=advance_access, pool_connections=pool_connections,

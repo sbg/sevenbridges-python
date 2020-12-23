@@ -10,7 +10,7 @@ class VolumeProperties(CompoundMutableDict, Resource):
     _name = 'properties'
 
     def __init__(self, **kwargs):
-        super(VolumeProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         try:

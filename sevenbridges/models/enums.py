@@ -68,6 +68,14 @@ class TaskStatus:
     ABORTING = 'ABORTING'
     FAILED = 'FAILED'
 
+    @property
+    def terminal_states(self):
+        return [
+            self.COMPLETED,
+            self.FAILED,
+            self.ABORTED,
+        ]
+
 
 class FeedbackType:
     IDEA = 'IDEA'
@@ -109,3 +117,22 @@ class DivisionRole:
     MEMBER = 'member'
     ADMIN = 'admin'
     EXTERNAL_COLLABORATOR = 'external_collaborator'
+
+
+class AutomationStatus:
+    CREATED = 'CREATED'
+    FINISHED = 'FINISHED'
+    ABORTED = 'ABORTED'
+    FAILED = 'FAILED'
+    RUNNING = 'RUNNING'
+    SENT_TO_EXECUTION = 'SENT_TO_EXECUTION'
+    QUEUED_FOR_EXECUTION = 'QUEUED_FOR_EXECUTION'
+    QUEUED_FOR_TERMINATION = 'QUEUED_FOR_TERMINATION'
+
+    @property
+    def terminal_states(self):
+        return [
+            self.FINISHED,
+            self.FAILED,
+            self.ABORTED,
+        ]

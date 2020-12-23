@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.models.file import FileBulkRecord
 from sevenbridges.meta.transformer import Transform
@@ -55,20 +53,12 @@ class AsyncJob(Resource):
     finished_on = DateTimeField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<AsyncJob: type={type} id={id}>'
-            .format(id=self.id, type=self.type)
-        )
+        return f'<AsyncJob: type={self.type} id={self.id}>'
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @classmethod
     def get_file_copy_job(cls, id, api=None):
@@ -139,7 +129,7 @@ class AsyncJob(Resource):
         :return: Collection object
         """
         api = api or cls._API
-        return super(AsyncJob, cls)._query(
+        return super()._query(
             api=api,
             url=cls._URL['list_file_jobs'],
             offset=offset,

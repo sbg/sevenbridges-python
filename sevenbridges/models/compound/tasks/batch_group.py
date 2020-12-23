@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import StringField, DictField
 
@@ -13,6 +11,5 @@ class BatchGroup(Resource):
     value = StringField(read_only=True)
     fields = DictField(read_only=True)
 
-    @staticmethod
-    def __str__(**kwargs):
-        return six.text_type('<Batch group>')
+    def __str__(self):
+        return '<Batch group>'

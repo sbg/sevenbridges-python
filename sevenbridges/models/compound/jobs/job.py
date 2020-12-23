@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.fields import (
     StringField, DateTimeField, CompoundField, BooleanField
 )
@@ -25,8 +23,4 @@ class Job(Resource):
     logs = CompoundField(Logs, read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<Job: name={name}, status={status}>'.format(
-                name=self.name, status=self.status
-            )
-        )
+        return f'<Job: name={self.name}, status={self.status}>'

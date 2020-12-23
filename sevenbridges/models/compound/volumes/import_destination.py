@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import StringField
 
@@ -14,8 +12,4 @@ class ImportDestination(Resource):
     name = StringField(read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<ImportDestination: project={project}, name={name}>'.format(
-                project=self.project, name=self.name
-            )
-        )
+        return f'<ImportDestination: project={self.project}, name={self.name}>'

@@ -6,30 +6,30 @@ import faker
 generator = faker.Factory.create()
 
 
-class EndpointProvider(object):
+class EndpointProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
 
     def endpoints(self):
         return {
-            'rate_limit_url': self.base_url + 'v2/rate_limit',
-            'user_url': self.base_url + 'v2/user',
-            'users_url': self.base_url + 'v2/users',
-            'billing_url': self.base_url + 'v2/billing',
-            'projects_url': self.base_url + 'v2/projects',
-            'files_url': self.base_url + 'v2/files',
-            'tasks_url': self.base_url + 'v2/tasks',
-            'apps_url': self.base_url + 'v2/apps',
-            'action_url': self.base_url + 'v2/action',
-            'upload_url': self.base_url + 'v2/upload'
+            'rate_limit_url': f'{self.base_url}/v2/rate_limit',
+            'user_url': f'{self.base_url}/v2/user',
+            'users_url': f'{self.base_url}/v2/users',
+            'billing_url': f'{self.base_url}/v2/billing',
+            'projects_url': f'{self.base_url}/v2/projects',
+            'files_url': f'{self.base_url}/v2/files',
+            'tasks_url': f'{self.base_url}/v2/tasks',
+            'apps_url': f'{self.base_url}/v2/apps',
+            'action_url': f'{self.base_url}/v2/action',
+            'upload_url': f'{self.base_url}/v2/upload'
         }
 
     def defined(self):
         self.request_mocker.get('/', json=self.endpoints())
 
 
-class RateLimitProvider(object):
+class RateLimitProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -54,7 +54,7 @@ class RateLimitProvider(object):
         self.request_mocker.get('/rate_limit', json=rate)
 
 
-class UserProvider(object):
+class UserProvider:
     """
     Server side user data mocking.
     """
@@ -84,10 +84,10 @@ class UserProvider(object):
         user = self.default_user()
         user.update(kwargs)
         username = user['username']
-        self.request_mocker.get('/users/{}'.format(username), json=user)
+        self.request_mocker.get(f'/users/{username}', json=user)
 
 
-class ProjectProvider(object):
+class ProjectProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -97,7 +97,7 @@ class ProjectProvider(object):
     def default_project():
         return {
             'href': generator.url(),
-            'id': '{}/{}'.format('my', 'my-project'),
+            'id': 'my/my-project',
             'name': generator.user_name(),
             'billing_group': generator.uuid4(),
             'settings': {}
@@ -107,7 +107,7 @@ class ProjectProvider(object):
         project = self.default_project()
         project.update(kwargs)
         id = project['id']
-        self.request_mocker.get('/projects/{}'.format(id), json=project)
+        self.request_mocker.get(f'/projects/{id}', json=project)
 
     def query(self, total, **kwargs):
         items = [ProjectProvider.default_project() for _ in range(total)]
@@ -116,9 +116,9 @@ class ProjectProvider(object):
         owner = kwargs.get('owner')
         url = '/projects/?fields=_all'
         if owner:
-            url = '/projects/{}?fields=_all'.format(owner)
+            url = f'/projects/{owner}?fields=_all'
         if name:
-            url += '&name={}'.format(name)
+            url += f'&name={name}'
         href = self.base_url + url
         links = []
         response = {
@@ -139,21 +139,18 @@ class ProjectProvider(object):
         project = self.default_project()
         project.update(**kwargs)
         id = project['id']
-        self.request_mocker.patch('/projects/{id}'.format(id=id), json=project)
+        self.request_mocker.patch(f'/projects/{id}', json=project)
 
     def paginated_projects(self, limit, num_of_projects):
         items = [ProjectProvider.default_project() for _ in
                  range(num_of_projects)]
         for i in range(0, num_of_projects, limit):
-            href = self.base_url + '/projects/?offset={}&limit={}'.format(
-                str(i), str(limit)
-            )
+            href = f'{self.base_url}/projects/?offset={i}&limit={limit}'
             sub_items = items[i:i + limit]
             links = []
             if i + limit < num_of_projects:
-                url = '/projects/?offset={offset}&limit={limit}&fields=_all'
-                next_url = url.format(
-                    offset=str(i + limit), limit=str(limit)
+                next_url = (
+                    f'/projects/?offset={i + limit}&limit={limit}&fields=_all'
                 )
                 next_page_link = {
                     'method': 'GET',
@@ -163,9 +160,8 @@ class ProjectProvider(object):
                 links.append(next_page_link)
 
             if i > limit:
-                url = '/projects/?offset={offset}&limit={limit}&fields=_all'
-                prev_url = url.format(
-                    offset=str(i - limit), limit=str(limit)
+                prev_url = (
+                   f'/projects/?offset={i - limit}&limit={limit}&fields=_all'
                 )
                 prev = {
                     'method': 'GET',
@@ -179,8 +175,11 @@ class ProjectProvider(object):
                 'items': sub_items,
                 'links': links
             }
-            self.request_mocker.get(href, json=response, headers={
-                'x-total-matching-query': str(num_of_projects)})
+            self.request_mocker.get(
+                href, json=response, headers={
+                    'x-total-matching-query': str(num_of_projects)
+                }
+            )
 
     def has_member(self, id, project_name, member_username):
         member = self.member_provider.default_member(
@@ -188,14 +187,11 @@ class ProjectProvider(object):
             project=project_name
         )
 
-        href = (
-            self.base_url +
-            '/projects/{}/members/{}'.format(id, member_username)
-        )
+        href = f'{self.base_url}/projects/{id}/members/{member_username}'
         self.request_mocker.get(href, json=member)
 
 
-class MemberProvider(object):
+class MemberProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -206,19 +202,12 @@ class MemberProvider(object):
             username = generator.user_name()
 
         if dataset is not None:
-            url = (
-                self.base_url + '/datasets/' + dataset + "/members/" + username
-            )
+            url = f'{self.base_url}/datasets/{dataset}/members/{username}'
         elif volume is not None:
-            url = (
-                self.base_url + '/storage/volumes' + volume +
-                '/members/' + username
-            )
+            url = f'{self.base_url}/storage/volumes{volume}/members/{username}'
         else:
             project = project or generator.name()
-            url = (
-                self.base_url + '/projects/' + project + "/members/" + username
-            )
+            url = f'{self.base_url}/projects/{project}/members/{username}'
 
         return {
             'href': url,
@@ -235,9 +224,7 @@ class MemberProvider(object):
     def members_exist(self, project, num_of_members):
         items = [self.default_member(project, 'test') for _ in
                  range(num_of_members)]
-        url = '/projects/{project}/members'.format(
-            project=project)
-        href = self.base_url + url
+        href = f'{self.base_url}/projects/{project}/members'
         links = []
         response = {
             'href': href,
@@ -253,29 +240,23 @@ class MemberProvider(object):
             member.update({'username': username})
         if email:
             member.update({'email': email})
-        url = '/projects/{project}/members'.format(
-            project=project
-        )
-        href = self.base_url + url
+        href = f'{self.base_url}/projects/{project}/members'
         self.request_mocker.request('POST', href, json=member)
         return member
 
     def can_be_removed(self, project, username):
-        url = '/projects/{project}/members/{username}'.format(
-            project=project, username=username
-        )
-        href = self.base_url + url
+        href = f'{self.base_url}/projects/{project}/members/{username}'
         self.request_mocker.delete(href, status_code=204)
 
     def permissions_can_be_modified(self, project, username):
-        url = '/projects/{project}/members/{username}/permissions'.format(
-            project=project, username=username
+        href = (
+            f'{self.base_url}/projects/{project}'
+            f'/members/{username}/permissions'
         )
-        href = self.base_url + url
         self.request_mocker.patch(href, status_code=200)
 
 
-class FileProvider(object):
+class FileProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -307,9 +288,9 @@ class FileProvider(object):
         file_ = FileProvider.default_file()
         file_.update(kwargs)
         id_ = file_['id']
-        href = file_['href'] + 'files/{}'.format(id_)
+        href = f'{file_["href"]}files/{id_}'
         file_['href'] = href
-        self.request_mocker.get('/files/{id}'.format(id=id_), json=file_)
+        self.request_mocker.get(f'/files/{id_}', json=file_)
 
     def exist(self, files):
         all_files = []
@@ -317,9 +298,9 @@ class FileProvider(object):
             file_ = FileProvider.default_file()
             file_.update(file_data)
             id_ = file_['id']
-            href = file_['href'] + 'files/{}'.format(id_)
+            href = f'{file_["href"]}files/{id_}'
             file_['href'] = href
-            self.request_mocker.get('/files/{id}'.format(id=id_), json=file_)
+            self.request_mocker.get(f'/files/{id_}', json=file_)
             all_files.append({'resource': file_})
 
         data = {'items': all_files}
@@ -354,40 +335,36 @@ class FileProvider(object):
 
     def download_info_defined(self, id):
         json = self.download_info()
-        url = '/files/{id}/download_info'.format(id=id)
+        url = f'/files/{id}/download_info'
         self.request_mocker.get(url, json=json)
 
     def can_be_copied(self, id=None, new_id=None):
         file_ = FileProvider.default_file()
         file_['id'] = new_id
         self.request_mocker.request(
-            'POST', '/files/{id}/actions/copy'.format(id=id), json=file_)
+            'POST', f'/files/{id}/actions/copy', json=file_)
 
     def can_be_saved(self, id=None):
         file_ = FileProvider.default_file()
         file_['id'] = id
-        self.request_mocker.patch('/files/{id}'.format(id=id),
-                                  json=file_)
+        self.request_mocker.patch(f'/files/{id}', json=file_)
 
     def metadata_can_be_saved(self, id):
         file_ = FileProvider.default_file()
         self.request_mocker.patch(
-            '/files/{id}/metadata'.format(id=id), json=file_['metadata']
+            f'/files/{id}/metadata', json=file_['metadata']
         )
 
     def tags_can_be_saved(self, id):
         file_ = FileProvider.default_file()
         self.request_mocker.request(
-            'PUT', '/files/{id}/tags'.format(id=id), json=file_['tags']
+            'PUT', f'/files/{id}/tags', json=file_['tags']
         )
 
     def files_exist_for_project(self, project, num_of_files, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
         suffix = 'files/scroll' if scroll else 'files'
-        href = self.base_url + '/{suffix}?project={project}'.format(
-            suffix=suffix,
-            project=project
-        )
+        href = f'{self.base_url}/{suffix}?project={project}'
         links = []
         response = {
             'href': href,
@@ -399,7 +376,7 @@ class FileProvider(object):
 
     def files_exist_for_folder(self, folder_id, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        href = self.base_url + '/files?parent={}'.format(folder_id)
+        href = f'{self.base_url}/files?parent={folder_id}'
         links = []
         response = {
             'href': href,
@@ -411,10 +388,7 @@ class FileProvider(object):
 
     def files_exist_for_file_name(self, project, file_name, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        url = '/files?project={project}&name={name}'.format(
-            project=project, name=file_name
-        )
-        href = self.base_url + url
+        href = f'{self.base_url}/files?project={project}&name={file_name}'
         links = []
         response = {
             'href': href,
@@ -426,10 +400,9 @@ class FileProvider(object):
 
     def files_exist_for_file_metadata(self, project, key, value, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        url = '/files?project={project}&metadata.{key}={value}'.format(
-            project=project, key=key, value=value)
-        href = self.base_url + url
-
+        href = (
+            f'{self.base_url}/files?project={project}&metadata.{key}={value}'
+        )
         links = []
         response = {
             'href': href,
@@ -441,10 +414,7 @@ class FileProvider(object):
 
     def files_exist_for_file_origin(self, project, key, value, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        url = '/files?project={project}&origin.{key}={value}'.format(
-            project=project, key=key, value=value
-        )
-        href = self.base_url + url
+        href = f'{self.base_url}/files?project={project}&origin.{key}={value}'
         links = []
         response = {
             'href': href,
@@ -456,10 +426,10 @@ class FileProvider(object):
 
     def files_exist_for_file_tag(self, project, tags, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
-        url = '/files?project={project}&tag={tag1}&tag={tag2}'.format(
-            project=project, tag1=tags[0], tag2=tags[1]
+        href = (
+            f'{self.base_url}/files?'
+            f'project={project}&tag={tags[0]}&tag={tags[1]}'
         )
-        href = self.base_url + url
         links = []
         response = {
             'href': href,
@@ -472,12 +442,7 @@ class FileProvider(object):
     def files_in_folder(self, num_of_files, folder_id, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
         suffix = 'scroll' if scroll else 'list'
-        url = '/files/{folder_id}/{suffix}'.format(
-            folder_id=folder_id,
-            suffix=suffix
-        )
-        href = self.base_url + url
-
+        href = f'{self.base_url}/files/{folder_id}/{suffix}'
         response = {
             'href': href,
             'items': items,
@@ -500,9 +465,7 @@ class FileProvider(object):
         if name:
             file_['name'] = name
 
-        self.request_mocker.post(
-            '/files/{file_id}/actions/copy'.format(file_id=id), json=file_
-        )
+        self.request_mocker.post(f'/files/{id}/actions/copy', json=file_)
 
     def can_move_to_folder(self, id=None, parent=None, name=None):
         file_ = self.default_file()
@@ -513,12 +476,10 @@ class FileProvider(object):
         if name:
             result['name'] = name
 
-        self.request_mocker.post(
-            '/files/{file_id}/actions/move'.format(file_id=id), json=result
-        )
+        self.request_mocker.post(f'/files/{id}/actions/move', json=result)
 
 
-class AppProvider(object):
+class AppProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -538,7 +499,7 @@ class AppProvider(object):
     def apps_exist(self, visibility, num_of_apps):
         items = [AppProvider.default_app() for _ in range(num_of_apps)]
         if visibility:
-            url = '/apps?visibility={visibility}'.format(visibility=visibility)
+            url = f'/apps?visibility={visibility}'
         else:
             url = '/apps'
         href = self.base_url + url
@@ -565,13 +526,12 @@ class AppProvider(object):
     def app_with_revision_exists(self, **kwargs):
         app = self.default_app()
         app.update(kwargs)
-        href = '/apps/{}/{}'.format(app['id'], app['revision'])
+        href = f'/apps/{app["id"]}/{app["revision"]}'
         self.request_mocker.get(href, json=app)
 
     def apps_exist_for_project(self, project, num_of_apps):
         items = [AppProvider.default_app() for _ in range(num_of_apps)]
-        url = '/apps?project={project}'.format(project=project)
-        href = self.base_url + url
+        href = f'{self.base_url}/apps?project={project}'
         links = []
         response = {
             'href': href,
@@ -585,7 +545,7 @@ class AppProvider(object):
         app = self.default_app()
         app['id'] = kwargs.pop('id')
         app['name'] = kwargs.pop('new_name')
-        href = '/apps/{}/actions/copy'.format(app['id'])
+        href = f'/apps/{app["id"]}/actions/copy'
         self.request_mocker.request('POST', url=href, json=app)
 
     def app_exists(self, **kwargs):
@@ -593,25 +553,25 @@ class AppProvider(object):
         app.update(kwargs)
         id = app['id']
         app['raw']['id'] = id
-        href = '/apps/{}'.format(id)
+        href = f'/apps/{id}'
         self.request_mocker.get(url=href, json=app)
 
     def app_can_be_installed(self, **kwargs):
         app = self.default_app()
         app.update(kwargs)
         app['raw']['sbg:id'] = app['id']
-        href = '/apps/{}/raw'.format(app['id'])
+        href = f'/apps/{app["id"]}/raw'
         self.request_mocker.request('POST', url=href, json=app['raw'])
 
     def revision_can_be_created(self, **kwargs):
         app = self.default_app()
         app.update(kwargs)
         app['raw']['sbg:id'] = app['id']
-        href = '/apps/{}/{}/raw'.format(app['id'], app['revision'])
+        href = f'/apps/{app["id"]}/{app["revision"]}/raw'
         self.request_mocker.request('POST', url=href, json=app['raw'])
 
 
-class TaskProvider(object):
+class TaskProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -653,7 +613,7 @@ class TaskProvider(object):
     def exists(self, **kwargs):
         task = TaskProvider.default_task()
         task.update(**kwargs)
-        url = self.base_url + '/tasks/{}'.format(task['id'])
+        url = f'{self.base_url}/tasks/{task["id"]}'
         self.request_mocker.get(url, json=task)
         return task
 
@@ -663,9 +623,9 @@ class TaskProvider(object):
             task = TaskProvider.default_task()
             task.update(task_data)
             id_ = task['id']
-            href = task['href'] + 'tasks/{}'.format(id_)
+            href = f'{task["href"]}tasks/{id_}'
             task['href'] = href
-            self.request_mocker.get('/tasks/{id}'.format(id=id_), json=task)
+            self.request_mocker.get(f'/tasks/{id_}', json=task)
             all_tasks.append({'resource': task})
 
         data = {'items': all_tasks}
@@ -685,9 +645,7 @@ class TaskProvider(object):
 
     def tasks_exists_for_project(self, project, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
-        project_url = '/tasks?project={project}'.format(project=project)
-        href = self.base_url + project_url
-
+        href = f'{self.base_url}/tasks?project={project}'
         links = []
         response = {
             'href': href,
@@ -699,13 +657,8 @@ class TaskProvider(object):
 
     def tasks_in_project_for_parent(self, project, parent, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
-        url = '/tasks?project={project}&parent={parent}'.format(
-            project=project, parent=parent
-        )
-        href = self.base_url + url
-
-        url_no_parent = '/tasks?project={project}'.format(project=project)
-        href_no_parent = self.base_url + url_no_parent
+        href = f'{self.base_url}/tasks?project={project}&parent={parent}'
+        href_no_parent = f'{self.base_url}/tasks?project={project}'
         links = []
         response = {
             'href': href,
@@ -720,10 +673,7 @@ class TaskProvider(object):
 
     def tasks_in_project(self, project, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
-        url = '/tasks?project={project}'.format(
-            project=project
-        )
-        href = self.base_url + url
+        href = f'{self.base_url}/tasks?project={project}'
 
         links = []
         response = {
@@ -737,8 +687,7 @@ class TaskProvider(object):
 
     def tasks_exist_for_parent(self, parent, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
-        url = '/tasks?parent={parent}'.format(parent=parent)
-        href = self.base_url + url
+        href = f'{self.base_url}/tasks?parent={parent}'
         links = []
         response = {
             'href': href,
@@ -765,16 +714,16 @@ class TaskProvider(object):
         task = self.default_task()
         task.update(kwargs)
         id = task['id']
-        href = task['href'] + 'tasks/{}'.format(id)
+        href = f'{task["href"]}tasks/{id}'
         task['href'] = href
-        self.request_mocker.get('/tasks/{}'.format(id), json=task)
+        self.request_mocker.get(f'/tasks/{id}', json=task)
 
     def task_can_be_aborted(self, **kwargs):
         task = self.default_task()
         task.update(kwargs)
         id = task['id']
         self.request_mocker.request(
-            'POST', '/tasks/{}/actions/abort'.format(id), json=task
+            'POST', f'/tasks/{id}/actions/abort', json=task
         )
 
     def task_can_be_run(self, **kwargs):
@@ -782,7 +731,7 @@ class TaskProvider(object):
         task.update(kwargs)
         id = task['id']
         self.request_mocker.request(
-            'POST', '/tasks/{}/actions/run'.format(id), json=task
+            'POST', f'/tasks/{id}/actions/run', json=task
         )
 
     def task_can_be_clone(self, **kwargs):
@@ -790,24 +739,24 @@ class TaskProvider(object):
         task.update(kwargs)
         id = task['id']
         self.request_mocker.request(
-            'POST', '/tasks/{}/actions/clone'.format(id), json=task
+            'POST', f'/tasks/{id}/actions/clone', json=task
         )
 
     def task_can_be_saved(self, id=None, status=None):
         task = TaskProvider.default_task()
         task['id'] = id
         task['status'] = status
-        self.request_mocker.patch('/tasks/{id}'.format(id=id), json=task)
+        self.request_mocker.patch(f'/tasks/{id}', json=task)
 
     def task_execution_details_exist(self, id=None):
         execution_details = TaskProvider.execution_details()
         self.request_mocker.get(
-            '/tasks/{id}/execution_details'.format(id=id),
+            f'/tasks/{id}/execution_details',
             json=execution_details
         )
 
 
-class VolumeProvider(object):
+class VolumeProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -817,7 +766,7 @@ class VolumeProvider(object):
     def default_volume():
         volume = {
             "href": generator.url(),
-            "id": '{}/{}'.format('my', 'my-volume'),
+            "id": 'my/my-volume',
             "name": generator.name(),
             "description": "Awesome!",
             "access_mode": "RO",
@@ -835,7 +784,7 @@ class VolumeProvider(object):
 
     def can_be_queried(self, num):
         items = [VolumeProvider.default_volume() for _ in range(num)]
-        href = self.base_url + '/storage/volumes'
+        href = f'{self.base_url}/storage/volumes'
         links = []
         response = {
             'href': href,
@@ -853,23 +802,19 @@ class VolumeProvider(object):
     def exist(self, **kwargs):
         volume = VolumeProvider.default_volume()
         volume.update(kwargs)
-        url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
+        url = f'{self.base_url}/storage/volumes/{volume["id"]}'
         self.request_mocker.get(url, json=volume)
 
     def can_be_modified(self, **kwargs):
         volume = VolumeProvider.default_volume()
         volume.update(kwargs)
-        url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
+        url = f'{self.base_url}/storage/volumes/{volume["id"]}'
         self.request_mocker.patch(url, json=volume)
 
     def paginated_file_list(self, limit, num_of_files, volume_id, volume_data):
         all_items = [
             {
-                'href': (
-                    self.base_url +
-                    '/storage/volumes/{}/list'
-                    .format(volume_id)
-                ),
+                'href': f'{self.base_url}/storage/volumes/{volume_id}/list',
                 'location': generator.uuid4(),
                 'volume': volume_id,
                 'type': 's3'
@@ -879,21 +824,18 @@ class VolumeProvider(object):
         all_links = []
         for i in range(0, num_of_files, limit):
             href = (
-                self.base_url +
-                '/storage/volumes/{id}/list/?offset={offset}&limit={limit}'
-                .format(id=volume_id, offset=str(i), limit=str(limit))
+                f'{self.base_url}/storage/volumes/{volume_id}'
+                f'/list/?offset={i}&limit={limit}'
             )
             items = all_items[i:i + limit]
 
             links = []
             if i + limit < num_of_files:
-                next_url = (
-                    '/storage/volumes/{id}/list/'
-                    '?offset={offset}&limit={limit}&fields=_all'
-                    .format(
-                        id=volume_id, offset=str(i + limit), limit=str(limit)))
                 next_page_link = {
-                    'next': self.base_url + next_url
+                    'next':  (
+                        f'{self.base_url}/storage/volumes/{volume_id}/list/'
+                        f'?offset={i + limit}&limit={limit}&fields=_all'
+                    )
                 }
                 links.append(next_page_link)
 
@@ -910,11 +852,10 @@ class VolumeProvider(object):
         volume = VolumeProvider.default_volume()
         volume.update(volume_data)
 
-        url = self.base_url + '/storage/volumes/{}'.format(volume['id'])
+        url = f'{self.base_url}/storage/volumes/{volume["id"]}'
         self.request_mocker.get(url, json=volume)
 
-        list_url = (
-            self.base_url + '/storage/volumes/{}/list'.format(volume['id']))
+        list_url = f'{self.base_url}/storage/volumes/{volume["id"]}/list'
         list_data = {
             'href': list_url,
             'items': all_items[:limit],
@@ -928,15 +869,13 @@ class VolumeProvider(object):
             username=member_username,
             volume=id
         )
-
-        href = (
-            self.base_url +
-            '/storage/volumes/{}/members/{}'.format(id, member_username)
+        self.request_mocker.get(
+            f'{self.base_url}/storage/volumes/{id}/members/{member_username}',
+            json=member
         )
-        self.request_mocker.get(href, json=member)
 
 
-class MarkerProvider(object):
+class MarkerProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -958,7 +897,7 @@ class MarkerProvider(object):
 
     def query(self, total, file):
         items = [MarkerProvider.default_marker() for _ in range(10)]
-        href = self.base_url + '/genome/markers?file={}'.format(file)
+        href = f'{self.base_url}/genome/markers?file={file}'
         links = []
         response = {
             'href': href,
@@ -976,17 +915,17 @@ class MarkerProvider(object):
     def exists(self, **kwargs):
         marker = MarkerProvider.default_marker()
         marker.update(**kwargs)
-        url = self.base_url + '/genome/markers/{}'.format(marker['id'])
+        url = f'{self.base_url}/genome/markers/{marker["id"]}'
         self.request_mocker.get(url, json=marker)
 
     def modified(self, **kwargs):
         marker = MarkerProvider.default_marker()
         marker.update(**kwargs)
-        url = self.base_url + '/genome/markers/{}'.format(marker['id'])
+        url = f'{self.base_url}/genome/markers/{marker["id"]}'
         self.request_mocker.patch(url, json=marker)
 
 
-class ActionProvider(object):
+class ActionProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1003,17 +942,17 @@ class ActionProvider(object):
         return copy_result
 
     def feedback_set(self):
-        url = self.base_url + "/action/notifications/feedback"
+        url = f'{self.base_url }/action/notifications/feedback'
         self.request_mocker.post(url)
 
     def can_bulk_copy(self, **kwargs):
         result = self.default_copy_result()
         result.update(kwargs)
-        url = self.base_url + "/action/files/copy"
+        url = f'{self.base_url }/action/files/copy'
         self.request_mocker.post(url, json=result)
 
 
-class DivisionProvider(object):
+class DivisionProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1023,7 +962,7 @@ class DivisionProvider(object):
     def default_division():
         return {
             'href': generator.url(),
-            'id': '{}/{}'.format('my', 'my-project'),
+            'id': 'my/my-project',
             'name': generator.user_name(),
         }
 
@@ -1031,7 +970,7 @@ class DivisionProvider(object):
         division = self.default_division()
         division.update(kwargs)
         id = division['id']
-        self.request_mocker.get('/divisions/{}'.format(id), json=division)
+        self.request_mocker.get(f'/divisions/{id}', json=division)
 
     def query(self, total):
         items = [DivisionProvider.default_division() for _ in range(total)]
@@ -1048,8 +987,7 @@ class DivisionProvider(object):
 
     def teams_exist(self, id, total):
         items = [TeamProvider.default_team() for _ in range(total)]
-        url = '/teams?division={}'.format(id)
-        href = self.base_url + url
+        href = f'{self.base_url}/teams?division={id}'
         links = []
         response = {
             'href': href,
@@ -1061,8 +999,7 @@ class DivisionProvider(object):
 
     def members_exist(self, id, total):
         items = [self.member_provider.default_member() for _ in range(total)]
-        url = '/users?division={}'.format(id)
-        href = self.base_url + url
+        href = f'{self.base_url}/users?division={id}'
         links = []
         response = {
             'href': href,
@@ -1073,7 +1010,7 @@ class DivisionProvider(object):
             'x-total-matching-query': str(total)})
 
 
-class TeamProvider(object):
+class TeamProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1082,7 +1019,7 @@ class TeamProvider(object):
     def default_team():
         return {
             'href': generator.url(),
-            'id': '{}/{}'.format('my', 'my-project'),
+            'id': 'my/my-project',
             'name': generator.user_name(),
         }
 
@@ -1090,12 +1027,11 @@ class TeamProvider(object):
         team = self.default_team()
         team.update(kwargs)
         id = team['id']
-        self.request_mocker.get('/teams/{}'.format(id), json=team)
+        self.request_mocker.get(f'/teams/{id}', json=team)
 
     def query(self, total):
         items = [TeamProvider.default_team() for _ in range(total)]
-        url = '/teams'
-        href = self.base_url + url
+        href = f'{self.base_url}/teams'
         links = []
         response = {
             'href': href,
@@ -1113,10 +1049,10 @@ class TeamProvider(object):
     def modified(self, **kwargs):
         team = TeamProvider.default_team()
         team.update(kwargs)
-        self.request_mocker.patch('/teams/{}'.format(team['id']), json=team)
+        self.request_mocker.patch(f'/teams/{team["id"]}', json=team)
 
 
-class TeamMemberProvider(object):
+class TeamMemberProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1124,7 +1060,7 @@ class TeamMemberProvider(object):
     def default_member(self, id, username=None):
         if username is None:
             username = generator.user_name()
-        url = self.base_url + '/team/{}/members/{}'.format(id, username)
+        url = f'{self.base_url}/team/{id}/members/{username}'
         return {
             'href': url,
             'username': username,
@@ -1138,7 +1074,7 @@ class TeamMemberProvider(object):
 
     def queried(self, team, total=10):
         items = [self.default_member(team) for _ in range(total)]
-        href = self.base_url + '/teams/{}/members'.format(team)
+        href = f'{self.base_url}/teams/{team}/members'
         links = []
         response = {
             'href': href,
@@ -1149,7 +1085,7 @@ class TeamMemberProvider(object):
             'x-total-matching-query': str(total)})
 
 
-class ImportsProvider(object):
+class ImportsProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1165,7 +1101,7 @@ class ImportsProvider(object):
 
     def query(self, total):
         items = [ImportsProvider.default_import() for _ in range(total)]
-        href = self.base_url + '/storage/imports'
+        href = f'{self.base_url}/storage/imports'
         links = []
         response = {
             'href': href,
@@ -1214,7 +1150,7 @@ class ImportsProvider(object):
         self.request_mocker.post('/bulk/storage/imports/create', json=data)
 
 
-class ExportsProvider(object):
+class ExportsProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1230,7 +1166,7 @@ class ExportsProvider(object):
 
     def query(self, total):
         items = [self.default_export() for _ in range(total)]
-        href = self.base_url + '/storage/exports'
+        href = f'{self.base_url}/storage/exports'
         links = []
         response = {
             'href': href,
@@ -1275,7 +1211,7 @@ class ExportsProvider(object):
         self.request_mocker.post('/bulk/storage/exports/create', json=data)
 
 
-class DatasetProvider(object):
+class DatasetProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1284,7 +1220,7 @@ class DatasetProvider(object):
     @staticmethod
     def default_dataset():
         return {
-            "id": "{}/{}".format("my", "my-dataset"),
+            "id": "my/my-dataset",
             "href": generator.url(),
             "name": generator.name(),
             "description": generator.name(),
@@ -1294,11 +1230,11 @@ class DatasetProvider(object):
         dataset = self.default_dataset()
         dataset.update(kwargs)
         id = dataset['id']
-        self.request_mocker.get('/datasets/{}'.format(id), json=dataset)
+        self.request_mocker.get(f'/datasets/{id}', json=dataset)
 
     def query(self, total):
         items = [self.default_dataset() for _ in range(total)]
-        href = self.base_url + '/datasets'
+        href = f'{self.base_url}/datasets'
         links = []
         response = {
             'href': href,
@@ -1310,7 +1246,7 @@ class DatasetProvider(object):
 
     def owned_by(self, total, username):
         items = [self.default_dataset() for _ in range(total)]
-        href = self.base_url + '/datasets/' + username
+        href = f'{self.base_url}/datasets/{username}'
         links = []
         response = {
             'href': href,
@@ -1324,14 +1260,14 @@ class DatasetProvider(object):
         dataset = self.default_dataset()
         dataset.update(**kwargs)
         id = dataset['id']
-        self.request_mocker.patch('/datasets/{id}'.format(id=id), json=dataset)
+        self.request_mocker.patch(f'/datasets/{id}', json=dataset)
 
     def has_members(self, id, dataset_name, total):
         items = [
             self.member_provider.default_member(dataset=dataset_name)
             for _ in range(total)
         ]
-        href = self.base_url + '/datasets/{}/members'.format(id)
+        href = f'{self.base_url}/datasets/{id}/members'
         links = []
         response = {
             'href': href,
@@ -1347,26 +1283,20 @@ class DatasetProvider(object):
             dataset=dataset_name
         )
 
-        href = (
-            self.base_url +
-            '/datasets/{}/members/{}'.format(id, member_username)
-        )
+        href = f'{self.base_url}/datasets/{id}/members/{member_username}'
         self.request_mocker.get(href, json=member)
 
     def can_remove_member(self, id, member_username):
-        href = (
-            self.base_url +
-            '/datasets/{}/members/{}'.format(id, member_username)
-        )
+        href = f'{self.base_url}/datasets/{id}/members/{member_username}'
         self.request_mocker.delete(href)
 
     def can_add_member(self, id, member_username):
         member = self.member_provider.default_member(id, member_username)
-        href = self.base_url + '/datasets/{}/members'.format(id)
+        href = f'{self.base_url}/datasets/{id}/members'
         self.request_mocker.post(href, json=member)
 
 
-class AutomationProvider(object):
+class AutomationProvider:
 
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
@@ -1401,7 +1331,7 @@ class AutomationProvider(object):
         automation.update(kwargs)
         id = automation['id']
         self.request_mocker.get(
-            '/automation/automations/{}'.format(id), json=automation
+            f'/automation/automations/{id}', json=automation
         )
 
     def can_be_created(self, **kwargs):
@@ -1416,7 +1346,7 @@ class AutomationProvider(object):
         automation.update(**kwargs)
         id = automation['id']
         self.request_mocker.patch(
-            '/automation/automations/{id}'.format(id=id), json=automation
+            f'/automation/automations/{id}', json=automation
         )
 
     def can_be_archived(self, **kwargs):
@@ -1425,8 +1355,7 @@ class AutomationProvider(object):
         automation.update(**kwargs)
         id = automation['id']
         self.request_mocker.post(
-            '/automation/automations/{}/actions/archive'.format(id),
-            json=automation
+            f'/automation/automations/{id}/actions/archive', json=automation
         )
 
     def can_be_restored(self, **kwargs):
@@ -1435,13 +1364,12 @@ class AutomationProvider(object):
         automation.update(**kwargs)
         id = automation['id']
         self.request_mocker.post(
-            '/automation/automations/{id}/actions/restore'.format(id=id),
-            json=automation
+            f'/automation/automations/{id}/actions/restore', json=automation
         )
 
     def query(self, total):
         items = [self.default_automation() for _ in range(total)]
-        href = self.base_url + '/automation/automations'
+        href = f'{self.base_url}/automation/automations'
         links = []
         response = {
             'href': href,
@@ -1456,10 +1384,7 @@ class AutomationProvider(object):
             username=username,
         )
         href = (
-            self.base_url +
-            '/automation/automations/{}/members/{}'.format(
-                id, username
-            )
+            f'{self.base_url}/automation/automations/{id}/members/{username}'
         )
         self.request_mocker.get(href, json=member)
 
@@ -1468,7 +1393,7 @@ class AutomationProvider(object):
             self.member_provider.default_automation_member()
             for _ in range(total)
         ]
-        href = self.base_url + '/automation/automations/{}/members'.format(id)
+        href = f'{self.base_url}/automation/automations/{id}/members'
         links = []
         response = {
             'href': href,
@@ -1482,13 +1407,12 @@ class AutomationProvider(object):
         member = self.member_provider.default_automation_member(
             id, username
         )
-        href = self.base_url + '/automation/automations/{}/members'.format(id)
+        href = f'{self.base_url}/automation/automations/{id}/members'
         self.request_mocker.post(href, json=member)
 
     def can_remove_member(self, id, username):
         href = (
-            self.base_url +
-            '/automation/automations/{}/members/{}'.format(id, username)
+            f'{self.base_url}/automation/automations/{id}/members/{username}'
         )
         self.request_mocker.delete(href)
 
@@ -1496,9 +1420,7 @@ class AutomationProvider(object):
         package = self.package_provider.default_automation_package(
             package_id=package_id
         )
-        href = (
-                self.base_url + '/automation/packages/{}'.format(package_id)
-        )
+        href = f'{self.base_url}/automation/packages/{package_id}'
         self.request_mocker.get(href, json=package)
 
     def can_add_package(self, automation_id, package_id,
@@ -1507,8 +1429,8 @@ class AutomationProvider(object):
             package_id=package_id, location=location, version=version,
             schema=schema
         )
-        href = self.base_url + '/automation/automations/{}/packages'.format(
-            automation_id
+        href = (
+            f'{self.base_url}/automation/automations/{automation_id}/packages'
         )
         self.request_mocker.post(href, json=package)
 
@@ -1517,7 +1439,7 @@ class AutomationProvider(object):
             self.package_provider.default_automation_package()
             for _ in range(total)
         ]
-        href = self.base_url + '/automation/automations/{}/packages'.format(id)
+        href = f'{self.base_url}/automation/automations/{id}/packages'
         links = []
         response = {
             'href': href,
@@ -1532,7 +1454,7 @@ class AutomationProvider(object):
             self.run_provider.default_automation_run(automation=id)
             for _ in range(total)
         ]
-        href = self.base_url + '/automation/runs'
+        href = f'{self.base_url}/automation/runs'
         links = []
         response = {
             'href': href,
@@ -1543,7 +1465,7 @@ class AutomationProvider(object):
             'x-total-matching-query': str(total)})
 
 
-class AutomationPackageProvider(object):
+class AutomationPackageProvider:
 
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
@@ -1575,7 +1497,7 @@ class AutomationPackageProvider(object):
         package.update(**kwargs)
         package_id = package['id']
         self.request_mocker.get(
-            '/automation/packages/{}'.format(package_id),
+            f'/automation/packages/{package_id}',
             json=package
         )
 
@@ -1586,10 +1508,8 @@ class AutomationPackageProvider(object):
         package_id = package['id']
         automation_id = package['automation']
         self.request_mocker.post(
-            "/automation/automations/{}"
-            "/packages/{}/actions/archive".format(
-                automation_id, package_id
-            ),
+            f'/automation/automations/{automation_id}'
+            f'/packages/{package_id}/actions/archive',
             json=package
         )
 
@@ -1600,10 +1520,8 @@ class AutomationPackageProvider(object):
         package_id = package['id']
         automation_id = package['automation']
         self.request_mocker.post(
-            "/automation/automations/{}"
-            "/packages/{}/actions/restore".format(
-                automation_id, package_id
-            ),
+            f'/automation/automations/{automation_id}'
+            f'/packages/{package_id}/actions/restore',
             json=package
         )
 
@@ -1612,11 +1530,11 @@ class AutomationPackageProvider(object):
         package.update(**kwargs)
         id = package['id']
         self.request_mocker.patch(
-            '/automation/packages/{id}'.format(id=id), json=package
+            f'/automation/packages/{id}', json=package
         )
 
 
-class AutomationMemberProvider(object):
+class AutomationMemberProvider:
 
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
@@ -1634,8 +1552,8 @@ class AutomationMemberProvider(object):
             'execute': False,
         }
         url = (
-            self.base_url + '/automation/automations/' + automation +
-            "/members/" + username
+            f'{self.base_url}/automation/automations/{automation}'
+            f'/members/{username}'
         )
         return {
             'href': url,
@@ -1649,8 +1567,8 @@ class AutomationMemberProvider(object):
         username = automation_member['username']
         automation = automation_member['automation']
         self.request_mocker.get(
-            '/automation/automations/{}/members/{}'
-            .format(automation, username), json=automation_member
+            f'/automation/automations/{automation}/members/{username}',
+            json=automation_member
         )
 
     def can_be_saved(self, automation, **kwargs):
@@ -1658,13 +1576,12 @@ class AutomationMemberProvider(object):
         automation_member.update(**kwargs)
         username = automation_member['username']
         self.request_mocker.patch(
-            '/automation/automations/{}/members/{}'
-            .format(automation, username),
+            f'/automation/automations/{automation}/members/{username}',
             json=automation_member
         )
 
 
-class AutomationRunProvider(object):
+class AutomationRunProvider:
 
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
@@ -1714,22 +1631,21 @@ class AutomationRunProvider(object):
         automation_run.update(kwargs)
         id = automation_run['id']
         self.request_mocker.get(
-            '/automation/runs/{}'.format(id), json=automation_run
+            f'/automation/runs/{id}', json=automation_run
         )
 
     def has_rerun(self, **kwargs):
         automation_run = self.default_automation_run()
         automation_run.update(**kwargs)
         self.request_mocker.request(
-            'POST', '/automation/runs/{}/actions/rerun'.format(
-                kwargs['id']
-            ),
+            'POST',
+            f'/automation/runs/{kwargs["id"]}/actions/rerun',
             json=automation_run
         )
 
     def has_state(self, id, state):
         state = state or self.default_state()
-        href = self.base_url + '/automation/runs/{}/state'.format(id)
+        href = f'{self.base_url}/automation/runs/{id}/state'
         self.request_mocker.get(href, json=state)
 
     def can_be_created(self, **kwargs):
@@ -1742,12 +1658,12 @@ class AutomationRunProvider(object):
 
     def can_be_stopped(self, id):
         self.request_mocker.request(
-            'POST', '/automation/runs/{}/actions/stop'.format(id)
+            'POST', f'/automation/runs/{id}/actions/stop'
         )
 
     def query(self, total):
         items = [self.default_automation_run() for _ in range(total)]
-        href = self.base_url + '/automation/runs'
+        href = f'{self.base_url}/automation/runs'
         links = []
         response = {
             'href': href,
@@ -1758,7 +1674,7 @@ class AutomationRunProvider(object):
             'x-total-matching-query': str(total)})
 
 
-class AsyncJobProvider(object):
+class AsyncJobProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1782,13 +1698,11 @@ class AsyncJobProvider(object):
         async_job = self.default_async_job()
         async_job.update(kwargs)
         id = async_job['id']
-        self.request_mocker.get(
-            '/async/files/{}/{}'.format(type, id), json=async_job
-        )
+        self.request_mocker.get(f'/async/files/{type}/{id}', json=async_job)
 
     def list_file_jobs(self, total):
         items = [self.default_async_job() for _ in range(total)]
-        href = self.base_url + '/async/files'
+        href = f'{self.base_url}/async/files'
         links = []
         response = {
             'href': href,
@@ -1829,7 +1743,7 @@ class AsyncJobProvider(object):
         )
 
 
-class CodePackageUploadProvider(object):
+class CodePackageUploadProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1841,11 +1755,11 @@ class CodePackageUploadProvider(object):
             "part_size": part_size
         }
         self.request_mocker.post(
-            '/automation/upload', json=response
+            f'{self.base_url}/automation/upload', json=response
         )
 
     def got_file_part(self, url):
-        regx = '^{}/automation/upload/.*/part/.*$'.format(self.base_url)
+        regx = f'^{self.base_url}/automation/upload/.*/part/.*$'
         matcher = re.compile(regx)
         self.request_mocker.get(
             matcher, json={"url": url}
@@ -1859,32 +1773,26 @@ class CodePackageUploadProvider(object):
         )
 
     def reported_part(self):
-        regx = '^{}/automation/upload/.*/part/'.format(
-            self.base_url
-        )
+        regx = f'^{self.base_url}/automation/upload/.*/part/'
         matcher = re.compile(regx)
         self.request_mocker.post(
             matcher, json={}
         )
 
     def finalized_upload(self, package_file_id):
-        regx = '^{}/automation/upload/.*/complete'.format(
-            self.base_url
-        )
+        regx = f'^{self.base_url}/automation/upload/.*/complete'
         matcher = re.compile(regx)
         self.request_mocker.post(
             matcher, json={"name": "dummy_file_name", "id": package_file_id}
         )
 
     def deleted(self):
-        regx = '^{}/automation/upload/.*'.format(
-            self.base_url
-        )
+        regx = f'^{self.base_url}/automation/upload/.*'
         matcher = re.compile(regx)
         self.request_mocker.delete(matcher)
 
 
-class FileUploadProvider(object):
+class FileUploadProvider:
     def __init__(self, request_mocker, base_url):
         self.request_mocker = request_mocker
         self.base_url = base_url
@@ -1897,12 +1805,14 @@ class FileUploadProvider(object):
             "part_size": part_size
         }
         self.request_mocker.post(
-            '/upload/multipart', json=response, status_code=status_code
+            f'{self.base_url}/upload/multipart',
+            json=response,
+            status_code=status_code
         )
 
     def got_file_part(self, url, failed=False):
         status_code = 500 if failed else 200
-        regx = '^{}/upload/multipart/.*/part/.*$'.format(self.base_url)
+        regx = f'^{self.base_url}/upload/multipart/.*/part/.*$'
         matcher = re.compile(regx)
         self.request_mocker.get(
             matcher, json={"url": url},
@@ -1922,9 +1832,7 @@ class FileUploadProvider(object):
 
     def reported_part(self, failed=False):
         status_code = 500 if failed else 200
-        regx = '^{}/upload/multipart/.*/part/'.format(
-            self.base_url
-        )
+        regx = f'^{self.base_url}/upload/multipart/.*/part/'
         matcher = re.compile(regx)
         self.request_mocker.post(
             matcher, json={}, status_code=status_code
@@ -1933,9 +1841,7 @@ class FileUploadProvider(object):
     def finalized_upload(self, file_id, failed=False):
         status_code = 500 if failed else 200
 
-        regx = '^{}/upload/multipart/.*/complete'.format(
-            self.base_url
-        )
+        regx = f'^{self.base_url}/upload/multipart/.*/complete'
         matcher = re.compile(regx)
         self.request_mocker.post(
             matcher,
@@ -1946,8 +1852,6 @@ class FileUploadProvider(object):
     def deleted(self, failed=False):
         status_code = 500 if failed else 200
 
-        regx = '^{}/upload/multipart/.*'.format(
-            self.base_url
-        )
+        regx = f'^{self.base_url}/upload/multipart/.*'
         matcher = re.compile(regx)
         self.request_mocker.delete(matcher, status_code=status_code)

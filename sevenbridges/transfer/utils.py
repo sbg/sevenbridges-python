@@ -3,7 +3,7 @@ import sys
 import math
 
 
-class Part(object):
+class Part:
     def __init__(self, start=None, size=None):
         self._start = start
         self._size = size
@@ -17,7 +17,7 @@ class Part(object):
         return self._size
 
 
-class Progress(object):
+class Progress:
     def __init__(self, num_of_parts, parts_done, bytes_done,
                  file_size, duration):
         self._num_of_parts = num_of_parts

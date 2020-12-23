@@ -1,5 +1,4 @@
 import logging
-import six
 
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import HrefField
@@ -42,6 +41,5 @@ class Endpoints(Resource):
         endpoints = api.get(url=cls._URL['get']).json()
         return Endpoints(api=api, **endpoints)
 
-    @staticmethod
-    def __str__():
-        return six.text_type('<Endpoints>')
+    def __str__(self):
+        return '<Endpoints>'

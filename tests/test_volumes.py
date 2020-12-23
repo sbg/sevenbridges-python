@@ -79,7 +79,7 @@ def test_create_oss_volume(api, given, verifier):
 
 def test_modify_volume(api, given, verifier):
     # preconditions
-    _id = '{}/{}'.format('my', 'volume')
+    _id = 'my/volume'
     name = generator.name()
     description = generator.name()
     given.volume.exist(id=_id, name=name, description=generator.name())

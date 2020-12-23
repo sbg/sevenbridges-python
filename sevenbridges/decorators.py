@@ -1,13 +1,7 @@
 import logging
 import functools
-from six import raise_from
+from json import JSONDecodeError
 
-try:
-    from json.decoder import JSONDecodeError
-except ImportError:
-    JSONDecodeError = ValueError
-
-import six
 import requests
 
 from sevenbridges.errors import (
@@ -68,7 +62,7 @@ def check_for_error(func):
         try:
             response = func(*args, **kwargs)
         except requests.RequestException as e:
-            raise SbgError(message=six.text_type(e))
+            raise SbgError(message=str(e))
         try:
             status_code = response.status_code
             if status_code in range(200, 204):
@@ -98,13 +92,11 @@ def check_for_error(func):
                 e.more_info = data['more_info']
             raise e
         except JSONDecodeError:
-            raise_from(
-                NonJSONResponseError(
-                    status=response.status_code,
-                    message=six.text_type(response.text)
-                ), None
-            )
+            raise NonJSONResponseError(
+                status=response.status_code,
+                message=str(response.text)
+            ) from None
         except ValueError as e:
-            raise SbgError(message=six.text_type(e))
+            raise SbgError(message=str(e))
 
     return wrapper

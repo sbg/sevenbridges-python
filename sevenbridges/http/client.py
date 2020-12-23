@@ -3,10 +3,10 @@ import json
 import logging
 import platform
 import threading
-from datetime import datetime as dt
+from datetime import datetime
 
 import requests
-from requests.packages.urllib3.util import Retry as UrlLibRetry
+import urllib3
 
 import sevenbridges
 from sevenbridges.errors import SbgError, URITooLong
@@ -22,6 +22,7 @@ client_info = {
     'os': platform.system(),
     'python': platform.python_version(),
     'requests': requests.__version__,
+    'urllib3': urllib3.__version__,
 }
 
 
@@ -46,7 +47,7 @@ class RequestSession(requests.Session):
                     'likely too many query parameters provided.'
                 )
             )
-        return super(RequestSession, self).send(request, **kwargs)
+        return super().send(request, **kwargs)
 
 
 def generate_session(
@@ -72,7 +73,7 @@ def generate_session(
     # socket connections and connection timeouts
     retry_count = retry_count or RequestParameters.DEFAULT_RETRY_COUNT
     backoff_factor = backoff_factor or RequestParameters.DEFAULT_BACKOFF_FACTOR
-    retries = UrlLibRetry(total=retry_count, backoff_factor=backoff_factor)
+    retries = urllib3.Retry(total=retry_count, backoff_factor=backoff_factor)
 
     # noinspection PyUnresolvedReferences
     adapter = requests.adapters.HTTPAdapter(
@@ -114,8 +115,7 @@ def mask_secrets(request_data):
     return masked
 
 
-# noinspection PyTypeChecker
-class HttpClient(object):
+class HttpClient:
     """
     Implementation of all low-level API stuff, creating and sending requests,
     returning raw responses, authorization, etc.
@@ -173,9 +173,10 @@ class HttpClient(object):
         self._request_id = None
         self.headers = {
             'Content-Type': 'application/json',
-            'User-Agent':
+            'User-Agent': (
                 'sevenbridges-python/{version} ({os}, Python/{python}; '
-                'requests/{requests})'.format(**client_info)
+                'requests/{requests}; urllib3/{urllib3})'.format(**client_info)
+            )
         }
         self.timeout = timeout
         self.token = token
@@ -183,7 +184,7 @@ class HttpClient(object):
         if self.token:
             self.headers['X-SBG-Auth-Token'] = token
         elif self.oauth_token:
-            self.headers['Authorization'] = 'Bearer {}'.format(oauth_token)
+            self.headers['Authorization'] = f'Bearer {oauth_token}'
         else:
             raise SbgError(
                 'Required authorization model not selected!. '
@@ -219,7 +220,7 @@ class HttpClient(object):
     @property
     def reset_time(self):
         self._rate_limit()
-        return dt.fromtimestamp(
+        return datetime.fromtimestamp(
             float(self._reset)
         ) if self._reset else self._reset
 

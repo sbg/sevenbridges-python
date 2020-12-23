@@ -9,7 +9,7 @@ class MarkerPosition(CompoundMutableDict, Resource):
     _name = 'position'
 
     def __init__(self, **kwargs):
-        super(MarkerPosition, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __getitem__(self, item):
         try:

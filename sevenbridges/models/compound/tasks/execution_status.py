@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.fields import IntegerField, StringField, BooleanField
 from sevenbridges.meta.resource import Resource
 
@@ -33,4 +31,4 @@ class ExecutionStatus(Resource):
     duration = IntegerField(read_only=True)
 
     def __str__(self):
-        return six.text_type('<ExecutionStatus>')
+        return '<ExecutionStatus>'

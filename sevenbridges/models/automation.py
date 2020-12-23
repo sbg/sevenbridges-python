@@ -1,7 +1,5 @@
 import logging
 
-import six
-
 from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified, SbgError
 from sevenbridges.meta.fields import (
@@ -49,17 +47,12 @@ class AutomationPackage(Resource):
     memory_limit = IntegerField(read_only=False)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type('<AutomationPackage: id={id}>'.format(id=self.id))
+        return f'<AutomationPackage: id={self.id}>'
 
     @classmethod
     def query(cls, automation, offset=None, limit=None, api=None):
@@ -74,7 +67,7 @@ class AutomationPackage(Resource):
         automation_id = Transform.to_automation(automation)
 
         api = api or cls._API
-        return super(AutomationPackage, cls)._query(
+        return super()._query(
             url=cls._URL['query'].format(automation_id=automation_id),
             offset=offset,
             limit=limit,
@@ -137,7 +130,7 @@ class AutomationPackage(Resource):
         automation_id = Transform.to_automation(self.automation)
 
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
             }
@@ -159,7 +152,7 @@ class AutomationPackage(Resource):
         """
         automation_id = Transform.to_automation(self.automation)
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
             }
@@ -181,9 +174,9 @@ class AutomationPackage(Resource):
         :return: AutomationPackage instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data
@@ -216,20 +209,12 @@ class AutomationMember(Resource):
     permissions = CompoundField(Permissions)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.username == other.username
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type(
-            '<AutomationMember: username={username}>'
-            .format(username=self.username)
-        )
+        return f'<AutomationMember: username={self.username}>'
 
     @classmethod
     def query(cls, automation=None, offset=None, limit=None, api=None):
@@ -244,7 +229,7 @@ class AutomationMember(Resource):
         automation_id = Transform.to_automation(automation)
 
         api = api or cls._API
-        return super(AutomationMember, cls)._query(
+        return super()._query(
             url=cls._URL['query'].format(automation_id=automation_id),
             automation_id=automation_id,
             offset=offset,
@@ -322,13 +307,13 @@ class AutomationMember(Resource):
         Saves modification to the api server.
         """
         modified = self._modified_data()
-        if bool(modified):
+        if modified:
             new_data = self.permissions.copy()
             new_data.update(modified['permissions'])
             data = {
                 'permissions': new_data
             }
-            url = six.text_type(self.href)
+            url = self.href
             self._api.patch(url=url, data=data, append_base=False)
         else:
             raise ResourceNotModified()
@@ -364,20 +349,12 @@ class Automation(Resource):
     project_based = BooleanField(read_only=False)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type(
-            '<Automation: id={id} name={name}>'
-            .format(id=self.id, name=self.name)
-        )
+        return f'<Automation: id={self.id} name={self.name}>'
 
     @classmethod
     def query(
@@ -396,7 +373,7 @@ class Automation(Resource):
         """
 
         api = api or cls._API
-        return super(Automation, cls)._query(
+        return super()._query(
             url=cls._URL['query'],
             name=name,
             include_archived=include_archived,
@@ -458,9 +435,9 @@ class Automation(Resource):
         :return: Automation instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data
@@ -481,7 +458,7 @@ class Automation(Resource):
         :return: Automation instance.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
             }
@@ -500,7 +477,7 @@ class Automation(Resource):
         :return: Automation instance.
         """
         extra = {
-            'resource': self.__class__.__name__,
+            'resource': type(self).__name__,
             'query': {
                 'id': self.id,
             }
@@ -697,17 +674,12 @@ class AutomationRun(Resource):
     project_id = StringField(read_only=True)
 
     def __eq__(self, other):
-        if not hasattr(other, '__class__'):
-            return False
-        if not self.__class__ == other.__class__:
+        if type(other) is not type(self):
             return False
         return self is other or self.id == other.id
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __str__(self):
-        return six.text_type('<AutomationRun: id={id}>'.format(id=self.id))
+        return f'<AutomationRun: id={self.id}>'
 
     @classmethod
     def query(cls, automation=None, package=None, status=None, name=None,
@@ -738,7 +710,7 @@ class AutomationRun(Resource):
             package = Transform.to_automation_package(package)
 
         api = api or cls._API
-        return super(AutomationRun, cls)._query(
+        return super()._query(
             url=cls._URL['query'],
             name=name,
             automation_id=automation,
@@ -804,9 +776,9 @@ class AutomationRun(Resource):
         :return: Automation run instance.
         """
         modified_data = self._modified_data()
-        if bool(modified_data):
+        if modified_data:
             extra = {
-                'resource': self.__class__.__name__,
+                'resource': type(self).__name__,
                 'query': {
                     'id': self.id,
                     'modified_data': modified_data

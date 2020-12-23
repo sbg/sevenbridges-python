@@ -1,5 +1,3 @@
-import six
-
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.fields import StringField, FloatField, CompoundField
 from sevenbridges.models.compound.price_breakdown import Breakdown
@@ -15,8 +13,4 @@ class Price(Resource):
     breakdown = CompoundField(Breakdown, read_only=True)
 
     def __str__(self):
-        return six.text_type(
-            '<Price: currency={currency}, amount={amount}>'.format(
-                currency=self.currency, amount=self.amount
-            )
-        )
+        return f'<Price: currency={self.currency}, amount={self.amount}>'
