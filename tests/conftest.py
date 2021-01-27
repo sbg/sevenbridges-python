@@ -117,12 +117,12 @@ def api(base_url):
     Fixture returning instance of Api with randomly generated endpoint URL
     and authentication token.
     """
-    return Api(base_url, token=generator.uuid4())
+    return Api(url=base_url, token=generator.uuid4())
 
 
 @pytest.fixture
 def base_url():
-    return generator.url()[:-1]
+    return generator.url(schemes=['https'])[:-1]
 
 
 @pytest.fixture

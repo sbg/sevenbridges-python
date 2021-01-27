@@ -2,6 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from requests.adapters import DEFAULT_POOLSIZE
 
+from sevenbridges.errors import SbgError
 from sevenbridges.http.client import HttpClient
 
 from sevenbridges.models.app import App
@@ -61,6 +62,7 @@ class Api(HttpClient):
             pool_block=True, max_parallel_requests=100,
             retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
             backoff_factor=RequestParameters.DEFAULT_BACKOFF_FACTOR,
+            debug=False,
     ):
         """
         Initializes api object.
@@ -85,6 +87,12 @@ class Api(HttpClient):
             requests, only useful for multi thread applications.
         :return: Api object instance.
         """
+        if not debug and url and url.startswith('http:'):
+            raise SbgError(
+                'Seven Bridges api client requires https, '
+                f'cannot initialize with url {url}'
+            )
+
         super().__init__(
             url=url, token=token, oauth_token=oauth_token, config=config,
             timeout=timeout, proxies=proxies, error_handlers=error_handlers,

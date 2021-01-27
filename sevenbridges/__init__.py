@@ -43,6 +43,7 @@ from sevenbridges.models.enums import (
     AppCopyStrategy, AppRawFormat, AsyncFileOperations, AsyncJobStates,
     AutomationRunActions, DivisionRole, FileStorageType, ImportExportState,
     TaskStatus, TransferState, VolumeAccessMode, VolumeType, PartSize,
+    AutomationStatus,
 )
 from sevenbridges.errors import (
     SbgError, ResourceNotModified, ReadOnlyPropertyError, ValidationError,
@@ -67,6 +68,7 @@ __all__ = [
     'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
     'DivisionRole', 'FileStorageType', 'ImportExportState', 'TaskStatus',
     'TransferState', 'VolumeAccessMode', 'VolumeType', 'PartSize',
+    'AutomationStatus',
     # Errors
     'SbgError', 'ResourceNotModified', 'ReadOnlyPropertyError',
     'ValidationError', 'TaskValidationError', 'PaginationError', 'BadRequest',
