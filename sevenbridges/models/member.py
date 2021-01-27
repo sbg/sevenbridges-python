@@ -17,7 +17,7 @@ class Member(Resource):
     _URL = {
         'permissions': '/permissions'
     }
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     username = StringField(read_only=False)
     email = StringField(read_only=False)

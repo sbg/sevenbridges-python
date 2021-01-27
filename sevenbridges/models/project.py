@@ -30,7 +30,7 @@ class Project(Resource):
         'files': '/files',
         'tasks': '/tasks'
     }
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     name = StringField(read_only=False)
     billing_group = UuidField(read_only=False)

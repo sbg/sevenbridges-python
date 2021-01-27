@@ -14,8 +14,8 @@ class BillingGroup(Resource):
         'query': '/billing/groups',
         'get': '/billing/groups/{id}'
     }
-    href = HrefField()
-    id = UuidField()
+    href = HrefField(read_only=True)
+    id = UuidField(read_only=True)
     owner = StringField(read_only=True)
     name = StringField(read_only=True)
     type = StringField(read_only=True)

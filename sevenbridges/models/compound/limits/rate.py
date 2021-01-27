@@ -8,7 +8,7 @@ class Rate(Resource):
     """
     limit = IntegerField(read_only=True)
     remaining = IntegerField(read_only=True)
-    reset = DateTimeField()
+    reset = DateTimeField(read_only=True)
 
     def __str__(self):
         return f'<Rate: limit={self.limit}, remaining={self.remaining}>'

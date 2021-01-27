@@ -19,13 +19,13 @@ class Marker(Resource):
         'delete': '/genome/markers/{id}'
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     file = StringField(read_only=True)
     name = StringField(read_only=False)
     chromosome = StringField(read_only=False)
     position = CompoundField(MarkerPosition, read_only=False)
-    created_time = DateTimeField()
+    created_time = DateTimeField(read_only=True)
     created_by = StringField(read_only=True)
 
     def __str__(self):

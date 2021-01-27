@@ -34,7 +34,7 @@ class App(Resource):
         AppRawFormat.YAML: 'application/yaml'
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     _id = StringField(read_only=True, name='id')
     project = StringField(read_only=True)
     name = StringField(read_only=True)

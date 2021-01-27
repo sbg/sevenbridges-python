@@ -25,10 +25,10 @@ class Dataset(Resource):
         'permissions': '/datasets/{id}/members/{username}/permissions',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
-    name = StringField()
-    description = StringField()
+    name = StringField(read_only=False)
+    description = StringField(read_only=False)
 
     def __str__(self):
         return f'<Dataset: id={self.id}>'

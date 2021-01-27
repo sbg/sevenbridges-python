@@ -6,7 +6,7 @@ class Link(Resource):
     """
     Pagination links.
     """
-    href = HrefField()
+    href = HrefField(read_only=True)
     rel = StringField(read_only=True)
     method = StringField(read_only=True)
 
@@ -20,7 +20,7 @@ class VolumeLink(Resource):
     """
     Pagination links for volumes.
     """
-    next = HrefField()
+    next = HrefField(read_only=True)
 
     def __str__(self):
         return f'<VolumeLink: next={self.next}>'

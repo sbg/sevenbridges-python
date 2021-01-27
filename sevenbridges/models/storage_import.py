@@ -18,7 +18,6 @@ from sevenbridges.models.file import File
 logger = logging.getLogger(__name__)
 
 
-# noinspection PyArgumentList
 class Import(Resource):
     """
     Central resource for managing imports.
@@ -31,7 +30,7 @@ class Import(Resource):
         'bulk_create': '/bulk/storage/imports/create',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     state = StringField(read_only=True)
     preserve_folder_structure = BooleanField(read_only=True)
@@ -241,7 +240,7 @@ class Import(Resource):
 
 
 class ImportBulkRecord(BulkRecord):
-    resource = CompoundField(cls=Import)
+    resource = CompoundField(cls=Import, read_only=False)
 
     def __str__(self):
         return f'<ImportBulkRecord valid={self.valid}>'

@@ -11,7 +11,7 @@ class Division(Resource):
         'get': '/divisions/{id}',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     name = StringField(read_only=True)
 

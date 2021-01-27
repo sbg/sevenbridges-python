@@ -4,8 +4,8 @@ from sevenbridges.models.compound.error import Error
 
 
 class BulkRecord(Resource):
-    error = CompoundField(cls=Error)
-    resource = CompoundField(cls=Resource)
+    error = CompoundField(cls=Error, read_only=False)
+    resource = CompoundField(cls=Resource, read_only=False)
 
     def __str__(self):
         return f'<BulkRecord valid={self.valid}>'

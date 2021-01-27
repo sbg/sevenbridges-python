@@ -77,7 +77,29 @@ class ResourceMeta(type):
                     # only return changed parameters even when metadata needs
                     # to be replaced
                     self._dirty['metadata'] = metadata
+
+                # Remove read only fields
+                read_only_fields = [
+                    key for key in self._dirty
+                    if getattr(self._fields.get(key, None), 'read_only', False)
+                ]
+                for field in read_only_fields:
+                    self._dirty.pop(field, None)
+
                 return self._dirty
+
+            def update_read_only(self, data):
+                # Set only read only fields
+                read_only_fields = [
+                    key for key in data
+                    if getattr(self._fields.get(key, None), 'read_only', False)
+                ]
+                for field in read_only_fields:
+                    self._data[field] = data[field]
+
+                # Clean dirty
+                self._dirty = {}
+                self._old = copy.deepcopy(self._data.data)
 
             def equals(self, other):
                 if not type(other) == type(self):
@@ -96,6 +118,7 @@ class ResourceMeta(type):
             dct['equals'] = equals
             dct['deepcopy'] = deepcopy
             dct['_modified_data'] = modified_data
+            dct['_update_read_only'] = update_read_only
 
         return type.__new__(mcs, name, bases, dct)
 

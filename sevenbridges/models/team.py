@@ -23,7 +23,7 @@ class Team(Resource):
         'members_get': '/teams/{id}/members/{member}',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     name = StringField(read_only=False)
 

@@ -14,16 +14,16 @@ class Endpoints(Resource):
         'get': '/'
     }
 
-    rate_limit_url = HrefField()
-    user_url = HrefField()
-    users_url = HrefField()
-    billing_url = HrefField()
-    projects_url = HrefField()
-    files_url = HrefField()
-    tasks_url = HrefField()
-    apps_url = HrefField()
-    action_url = HrefField()
-    upload_url = HrefField()
+    rate_limit_url = HrefField(read_only=True)
+    user_url = HrefField(read_only=True)
+    users_url = HrefField(read_only=True)
+    billing_url = HrefField(read_only=True)
+    projects_url = HrefField(read_only=True)
+    files_url = HrefField(read_only=True)
+    tasks_url = HrefField(read_only=True)
+    apps_url = HrefField(read_only=True)
+    action_url = HrefField(read_only=True)
+    upload_url = HrefField(read_only=True)
 
     @classmethod
     def get(cls, api=None, **kwargs):

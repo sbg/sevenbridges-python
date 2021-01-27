@@ -10,7 +10,7 @@ class TaskBreakdown(Resource):
     Task breakdown resource contains information regarding
     billing group analysis breakdown costs.
     """
-    href = HrefField()
+    href = HrefField(read_only=True)
     runner_username = StringField(read_only=True)
     time_started = DateTimeField(read_only=True)
     time_finished = DateTimeField(read_only=True)

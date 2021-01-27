@@ -14,7 +14,7 @@ class Invoice(Resource):
         'query': '/billing/invoices',
         'get': '/billing/invoices/{id}'
     }
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     pending = BooleanField(read_only=True)
     analysis_costs = CompoundField(Price, read_only=True)

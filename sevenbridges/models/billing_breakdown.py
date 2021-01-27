@@ -16,7 +16,7 @@ class BillingGroupBreakdown(Resource):
         'get': '/billing/groups/{id}/breakdown'
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     project_breakdown = CompoundListField(ProjectBreakdown, read_only=True)
     total_spending = CompoundField(Price, read_only=True)
 

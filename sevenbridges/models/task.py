@@ -44,13 +44,13 @@ class Task(Resource):
         'bulk_get': '/bulk/tasks/get',
     }
 
-    href = HrefField()
-    id = UuidField()
-    name = StringField()
+    href = HrefField(read_only=True)
+    id = UuidField(read_only=True)
+    name = StringField(read_only=False)
     status = StringField(read_only=True)
     description = StringField(read_only=False)
-    project = StringField()
-    app = StringField()
+    project = StringField(read_only=False)
+    app = StringField(read_only=False)
     type = StringField(read_only=True)
     created_by = StringField(read_only=True)
     executed_by = StringField(read_only=True)
@@ -68,8 +68,8 @@ class Task(Resource):
     price = CompoundField(Price, read_only=True)
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
-    execution_settings = DictField()
-    use_interruptible_instances = BooleanField()
+    execution_settings = DictField(read_only=True)
+    use_interruptible_instances = BooleanField(read_only=False)
 
     def __str__(self):
         return f'<Task: id={self.id}>'
@@ -424,7 +424,7 @@ class Task(Resource):
 
 
 class TaskBulkRecord(BulkRecord):
-    resource = CompoundField(cls=Task)
+    resource = CompoundField(cls=Task, read_only=False)
 
     def __str__(self):
         return f'<TaskBulkRecord valid={self.valid}>'
