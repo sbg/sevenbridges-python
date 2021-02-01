@@ -100,6 +100,7 @@ class ProjectProvider:
             'id': 'my/my-project',
             'name': generator.user_name(),
             'billing_group': generator.uuid4(),
+            'category': generator.user_name(),
             'settings': {}
         }
 

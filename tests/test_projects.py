@@ -70,15 +70,18 @@ def test_modify_project(api, given, verifier):
     id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     new_name = generator.name()
-    given.project.can_be_saved(id=id, name=new_name)
+    new_category = generator.name()
+    given.project.can_be_saved(id=id, name=new_name, category=new_category)
 
     # action
     project = api.projects.get(id)
 
     # verification
     project.name = new_name
+    project.category = new_category
     project.save()
     assert project.name == new_name
+    assert project.category == new_category
     verifier.project.saved(id=project.id)
 
 
@@ -283,6 +286,20 @@ def test_query_projects_with_name(api, given, verifier):
     assert len(projects) == 3
     assert projects[0].name == name
     verifier.project.query(name=name)
+
+
+def test_query_projects_with_category(api, given, verifier):
+    # preconditions
+    category = generator.name()
+    given.project.query(total=3, category=category)
+
+    # action
+    projects = api.projects.query(category=category)
+
+    # verification
+    assert len(projects) == 3
+    assert projects[0].category == category
+    verifier.project.query(category=category)
 
 
 def test_query_projects_with_owner(api, given, verifier):
