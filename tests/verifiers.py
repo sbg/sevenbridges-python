@@ -52,7 +52,7 @@ class ProjectVerifier:
         if category:
             qs.update({'category': [category]})
         if tags:
-            qs.update({'tags': [tags]})
+            qs.update({'tags': tags})
         self.checker.check_url('/projects/') and self.checker.check_query(qs)
 
     def query_owner(self, owner, name=None):

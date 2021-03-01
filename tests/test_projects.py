@@ -347,4 +347,4 @@ def test_query_projects_with_tags(api, given, verifier):
 
     # verification
     assert len(projects) == 3
-    verifier.project.query(tags=','.join(tags))
+    verifier.project.query(tags=tags)

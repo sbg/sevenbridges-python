@@ -77,7 +77,7 @@ class Project(Resource):
         if category:
             query_params['category'] = category
         if tags:
-            query_params['tags'] = cls.parse_tags(tags)
+            query_params['tags'] = Transform.to_tags(tags)
         return super()._query(
             url=url, offset=offset, limit=limit, fields='_all',
             api=api, **query_params
@@ -404,12 +404,3 @@ class Project(Resource):
             description=description, run=run, disable_batch=disable_batch,
             interruptible=interruptible, execution_settings=execution_settings
         )
-
-    @staticmethod
-    def parse_tags(tags):
-        if not isinstance(tags, list):
-            raise SbgError('Tags argument must be a list.')
-        for tag in tags:
-            if "," in tag:
-                raise SbgError('Tags must not contain comma character.')
-        return ",".join(tags)
