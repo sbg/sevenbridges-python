@@ -101,7 +101,8 @@ class ProjectProvider:
             'name': generator.user_name(),
             'billing_group': generator.uuid4(),
             'category': generator.user_name(),
-            'settings': {}
+            'settings': {},
+            'tags': []
         }
 
     def exists(self, **kwargs):

@@ -305,3 +305,14 @@ class Transform:
             return async_job
         else:
             raise SbgError('Invalid async job parameter!')
+
+    @staticmethod
+    def to_tags(tags):
+        if not isinstance(tags, list):
+            raise SbgError('Tags argument must be a list.')
+        tag_list = []
+        for tag in tags:
+            if "," in tag:
+                raise SbgError('Tags must not contain comma character.')
+            tag_list.append(tag)
+        return tag_list

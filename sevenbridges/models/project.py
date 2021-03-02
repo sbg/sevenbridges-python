@@ -54,7 +54,7 @@ class Project(Resource):
 
     @classmethod
     def query(cls, owner=None, name=None, offset=None, limit=None, api=None,
-              category=None):
+              category=None, tags=None):
         """
         Query (List) projects
         :param owner: Owner username.
@@ -63,6 +63,7 @@ class Project(Resource):
         :param limit: Pagination limit.
         :param api: Api instance.
         :param category: Project category.
+        :param tags: Project tags.
         :return: Collection object.
         """
         api = api if api else cls._API
@@ -75,6 +76,8 @@ class Project(Resource):
             query_params['name'] = name
         if category:
             query_params['category'] = category
+        if tags:
+            query_params['tags'] = Transform.to_tags(tags)
         return super()._query(
             url=url, offset=offset, limit=limit, fields='_all',
             api=api, **query_params
