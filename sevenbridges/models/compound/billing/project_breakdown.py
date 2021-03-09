@@ -11,7 +11,7 @@ class ProjectBreakdown(Resource):
     Project breakdown resource contains information regarding
     billing group project breakdown costs.
     """
-    href = HrefField()
+    href = HrefField(read_only=True)
     analysis_spending = CompoundField(Price, read_only=True)
     task_breakdown = CompoundListField(TaskBreakdown, read_only=True)
 

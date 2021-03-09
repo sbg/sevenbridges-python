@@ -54,10 +54,10 @@ class File(Resource):
         'move_to_folder': '/files/{file_id}/actions/move',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     type = StringField(read_only=True)
-    name = StringField()
+    name = StringField(read_only=False)
     size = IntegerField(read_only=True)
     parent = StringField(read_only=True)
     project = StringField(read_only=True)
@@ -65,9 +65,9 @@ class File(Resource):
     modified_on = DateTimeField(read_only=True)
     origin = CompoundField(FileOrigin, read_only=True)
     storage = CompoundField(FileStorage, read_only=True)
-    metadata = CompoundField(Metadata)
-    tags = BasicListField()
-    _secondary_files = BasicListField(name='_secondary_files')
+    metadata = CompoundField(Metadata, read_only=False)
+    tags = BasicListField(read_only=False)
+    _secondary_files = BasicListField(read_only=False, name='_secondary_files')
 
     def __str__(self):
         return f'<File: id={self.id}>'
@@ -314,37 +314,44 @@ class File(Resource):
         :raise ResourceNotModified
         :return: File instance.
         """
+        reload = False
         modified_data = self._modified_data()
-        if silent or modified_data:
-            # If metadata is to be set
-            if 'metadata' in modified_data:
-                if hasattr(self, '_overwrite_metadata'):
-                    self._api.put(
-                        url=self._URL['metadata'].format(id=self.id),
-                        data=modified_data['metadata']
-                    )
-                    delattr(self, '_overwrite_metadata')
-                else:
-                    self._api.patch(
-                        url=self._URL['metadata'].format(id=self.id),
-                        data=modified_data['metadata']
-                    )
-                modified_data.pop('metadata')
-            if 'tags' in modified_data:
-                self._api.put(
-                    url=self._URL['tags'].format(id=self.id),
-                    data=modified_data['tags']
-                )
-                modified_data.pop('tags')
-            # Change everything else
-            if modified_data:
-                self._api.patch(
-                    url=self._URL['get'].format(id=self.id), data=modified_data
-                )
-        else:
+        if not (silent or modified_data):
             raise ResourceNotModified()
 
-        return self.reload()
+        # Update metadata
+        if 'metadata' in modified_data:
+            if hasattr(self, '_overwrite_metadata'):
+                self.metadata = self._api.put(
+                    url=self._URL['metadata'].format(id=self.id),
+                    data=modified_data['metadata']
+                ).json()
+                delattr(self, '_overwrite_metadata')
+            else:
+                self.metadata = self._api.patch(
+                    url=self._URL['metadata'].format(id=self.id),
+                    data=modified_data['metadata']
+                ).json()
+            reload = True
+            modified_data.pop('metadata')
+
+        # Update tags
+        if 'tags' in modified_data:
+            self.tags = self._api.put(
+                url=self._URL['tags'].format(id=self.id),
+                data=modified_data['tags']
+            ).json()
+            reload = True
+            modified_data.pop('tags')
+
+        # Update everything else
+        if modified_data:
+            data = self._api.patch(
+                url=self._URL['get'].format(id=self.id), data=modified_data
+            ).json()
+            self._update_read_only(data)
+
+        return self if not reload else self.reload()
 
     def stream(self, part_size=32 * PartSize.KB):
         """
@@ -608,7 +615,7 @@ class File(Resource):
 
 
 class FileBulkRecord(BulkRecord):
-    resource = CompoundField(cls=File)
+    resource = CompoundField(cls=File, read_only=False)
 
     def __str__(self):
         return f'<FileBulkRecord valid={self.valid}>'

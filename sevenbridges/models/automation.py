@@ -43,7 +43,7 @@ class AutomationPackage(Resource):
     created_by = StringField(read_only=True)
     created_on = DateTimeField(read_only=True)
     archived = BooleanField(read_only=True)
-    custom_url = StringField()
+    custom_url = StringField(read_only=False)
     memory_limit = IntegerField(read_only=False)
 
     def __eq__(self, other):
@@ -200,13 +200,13 @@ class AutomationMember(Resource):
         'get': '/automation/automations/{automation_id}/members/{id}',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     username = StringField(read_only=True)
     email = StringField(read_only=True)
     type = StringField(read_only=True)
     name = StringField(read_only=True)
-    permissions = CompoundField(Permissions)
+    permissions = CompoundField(Permissions, read_only=False)
 
     def __eq__(self, other):
         if type(other) is not type(self):
@@ -323,6 +323,7 @@ class Automation(Resource):
     """
     Central resource for managing automations.
     """
+    # noinspection PyProtectedMember
     _URL = {
         'query': '/automation/automations',
         'get': '/automation/automations/{id}',
@@ -333,7 +334,7 @@ class Automation(Resource):
         'restore': '/automation/automations/{automation_id}/actions/restore'
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = UuidField(read_only=True)
     name = StringField(read_only=False)
     description = StringField(read_only=False)
@@ -654,14 +655,14 @@ class AutomationRun(Resource):
         'state': '/automation/runs/{id}/state',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     name = StringField(read_only=False)
     automation = CompoundField(Automation, read_only=True)
     package = CompoundField(AutomationPackage, read_only=True)
-    inputs = DictField()
+    inputs = DictField(read_only=False)
     outputs = DictField(read_only=True)
-    settings = DictField()
+    settings = DictField(read_only=False)
     created_on = DateTimeField(read_only=True)
     start_time = DateTimeField(read_only=True)
     end_time = DateTimeField(read_only=True)

@@ -3,11 +3,11 @@ from datetime import datetime
 
 from sevenbridges.errors import ReadOnlyPropertyError, ValidationError
 
-empty = object()
-
 
 # noinspection PyProtectedMember
 class Field:
+    EMPTY = object()
+
     def __init__(self, name=None, read_only=True, validator=None):
         self.name = name
         self.read_only = read_only
@@ -15,7 +15,7 @@ class Field:
 
     def __set__(self, instance, value):
         # using empty as sentinel, value can be only set once - first time
-        if self.read_only and instance._data[self.name] is not empty:
+        if self.read_only and instance._data[self.name] is not Field.EMPTY:
             raise ReadOnlyPropertyError(
                 f'Property {self.name} is marked as read only!'
             )
@@ -52,7 +52,7 @@ class Field:
 
 # noinspection PyProtectedMember
 class CompoundField(Field):
-    def __init__(self, cls, name=None, read_only=False, validator=None):
+    def __init__(self, cls, read_only, name=None, validator=None):
         super().__init__(
             name=name, read_only=read_only, validator=validator
         )
@@ -61,7 +61,7 @@ class CompoundField(Field):
     def __get__(self, instance, owner):
         data = instance._data[self.name]
         # empty is used for read only fields, None all for others
-        if data is not empty and data is not None:
+        if data is not Field.EMPTY and data is not None:
             return self.cls(api=instance._api, _parent=instance, **data)
         else:
             return None
@@ -69,36 +69,36 @@ class CompoundField(Field):
 
 # noinspection PyProtectedMember
 class CompoundListField(Field):
-    def __init__(self, cls, name=None, read_only=True):
+    def __init__(self, cls, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
         self.cls = cls
 
     def __get__(self, instance, owner):
         data = instance._data[self.name]
         # empty is used for read only fields, None for all others
-        if data is not empty and data is not None:
+        if data is not Field.EMPTY and data is not None:
             return [self.cls(api=instance._api, **item) for item in data]
         else:
             return []
 
 
 class DictField(Field, dict):
-    def __init__(self, name=None, read_only=False):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
 
 class HrefField(Field):
-    def __init__(self, name=None):
-        super().__init__(name=name)
+    def __init__(self, read_only, name=None):
+        super().__init__(name=name, read_only=read_only)
 
 
 class ObjectIdField(Field):
-    def __init__(self, name=None, read_only=True):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
 
 class IntegerField(Field):
-    def __init__(self, name=None, read_only=False):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
@@ -110,7 +110,7 @@ class IntegerField(Field):
 
 
 class FloatField(Field):
-    def __init__(self, name=None, read_only=False):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
@@ -123,7 +123,7 @@ class FloatField(Field):
 
 
 class StringField(Field):
-    def __init__(self, name=None, read_only=False, max_length=None):
+    def __init__(self, read_only, name=None, max_length=None):
         super().__init__(name=name, read_only=read_only)
         self.max_length = max_length
 
@@ -139,7 +139,7 @@ class StringField(Field):
 
 
 class DateTimeField(Field):
-    def __init__(self, name=None, read_only=True):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
     def __get__(self, instance, cls):
@@ -154,7 +154,7 @@ class DateTimeField(Field):
 
 
 class BooleanField(Field):
-    def __init__(self, name=None, read_only=False):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
@@ -166,7 +166,7 @@ class BooleanField(Field):
 
 
 class UuidField(Field):
-    def __init__(self, name=None, read_only=True):
+    def __init__(self, read_only, name=None):
         super().__init__(name=name, read_only=read_only)
 
     def validate(self, value):
@@ -181,7 +181,7 @@ class UuidField(Field):
 
 
 class BasicListField(Field):
-    def __init__(self, name=None, read_only=False, max_length=None):
+    def __init__(self, read_only, name=None, max_length=None):
         super().__init__(name=name, read_only=read_only)
         self.max_length = max_length
 

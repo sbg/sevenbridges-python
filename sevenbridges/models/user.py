@@ -18,7 +18,7 @@ class User(Resource):
         'delete': '/users/{username}'
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     username = StringField(read_only=True)
     email = StringField(read_only=True)
     first_name = StringField(read_only=True)

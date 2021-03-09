@@ -10,7 +10,7 @@ class TeamMember(Resource):
     """
     Central resource for managing team members.
     """
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     username = StringField(read_only=False)
     role = StringField(read_only=True)

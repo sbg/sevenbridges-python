@@ -1,3 +1,4 @@
+import copy
 import logging
 import functools
 from json import JSONDecodeError
@@ -26,6 +27,7 @@ def inplace_reload(method):
         if in_place and api_object:
             obj._data = api_object._data
             obj._dirty = api_object._dirty
+            obj._old = copy.deepcopy(api_object._data.data)
             obj._data.fetched = False
             return obj
         elif api_object:

@@ -16,7 +16,6 @@ from sevenbridges.models.file import File
 logger = logging.getLogger(__name__)
 
 
-# noinspection PyArgumentList
 class Export(Resource):
     """
     Central resource for managing exports.
@@ -29,7 +28,7 @@ class Export(Resource):
         'bulk_create': '/bulk/storage/exports/create',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     state = StringField(read_only=True)
     _source = DictField(name='source', read_only=True)
@@ -122,6 +121,8 @@ class Export(Resource):
         Query (List) exports.
         :param volume: Optional volume identifier.
         :param state: Optional import sate.
+        :param offset: Pagination offset.
+        :param limit: Pagination limit.
         :param api: Api instance.
         :return: Collection object.
         """
@@ -196,7 +197,7 @@ class Export(Resource):
 
 
 class ExportBulkRecord(BulkRecord):
-    resource = CompoundField(cls=Export)
+    resource = CompoundField(cls=Export, read_only=False)
 
     def __str__(self):
         return f'<ExportBulkRecord valid={self.valid}>'

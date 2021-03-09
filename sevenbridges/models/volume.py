@@ -33,7 +33,7 @@ class Volume(Resource):
         'members_query': '/storage/volumes/{id}/members',
     }
 
-    href = HrefField()
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     name = StringField(read_only=False)
     description = StringField(read_only=False)

@@ -9,7 +9,7 @@ class ExecutionDetails(Resource):
     """
     Task execution details.
     """
-    href = HrefField()
+    href = HrefField(read_only=True)
     start_time = DateTimeField(read_only=True)
     end_time = DateTimeField(read_only=True)
     status = StringField(read_only=True)
