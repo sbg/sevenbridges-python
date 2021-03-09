@@ -70,15 +70,23 @@ def test_modify_project(api, given, verifier):
     id = f'{owner}/{project_short_name}'
     given.project.exists(id=id)
     new_name = generator.name()
-    given.project.can_be_saved(id=id, name=new_name)
+    tags = [generator.slug()]
+    new_category = generator.name()
+    given.project.can_be_saved(
+        id=id, name=new_name, category=new_category, tags=tags
+    )
 
     # action
     project = api.projects.get(id)
 
     # verification
     project.name = new_name
+    project.category = new_category
+    project.tags = tags
     project.save()
     assert project.name == new_name
+    assert project.category == new_category
+    assert project.tags == tags
     verifier.project.saved(id=project.id)
 
 
@@ -285,6 +293,20 @@ def test_query_projects_with_name(api, given, verifier):
     verifier.project.query(name=name)
 
 
+def test_query_projects_with_category(api, given, verifier):
+    # preconditions
+    category = generator.name()
+    given.project.query(total=3, category=category)
+
+    # action
+    projects = api.projects.query(category=category)
+
+    # verification
+    assert len(projects) == 3
+    assert projects[0].category == category
+    verifier.project.query(category=category)
+
+
 def test_query_projects_with_owner(api, given, verifier):
     # preconditions
     owner = generator.word()
@@ -310,3 +332,19 @@ def test_query_projects_with_name_owner(api, given, verifier):
     # verification
     assert len(projects) == 4
     verifier.project.query_owner(owner=owner, name=name)
+
+
+def test_query_projects_with_tags(api, given, verifier):
+    # preconditions
+    tag1 = generator.slug()
+    tag2 = generator.slug()
+    tags = [tag1, tag2]
+    given.project.query(total=3, tags=tags)
+    given.project.query(total=3)
+
+    # action
+    projects = api.projects.query(tags=tags)
+
+    # verification
+    assert len(projects) == 3
+    verifier.project.query(tags=tags)

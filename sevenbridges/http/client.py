@@ -243,6 +243,8 @@ class HttpClient:
     @check_for_error
     def _request(self, verb, url, headers=None, params=None, data=None,
                  append_base=False, stream=False):
+        if not url:
+            raise SbgError(message='Request url must be provided')
         if append_base:
             url = self.url + url
         if not headers:

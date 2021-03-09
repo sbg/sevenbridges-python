@@ -409,6 +409,16 @@ object:
 
 .. code:: python
 
+    # Query projects by project category
+    project_list = api.projects.query(category=project_category)
+
+.. code:: python
+
+    # List projects that have both tags 'tagA' and 'tagB'
+    project_list = api.projects.query(tags=['tagA', 'tagB'])
+
+.. code:: python
+
     # Iterate through all my projects and print their name and id
     for project in api.projects.query().all():
         print (project.id,project.name)

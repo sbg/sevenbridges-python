@@ -100,7 +100,9 @@ class ProjectProvider:
             'id': 'my/my-project',
             'name': generator.user_name(),
             'billing_group': generator.uuid4(),
-            'settings': {}
+            'category': generator.user_name(),
+            'settings': {},
+            'tags': []
         }
 
     def exists(self, **kwargs):

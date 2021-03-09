@@ -28,7 +28,7 @@ class DataContainer:
         href = self.data.get('href', None)
         headers = dict(self.api.headers)
 
-        if href is not None:
+        if href:
             self.data = self.api.get(
                 href,
                 headers=headers,

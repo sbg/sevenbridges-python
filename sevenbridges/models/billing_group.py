@@ -2,7 +2,16 @@ from sevenbridges.meta.fields import (
     HrefField, UuidField, StringField, BooleanField, CompoundField
 )
 from sevenbridges.meta.resource import Resource
+from sevenbridges.models.billing_analysis_breakdown import (
+    BillingGroupAnalysisBreakdown
+)
 from sevenbridges.models.billing_breakdown import BillingGroupBreakdown
+from sevenbridges.models.billing_storage_breakdown import (
+    BillingGroupStorageBreakdown
+)
+from sevenbridges.models.billing_egress_breakdown import (
+    BillingGroupEgressBreakdown
+)
 from sevenbridges.models.compound.price import Price
 
 
@@ -51,3 +60,33 @@ class BillingGroup(Resource):
         Get Billing group breakdown for the current billing group.
         """
         return BillingGroupBreakdown.get(self.id, self._api)
+
+    def analysis_breakdown(self, date_from=None, date_to=None, invoice_id=None,
+                           fields=None, offset=0, limit=50):
+        """
+        Get Billing group analysis breakdown for the current billing group.
+        """
+        return BillingGroupAnalysisBreakdown.query(
+            self.id, self._api, date_from, date_to, invoice_id, fields,
+            offset, limit
+        )
+
+    def storage_breakdown(self, date_from=None, date_to=None, invoice_id=None,
+                          fields=None, offset=0, limit=50):
+        """
+        Get Billing group storage breakdown for the current billing group.
+        """
+        return BillingGroupStorageBreakdown.query(
+            self.id, self._api, date_from, date_to, invoice_id, fields,
+            offset, limit
+        )
+
+    def egress_breakdown(self, date_from=None, date_to=None, invoice_id=None,
+                         fields=None, offset=0, limit=50):
+        """
+        Get Billing group egress breakdown for the current billing group.
+        """
+        return BillingGroupEgressBreakdown.query(
+            self.id, self._api, date_from, date_to, invoice_id, fields,
+            offset, limit
+        )
