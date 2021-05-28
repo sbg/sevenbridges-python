@@ -1040,7 +1040,8 @@ Volumes have the following methods:
 -  Refresh the volume with data from the server: ``reload()``
 -  Get imports for a particular volume ``get_imports()``
 -  Get exports for a particular volume ``get_exports()``
--  Create a new volume based on the AWS S3 service -  ``create_s3_volume()``
+-  Create a new volume based on the AWS S3 service using IAM user as authentication mechanism -  ``create_s3_volume()``
+-  Create a new volume based on the AWS S3 service using IAM role as authentication mechanism -  ``create_s3_volume_role_auth()``
 -  Create a new volume based on the Google Cloud Storage service  - ``create_google_volume()``
 -  Create a new volume based on the Aliyun service - ``create_oss_volume()``
 -  Save modifications to the volume to the server ``save()``
@@ -1059,7 +1060,7 @@ Examples
 
 .. code:: python
 
-    # Create a new volume based on AWS S3 for importing files
+    # Create a new volume based on AWS S3 for importing files, with IAM user as auth mechanism
     volume_import = api.volumes.create_s3_volume(
         name='my_input_volume',
         bucket='my_bucket',
@@ -1068,12 +1069,30 @@ Examples
         access_mode='RO'
     )
 
-    # Create a new volume based on AWS S3 for exporting files
+    # Create a new volume based on AWS S3 for exporting files, with IAM user as auth mechanism
     volume_export = api.volumes.create_s3_volume(
         name='my_output_volume',
         bucket='my_bucket',
         access_key_id='AKIAIOSFODNN7EXAMPLE',
         secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+        access_mode='RW'
+    )
+
+    # Create a new volume based on AWS S3 for importing files, with IAM role as auth mechanism
+    volume_import = api.volumes.create_s3_volume_role_auth(
+        name='my_input_volume',
+        bucket='my_bucket',
+        role_arn='arn:aws:iam::ACCOUNTNUMBER:role/ROLE-NAME',
+        external_id = 'external_id',
+        access_mode='RO'
+    )
+
+    # Create a new volume based on AWS S3 for exporting files, with IAM role as auth mechanism
+    volume_export = api.volumes.create_s3_volume(
+        name='my_output_volume',
+        bucket='my_bucket',
+        role_arn='arn:aws:iam::ACCOUNTNUMBER:role/ROLE-NAME',
+        external_id = 'external_id',
         access_mode='RW'
     )
 
