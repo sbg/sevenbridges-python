@@ -112,6 +112,50 @@ class Volume(Resource):
         return Volume(api=api, **response)
 
     @classmethod
+    def create_s3_volume_role_auth(cls, name, bucket, role_arn, external_id,
+                                   access_mode, description=None, prefix=None,
+                                   properties=None, api=None):
+
+        """
+        Create s3 volume using IAM Role auth.
+        :param name: Volume name.
+        :param bucket: Referenced bucket.
+        :param role_arn: Amazon role ARN.
+        :param external_id: Amazon role external id.
+        :param access_mode: Access Mode.
+        :param description: Volume description.
+        :param prefix: Volume prefix.
+        :param properties: Volume properties.
+        :param api: Api instance.
+        :return: Volume object.
+        """
+        service = {'type': VolumeType.S3,
+                   'bucket': bucket,
+                   'credentials': {'role_arn': role_arn,
+                                   'external_id': external_id
+                                   }
+                   }
+        if prefix:
+            service['prefix'] = prefix
+        if properties:
+            service['properties'] = properties
+
+        data = {'name': name,
+                'service': service,
+                'access_mode': access_mode
+                }
+        if description:
+            data['description'] = description
+        api = api or cls._API
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        logger.info('Creating s3 volume using role auth', extra=extra)
+        response = api.post(url=cls._URL['query'], data=data).json()
+        return Volume(api=api, **response)
+
+    @classmethod
     def create_google_volume(cls, name, bucket, client_email, private_key,
                              access_mode, description=None, prefix=None,
                              properties=None, api=None):
