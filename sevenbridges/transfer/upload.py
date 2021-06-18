@@ -63,7 +63,8 @@ def _submit_part(session, url, part, timeout):
     """
     try:
         response = session.put(url, data=part, timeout=timeout)
-        return response.headers.get('etag').strip('"')
+        etag = response.headers.get('etag')
+        return etag.strip('"') if etag else ""
     except Exception as e:
         raise SbgError(f'Failed to submit the part. Reason: {e}')
 

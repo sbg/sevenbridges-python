@@ -37,6 +37,24 @@ def test_create_s3_volume(api, given, verifier):
     verifier.volume.created()
 
 
+def test_create_s3_volume_role_auth(api, given, verifier):
+    # preconditions
+    name = generator.name()
+    bucket = generator.name()
+    role_arn = generator.name()
+    external_id = generator.name()
+    access_mode = 'RO'
+    given.volume.volume_created(name='test')
+
+    # action
+    volume = api.volumes.create_s3_volume_role_auth(
+        name, bucket, role_arn, external_id, access_mode)
+
+    # verifier
+    assert volume.name == 'test'
+    verifier.volume.created()
+
+
 def test_create_google_volume(api, given, verifier):
     # preconditions
     name = generator.name()
