@@ -526,7 +526,7 @@ class CodePackageUpload(Upload):
     def __init__(
         self, file_path, automation_id, file_name=None, part_size=None,
         retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
-        timeout=RequestParameters.DEFAULT_TIMEOUT, api=None
+        timeout=RequestParameters.DEFAULT_TIMEOUT, parent=None, api=None
     ):
         """
             Multipart File uploader for automation code packages.
@@ -546,7 +546,7 @@ class CodePackageUpload(Upload):
         super().__init__(
             file_path=file_path,
             project=None,
-            parent=None,
+            parent=parent,
             file_name=file_name,
             overwrite=False,
             part_size=part_size,
