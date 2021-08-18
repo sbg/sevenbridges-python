@@ -70,6 +70,7 @@ class Task(Resource):
     outputs = CompoundField(Output, read_only=True)
     execution_settings = DictField(read_only=True)
     use_interruptible_instances = BooleanField(read_only=False)
+    origin = StringField(read_only=True, name='origin_id')
 
     def __str__(self):
         return f'<Task: id={self.id}>'
@@ -84,7 +85,7 @@ class Task(Resource):
               parent=None, created_from=None, created_to=None,
               started_from=None, started_to=None, ended_from=None,
               ended_to=None, offset=None, limit=None, order_by=None,
-              order=None, api=None):
+              order=None, api=None, origin=None):
         """
         Query (List) tasks. Date parameters may be both strings and python date
         objects.
@@ -103,6 +104,7 @@ class Task(Resource):
         :param order_by: Property to order by.
         :param order: Ascending or descending ordering.
         :param api: Api instance.
+        :param origin: Tasks run by automation run
         :return: Collection object.
         """
         api = api or cls._API
@@ -122,13 +124,16 @@ class Task(Resource):
             ended_from = Transform.to_datestring(ended_from)
         if ended_to:
             ended_to = Transform.to_datestring(ended_to)
+        if origin:
+            origin = Transform.to_automation_run(origin)
 
         return super()._query(
             url=cls._URL['query'], project=project, status=status, batch=batch,
             parent=parent, created_from=created_from, created_to=created_to,
             started_from=started_from, started_to=started_to,
             ended_from=ended_from, ended_to=ended_to, offset=offset,
-            limit=limit, order_by=order_by, order=order, fields='_all', api=api
+            limit=limit, order_by=order_by, order=order, fields='_all',
+            api=api, origin_id=origin
         )
 
     @classmethod
