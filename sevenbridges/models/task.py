@@ -312,10 +312,15 @@ class Task(Resource):
             'use_memoization',
             self.execution_settings.get('use_memoization', None)
         )
+        use_elastic_disc = execution_settings.get(
+            'use_elastic_disc',
+            self.execution_settings.get('use_elastic_disc', None)
+        )
         serialized_es_mapping = {
             'instance_type': instance_type,
             'max_parallel_instances': max_parallel_instances,
-            'use_memoization': use_memoization
+            'use_memoization': use_memoization,
+            'use_elastic_disc': use_elastic_disc
         }
         serialized_es = dict()
         for key, value in serialized_es_mapping.items():

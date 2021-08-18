@@ -89,7 +89,8 @@ def test_create_task(api, given, verifier, run):
     execution_settings = {
         'instance_type': generator.name(),
         'max_parallel_instances': 1,
-        'use_memoization': True
+        'use_memoization': True,
+        'use_elastic_disc': True
     }
     given.task.can_be_created(
         batch_by=batch_by, batch_input='FastQC', app=app_id, project=project.id
