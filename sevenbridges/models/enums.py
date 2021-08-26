@@ -124,3 +124,7 @@ class AutomationStatus:
     QUEUED_FOR_TERMINATION = 'QUEUED_FOR_TERMINATION'
 
     terminal_states = [FINISHED, FAILED, ABORTED]
+
+
+class DRSImportState(AsyncJobStates):
+    pass
