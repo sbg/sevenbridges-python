@@ -1857,3 +1857,38 @@ class FileUploadProvider:
         regx = f'^{self.base_url}/upload/multipart/.*'
         matcher = re.compile(regx)
         self.request_mocker.delete(matcher, status_code=status_code)
+
+
+class DRSImportProvider:
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default_import():
+        return {
+            'id': generator.uuid4(),
+            'href': generator.url(),
+            'result': [],
+            'state': generator.state(),
+            'failed_files': 0,
+            'completed_files': 2,
+            'total_files': 2,
+            'started_on': generator.time(),
+            'finished_on': generator.time()
+        }
+
+    def can_be_retrieved_in_bulk(self, import_data):
+        data = self.default_import()
+        data.update(import_data)
+        self.request_mocker.get(
+            '/bulk/drs/imports/{id}'.format(id=import_data['id']), json=data
+        )
+
+    def can_be_submitted_in_bulk(self, imports_data):
+        data = self.default_import()
+        data['result'] = [
+            {'id': generator.uuid4(), 'href': generator.url()}
+            for _ in range(len(imports_data))
+        ]
+        self.request_mocker.post('/bulk/drs/imports/create', json=data)

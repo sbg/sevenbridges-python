@@ -75,7 +75,9 @@ class DRSImportBulkRecord(Resource):
         return DRSImportBulkRecord(api=api, **response)
 
     @classmethod
-    def bulk_submit(cls, imports, tags, conflict_resolution='SKIP', api=None):
+    def bulk_submit(
+            cls, imports, tags=None, conflict_resolution='SKIP', api=None
+    ):
         """
         Submit DRS bulk import
         :param imports:  List of dicts describing a wanted import.

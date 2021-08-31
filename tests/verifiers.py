@@ -603,3 +603,15 @@ class AsyncJobVerifier:
 
     def async_files_moved(self):
         self.checker.check_url('/async/files/move')
+
+
+class DRSImportsVerifier:
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def bulk_retrieved(self, _id):
+        self.checker.check_url('/bulk/drs/imports/{id}'.format(id=_id))
+
+    def bulk_submitted(self):
+        self.checker.check_url('/bulk/drs/imports/create')

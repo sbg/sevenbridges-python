@@ -61,6 +61,9 @@ class Precondition:
             request_mocker, base_url
         )
         self.uploads = providers.FileUploadProvider(request_mocker, base_url)
+        self.drs_imports = providers.DRSImportProvider(
+            request_mocker, base_url
+        )
 
 
 class Verifier:
@@ -93,6 +96,7 @@ class Verifier:
         self.automation_packages = verifiers.AutomationPackageVerifier(
             request_mocker
         )
+        self.drs_imports = verifiers.DRSImportsVerifier(request_mocker)
 
 
 @pytest.fixture
