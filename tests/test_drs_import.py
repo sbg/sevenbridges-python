@@ -34,8 +34,8 @@ def test_imports_bulk_submit(api, given, verifier):
             "drs_uri": generator.name(),
             "project": generator.name(),
             "metadata": {
-                "study_id": generator.name(),
-                "cohort": generator.name()
+                generator.name(): generator.name(),
+                generator.name(): generator.name()
             },
             "name": generator.name()
         }
