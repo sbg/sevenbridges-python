@@ -67,8 +67,8 @@ __all__ = [
     'AppCopyStrategy', 'AppRawFormat', 'AppCopyStrategy',
     'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
     'DivisionRole', 'DRSImportState', 'FileStorageType', 'ImportExportState',
-    'TaskStatus', 'TransferState', 'VolumeAccessMode', 'VolumeType', 'PartSize',
-    'AutomationStatus',
+    'TaskStatus', 'TransferState', 'VolumeAccessMode', 'VolumeType',
+    'PartSize', 'AutomationStatus',
     # Errors
     'SbgError', 'ResourceNotModified', 'ReadOnlyPropertyError',
     'ValidationError', 'TaskValidationError', 'PaginationError', 'BadRequest',

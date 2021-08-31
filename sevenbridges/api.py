@@ -22,7 +22,7 @@ from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.rate_limit import RateLimit
 from sevenbridges.models.storage_export import Export
 from sevenbridges.models.storage_import import Import
-from sevenbridges.models.drs_import import DRSImport
+from sevenbridges.models.drs_import import DRSImportBulkRecord
 from sevenbridges.models.enums import RequestParameters
 from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.automation import (
@@ -42,7 +42,7 @@ class Api(HttpClient):
     billing_groups = BillingGroup
     datasets = Dataset
     divisions = Division
-    drs_imports = DRSImport
+    drs_imports = DRSImportBulkRecord
     endpoints = Endpoints
     exports = Export
     files = File

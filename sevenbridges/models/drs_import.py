@@ -2,10 +2,8 @@ import logging
 
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import (
-    HrefField, StringField, CompoundField, DateTimeField,
-    DictField, IntegerField
+    HrefField, StringField, DateTimeField, DictField, IntegerField
 )
-from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.file import File
@@ -13,13 +11,13 @@ from sevenbridges.models.file import File
 logger = logging.getLogger(__name__)
 
 
-class DRSImport(Resource):
+class DRSImportBulkRecord(Resource):
     """
     Central resource for managing DRS imports.
     """
     _URL = {
-        'bulk_get': '/bulk/drs/imports/get',
-        'bulk_create': '/bulk/drs/imports/create',
+        'get': '/bulk/drs/imports/{id}',
+        'create': '/bulk/drs/imports/create',
     }
 
     id = StringField(read_only=True)
@@ -33,7 +31,7 @@ class DRSImport(Resource):
     finished_on = DateTimeField(read_only=True)
 
     def __str__(self):
-        return f'<Import: id={self.id}>'
+        return f'<DRSBulkImport: id={self.id}>'
 
     def __eq__(self, other):
         if type(other) is not type(self):
@@ -42,41 +40,50 @@ class DRSImport(Resource):
 
     @property
     def result_files(self):
+        """
+        Retrieve files that were successfully imported.
+        :return: List of File objects
+        """
         try:
-            return [File(api=self._api, **file) for file in self.result]
+            imported_files = [file.get('resource') for file in self.result]
+            files = File.bulk_get(
+                files=[file['id'] for file in imported_files if file],
+                api=self._api
+            )
+            return files
         except TypeError:
             return None
 
     @classmethod
     def bulk_get(cls, import_job_id, api=None):
         """
-        Retrieve imports in bulk
+        Retrieve DRS bulk import details
         :param import_job_id: Import id to be retrieved.
         :param api: Api instance.
-        :return: List of response_obj objects.
+        :return: DRSImport object.
         """
         api = api or cls._API
-        import_id = Transform.to_import(import_job_id)
 
-        response = api.post(url=cls._URL['bulk_get'], data={'id': import_id})
-        return DRSImportBulkResponse.parse_records(response=response, api=api)
+        if not import_job_id:
+            raise SbgError('DRS import is required!')
+        elif not isinstance(import_job_id, str):
+            raise SbgError('Invalid DRS import parameter!')
+
+        response = api.get(
+            url=cls._URL['get'].format(id=import_job_id)
+        ).json()
+        return DRSImportBulkRecord(api=api, **response)
 
     @classmethod
     def bulk_submit(cls, imports, tags, conflict_resolution='SKIP', api=None):
         """
         Submit DRS bulk import
         :param imports:  List of dicts describing a wanted import.
-        :param tags: list of tags to be applied
-        :param conflict_resolution:
+        :param tags: list of tags to be applied.
+        :param conflict_resolution: Type of file naming conflict resolution.
         :param api: Api instance.
-        :return: List of DRSImportBulkRecord objects.
+        :return: DRSImport object.
         """
-        imports = [{
-            "drs_uri": "drs://caninedc.org/01349ad3-6008-426f-a17c-88dcc00492fe",
-            "parent": "568cf5dce4b0307bc0462060",
-            "project": "john-doe/project-slug",
-            "metadata": {"study_id": "123", "cohort": 2}
-        }]
         if not imports:
             raise SbgError('Imports are required')
 
@@ -105,21 +112,6 @@ class DRSImport(Resource):
             'tags': tags,
             'items': items
         }
-        response = api.post(url=cls._URL['bulk_create'], data=data)
+        response = api.post(url=cls._URL['create'], data=data).json()
 
-        return DRSImportBulkResponse.parse_records(response=response, api=api)
-
-    def reload(self):
-        response = self.api.post(
-            url=self._URL['bulk_get'], data={'id': self.id}
-        )
-        return DRSImportBulkResponse.parse_records(
-            response=response, api=self.api
-        )
-
-
-class DRSImportBulkResponse(BulkRecord):
-    resource = CompoundField(cls=DRSImport, read_only=False)
-
-    def __str__(self):
-        return f'<DRSImportBulkRecord valid={self.valid}>'
+        return DRSImportBulkRecord(api=api, **response)
