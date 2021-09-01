@@ -11,7 +11,7 @@ from sevenbridges.models.file import File
 logger = logging.getLogger(__name__)
 
 
-class DRSImportBulkRecord(Resource):
+class DRSImportBulk(Resource):
     """
     Central resource for managing DRS imports.
     """
@@ -60,7 +60,7 @@ class DRSImportBulkRecord(Resource):
         Retrieve DRS bulk import details
         :param import_job_id: Import id to be retrieved.
         :param api: Api instance.
-        :return: DRSImport object.
+        :return: DRSImportBulk object.
         """
         api = api or cls._API
 
@@ -72,7 +72,7 @@ class DRSImportBulkRecord(Resource):
         response = api.get(
             url=cls._URL['get'].format(id=import_job_id)
         ).json()
-        return DRSImportBulkRecord(api=api, **response)
+        return DRSImportBulk(api=api, **response)
 
     @classmethod
     def bulk_submit(
@@ -84,7 +84,7 @@ class DRSImportBulkRecord(Resource):
         :param tags: list of tags to be applied.
         :param conflict_resolution: Type of file naming conflict resolution.
         :param api: Api instance.
-        :return: DRSImport object.
+        :return: DRSImportBulk object.
         """
         if not imports:
             raise SbgError('Imports are required')
@@ -116,4 +116,4 @@ class DRSImportBulkRecord(Resource):
         }
         response = api.post(url=cls._URL['create'], data=data).json()
 
-        return DRSImportBulkRecord(api=api, **response)
+        return DRSImportBulk(api=api, **response)
