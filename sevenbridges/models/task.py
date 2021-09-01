@@ -85,7 +85,7 @@ class Task(Resource):
               parent=None, created_from=None, created_to=None,
               started_from=None, started_to=None, ended_from=None,
               ended_to=None, offset=None, limit=None, order_by=None,
-              order=None, api=None, origin=None):
+              order=None, origin=None, api=None):
         """
         Query (List) tasks. Date parameters may be both strings and python date
         objects.
@@ -133,7 +133,7 @@ class Task(Resource):
             started_from=started_from, started_to=started_to,
             ended_from=ended_from, ended_to=ended_to, offset=offset,
             limit=limit, order_by=order_by, order=order, fields='_all',
-            api=api, origin_id=origin
+            origin_id=origin, api=api
         )
 
     @classmethod
