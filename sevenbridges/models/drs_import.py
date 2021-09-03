@@ -2,10 +2,11 @@ import logging
 
 from sevenbridges.errors import SbgError
 from sevenbridges.meta.fields import (
-    HrefField, StringField, DateTimeField, DictField, IntegerField
+    HrefField, StringField, DateTimeField, CompoundListField
 )
 from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.compound.import_result import FileImportResult
 from sevenbridges.models.file import File
 
 logger = logging.getLogger(__name__)
@@ -22,10 +23,8 @@ class DRSImportBulk(Resource):
 
     id = StringField(read_only=True)
     href = HrefField(read_only=True)
-    result = DictField(read_only=True)
-    failed_files = IntegerField(read_only=True)
-    completed_files = IntegerField(read_only=True)
-    total_files = IntegerField(read_only=True)
+    result = CompoundListField(FileImportResult, read_only=True)
+    _result_files = []  # cache for result_files property
     state = StringField(read_only=True)
     started_on = DateTimeField(read_only=True)
     finished_on = DateTimeField(read_only=True)
@@ -45,12 +44,21 @@ class DRSImportBulk(Resource):
         :return: List of File objects
         """
         try:
-            imported_files = [file.get('resource') for file in self.result]
-            files = File.bulk_get(
-                files=[file['id'] for file in imported_files if file],
-                api=self._api
-            )
-            return files
+            cached_file_ids = set([
+                file.resource.id for file in self._result_files
+            ])
+
+            imported_file_ids = set([
+                file.resource.id
+                for file in self.result if file.resource
+            ])
+            file_ids_to_retrieve = imported_file_ids - cached_file_ids
+            if file_ids_to_retrieve:
+                files = File.bulk_get(
+                    files=file_ids_to_retrieve, api=self._api
+                )
+                self._result_files.extend(files)
+            return self._result_files if self._result_files else None
         except TypeError:
             return None
 
@@ -115,5 +123,4 @@ class DRSImportBulk(Resource):
             'items': items
         }
         response = api.post(url=cls._URL['create'], data=data).json()
-
         return DRSImportBulk(api=api, **response)
