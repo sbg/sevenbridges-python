@@ -38,7 +38,7 @@ class Volume(Resource):
     name = StringField(read_only=False)
     description = StringField(read_only=False)
     access_mode = StringField(read_only=False)
-    service = CompoundField(VolumeService, read_only=True)
+    service = CompoundField(VolumeService, read_only=False)
     created_on = DateTimeField(read_only=True)
     modified_on = DateTimeField(read_only=True)
     active = BooleanField(read_only=True)
