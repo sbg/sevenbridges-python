@@ -180,6 +180,8 @@ def test_get_package(api, given, verifier):
 
 
 '''
+# Commenting theses two tests out due to upload issue they have
+
 @pytest.mark.parametrize("file", [True, False])
 @pytest.mark.parametrize("version", [generator.slug(), None])
 @pytest.mark.parametrize("schema", [{"test": "test"}, None])
