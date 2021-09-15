@@ -24,6 +24,7 @@ from sevenbridges.models.project import Project
 from sevenbridges.models.task import Task
 from sevenbridges.models.app import App
 from sevenbridges.models.dataset import Dataset
+from sevenbridges.models.drs_import import DRSImportBulk
 from sevenbridges.models.bulk import BulkRecord
 from sevenbridges.models.team import Team, TeamMember
 from sevenbridges.models.member import Member, Permissions
@@ -62,7 +63,7 @@ __all__ = [
     'BillingGroupBreakdown', 'User', 'Endpoints', 'Project', 'Task', 'App',
     'Member', 'Permissions', 'File', 'Export', 'Import', 'Volume',
     'VolumeObject', 'Marker', 'Division', 'Team', 'TeamMember', 'Dataset',
-    'BulkRecord',
+    'DRSImportBulk', 'BulkRecord',
     # Enums
     'AppCopyStrategy', 'AppRawFormat', 'AppCopyStrategy',
     'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
