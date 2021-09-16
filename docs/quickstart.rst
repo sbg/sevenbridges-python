@@ -1417,6 +1417,7 @@ the ``batch_by`` criteria.
 
 ``outputs`` - Generated outputs from the task.
 
+``origin`` - Id of the entity that created the task, e.g. automation run, if task was created by an automation run
 
 
 .. note:: Check the documentation on the `Seven Bridges API <http://docs.sevenbridges.com/docs/create-a-new-task>`_ and the `CGC API <http://docs.cancergenomicscloud.org/docs/create-a-new-task>`_ for more details on batching criteria. 

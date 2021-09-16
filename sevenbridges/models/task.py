@@ -103,8 +103,9 @@ class Task(Resource):
         :param limit: Pagination limit.
         :param order_by: Property to order by.
         :param order: Ascending or descending ordering.
+        :param origin: Entity that created the task, e.g. automation run,
+        if task was created by an automation run.
         :param api: Api instance.
-        :param origin: Tasks run by automation run
         :return: Collection object.
         """
         api = api or cls._API
