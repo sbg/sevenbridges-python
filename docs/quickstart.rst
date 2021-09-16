@@ -2033,17 +2033,17 @@ Properties
 
 Each drs bulk import has the following properties:
 
-``href`` - The URL of the async job resource
+``href`` - URI of the import job
 
-``id`` - DRS Import identifier.
+``id`` - ID of the import job.
 
-``result`` -  For each file submitted, ``File`` object is returned if file was successfully imported, otherwise ``Error`` object is returned.
+``result`` -  ``File`` or ``Error`` object for each of the items in the bulk import job.
 
-``state`` - State of the import. Can be *PENDING*, *RUNNING*, *FINISHED* and *SUBMITTED* *RESOLVING*.
+``state`` - State of the import job. Can be *PENDING*, *RUNNING*, *FINISHED* and *SUBMITTED* *RESOLVING*.
 
-``started_on`` - Contains the date and time when the import was started.
+``started_on`` - Contains the date and time when the import job started.
 
-``finished_on`` - Contains the date and time when the import was finished.
+``finished_on`` - Contains the date and time when the import job finished.
 
 Examples
 ~~~~~~~~
