@@ -1417,6 +1417,7 @@ the ``batch_by`` criteria.
 
 ``outputs`` - Generated outputs from the task.
 
+``origin`` - Id of the entity that created the task, e.g. automation run, if task was created by an automation run
 
 
 .. note:: Check the documentation on the `Seven Bridges API <http://docs.sevenbridges.com/docs/create-a-new-task>`_ and the `CGC API <http://docs.cancergenomicscloud.org/docs/create-a-new-task>`_ for more details on batching criteria. 
@@ -2018,3 +2019,68 @@ Examples
             }
         ]
         new_move_job = api.async_jobs.file_bulk_move(files=files)
+
+
+Managing DRS bulk imports
+-------------------------
+
+The following operations are supported for drs bulk imports:
+    - ``result_files`` - Retrieve files that were successfully imported
+    - ``bulk_get()`` - Retrieve DRS bulk import details
+    - ``bulk_submit()`` - Submit DRS bulk import
+
+Properties
+~~~~~~~~~~
+
+Each drs bulk import has the following properties:
+
+``href`` - URI of the import job
+
+``id`` - ID of the import job.
+
+``result`` -  ``File`` or ``Error`` object for each of the items in the bulk import job.
+
+``state`` - State of the import job. Can be *PENDING*, *RUNNING*, *FINISHED* and *SUBMITTED* *RESOLVING*.
+
+``started_on`` - Contains the date and time when the import job started.
+
+``finished_on`` - Contains the date and time when the import job finished.
+
+Examples
+~~~~~~~~
+
+.. code:: python
+    project = api.project.get('user/project')
+    import_data = [
+        {
+           "name": "filename.fasta",
+           "drs_uri": "drs://caninedc.org/01349ad3-6008-426f-a17c-dasdf131e",
+           "parent": "568cf5dce4asd232bc0462060",
+           "metadata": {"study_id": "123", "cohort": 2}
+        },
+        {
+           "name": "filename_2.fasta",
+           "drs_uri": "drs://caninedc.org/01349ad3-6008-426f-a17c-asf2323saf",
+           "project": project,
+           "metadata": {"study_id": "123", "cohort": 3}
+        }
+    ]
+
+    # Submit import jobs and wait for it to be completed
+    import_job = api.imports.bulk_submit(
+        imports=import_data,
+        tags=['tag1', 'tag2'],
+        conflict_resolution='OVERWRITE'
+    )
+    while import_job.state != 'FINISHED':
+        time.sleep(30)
+        import_job.reload()
+
+    imported_files = import_job.result_files
+
+    # Submit import jobs and check later for its state
+    import_job = api.drs_imports.bulk_submit(imports=import_data)
+    import_id = import_job.id
+    import_job = api.drs_imports.bulk_get(import_job_id=import_id)
+    if import_job.state == 'FINISHED':
+        print("Imports finished!")

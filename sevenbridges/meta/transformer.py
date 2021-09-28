@@ -316,3 +316,15 @@ class Transform:
                 raise SbgError('Tags must not contain comma character.')
             tag_list.append(tag)
         return tag_list
+
+    @staticmethod
+    def to_automation_run(automation_run):
+        from sevenbridges.models.automation import AutomationRun
+        if not automation_run:
+            raise SbgError('Automation run is required!')
+        if isinstance(automation_run, AutomationRun):
+            return automation_run.id
+        if isinstance(automation_run, str):
+            return automation_run
+        else:
+            raise SbgError('Invalid automation run parameter!')
