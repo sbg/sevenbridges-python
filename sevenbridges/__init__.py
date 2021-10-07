@@ -15,9 +15,7 @@ from sevenbridges.api import Api
 from sevenbridges.config import Config
 
 from sevenbridges.models.invoice import Invoice
-from sevenbridges.models.billing_group import (
-    BillingGroup, BillingGroupBreakdown
-)
+from sevenbridges.models.billing_group import BillingGroup
 from sevenbridges.models.user import User
 from sevenbridges.models.endpoints import Endpoints
 from sevenbridges.models.project import Project
@@ -59,11 +57,10 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 __all__ = [
     # Models
     'Api', 'AsyncJob', 'Automation', 'AutomationRun', 'AutomationMember',
-    'AutomationPackage',  'Config', 'Invoice', 'BillingGroup',
-    'BillingGroupBreakdown', 'User', 'Endpoints', 'Project', 'Task', 'App',
-    'Member', 'Permissions', 'File', 'Export', 'Import', 'Volume',
-    'VolumeObject', 'Marker', 'Division', 'Team', 'TeamMember', 'Dataset',
-    'DRSImportBulk', 'BulkRecord',
+    'AutomationPackage',  'Config', 'Invoice', 'BillingGroup', 'User',
+    'Endpoints', 'Project', 'Task', 'App', 'Member', 'Permissions', 'File',
+    'Export', 'Import', 'Volume', 'VolumeObject', 'Marker', 'Division', 'Team',
+    'TeamMember', 'Dataset', 'DRSImportBulk', 'BulkRecord',
     # Enums
     'AppCopyStrategy', 'AppRawFormat', 'AppCopyStrategy',
     'AsyncFileOperations', 'AsyncJobStates', 'AutomationRunActions',
