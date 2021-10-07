@@ -5,7 +5,6 @@ from sevenbridges.meta.resource import Resource
 from sevenbridges.models.billing_analysis_breakdown import (
     BillingGroupAnalysisBreakdown
 )
-from sevenbridges.models.billing_breakdown import BillingGroupBreakdown
 from sevenbridges.models.billing_storage_breakdown import (
     BillingGroupStorageBreakdown
 )
@@ -54,12 +53,6 @@ class BillingGroup(Resource):
             url=cls._URL['query'], offset=offset, limit=limit, fields='_all',
             api=api
         )
-
-    def breakdown(self):
-        """
-        Get Billing group breakdown for the current billing group.
-        """
-        return BillingGroupBreakdown.get(self.id, self._api)
 
     def analysis_breakdown(self, date_from=None, date_to=None, invoice_id=None,
                            fields=None, offset=0, limit=50):

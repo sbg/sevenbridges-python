@@ -41,7 +41,7 @@ class Volume(Resource):
     service = CompoundField(VolumeService, read_only=False)
     created_on = DateTimeField(read_only=True)
     modified_on = DateTimeField(read_only=True)
-    active = BooleanField(read_only=True)
+    active = BooleanField(read_only=False)
 
     def __eq__(self, other):
         if type(other) is not type(self):
@@ -161,7 +161,7 @@ class Volume(Resource):
                              properties=None, api=None):
 
         """
-        Create s3 volume.
+        Create google volume.
         :param name: Volume name.
         :param bucket: Referenced bucket.
         :param client_email: Google client email.
@@ -178,6 +178,48 @@ class Volume(Resource):
                    'credentials': {'client_email': client_email,
                                    'private_key': private_key
                                    }
+                   }
+        if prefix:
+            service['prefix'] = prefix
+        if properties:
+            service['properties'] = properties
+
+        data = {'name': name,
+                'service': service,
+                'access_mode': access_mode
+                }
+        if description:
+            data['description'] = description
+        api = api or cls._API
+
+        extra = {
+            'resource': cls.__name__,
+            'query': data
+        }
+        logger.info('Creating google volume', extra=extra)
+        response = api.post(url=cls._URL['query'], data=data).json()
+        return Volume(api=api, **response)
+
+    @classmethod
+    def create_google_iam_volume(cls, name, bucket, configuration, access_mode,
+                                 description=None, prefix=None,
+                                 properties=None, api=None):
+
+        """
+        Create google volume.
+        :param name: Volume name.
+        :param bucket: Referenced bucket.
+        :param configuration: Google configuration.
+        :param access_mode: Access Mode.
+        :param description: Volume description.
+        :param prefix: Volume prefix.
+        :param properties: Volume properties.
+        :param api: Api instance.
+        :return: Volume object.
+        """
+        service = {'type': VolumeType.GOOGLE,
+                   'bucket': bucket,
+                   'credentials': {'configuration': configuration}
                    }
         if prefix:
             service['prefix'] = prefix
