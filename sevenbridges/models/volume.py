@@ -318,6 +318,7 @@ class Volume(Resource):
             params['prefix'] = prefix
         if limit:
             params['limit'] = limit
+        params['fields'] = '_all'
 
         data = self._api.get(
             url=self._URL['list'].format(id=self.id), params=params).json()
