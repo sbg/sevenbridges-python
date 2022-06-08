@@ -312,16 +312,17 @@ class Volume(Resource):
         else:
             raise ResourceNotModified()
 
-    def list(self, prefix=None, limit=None):
+    def list(self, prefix=None, limit=None, fields='_all'):
         params = {}
         if prefix:
             params['prefix'] = prefix
         if limit:
             params['limit'] = limit
-        params['fields'] = '_all'
+        params['fields'] = fields
 
         data = self._api.get(
-            url=self._URL['list'].format(id=self.id), params=params).json()
+            url=self._URL['list'].format(id=self.id), params=params
+        ).json()
 
         href = data['href']
         links = [VolumeLink(**link) for link in data['links']]
