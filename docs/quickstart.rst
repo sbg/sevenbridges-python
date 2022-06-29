@@ -2025,9 +2025,10 @@ Managing DRS bulk imports
 -------------------------
 
 The following operations are supported for drs bulk imports:
-    - ``result_files`` - Retrieve files that were successfully imported
-    - ``bulk_get()`` - Retrieve DRS bulk import details
-    - ``bulk_submit()`` - Submit DRS bulk import
+
+    - ``bulk_get()`` - Retrieve DRS bulk import details.
+    - ``bulk_submit()`` - Submit DRS bulk import.
+
 
 Properties
 ~~~~~~~~~~
@@ -2046,10 +2047,14 @@ Each drs bulk import has the following properties:
 
 ``finished_on`` - Contains the date and time when the import job finished.
 
+``result_files`` - List of files that were successfully imported.
+
+
 Examples
 ~~~~~~~~
 
 .. code:: python
+
     project = api.project.get('user/project')
     import_data = [
         {

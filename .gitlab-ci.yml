@@ -39,7 +39,7 @@ test:3.9:
 
 sonar:
   stage: sonar
-  image: emeraldsquad/sonar-scanner:1.0.0
+  image: emeraldsquad/sonar-scanner:2.2.0
   script: infinity sonar scanner
   allow_failure: true
   dependencies:
