@@ -69,6 +69,7 @@ class Task(Resource):
     inputs = CompoundField(Input, read_only=False)
     outputs = CompoundField(Output, read_only=True)
     execution_settings = DictField(read_only=True)
+    output_location = DictField(read_only=True)
     use_interruptible_instances = BooleanField(read_only=False)
     origin = StringField(read_only=True, name='origin_id')
 
@@ -141,7 +142,7 @@ class Task(Resource):
     def create(cls, name, project, app, revision=None, batch_input=None,
                batch_by=None, inputs=None, description=None, run=False,
                disable_batch=False, interruptible=None,
-               execution_settings=None, api=None):
+               execution_settings=None, output_location=None, api=None):
 
         """
         Creates a task on server.
@@ -157,6 +158,8 @@ class Task(Resource):
         :param disable_batch: If True disables batching of a batch task.
         :param interruptible: If True interruptible instance will be used.
         :param execution_settings: Execution settings for the task.
+        :param output_location: Dictionary that allows you to define the exact
+        location where your task outputs will be stored.
         :param api: Api instance.
         :return: Task object.
         :raises: TaskValidationError if validation Fails.
@@ -198,6 +201,9 @@ class Task(Resource):
 
         if execution_settings:
             task_data.update({'execution_settings': execution_settings})
+
+        if output_location:
+            task_data.update({'output_location': output_location})
 
         if run:
             params.update({'action': 'run'})
