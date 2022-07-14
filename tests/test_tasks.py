@@ -108,6 +108,47 @@ def test_create_task(api, given, verifier, run):
 
 
 @pytest.mark.parametrize("run", [True, False])
+def test_create_task_with_output_location(api, given, verifier, run):
+    # preconditions
+    owner = generator.user_name()
+    project_short_name = generator.slug()
+    project_id = f'{owner}/{project_short_name}'
+    given.project.exists(id=project_id)
+    given.file.files_exist_for_project(project_id, 10)
+    app_id = f'{owner}/{project_short_name}/app-name'
+    batch_by = {'type': 'item'}
+
+    project = api.projects.get(id=project_id)
+    files = api.files.query(project=project)
+    inputs = {
+        'FastQC': files,
+        'reads': False,
+        'some_file': files[0],
+        'record_input': {"string": "string_input", "file": files[0]}
+    }
+    output_location = {
+        'main_location': '/Analysis/<task_id>_<task_name>/',
+        'nodes_location': {'b64html': {
+            'output_location': '/Analysis/<task_id>_<task_name>/'}
+        }
+    }
+
+    given.task.can_be_created(
+        batch_by=batch_by, batch_input='FastQC', app=app_id, project=project.id
+    )
+    # action
+    task = api.tasks.create(
+        generator.name(), project, app_id, batch_input='FastQC',
+        batch_by=batch_by, inputs=inputs, run=run,
+        output_location=output_location
+    )
+
+    # verification
+    assert repr(task)
+    verifier.task.task_created()
+
+
+@pytest.mark.parametrize("run", [True, False])
 def test_create_task_with_errors(api, given, verifier, run):
     # preconditions
     owner = generator.user_name()

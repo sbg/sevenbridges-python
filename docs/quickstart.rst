@@ -1409,6 +1409,8 @@ the ``batch_by`` criteria.
 
 ``execution_settings`` - Execution settings for the task.
 
+``output_location`` - Location where task outputs will be stored.
+
 ``execution_status`` - Task execution status.
 
 ``price`` - Task cost.
