@@ -45,6 +45,7 @@ class AutomationPackage(Resource):
     archived = BooleanField(read_only=True)
     custom_url = StringField(read_only=False)
     memory_limit = IntegerField(read_only=False)
+    python = StringField(read_only=True)
 
     def __eq__(self, other):
         if type(other) is not type(self):
@@ -76,13 +77,14 @@ class AutomationPackage(Resource):
 
     @classmethod
     def create(cls, automation, version, location, schema, memory_limit=None,
-               api=None):
+               python=None, api=None):
         """
         Create a code package.
         :param automation: Automation id.
         :param version: File ID of the uploaded code package.
         :param location: The code package version.
         :param schema: IO schema for main step of execution.
+        :param python: Version of Python to execute Code Package with.
         :param memory_limit: Memory limit in MB.
         :param api: Api instance.
         :return:
@@ -105,6 +107,7 @@ class AutomationPackage(Resource):
             'location': location,
             'schema': schema,
             'memory_limit': memory_limit,
+            'python': python
         }
 
         extra = {
@@ -519,7 +522,7 @@ class Automation(Resource):
 
     def add_package(
             self, version, file_path, schema, file_name=None,
-            retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
+            python=None, retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
             timeout=RequestParameters.DEFAULT_TIMEOUT, part_size=None,
             api=None
     ):
@@ -530,6 +533,7 @@ class Automation(Resource):
         :param schema: IO schema for main step of execution.
         :param part_size: Size of upload part in bytes.
         :param file_name: Optional file name.
+        :param python: Version of Python to execute Code Package with.
         :param retry_count: Upload retry count.
         :param timeout: Timeout for s3/google session.
         :param api: sevenbridges Api instance.
@@ -562,6 +566,7 @@ class Automation(Resource):
             version=version,
             location=package_file.id,
             schema=schema,
+            python=python,
             api=api
         )
 

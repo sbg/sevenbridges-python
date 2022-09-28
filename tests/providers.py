@@ -1426,10 +1426,10 @@ class AutomationProvider:
         self.request_mocker.get(href, json=package)
 
     def can_add_package(self, automation_id, package_id,
-                        location, version, schema):
+                        location, version, schema, python):
         package = self.package_provider.default_automation_package(
             package_id=package_id, location=location, version=version,
-            schema=schema
+            schema=schema, python=python
         )
         href = (
             f'{self.base_url}/automation/automations/{automation_id}/packages'
@@ -1475,7 +1475,8 @@ class AutomationPackageProvider:
 
     @staticmethod
     def default_automation_package(
-            package_id=None, version=None, location=None, schema=None
+            package_id=None, version=None, location=None, schema=None,
+            python=None
     ):
         package_id = package_id or generator.uuid4()
         version = version or generator.slug()
@@ -1491,7 +1492,8 @@ class AutomationPackageProvider:
             'created_by': generator.user_name(),
             'created_on': generator.date(),
             'archived': False,
-            'custom_url': generator.url()
+            'custom_url': generator.url(),
+            'python': python
         }
 
     def exists(self, **kwargs):
@@ -1500,6 +1502,16 @@ class AutomationPackageProvider:
         package_id = package['id']
         self.request_mocker.get(
             f'/automation/packages/{package_id}',
+            json=package
+        )
+
+    def can_be_created(self, **kwargs):
+        package = self.default_automation_package()
+        automation_id = package['automation']
+        [package.pop(key) for key in ['id']]
+        package.update(**kwargs)
+        self.request_mocker.request(
+            'POST', f'/automation/automations/{automation_id}/packages',
             json=package
         )
 
