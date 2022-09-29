@@ -509,6 +509,48 @@ def test_remove_member(api, given, verifier):
     verifier.automations.member_removed(id, username)
 
 
+def test_add_team_member(api, given, verifier):
+    # precondition
+    api.aa = True
+    team_id = generator.uuid4()
+    permissions = {
+        "write": True,
+        "read": True,
+        "copy": True,
+        "execute": True,
+        "admin": True
+    }
+    id = generator.uuid4()
+
+    given.automations.exists(id=id)
+    given.automations.can_add_team_member(id, team_id)
+
+    # action
+    automation = api.automations.get(id)
+    automation.add_team_member(team_id, permissions)
+
+    # verification
+    verifier.automations.member_added(id)
+
+
+def test_remove_team_member(api, given, verifier):
+    # precondition
+    api.aa = True
+    id = generator.uuid4()
+    team_id = generator.uuid4()
+
+    given.automations.exists(id=id)
+    given.automations.has_team_member(id, team_id)
+    given.automations.can_remove_team_member(id, team_id)
+
+    # action
+    automation = api.automations.get(id)
+    automation.remove_team_member(team_id)
+
+    # verification
+    verifier.automations.member_removed(id, team_id)
+
+
 def test_save_member(api, given, verifier):
     # precondition
     api.aa = True
