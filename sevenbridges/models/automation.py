@@ -45,6 +45,7 @@ class AutomationPackage(Resource):
     archived = BooleanField(read_only=True)
     custom_url = StringField(read_only=False)
     memory_limit = IntegerField(read_only=False)
+    python = StringField(read_only=True)
 
     def __eq__(self, other):
         if type(other) is not type(self):
@@ -76,13 +77,15 @@ class AutomationPackage(Resource):
 
     @classmethod
     def create(cls, automation, version, location, schema, memory_limit=None,
-               api=None):
+               python=None, api=None):
         """
         Create a code package.
         :param automation: Automation id.
         :param version: File ID of the uploaded code package.
         :param location: The code package version.
         :param schema: IO schema for main step of execution.
+        :param python: Version of Python to execute Code Package with. Allowed
+        values are '3.6', '3.7', '3.8'. Default is '3.6'.
         :param memory_limit: Memory limit in MB.
         :param api: Api instance.
         :return:
@@ -105,6 +108,7 @@ class AutomationPackage(Resource):
             'location': location,
             'schema': schema,
             'memory_limit': memory_limit,
+            'python': python
         }
 
         extra = {
@@ -285,6 +289,34 @@ class AutomationMember(Resource):
         return AutomationMember(api=api, **member_data)
 
     @classmethod
+    def add_team(cls, team, permissions, automation, api=None):
+        """
+        Add a team as a member to the automation.
+        :param team: Team object or team id
+        :param permissions: Permissions dictionary.
+        :param automation: Automation object or id
+        :param api: sevenbridges Api instance
+        :return: Automation member object.
+        """
+        team = Transform.to_team(team)
+        automation = Transform.to_automation(automation)
+
+        api = api or cls._API
+        data = {'id': team,
+                'type': 'team'}
+
+        if isinstance(permissions, dict):
+            data.update({
+                'permissions': permissions
+            })
+
+        member_data = api.post(
+            url=cls._URL['query'].format(automation_id=automation),
+            data=data
+        ).json()
+        return AutomationMember(api=api, **member_data)
+
+    @classmethod
     def remove(cls, user, automation, api=None):
         """
         Remove a member from the automation.
@@ -299,6 +331,23 @@ class AutomationMember(Resource):
         api = api or cls._API
         api.delete(
             cls._URL['get'].format(automation_id=automation, id=user)
+        )
+
+    @classmethod
+    def remove_team(cls, team, automation, api=None):
+        """
+        Remove a team member from the automation.
+        :param team: Team object or team id
+        :param automation: Automation id
+        :param api: sevenbridges Api instance
+        :return: None
+        """
+        team = Transform.to_team(team)
+        automation = Transform.to_automation(automation)
+
+        api = api or cls._API
+        api.delete(
+            cls._URL['get'].format(automation_id=automation, id=team)
         )
 
     @inplace_reload
@@ -519,7 +568,7 @@ class Automation(Resource):
 
     def add_package(
             self, version, file_path, schema, file_name=None,
-            retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
+            python=None, retry_count=RequestParameters.DEFAULT_RETRY_COUNT,
             timeout=RequestParameters.DEFAULT_TIMEOUT, part_size=None,
             api=None
     ):
@@ -530,6 +579,8 @@ class Automation(Resource):
         :param schema: IO schema for main step of execution.
         :param part_size: Size of upload part in bytes.
         :param file_name: Optional file name.
+        :param python: Version of Python to execute Code Package with. Allowed
+        values are '3.6', '3.7', '3.8'. Default is '3.6'.
         :param retry_count: Upload retry count.
         :param timeout: Timeout for s3/google session.
         :param api: sevenbridges Api instance.
@@ -562,6 +613,7 @@ class Automation(Resource):
             version=version,
             location=package_file.id,
             schema=schema,
+            python=python,
             api=api
         )
 
@@ -613,6 +665,29 @@ class Automation(Resource):
         """
         api = api or self._API
         AutomationMember.remove(automation=self.id, user=user, api=api)
+
+    def add_team_member(self, team, permissions, api=None):
+        """
+        Add team member to the automation
+        :param team: Team object or team id
+        :param permissions: Member permissions
+        :param api: sevenbridges Api instance
+        :return: AutomationMember object
+        """
+        api = api or self._API
+        return AutomationMember.add_team(
+            automation=self.id, team=team, permissions=permissions, api=api
+        )
+
+    def remove_team_member(self, team, api=None):
+        """
+        Remove a team member from the automation
+        :param team: Team object or team id
+        :param api: sevenbridges Api instance
+        :return: None
+        """
+        api = api or self._API
+        AutomationMember.remove_team(automation=self.id, team=team, api=api)
 
     def get_runs(self, package=None, status=None, name=None,
                  created_by=None, created_from=None, created_to=None,

@@ -1,3 +1,5 @@
+from unittest.mock import patch, MagicMock
+
 import faker
 import pytest
 import tempfile
@@ -179,13 +181,14 @@ def test_get_package(api, given, verifier):
     verifier.automations.package_retrieved(package_id)
 
 
-'''
 # Commenting theses two tests out due to upload issue they have
 
 @pytest.mark.parametrize("file", [True, False])
+@pytest.mark.parametrize("python", ['3.6', '3.7', '3.8'])
 @pytest.mark.parametrize("version", [generator.slug(), None])
 @pytest.mark.parametrize("schema", [{"test": "test"}, None])
-def test_add_package(api, given, verifier, file, version, schema):
+def test_add_package(api, given, verifier, file, python,
+                     version, schema):
     # preconditions
     automation_id = generator.uuid4()
     package_id = generator.uuid4()
@@ -195,7 +198,8 @@ def test_add_package(api, given, verifier, file, version, schema):
     given.automations.exists(id=automation_id)
     given.automations.can_add_package(
         package_id=package_id, automation_id=automation_id,
-        location=package_file_id, version=version, schema=schema
+        location=package_file_id, version=version, schema=schema,
+        python=python
     )
     given.cp_uploads.initialized_upload(part_size=1, upload_id=upload_id)
     given.cp_uploads.got_file_part(file_part_url)
@@ -228,6 +232,8 @@ def test_add_package(api, given, verifier, file, version, schema):
             )
 
 
+# Commenting test due to upload issue it has
+'''
 @pytest.mark.parametrize("empty_file", [True, False])
 def test_code_package_upload(api, given, empty_file):
     upload_id = generator.uuid4()
@@ -271,6 +277,60 @@ def test_code_package_upload(api, given, empty_file):
         assert result.id == file_id
     os.remove(temp_file.name)
 '''
+
+
+@pytest.mark.parametrize("file", [True, False])
+@pytest.mark.parametrize("python", ['3.6', '3.7', '3.8'])
+@pytest.mark.parametrize("version", [generator.slug(), None])
+@pytest.mark.parametrize("schema", [{"test": "test"}, None])
+def test_add_package_for_automation(api, given, verifier, file, python,
+                                    version, schema):
+    automation_id = generator.uuid4()
+    package_id = generator.uuid4()
+    package_file_id = generator.uuid4()
+    given.automations.exists(id=automation_id)
+    given.automations.can_add_package(
+        package_id=package_id, automation_id=automation_id,
+        location=package_file_id, version=version, schema=schema,
+        python=python
+    )
+    # given.cp_uploads.initialized_upload(part_size=1, upload_id=upload_id)
+    # given.cp_uploads.got_file_part(file_part_url)
+    # given.cp_uploads.got_etag(file_part_url)
+    # given.cp_uploads.reported_part()
+    # given.cp_uploads.finalized_upload(package_file_id)
+
+    automation = api.automations.get(automation_id)
+
+    # action
+    if file and version and schema:
+        temp_file = tempfile.NamedTemporaryFile('w', delete=False, dir='/tmp')
+        temp_file.write('dummy content')
+        temp_file.close()
+
+        with patch("sevenbridges.models.automation.CodePackageUpload") \
+                as MockClass:
+            instance = MockClass.return_value
+            instance.start.return_value = None
+            instance.wait.return_value = True
+            instance.result.return_value = MagicMock(id='test')
+            package = automation.add_package(
+                file_path=temp_file.name, version=version, schema=schema,
+                python=python
+            )
+            os.remove(temp_file.name)
+            # verification
+            assert package.location == package_file_id
+            assert package.version == version
+            assert package.python == python
+
+            verifier.automation_packages.created(automation_id=automation_id)
+    else:
+        with pytest.raises(SbgError):
+            automation.add_package(
+                file_path=None, version=version,
+                schema=schema
+            )
 
 
 def test_code_package_upload_stop(api, given):
@@ -447,6 +507,48 @@ def test_remove_member(api, given, verifier):
 
     # verification
     verifier.automations.member_removed(id, username)
+
+
+def test_add_team_member(api, given, verifier):
+    # precondition
+    api.aa = True
+    team_id = generator.uuid4()
+    permissions = {
+        "write": True,
+        "read": True,
+        "copy": True,
+        "execute": True,
+        "admin": True
+    }
+    id = generator.uuid4()
+
+    given.automations.exists(id=id)
+    given.automations.can_add_team_member(id, team_id)
+
+    # action
+    automation = api.automations.get(id)
+    automation.add_team_member(team_id, permissions)
+
+    # verification
+    verifier.automations.member_added(id)
+
+
+def test_remove_team_member(api, given, verifier):
+    # precondition
+    api.aa = True
+    id = generator.uuid4()
+    team_id = generator.uuid4()
+
+    given.automations.exists(id=id)
+    given.automations.has_team_member(id, team_id)
+    given.automations.can_remove_team_member(id, team_id)
+
+    # action
+    automation = api.automations.get(id)
+    automation.remove_team_member(team_id)
+
+    # verification
+    verifier.automations.member_removed(id, team_id)
 
 
 def test_save_member(api, given, verifier):

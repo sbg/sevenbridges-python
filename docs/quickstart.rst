@@ -1804,6 +1804,8 @@ Each automation package has the following properties:
 
 ``custom_url`` - Link to custom frontend page.
 
+``python`` - Python version to run package with.
+
 Each automation run has the following properties:
 
 ``href`` - The URL of the automation run on the API server.
