@@ -112,6 +112,7 @@ def config_vars(profiles, advance_access):
 def mask_secrets(request_data):
     masked = copy.deepcopy(request_data)
     masked['headers']['X-SBG-Auth-Token'] = '*****'
+    masked['headers']['X-SBG-Session-Id'] = '*****'
     return masked
 
 

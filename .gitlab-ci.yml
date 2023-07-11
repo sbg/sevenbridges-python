@@ -15,7 +15,8 @@ stages:
     - pytest --verbose --cov-config setup.cfg
   artifacts:
     paths:
-      - coverage_report/*
+      - test-report/*
+  coverage: '/TOTAL.*\s+(\d+\%)/'
 
 # Test with python 3.6
 test:3.6:
@@ -44,3 +45,5 @@ sonar:
   allow_failure: true
   dependencies:
     - test:3.9
+  rules:
+    - when: always
