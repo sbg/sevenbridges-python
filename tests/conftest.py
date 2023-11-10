@@ -64,6 +64,9 @@ class Precondition:
         self.drs_imports = providers.DRSImportProvider(
             request_mocker, base_url
         )
+        self.billing_group = providers.BillingGroupProvider(
+            request_mocker, base_url
+        )
 
 
 class Verifier:
@@ -97,6 +100,7 @@ class Verifier:
             request_mocker
         )
         self.drs_imports = verifiers.DRSImportsVerifier(request_mocker)
+        self.billing_group = verifiers.BillingGroupVerifier(request_mocker)
 
 
 @pytest.fixture

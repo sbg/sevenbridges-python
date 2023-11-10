@@ -60,8 +60,8 @@ class BillingGroup(Resource):
         Get Billing group analysis breakdown for the current billing group.
         """
         return BillingGroupAnalysisBreakdown.query(
-            self.id, self._api, date_from, date_to, invoice_id, fields,
-            offset, limit
+            bg_id=self.id, api=self._api, date_from=date_from, date_to=date_to,
+            invoice_id=invoice_id, fields=fields, offset=offset, limit=limit
         )
 
     def storage_breakdown(self, date_from=None, date_to=None, invoice_id=None,
@@ -70,8 +70,8 @@ class BillingGroup(Resource):
         Get Billing group storage breakdown for the current billing group.
         """
         return BillingGroupStorageBreakdown.query(
-            self.id, self._api, date_from, date_to, invoice_id, fields,
-            offset, limit
+            bg_id=self.id, api=self._api, date_from=date_from, date_to=date_to,
+            invoice_id=invoice_id, fields=fields, offset=offset, limit=limit
         )
 
     def egress_breakdown(self, date_from=None, date_to=None, invoice_id=None,
@@ -80,6 +80,6 @@ class BillingGroup(Resource):
         Get Billing group egress breakdown for the current billing group.
         """
         return BillingGroupEgressBreakdown.query(
-            self.id, self._api, date_from, date_to, invoice_id, fields,
-            offset, limit
+            bg_id=self.id, api=self._api, date_from=date_from, date_to=date_to,
+            invoice_id=invoice_id, fields=fields, offset=offset, limit=limit
         )

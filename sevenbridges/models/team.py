@@ -4,7 +4,7 @@ from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import ResourceNotModified
 from sevenbridges.meta.collection import Collection
 from sevenbridges.meta.fields import HrefField, StringField
-from sevenbridges.meta.resource import Resource
+from sevenbridges.meta.resource import Resource, TOTAL_MATCH_HEADER
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.link import Link
 from sevenbridges.models.team_member import TeamMember
@@ -119,7 +119,7 @@ class Team(Resource):
             params={'offset': offset, 'limit': limit}
         )
         data = response.json()
-        total = response.headers['x-total-matching-query']
+        total = response.headers[TOTAL_MATCH_HEADER]
         members = [TeamMember(api=self._api, **member) for member in
                    data['items']]
         links = [Link(**link) for link in data['links']]

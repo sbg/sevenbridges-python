@@ -3,6 +3,8 @@ import time
 
 import faker
 
+from sevenbridges.meta.resource import TOTAL_MATCH_HEADER
+
 generator = faker.Factory.create()
 
 
@@ -129,7 +131,7 @@ class ProjectProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response,
-                                headers={'x-total-matching-query': str(total)})
+                                headers={TOTAL_MATCH_HEADER: str(total)})
 
     def can_be_created(self, **kwargs):
         project = self.default_project()
@@ -179,7 +181,7 @@ class ProjectProvider:
             }
             self.request_mocker.get(
                 href, json=response, headers={
-                    'x-total-matching-query': str(num_of_projects)
+                    TOTAL_MATCH_HEADER: str(num_of_projects)
                 }
             )
 
@@ -234,7 +236,7 @@ class MemberProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_members)})
+            TOTAL_MATCH_HEADER: str(num_of_members)})
 
     def member_exist(self, project, username=None, email=None):
         member = self.default_member(project, username)
@@ -374,7 +376,7 @@ class FileProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def files_exist_for_folder(self, folder_id, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
@@ -386,7 +388,7 @@ class FileProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def files_exist_for_file_name(self, project, file_name, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
@@ -398,7 +400,7 @@ class FileProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def files_exist_for_file_metadata(self, project, key, value, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
@@ -412,7 +414,7 @@ class FileProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def files_exist_for_file_origin(self, project, key, value, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
@@ -424,7 +426,7 @@ class FileProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def files_exist_for_file_tag(self, project, tags, num_of_files):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
@@ -439,7 +441,7 @@ class FileProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def files_in_folder(self, num_of_files, folder_id, scroll=False):
         items = [FileProvider.default_file() for _ in range(num_of_files)]
@@ -452,7 +454,7 @@ class FileProvider:
         }
 
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_files)})
+            TOTAL_MATCH_HEADER: str(num_of_files)})
 
     def can_create_folder(self, id=None):
         file_ = self.default_file()
@@ -512,7 +514,7 @@ class AppProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_apps)})
+            TOTAL_MATCH_HEADER: str(num_of_apps)})
 
     def app_exist_non_json(self, status_code):
         url = '/apps'
@@ -541,7 +543,7 @@ class AppProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_apps)})
+            TOTAL_MATCH_HEADER: str(num_of_apps)})
 
     def app_can_be_copied(self, **kwargs):
         app = self.default_app()
@@ -655,7 +657,7 @@ class TaskProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_tasks)})
+            TOTAL_MATCH_HEADER: str(num_of_tasks)})
 
     def tasks_in_project_for_parent(self, project, parent, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
@@ -669,9 +671,9 @@ class TaskProvider:
         }
 
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_tasks)})
+            TOTAL_MATCH_HEADER: str(num_of_tasks)})
         self.request_mocker.get(href_no_parent, json=response, headers={
-            'x-total-matching-query': str(num_of_tasks)})
+            TOTAL_MATCH_HEADER: str(num_of_tasks)})
 
     def tasks_in_project(self, project, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
@@ -685,7 +687,7 @@ class TaskProvider:
         }
 
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_tasks)})
+            TOTAL_MATCH_HEADER: str(num_of_tasks)})
 
     def tasks_exist_for_parent(self, parent, num_of_tasks):
         items = [TaskProvider.default_task() for _ in range(num_of_tasks)]
@@ -697,7 +699,7 @@ class TaskProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num_of_tasks)})
+            TOTAL_MATCH_HEADER: str(num_of_tasks)})
 
     def can_be_created(self, **kwargs):
         task = self.default_task()
@@ -794,7 +796,7 @@ class VolumeProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(num)})
+            TOTAL_MATCH_HEADER: str(num)})
 
     def volume_created(self, name):
         volume = VolumeProvider.default_volume()
@@ -849,7 +851,7 @@ class VolumeProvider:
                 'prefixes': []
             }
             self.request_mocker.get(href, json=response, headers={
-                'x-total-matching-query': str(num_of_files)})
+                TOTAL_MATCH_HEADER: str(num_of_files)})
 
         volume = VolumeProvider.default_volume()
         volume.update(volume_data)
@@ -907,7 +909,7 @@ class MarkerProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def created(self, **kwargs):
         marker = MarkerProvider.default_marker()
@@ -985,7 +987,7 @@ class DivisionProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def teams_exist(self, id, total):
         items = [TeamProvider.default_team() for _ in range(total)]
@@ -997,7 +999,7 @@ class DivisionProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def members_exist(self, id, total):
         items = [self.member_provider.default_member() for _ in range(total)]
@@ -1009,7 +1011,7 @@ class DivisionProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
 
 class TeamProvider:
@@ -1041,7 +1043,7 @@ class TeamProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def created(self, name):
         team = TeamProvider.default_team()
@@ -1084,7 +1086,7 @@ class TeamMemberProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
 
 class ImportsProvider:
@@ -1111,7 +1113,7 @@ class ImportsProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def can_be_submitted(self, **kwargs):
         imports = self.default_import()
@@ -1176,7 +1178,7 @@ class ExportsProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def can_be_submitted(self, **kwargs):
         exports = self.default_export()
@@ -1244,7 +1246,7 @@ class DatasetProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def owned_by(self, total, username):
         items = [self.default_dataset() for _ in range(total)]
@@ -1256,7 +1258,7 @@ class DatasetProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def can_be_saved(self, **kwargs):
         dataset = self.default_dataset()
@@ -1277,7 +1279,7 @@ class DatasetProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def has_member(self, id, dataset_name, member_username):
         member = self.member_provider.default_member(
@@ -1379,7 +1381,7 @@ class AutomationProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def has_member(self, id, username):
         member = self.member_provider.default_automation_member(
@@ -1412,7 +1414,7 @@ class AutomationProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def can_add_member(self, id, username):
         member = self.member_provider.default_automation_member(
@@ -1471,7 +1473,7 @@ class AutomationProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def has_runs(self, id, total):
         items = [
@@ -1486,7 +1488,7 @@ class AutomationProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
 
 class AutomationPackageProvider:
@@ -1729,7 +1731,7 @@ class AutomationRunProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
 
 class AsyncJobProvider:
@@ -1768,7 +1770,7 @@ class AsyncJobProvider:
             'links': links
         }
         self.request_mocker.get(href, json=response, headers={
-            'x-total-matching-query': str(total)})
+            TOTAL_MATCH_HEADER: str(total)})
 
     def can_copy_files(self, files):
         async_job = self.default_async_job()
@@ -1948,3 +1950,38 @@ class DRSImportProvider:
             for _ in range(len(imports_data))
         ]
         self.request_mocker.post('/bulk/drs/imports/create', json=data)
+
+
+class BillingGroupProvider:
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default():
+        id = generator.uuid4()
+        return {
+            'href': generator.url(),
+            'id': id,
+            'name': generator.name(),
+            'owner': generator.user_name(),
+            'type': generator.name(),
+            'pending': False,
+            'disabled': False,
+            'balance': float(generator.pydecimal(positive=True))
+        }
+
+    def exist(self, num_of_bg):
+        items = [BillingGroupProvider.default() for _ in range(num_of_bg)]
+
+        url = '/billing/groups'
+        href = self.base_url + url
+        links = []
+        response = {
+            'href': href,
+            'items': items,
+            'links': links
+        }
+        self.request_mocker.get(
+            href, json=response, headers={TOTAL_MATCH_HEADER: str(num_of_bg)}
+        )

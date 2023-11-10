@@ -699,10 +699,14 @@ The following properties are attached to each billing group:
 
 Billing group methods
 ~~~~~~~~~~~~~~~~~~~~~
-There is one billing group method:
+Billing group methods:
 
-``breakdown()`` fetches a cost breakdown by project and analysis for the selected billing
-group.
+``analysis_breakdown()`` fetches analysis breakdown for the selected billing group.
+
+``storage_breakdown()`` fetches storage breakdown for the selected billing group.
+
+``egress_breakdown()`` fetches egress breakdown for the selected billing group.
+
 
 Manage invoices
 ~~~~~~~~~~~~~~~

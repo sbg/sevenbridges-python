@@ -6,7 +6,7 @@ from sevenbridges.meta.collection import Collection, VolumeCollection
 from sevenbridges.meta.fields import (
     HrefField, StringField, CompoundField, DateTimeField, BooleanField
 )
-from sevenbridges.meta.resource import Resource
+from sevenbridges.meta.resource import Resource, TOTAL_MATCH_HEADER
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.volumes.service import VolumeService
 from sevenbridges.models.compound.volumes.volume_object import VolumeObject
@@ -390,7 +390,7 @@ class Volume(Resource):
             url=self._URL['members_query'].format(id=self.id),
             params={'offset': offset, 'limit': limit})
         data = response.json()
-        total = response.headers['x-total-matching-query']
+        total = response.headers[TOTAL_MATCH_HEADER]
         members = [Member(api=self._api, **member) for member in data['items']]
         links = [Link(**link) for link in data['links']]
         href = data['href']

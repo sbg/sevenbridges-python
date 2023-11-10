@@ -2,6 +2,7 @@ from sevenbridges.errors import PaginationError, SbgError
 from sevenbridges.models.compound.volumes.volume_object import VolumeObject
 from sevenbridges.models.compound.volumes.volume_prefix import VolumePrefix
 from sevenbridges.models.link import Link, VolumeLink
+from sevenbridges.meta.resource import TOTAL_MATCH_HEADER
 
 
 class Collection(list):
@@ -46,7 +47,7 @@ class Collection(list):
         else:
             response = self._api.get(url, append_base=False)
             data = response.json()
-            total = response.headers['x-total-matching-query']
+            total = response.headers[TOTAL_MATCH_HEADER]
             items = [
                 self.resource(api=self._api, **group)
                 for group in data['items']
