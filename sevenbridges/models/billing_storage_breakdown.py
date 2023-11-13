@@ -19,7 +19,7 @@ class BillingGroupStorageBreakdown(Resource):
 
     @classmethod
     def query(cls, bg_id, api=None, date_from=None, date_to=None,
-              invoice_id=None, fields=None, offset=0, limit=50):
+              invoice_id=None, fields=None, offset=None, limit=None):
         """
         Query (List) billing group storage breakdown. Date parameters must be
         string in format MM-DD-YYYY

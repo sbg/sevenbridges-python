@@ -55,7 +55,7 @@ class BillingGroup(Resource):
         )
 
     def analysis_breakdown(self, date_from=None, date_to=None, invoice_id=None,
-                           fields=None, offset=0, limit=50):
+                           fields=None, offset=None, limit=None):
         """
         Get Billing group analysis breakdown for the current billing group.
         """
@@ -65,7 +65,7 @@ class BillingGroup(Resource):
         )
 
     def storage_breakdown(self, date_from=None, date_to=None, invoice_id=None,
-                          fields=None, offset=0, limit=50):
+                          fields=None, offset=None, limit=None):
         """
         Get Billing group storage breakdown for the current billing group.
         """
@@ -75,7 +75,7 @@ class BillingGroup(Resource):
         )
 
     def egress_breakdown(self, date_from=None, date_to=None, invoice_id=None,
-                         fields=None, offset=0, limit=50):
+                         fields=None, offset=None, limit=None):
         """
         Get Billing group egress breakdown for the current billing group.
         """
