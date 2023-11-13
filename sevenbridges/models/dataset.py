@@ -3,7 +3,7 @@ import logging
 from sevenbridges.models.link import Link
 from sevenbridges.models.member import Member
 from sevenbridges.decorators import inplace_reload
-from sevenbridges.meta.resource import Resource, TOTAL_MATCH_HEADER
+from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.collection import Collection
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.meta.fields import HrefField, StringField
@@ -107,7 +107,7 @@ class Dataset(Resource):
         response = api.get(url=self._URL['members'].format(id=self.id))
 
         data = response.json()
-        total = response.headers[TOTAL_MATCH_HEADER]
+        total = response.headers['x-total-matching-query']
         members = [Member(api=api, **member) for member in data['items']]
         links = [Link(**link) for link in data['links']]
         href = data['href']

@@ -10,7 +10,6 @@ from sevenbridges.models.enums import RequestParameters
 
 
 logger = logging.getLogger(__name__)
-TOTAL_MATCH_HEADER = 'x-total-matching-query'
 
 
 # noinspection PyProtectedMember
@@ -170,7 +169,7 @@ class Resource(metaclass=ResourceMeta):
                 message=str(response.text)
             ) from None
 
-        total = response.headers[TOTAL_MATCH_HEADER]
+        total = response.headers['x-total-matching-query']
 
         items = [cls(api=api, **item) for item in data['items']]
         links = [Link(**link) for link in data['links']]

@@ -6,7 +6,7 @@ from sevenbridges.meta.collection import Collection
 from sevenbridges.meta.fields import (
     HrefField, StringField, UuidField, BasicListField,
     CompoundField, DateTimeField)
-from sevenbridges.meta.resource import Resource, TOTAL_MATCH_HEADER
+from sevenbridges.meta.resource import Resource
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.models.compound.projects.settings import Settings
 from sevenbridges.models.link import Link
@@ -164,7 +164,7 @@ class Project(Resource):
             url=self._URL['members_query'].format(id=self.id),
             params={'offset': offset, 'limit': limit})
         data = response.json()
-        total = response.headers[TOTAL_MATCH_HEADER]
+        total = response.headers['x-total-matching-query']
         members = [Member(api=self._api, **member) for member in data['items']]
         links = [Link(**link) for link in data['links']]
         href = data['href']
