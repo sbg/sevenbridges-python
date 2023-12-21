@@ -1948,3 +1948,88 @@ class DRSImportProvider:
             for _ in range(len(imports_data))
         ]
         self.request_mocker.post('/bulk/drs/imports/create', json=data)
+
+
+class BillingGroupProvider:
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default() -> dict:
+        return {
+            'href': generator.url(),
+            'id': generator.uuid4(),
+            'name': generator.name(),
+            'owner': generator.user_name(),
+            'type': generator.name(),
+            'pending': False,
+            'disabled': False,
+            'balance': float(generator.pydecimal(positive=True))
+        }
+
+    def exist(self, num_of_bg):
+        items = [BillingGroupProvider.default() for _ in range(num_of_bg)]
+
+        url = '/billing/groups'
+        href = self.base_url + url
+        response = {
+            'href': href,
+            'items': items,
+            'links': []
+        }
+        self.request_mocker.get(
+            href,
+            json=response,
+            headers={'x-total-matching-query': str(num_of_bg)}
+        )
+
+
+class BillingGroupStorageBreakdownProvider:
+    def __init__(self, request_mocker, base_url):
+        self.request_mocker = request_mocker
+        self.base_url = base_url
+
+    @staticmethod
+    def default() -> dict:
+        return {
+            'project_name': generator.name(),
+            'project_created_by': generator.user_name(),
+            'location': generator.name(),
+            'active': None,
+            'archived': None,
+            'project_locked': False
+        }
+
+    @staticmethod
+    def generate_storage_breakdown() -> dict:
+        return {
+            'size': str(generator.pydecimal(positive=True)),
+            'unit': 'GB/Month',
+            'cost': {
+                'currency': 'USD',
+                'amount': str(generator.pydecimal(positive=True)),
+            }
+        }
+
+    def exist(self, bg_id, num_of_objects, with_cost=False):
+        items = []
+        for _ in range(num_of_objects):
+            item = BillingGroupStorageBreakdownProvider.default()
+            if with_cost:
+                item['archived'] = self.generate_storage_breakdown()
+                item['active'] = self.generate_storage_breakdown()
+            items.append(item)
+
+        url = f'/billing/groups/{bg_id}/breakdown/storage'
+        href = self.base_url + url
+        response = {
+            'href': href,
+            'items': items,
+            'links': []
+        }
+        self.request_mocker.get(
+            href,
+            json=response,
+            headers={'x-total-matching-query': str(num_of_objects)}
+        )

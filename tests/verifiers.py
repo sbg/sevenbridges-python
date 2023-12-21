@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 # noinspection PyProtectedMember
 class Assert:
     def __init__(self, request_mocker):
@@ -615,3 +618,38 @@ class DRSImportsVerifier:
 
     def bulk_submitted(self):
         self.checker.check_url('/bulk/drs/imports/create')
+
+
+class BillingGroupVerifier:
+    DEFAULT_QS = {'fields': ['_all']}
+
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def groups_fetched(self, offset=None, limit=None):
+        qs = deepcopy(self.DEFAULT_QS)
+        if limit is not None:
+            qs['limit'] = limit
+        if offset is not None:
+            qs['offset'] = offset
+        self.checker.check_url('/billing/groups')
+        self.checker.check_query(qs)
+
+
+class BillingGroupStorageBreakdownVerifier:
+
+    def __init__(self, request_mocker):
+        self.request_mocker = request_mocker
+        self.checker = Assert(self.request_mocker)
+
+    def fetched(self, billing_group, offset=None, limit=None):
+        qs = {}
+        if limit is not None:
+            qs['limit'] = limit
+        if offset is not None:
+            qs['offset'] = offset
+        self.checker.check_url(
+            f'/billing/groups/{billing_group.id}/breakdown/storage'
+        )
+        self.checker.check_query(qs)
