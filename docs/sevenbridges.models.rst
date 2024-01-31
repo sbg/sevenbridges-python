@@ -32,10 +32,18 @@ sevenbridges\.models\.app module
     :undoc-members:
     :show-inheritance:
 
-sevenbridges\.models\.billing\_breakdown module
------------------------------------------------
+sevenbridges\.models\.billing\_egress\_breakdown module
+-------------------------------------------------------
 
-.. automodule:: sevenbridges.models.billing_breakdown
+.. automodule:: sevenbridges.models.billing_egress_breakdown
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sevenbridges\.models\.billing\_storage\_breakdown module
+--------------------------------------------------------
+
+.. automodule:: sevenbridges.models.billing_storage_breakdown
     :members:
     :undoc-members:
     :show-inheritance:

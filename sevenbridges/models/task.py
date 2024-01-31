@@ -425,12 +425,13 @@ class Task(Resource):
         return TaskBulkRecord.parse_records(response=response, api=api)
 
     def wait(self=None, period=10, callback=None, *args, **kwargs):
-        """Wait until task is complete
+        """
+        Wait until task is complete
         :param period: Time in seconds between reloads
         :param callback: Function to call after the task has finished,
-            arguments and keyword arguments can be provided for it
+        arguments and keyword arguments can be provided for it
         :return: Return value of provided callback function or None if a
-            callback function was not provided
+        callback function was not provided
         """
         while self.status not in TaskStatus.terminal_states:
             self.reload()
