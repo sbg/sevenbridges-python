@@ -347,6 +347,7 @@ For user management in divisions and teams, the following are available:
 For disabling users:
 
 .. code-block:: python
+
     user = api.users.get('<username>')
     user.disable()
 

@@ -387,8 +387,7 @@ class File(Resource):
         """
         Downloads file to the specified path or as temporary file
         and reads the file content in memory.
-         Should not be used on very large files.
-
+        Should not be used on very large files.
         :param path: Path for file download If omitted tmp file will be used.
         :param overwrite: Overwrite file if exists locally
         :param encoding: File encoding, by default it is UTF-8

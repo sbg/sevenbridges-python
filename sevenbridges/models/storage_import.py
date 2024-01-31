@@ -72,14 +72,13 @@ class Import(Resource):
         :param overwrite: If true it will overwrite file if exists.
         :param properties: Properties dictionary.
         :param parent: The ID of the target folder to which the item should be
-            imported. Should not be used together with project.
+        imported. Should not be used together with project.
         :param preserve_folder_structure: Whether to keep the exact source
-            folder structure. The default value is true if the item being
-            imported is a folder. Should not be used if you are importing
-            a file.
+        folder structure. The default value is true if the item being imported
+        is a folder. Should not be used if you are importing a file.
         :param autorename: Whether to automatically rename the item
-            (by prefixing its name with an underscore and number) if
-            another one with the same name already exists at the destination.
+        (by prefixing its name with an underscore and number) if
+        another one with the same name already exists at the destination.
         :param api: Api instance.
         :return: Import object.
         """

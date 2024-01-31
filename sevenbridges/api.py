@@ -31,7 +31,9 @@ from sevenbridges.models.automation import (
 
 
 class Api(HttpClient):
-    """Api aggregates all resource classes into single place"""
+    """
+    Api aggregates all resource classes into single place
+    """
 
     actions = Actions
     apps = App
