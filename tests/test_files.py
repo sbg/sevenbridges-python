@@ -427,3 +427,65 @@ def test_move_to_folder(api, given, verifier):
 
     # verification
     verifier.file.moved_to_folder(id=file_id)
+
+
+def test_search_files(api, given, verifier):
+    total = 10
+    query = 'some query'
+    given.file.files_to_search(total)
+
+    # action
+    response = api.files.search(query)
+
+    # verification
+    assert response.count == total
+
+    verifier.file.searched(query)
+
+
+def test_search_files_paginated(api, given, verifier):
+    total = 10
+    query = 'some query'
+    given.file.files_to_search(total)
+
+    # action
+    response = api.files.search(query, cont_token='start', limit=10)
+
+    # verification
+    assert response.count == total
+
+    verifier.file.searched_with_pagination(query, 'start', 10)
+
+
+def test_search_files_paginated_limit(api, given, verifier):
+    total = 10
+    query = 'some query'
+    given.file.files_to_search(total)
+
+    # action
+    response = api.files.search(query, limit=10)
+
+    # verification
+    assert response.count == total
+
+    verifier.file.searched_with_limit(query, 10)
+
+
+def test_search_files_with_no_query(api, given, verifier):
+    given.file.files_to_search(1)
+
+    with pytest.raises(SbgError):
+        api.files.search(None)
+
+    with pytest.raises(SbgError):
+        api.files.search("")
+
+
+def test_search_files_with_invalid_limit(api, given, verifier):
+    given.file.files_to_search(1)
+
+    with pytest.raises(SbgError):
+        api.files.search(query='some query', limit=0)
+
+    with pytest.raises(SbgError):
+        api.files.search(query='some query', limit=-1)

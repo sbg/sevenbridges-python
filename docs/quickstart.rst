@@ -907,6 +907,36 @@ There are certain restrictions on using this parameter:
 3. The continuation token pagination and offset pagination are mutually exclusive, so if there are passed both
    :code:`cont_token` and :code:`offset` parameters to :code:`query()`/:code:`list_files()`, :code:`SbgError` will be returned.
 
+Search Files using SBG query language
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Files can be searched based on a query criterion written in a special query language. The query syntax is explained in
+`the documentation <https://docs.sevenbridges.com/reference/query-syntax>`_. This can be achieved using :code:`search()` method:
+
+.. code:: python
+
+    search_response = api.files.search(query='IN "user/example-project" WHERE type = "FILE"')
+
+    search_response.count # Gets the number of returned files/folders (files in this concrete example)
+    search_response.cont_token # Gets continuation token that is used to fetch the next page of data
+    search_response.result_set # Gets the list of resulting files/folders
+
+Pagination parameters
+^^^^^^^^^^^^^^^^^^^^^
+
+Token-based pagination can be achieved in one of the ways:
+
+1. By using :code:`cont_token` and :code:`limit` parameters in :code:`search()` method:
+
+.. code:: python
+
+    search_response = api.files.search(query='IN "user/example-project" WHERE type = "FILE"', limit=100, cont_token=start)
+
+2. With :code:`TOKEN` and :code:`LIMIT` parameters in the provided query:
+
+.. code:: python
+
+    search_response = api.files.search(query='IN "user/example-project" WHERE type = "FILE" LIMIT 100 TOKEN start')
 
 Managing file upload and download
 ---------------------------------

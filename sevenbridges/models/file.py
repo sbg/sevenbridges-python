@@ -1,7 +1,8 @@
-import os
 import logging
+import os
 import tempfile
 
+from sevenbridges.decorators import inplace_reload
 from sevenbridges.errors import (
     SbgError,
     ResourceNotModified,
@@ -12,16 +13,15 @@ from sevenbridges.meta.fields import (
     BasicListField
 )
 from sevenbridges.meta.resource import Resource
-from sevenbridges.models.bulk import BulkRecord
-from sevenbridges.transfer.upload import Upload
-from sevenbridges.decorators import inplace_reload
-from sevenbridges.transfer.download import Download
 from sevenbridges.meta.transformer import Transform
+from sevenbridges.models.bulk import BulkRecord
+from sevenbridges.models.compound.files.download_info import DownloadInfo
+from sevenbridges.models.compound.files.file_origin import FileOrigin
+from sevenbridges.models.compound.files.file_storage import FileStorage
 from sevenbridges.models.compound.files.metadata import Metadata
 from sevenbridges.models.enums import PartSize, RequestParameters
-from sevenbridges.models.compound.files.file_storage import FileStorage
-from sevenbridges.models.compound.files.file_origin import FileOrigin
-from sevenbridges.models.compound.files.download_info import DownloadInfo
+from sevenbridges.transfer.download import Download
+from sevenbridges.transfer.upload import Upload
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,8 @@ class File(Resource):
         'scroll_folder': '/files/{id}/scroll',
         'copy_to_folder': '/files/{file_id}/actions/copy',
         'move_to_folder': '/files/{file_id}/actions/move',
+
+        'search': '/files/search',
     }
 
     href = HrefField(read_only=True)
@@ -612,9 +614,45 @@ class File(Resource):
         ).json()
         return File(api=api, **response)
 
+    @classmethod
+    def search(cls, query, cont_token=None, limit=None, api=None):
+        """
+        Search files by a query.
+        :param query: Query written in SBG query language.
+        :param cont_token: Continuation token value.
+        :param limit: Limit value.
+        :param api: Api instance.
+        """
+
+        if not query:
+            raise SbgError('Query must be provided.')
+
+        if limit is not None and limit <= 0:
+            raise SbgError('Limit must be greater than zero.')
+
+        api = api or cls._API
+
+        data = {'query': query}
+        params = {
+            'cont_token': cont_token,
+            'limit': limit
+        }
+
+        response = api.post(url=cls._URL['search'],
+                            data=data,
+                            params=params).json()
+
+        return SearchResponse(**response)
+
 
 class FileBulkRecord(BulkRecord):
     resource = CompoundField(cls=File, read_only=False)
 
     def __str__(self):
         return f'<FileBulkRecord valid={self.valid}>'
+
+
+class SearchResponse(Resource):
+    count = IntegerField(read_only=True)
+    cont_token = StringField(read_only=True)
+    result_set = BasicListField(read_only=True)
