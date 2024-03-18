@@ -28,6 +28,12 @@ class Assert:
         for hist in self.request_mocker._adapter.request_history:
             print(hist)
 
+    def check_body(self, body):
+        for hist in self.request_mocker._adapter.request_history:
+            if hist.json() == body:
+                return True
+        assert False, f'Body not matched \n{body} != \n{hist.body}'
+
 
 class ProjectVerifier:
     def __init__(self, request_mocker):
@@ -203,6 +209,22 @@ class FileVerifier:
 
     def moved_to_folder(self, id):
         self.checker.check_url(f'/files/{id}/actions/move')
+
+    def searched(self, query):
+        self.checker.check_url('/files/search')
+        self.checker.check_body({'query': query})
+
+    def searched_with_pagination(self, query, cont_token, limit):
+        qs = {'cont_token': [cont_token], 'limit': [f'{limit}']}
+        self.checker.check_url('/files/search')
+        self.checker.check_query(qs)
+        self.checker.check_body({'query': query})
+
+    def searched_with_limit(self, query, limit):
+        qs = {'limit': [f'{limit}']}
+        self.checker.check_url('/files/search')
+        self.checker.check_query(qs)
+        self.checker.check_body({'query': query})
 
 
 class AppVerifier:

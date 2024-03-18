@@ -163,7 +163,7 @@ class ProjectProvider:
 
             if i > limit:
                 prev_url = (
-                   f'/projects/?offset={i - limit}&limit={limit}&fields=_all'
+                    f'/projects/?offset={i - limit}&limit={limit}&fields=_all'
                 )
                 prev = {
                     'method': 'GET',
@@ -284,6 +284,20 @@ class FileProvider:
     def download_info():
         return {
             'url': generator.url()
+        }
+
+    @staticmethod
+    def default_search_file():
+        return {
+            'id': generator.uuid4(),
+            'name': generator.name(),
+            'metadata': {
+                'sample': generator.name()
+            },
+            'tags': [
+                generator.name()
+            ],
+            'type': generator.slug()
         }
 
     def exists(self, **kwargs):
@@ -479,6 +493,19 @@ class FileProvider:
             result['name'] = name
 
         self.request_mocker.post(f'/files/{id}/actions/move', json=result)
+
+    def files_to_search(self, num_of_files):
+        items = [
+            FileProvider.default_search_file()
+            for _ in range(num_of_files)
+        ]
+        href = f'{self.base_url}/files/search'
+        response = {
+            'count': num_of_files,
+            'cont_token': generator.text(max_nb_chars=10),
+            'result_set': items
+        }
+        self.request_mocker.post(href, json=response)
 
 
 class AppProvider:
@@ -834,7 +861,7 @@ class VolumeProvider:
             links = []
             if i + limit < num_of_files:
                 next_page_link = {
-                    'next':  (
+                    'next': (
                         f'{self.base_url}/storage/volumes/{volume_id}/list/'
                         f'?offset={i + limit}&limit={limit}&fields=_all'
                     )
@@ -944,13 +971,13 @@ class ActionProvider:
         return copy_result
 
     def feedback_set(self):
-        url = f'{self.base_url }/action/notifications/feedback'
+        url = f'{self.base_url}/action/notifications/feedback'
         self.request_mocker.post(url)
 
     def can_bulk_copy(self, **kwargs):
         result = self.default_copy_result()
         result.update(kwargs)
-        url = f'{self.base_url }/action/files/copy'
+        url = f'{self.base_url}/action/files/copy'
         self.request_mocker.post(url, json=result)
 
 
