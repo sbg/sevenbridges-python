@@ -4,7 +4,7 @@ from sevenbridges.meta.resource import Resource
 from sevenbridges.models.file import FileBulkRecord
 from sevenbridges.meta.transformer import Transform
 from sevenbridges.meta.fields import (
-    BasicListField, DateTimeField, IntegerField, StringField,
+    BasicListField, DateTimeField, IntegerField, StringField, HrefField
 )
 
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ class AsyncJob(Resource):
         'bulk_move_files': '/async/files/move',
     }
 
+    href = HrefField(read_only=True)
     id = StringField(read_only=True)
     type = StringField(read_only=True)
     state = StringField(read_only=True)
