@@ -43,6 +43,9 @@ def maintenance_sleeper(api, response, sleep=300):
     :param sleep: Time to sleep in between the requests.
     """
     while response.status_code == 503:
+        content_type = response.headers.get('Content-Type')
+        if 'application/json' not in content_type:
+            return response
         logger.info(
             'Service unavailable: Response=[%s]',
             response.__dict__
