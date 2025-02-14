@@ -44,7 +44,7 @@ def maintenance_sleeper(api, response, sleep=300):
     """
     while response.status_code == 503:
         content_type = response.headers.get('Content-Type')
-        if 'application/json' not in content_type:
+        if content_type is None or 'application/json' not in content_type:
             return response
         logger.info(
             'Service unavailable: Response=[%s]',

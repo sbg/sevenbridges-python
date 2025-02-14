@@ -37,6 +37,7 @@ def test_rate_limit_sleeper(api):
 def test_maintenance_sleeper_invalid_json(api):
     resp503 = requests.Response()
     resp503.status_code = 503
+    resp503.headers = {'Content-Type': 'application/json'}
 
     api._session = MockSession([resp503])
     with pytest.raises(JSONDecodeError):
@@ -46,6 +47,7 @@ def test_maintenance_sleeper_invalid_json(api):
 def test_maintenance_sleeper(api):
     resp503 = requests.Response()
     resp503.status_code = 503
+    resp503.headers = {'Content-Type': 'application/json'}
     resp503._content = b'{"code": 0}'
     resp200 = requests.Response()
     resp200.status_code = 200
