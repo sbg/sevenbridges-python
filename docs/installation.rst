@@ -15,7 +15,7 @@ sevenbridges-python is actively developed on GitHub, where the `code <https://gi
 The easiest way to obtain the source is to clone the public repository:
 ::
 
-    $ git clone git://github.com/sbg/sevenbridges-python.git
+    $ git clone git@github.com:sbg/sevenbridges-python.git
 
 Once you have a copy of the source, you can embed it in your Python package,
 or install it into your site-packages by invoking:
